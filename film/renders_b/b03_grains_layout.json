@@ -1,0 +1,38 @@
+{
+ "shot": "b03_grains",
+ "layout": "wreath",
+ "frame_width_m": 0.3,
+ "frame_height_m": 0.16875,
+ "items": [
+  "k07_chixiaodou",
+  "m06_lianzi",
+  "k02_yiyiren",
+  "k15_qianshi",
+  "k04_heizhima",
+  "s03_millet",
+  "k12_juemingzi"
+ ],
+ "seed": 14,
+ "empty": false,
+ "window": [
+  0.5,
+  0.385,
+  0.6,
+  0.37
+ ],
+ "extent": [
+  -0.16611554128152323,
+  0.16611554128152323,
+  -0.10049054128152325,
+  0.10049054128152325
+ ],
+ "n_items": 4816,
+ "layers_max": 7,
+ "heap_top_mm": 26.241558074951172,
+ "display_gain": 1.0,
+ "render_seconds": 224.5,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
