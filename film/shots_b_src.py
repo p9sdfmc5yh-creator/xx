@@ -58,8 +58,8 @@ BUTTER = (240, 222, 170)
 PEACH = (242, 214, 188)
 OCHRE = (234, 204, 146)
 PALE_ROSE = (238, 208, 200)
-DUSTY_ROSE = (208, 152, 144)
-TERRACOTTA = (200, 130, 100)
+DUSTY_ROSE = (200, 140, 126)
+TERRACOTTA = (188, 118, 80)
 SAGE = (150, 168, 134)
 PALE_SAGE = (210, 216, 188)
 CELADON = (194, 214, 198)
@@ -75,7 +75,8 @@ GRID_INK = (150, 120, 96)
 
 
 def paper(colour, **kw):
-    d = dict(type='paper', colour=list(colour), fibres=1.0, cloud=0.05)
+    lum = 0.299 * colour[0] + 0.587 * colour[1] + 0.114 * colour[2]
+    d = dict(type='paper', colour=list(colour), fibres=1.0, cloud=0.05 if lum > 175 else 0.03)   # mottling reads stronger on mid-tones
     d.update(kw)
     return d
 
@@ -113,13 +114,13 @@ SCENES += [
       note='herbs & spices of the four natures / five flavours (liquorice, ginger, hawthorn, chrysanthemum, mint, '
            'turmeric, cinnamon, tangerine peel) in organic patches on cream paper'),
  dict(id='b03_grains', start=320, end=384, layout='wreath', text=None, label='五谷为养 ... (upper-centre window)',
-      source=['s03_millet', 'k07_chixiaodou', 'k02_yiyiren', 'k04_heizhima', 'm06_lianzi', 'k12_juemingzi', 'k15_qianshi'],
+      source=['k07_chixiaodou', 'm06_lianzi', 'k02_yiyiren', 'k15_qianshi', 'k04_heizhima', 's03_millet', 'k12_juemingzi'],
       ground=paper(SAGE),
       frame_width_m=0.30, lock_width=True, seed=14, text_mode='light', exposure=EXPO,
       params=dict(window=[0.50, 0.385, 0.60, 0.37], layers=2.0, reach=0.55, rough=0.10, strays=6, mix='sectors',
                   sector_start=205.0, sector_blur=0.05),
-      note='seven grains / seeds (millet, adzuki bean, coix seed, black sesame, lotus seed, cassia seed, gorgon nut), '
-           'one per sector around the window, on sage card'),
+      note='seven grains / seeds, one per sector around the window (counter-clockwise from the lower left: adzuki bean, '
+           'lotus seed, coix seed, gorgon nut, black sesame, millet, cassia seed), on sage card'),
  dict(id='b04_bowl', start=384, end=448, layout='wreath', text=None,
       label='药食同源 / 既是食品，又是中药材 (upper-centre window)',
       source=['m02_gouqi', 'm03_dazao', 'm09_juhua', 'm06_lianzi', 'k03_guiyuan', 'm01_shanyao'],
@@ -155,7 +156,7 @@ for i, (bid, src, label, col, nlen) in enumerate(WREATHS):
 THIN_CH = {'药': 0.16, '食': 0.24, '同': 0.10, '源': 0.24}
 #   id, source, small label, glyph, ground, strokes in item widths, item scale, extra params
 GLYPHS = [
- ('b15', 'k01_fuling',     '茯苓',   '药', TERRACOTTA, 4.3, 1.0, 'flat'),
+ ('b15', 'k01_fuling',     '茯苓',   '药', TERRACOTTA, 5.2, 1.0, 'flat'),
  ('b16', 'k02_yiyiren',    '薏苡仁', '药', TEAL,       5.0, 1.0, 'seed'),
  ('b17', 'k03_guiyuan',    '桂圆',   '药', CREAM,      3.3, 1.0, 'ball'),
  ('b18', 'k04_heizhima',   '黑芝麻', '药', PEACH,      9.0, 1.0, 'seed'),

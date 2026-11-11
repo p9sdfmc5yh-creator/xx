@@ -91,12 +91,12 @@
    "ground": {
     "type": "paper",
     "colour": [
-     200,
-     130,
-     100
+     188,
+     118,
+     80
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.4,
    "lock_width": true,
@@ -170,13 +170,13 @@
    "text": null,
    "label": "五谷为养 ... (upper-centre window)",
    "source": [
-    "s03_millet",
     "k07_chixiaodou",
-    "k02_yiyiren",
-    "k04_heizhima",
     "m06_lianzi",
-    "k12_juemingzi",
-    "k15_qianshi"
+    "k02_yiyiren",
+    "k15_qianshi",
+    "k04_heizhima",
+    "s03_millet",
+    "k12_juemingzi"
    ],
    "ground": {
     "type": "paper",
@@ -186,7 +186,7 @@
      134
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.3,
    "lock_width": true,
@@ -208,7 +208,7 @@
     "sector_start": 205.0,
     "sector_blur": 0.05
    },
-   "note": "seven grains / seeds (millet, adzuki bean, coix seed, black sesame, lotus seed, cassia seed, gorgon nut), one per sector around the window, on sage card"
+   "note": "seven grains / seeds, one per sector around the window (counter-clockwise from the lower left: adzuki bean, lotus seed, coix seed, gorgon nut, black sesame, millet, cassia seed), on sage card"
   },
   {
    "id": "b04_bowl",
@@ -233,7 +233,7 @@
      170
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.56,
    "lock_width": true,
@@ -269,12 +269,12 @@
    "ground": {
     "type": "paper",
     "colour": [
-     200,
-     130,
-     100
+     188,
+     118,
+     80
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.476,
    "lock_width": true,
@@ -391,7 +391,7 @@
      164
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.502,
    "lock_width": true,
@@ -464,12 +464,12 @@
    "ground": {
     "type": "paper",
     "colour": [
-     208,
-     152,
-     144
+     200,
+     140,
+     126
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.281,
    "lock_width": true,
@@ -508,7 +508,7 @@
      134
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.518,
    "lock_width": true,
@@ -586,7 +586,7 @@
      170
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.438,
    "lock_width": true,
@@ -659,14 +659,14 @@
    "ground": {
     "type": "paper",
     "colour": [
-     200,
-     130,
-     100
+     188,
+     118,
+     80
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
-   "frame_width_m": 1.756,
+   "frame_width_m": 2.124,
    "lock_width": true,
    "seed": 40,
    "text_mode": "light",
@@ -681,7 +681,7 @@
     "thin": 0.2,
     "strays": 0.008,
     "stray_reach": 2.5,
-    "stroke_items": 4.3,
+    "stroke_items": 5.2,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
@@ -715,7 +715,7 @@
      146
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.715,
    "lock_width": true,
@@ -1075,7 +1075,7 @@
      170
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 1.183,
    "lock_width": true,
@@ -1126,7 +1126,7 @@
      142
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 1.286,
    "lock_width": true,
@@ -1384,7 +1384,7 @@
      164
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
    "frame_width_m": 0.818,
    "lock_width": true,

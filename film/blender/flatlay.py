@@ -1296,7 +1296,7 @@ def _grid_ink(h, w, texel, x0, y0, grid, rng, fibre_h):
     return np.clip(ink, 0, 1)
 
 
-PAPER_REF_W = 0.30
+PAPER_REF_W = 0.45
 
 
 def paper_feature_scale(frame, P):
@@ -1328,7 +1328,7 @@ def make_ground_maps(kind, frame, margin, texel, seed, P):
         # (count per m2, length m, width m, intensity, curl)
         for dens, ln, wd, val, curl in ((2.6e5, (0.0015, 0.005), (0.00003, 0.00007), 0.45, 0.32),      # felt
                                         (7.0e4, (0.005, 0.018), (0.00004, 0.00010), 0.70, 0.13),      # fibres
-                                        (7.0e3, (0.020, 0.070), (0.00007, 0.00016), 1.00, 0.07)):     # long kozo strands
+                                        (2.4e3, (0.020, 0.060), (0.00007, 0.00016), 0.85, 0.07)):     # long kozo strands
             if wd[1] / texel < 0.18:
                 continue
             _draw_fibres(fib, int(min(dens * A * amt, 1.2e6)), texel, ln, wd, val, curl, rng, seg=9)
@@ -1476,7 +1476,9 @@ def build_ground(frame, G_, exposure, seed, tex_px, margin, tag):
         fleck = tuple(float(c * 0.22 + 0.006) for c in (col[0] * 1.2, col[1] * 0.9, col[2] * 0.7))
         cl = float(G_.get('cloud', 0.07))
         base = m.hsv(col, 0.5, m.map_range(cB, 0, 1, 1.0 + 0.5 * cl, 1.0 - 0.5 * cl), m.map_range(cB, 0, 1, 1 - cl, 1 + cl))
-        base = m.mix(base, pale, m.map_range(cG, 0.5, 1.0, 0.0, float(G_.get('fibre_contrast', 0.65))))
+        # pale strands pop on a mid-tone sheet (they read as scratches): less contrast there
+        fc_def = 0.28 + 0.37 * float(np.clip((lum - 0.25) / 0.45, 0.0, 1.0))
+        base = m.mix(base, pale, m.map_range(cG, 0.5, 1.0, 0.0, float(G_.get('fibre_contrast', fc_def))))
         base = m.mix(base, fleck, m.map_range(cG, 0.5, 0.0, 0.0, 0.85))
         if ink_img is not None:
             gi = G_['grid']
@@ -1691,8 +1693,8 @@ def speed_tweaks(scene, mode, args):
     c.transmission_bounces = 6
     c.transparent_max_bounces = 6
     if args.quality == 'final':
-        c.adaptive_threshold = max(c.adaptive_threshold, 0.04)
-        c.adaptive_min_samples = min(c.adaptive_min_samples, 12)
+        c.adaptive_threshold = max(c.adaptive_threshold, 0.07)     # 0.04 measured clean at 1:1; 0.07 saves ~35 %
+        c.adaptive_min_samples = min(c.adaptive_min_samples, 10)
     print('[speed] %s: %d SSS nodes -> Burley, bounces 6/2/3/6, adaptive %.3f' % (mode, n, c.adaptive_threshold))
 
 
@@ -1716,7 +1718,7 @@ def parse_cli(argv=None):
                                                 'machine-wide render lock, so the lock is held for the Cycles time only)')
     p.add_argument('--speed', default=os.environ.get('YSTY_B_SPEED', 'fast'),
                    help="render economy: 'fast' (default: Burley SSS, 2 diffuse / 3 glossy / 6 transmission bounces, "
-                        "adaptive threshold 0.04) | 'full' (the settings of common.setup_scene)")
+                        "adaptive threshold 0.07) | 'full' (the settings of common.setup_scene)")
     a, rest = p.parse_known_args(argv)
     return a, rest
 

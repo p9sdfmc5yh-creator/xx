@@ -1,0 +1,40 @@
+{
+ "shot": "b15_fuling",
+ "layout": "glyph",
+ "frame_width_m": 1.768839962060183,
+ "frame_height_m": 0.994972478658853,
+ "items": [
+  "k01_fuling"
+ ],
+ "seed": 40,
+ "empty": false,
+ "text": "药",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.2,
+ "engine": "packed",
+ "px_per_m": 1143.5872471282387,
+ "stroke_width_m": 0.06645754418025403,
+ "stroke_items_wide": 4.3,
+ "block_m": [
+  0.713544158566938,
+  0.7362796342075512
+ ],
+ "char_boxes": [
+  [
+   0.30423,
+   0.09,
+   0.7017,
+   0.82912
+  ]
+ ],
+ "align": 0.050090931766672626,
+ "n_items": 634,
+ "layers_max": 5,
+ "heap_top_mm": 42.3785400390625,
+ "display_gain": 1.0,
+ "render_seconds": 81.5,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

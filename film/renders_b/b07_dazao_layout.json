@@ -1,0 +1,32 @@
+{
+ "shot": "b07_dazao",
+ "layout": "wreath",
+ "frame_width_m": 0.6307779331389151,
+ "frame_height_m": 0.35481258739063976,
+ "items": [
+  "m03_dazao"
+ ],
+ "seed": 22,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.35522757287296797,
+  0.35522757287296797,
+  -0.2172448999988303,
+  0.2172448999988303
+ ],
+ "n_items": 434,
+ "layers_max": 2,
+ "heap_top_mm": 53.0802001953125,
+ "display_gain": 1.0112,
+ "render_seconds": 145.4,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
