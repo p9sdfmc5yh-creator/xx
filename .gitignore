@@ -3,3 +3,7 @@ __pycache__/
 film/assets/fonts/
 film/tmp/
 *.blend1
+film/renders/*.png
+film/renders/*.npy
+film/renders/*.exr
+film/out/*.mp4
