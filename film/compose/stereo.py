@@ -893,22 +893,34 @@ def _over_tile(rgb, tile, x0, y0, linear):
 
 def _text_blocks(text):
     """Split a full-frame straight-alpha text layer into blocks (one per line / group of glyphs):
-    list of (tile RGBA, x0, y0).  Glyphs closer than ~3 % of the width horizontally and ~0.6 %
-    vertically belong to one block, so a title and a caption get their own depth."""
+    list of (tile RGBA, x0, y0).  Glyph bodies (alpha above a quarter of the layer's peak) closer
+    than ~3 % of the width horizontally and ~0.6 % vertically form one block; soft halos / shadows
+    go to the nearest block.  So a title and a caption get their own depth."""
     H, W = text.shape[:2]
-    m = (text[..., 3] > 1.0 / 1024.0).astype(np.uint8)
-    if not m.any():
+    al = text[..., 3]
+    peak = float(al.max())
+    if peak <= 1.0 / 1024.0:
         return []
     q = 8
     Hq, Wq = (H + q - 1) // q, (W + q - 1) // q
-    mp = np.zeros((Hq * q, Wq * q), np.uint8)
-    mp[:H, :W] = m
-    small = mp.reshape(Hq, q, Wq, q).max(axis=(1, 3))
+    ap = np.zeros((Hq * q, Wq * q), np.float32)
+    ap[:H, :W] = al
+    small = ap.reshape(Hq, q, Wq, q).max(axis=(1, 3))         # 1/8-scale max alpha
+    core = (small > 0.25 * peak).astype(np.uint8)
     kx, ky = int(0.03 * W / q) | 1, int(0.006 * W / q) | 1
-    n, lab = cv2.connectedComponents(cv2.dilate(small, np.ones((ky, kx), np.uint8)))
+    n, lab = cv2.connectedComponents(cv2.dilate(core, np.ones((ky, kx), np.uint8)))
+    if n > 2:                                                 # every pixel -> its nearest block
+        _, near = cv2.distanceTransformWithLabels((lab == 0).astype(np.uint8), cv2.DIST_L2, 3,
+                                                  labelType=cv2.DIST_LABEL_PIXEL)
+        lut = np.zeros(int(near.max()) + 1, np.int32)
+        lut[near[lab > 0]] = lab[lab > 0]
+        lab = lut[near]
+    else:
+        lab = np.ones_like(lab)
+    any_a = small > 1.0 / 1024.0
     out = []
-    for i in range(1, n):
-        ys, xs = np.nonzero((lab == i) & (small > 0))
+    for i in range(1, max(n, 2)):
+        ys, xs = np.nonzero((lab == i) & any_a)
         if ys.size == 0:
             continue
         y0, y1 = int(ys.min()) * q, min(H, (int(ys.max()) + 1) * q)
@@ -975,7 +987,8 @@ def _draw_text(L, R, text_rgba, disparity, alpha, base_px, safe, snap, linear, m
                 if yb > ya and xb > xa:
                     cov = np.zeros((yb - ya, xb - xa), np.uint8)
                     ty0, tx0 = max(0, ya - y0), max(0, xa - x0)
-                    sub = tile[ty0:ty0 + (yb - ya), tx0:tx0 + (xb - xa), 3] > 1.0 / 1024.0
+                    ta = tile[ty0:ty0 + (yb - ya), tx0:tx0 + (xb - xa), 3]
+                    sub = ta > 0.1 * float(ta.max()) if ta.size and ta.max() > 0 else ta > 1.0
                     oy, ox = max(0, y0 - ya), max(0, x0 - xa)
                     cov[oy:oy + sub.shape[0], ox:ox + sub.shape[1]] = sub
                     k = 2 * pad + 1
