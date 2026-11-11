@@ -1,0 +1,39 @@
+{
+ "shot": "b02_cabinet",
+ "layout": "wreath",
+ "frame_width_m": 0.66,
+ "frame_height_m": 0.37125,
+ "items": [
+  "k09_gancao",
+  "m04_shengjiang",
+  "m08_shanzha",
+  "m09_juhua",
+  "k05_bohe",
+  "k10_jianghuang",
+  "k14_rougui",
+  "m05_jupi"
+ ],
+ "seed": 13,
+ "empty": false,
+ "window": [
+  0.5,
+  0.385,
+  0.6,
+  0.37
+ ],
+ "extent": [
+  -0.42013713465239355,
+  0.42013713465239355,
+  -0.2757621346523935,
+  0.2757621346523935
+ ],
+ "n_items": 1119,
+ "layers_max": 18,
+ "heap_top_mm": 41.64491653442383,
+ "display_gain": 1.1246,
+ "render_seconds": 219.3,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
