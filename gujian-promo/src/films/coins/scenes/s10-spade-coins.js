@@ -17,8 +17,9 @@ const PAD = 140;
 const PITCH = 300;            // spacing of the spades along the arc (px)
 
 // outline of one spade in its own frame: x across, y toward the circle centre, origin on the arc at the spade's axis
-const HW = 143, TIP_Y = 3.3;                 // shoulder points (x = ±HW): TIP_Y cancels the arc's sag so the points sit on the arc
-const ROOT_X = 53, ROOT_Y = 32;              // where the handle meets the shoulders
+const HW = 138, TIP_Y = 0.6;                 // shoulder points (x = ±HW): TIP_Y cancels the arc's sag so the points sit on the arc
+const SIDE = 15;                             // below the points the sides stand out this much further: neighbours close up just under the arc
+const ROOT_X = 53, ROOT_Y = 4.5;               // where the handle meets the shoulders (the shoulder line itself rides the arc)
 const TOP_X = 44, TOP_Y = -172;              // handle top
 const LB = 492, APEX_Y = 330;                // foot tips / top of the crotch arch
 const LINE_X = 72, WEDGE = 112;              // side lines; length of the socket wedge that runs into the blade
@@ -80,9 +81,12 @@ function buildStamp() {
   pts.push([0, TOP_Y]); pts.push([TOP_X - 4, TOP_Y]); pts.push([TOP_X, TOP_Y + 4]);       // flat top of the long rectangular handle
   pts.push([ROOT_X, ROOT_Y - 8]);                                                          // handle side, widening a little toward the blade
   quad([ROOT_X, ROOT_Y - 8], [ROOT_X + 1, ROOT_Y + 1], [ROOT_X + 12, ROOT_Y + 2], 4, 1);  // small fillet
-  quad([ROOT_X + 12, ROOT_Y + 2], [102, ROOT_Y + 4], [HW, TIP_Y], 16, 1);                  // the shoulder sweeps up to its point (耸肩)
-  for (let i = 1; i <= 20; i++) pts.push([HW - 6 * Math.sin((Math.PI * i) / 20), L.lerp(TIP_Y, LB, i / 20)]);   // slightly waisted side down to the foot tip
-  quad([HW - 2.5, LB], [36, APEX_Y], [0, APEX_Y], 26, 0);                            // inner edge of the pointed foot up to the crotch
+  quad([ROOT_X + 12, ROOT_Y + 2], [112, ROOT_Y + 3.5], [HW, TIP_Y], 18, 1);                  // the shoulder runs along the arc and turns up into its point (耸肩)
+  for (let i = 1; i <= 30; i++) {                                                          // side: out from under the point, then slightly waisted down to the foot tip
+    const t = (i / 30) * (i / 30), y = L.lerp(TIP_Y, LB, t);
+    pts.push([HW + SIDE * sstep(4, 58, y - TIP_Y) - 6 * Math.sin(Math.PI * t), y]);
+  }
+  quad([HW + SIDE - 2.5, LB], [36, APEX_Y], [0, APEX_Y], 26, 0);                            // inner edge of the pointed foot up to the crotch
   const n = pts.length;
   SD = new Float32Array(SW * SH); GX = new Float32Array(SW * SH); GY = new Float32Array(SW * SH);
   for (let j = 0; j < SH; j++) {
@@ -134,15 +138,27 @@ function makeRow(env, seed, dR, shift, dim) {
       ox: r.range(0, 4000), oy: r.range(0, 4000), tone: r.range(0.92, 1.12) * dim, crust: r.range(-0.12, 0.1),
       chips: [], blobs: [],
       // on some spades the front wall of the socket has broken away at the mouth: the hollow shows, with casting core still packed inside
-      mouth: rm.chance(0.62) ? { x: rm.range(-8, 8), w: rm.range(15, 27), d: rm.range(15, 34), clay: rm.range(0.35, 0.8) } : null,
+      mouth: null,
     };
+    // no two mouths have broken the same way: intact / a rounded bite / a narrow crack / the front wall gone / one corner snapped off
+    {
+      const mk = rm(), clay = rm.range(0.3, 0.85), dir = rm.sign();
+      if (mk < 0.18) c.mouth = null;
+      else if (mk < 0.4) c.mouth = { kind: 0, x: rm.range(-10, 10), w: rm.range(14, 24), d: rm.range(14, 30), skew: rm.range(-0.5, 0.5), dir, clay };
+      else if (mk < 0.58) c.mouth = { kind: 1, x: rm.range(-14, 14), w: rm.range(7, 12), d: rm.range(30, 56), skew: rm.range(-0.6, 0.6), dir, clay: clay * 0.5 };
+      else if (mk < 0.78) c.mouth = { kind: 2, x: rm.range(-5, 5), w: rm.range(24, 33), d: rm.range(9, 20), skew: rm.range(-0.25, 0.25), dir, clay };
+      else {
+        c.mouth = { kind: 3, x: 0, w: 47, d: rm.range(24, 46), skew: 0, dir, clay };
+        c.chips.push({ x: dir * (TOP_X - 1), y: TOP_Y + 1, r: rm.range(9, 15) });
+      }
+    }
     // knocks: a broken corner on the handle mouth, a bite out of a side
     const nc = r.int(1, 3);
     for (let q = 0; q < nc; q++) {
       const kind = r();
       if (kind < 0.4) c.chips.push({ x: r.sign() * (TOP_X - r.range(0, 5)), y: TOP_Y + r.range(-2, 6), r: r.range(6, 13) });
       else if (kind < 0.62) c.chips.push({ x: r.sign() * r.range(46, 50), y: r.range(TOP_Y + 40, -20), r: r.range(4, 7) });
-      else c.chips.push({ x: r.sign() * (HW - 4), y: r.range(110, 430), r: r.range(5, 10) });
+      else c.chips.push({ x: r.sign() * (HW + SIDE - 1), y: r.range(110, 430), r: r.range(5, 10) });
     }
     // loess still clinging in patches
     const nb = r.chance(0.3) ? 0 : r.chance(0.55) ? 1 : 2;
@@ -240,8 +256,13 @@ function evalFrag(c, lx, ly, sd, sy) {
   let mudOut = mud;
   const mo = c.mouth;
   if (mo !== null && sy < TOP_Y + mo.d + 10) {
-    const q = (lx / c.sc - mo.x) / mo.w, top = sy - TOP_Y;
-    const f = mo.d * (1 - q * q) - top + 3.5 * n2 + 1.5 * n3;          // > 0 inside the break
+    const top = sy - TOP_Y, q = (lx / c.sc - mo.x) / mo.w + (mo.skew * top) / mo.d;
+    let prof;
+    if (mo.kind === 1) prof = 1 - Math.abs(q);
+    else if (mo.kind === 2) { const q2 = q * q; prof = 1.5 * (1 - q2 * q2); if (prof > 1) prof = 1; }
+    else if (mo.kind === 3) prof = 0.5 + 0.5 * mo.dir * q;
+    else prof = 1 - q * q;
+    const f = mo.d * prof - top + 3.5 * n2 + 1.5 * n3;                 // > 0 inside the break
     if (f > 0) {
       const e = sstep(0, 2.6, f);
       const clay = sstep(-1.5, 1.5, top - mo.d * (1 - mo.clay) - 4 * sN - 2 * n2);   // the core fills the lower part of the opening
@@ -257,8 +278,11 @@ function evalFrag(c, lx, ly, sd, sy) {
 
   // which way does the nearest edge face? (for the copper thread on edges turned to the light)
   let gx = stamp(GX, ax, sy); const gy = stamp(GY, ax, sy); if (lx < 0) gx = -gx;
-  const facing = -((gx * c.tx + gy * c.nx) * 0.64 + (gx * c.ty + gy * c.ny) * 0.77);
-  oRim = facing > 0 ? (1 - sstep(1.0, 5.4, din)) * Math.pow(facing, 0.6) : 0;
+  const facing = -((gx * c.tx + gy * c.nx) * 0.8 + (gx * c.ty + gy * c.ny) * 0.6);
+  // the thread is broad and sure on the edges that look left into the light; along the shoulder tops it thins to a hairline,
+  // so the sky still cuts straight against dark bronze on the arc
+  const up = sstep(0.5, 0.92, -gy);
+  oRim = facing > 0 ? (1 - sstep(1.2, 6.4 - 2.6 * up, din)) * Math.min(1, 1.12 * Math.pow(facing, 0.55)) * (1 - 0.52 * up) : 0;
 }
 
 /** rasterise both rows → { coins, rim, x0, y0 } (canvases cropped to the bronze, positioned at frame coords x0, y0) */

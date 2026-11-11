@@ -57,7 +57,7 @@ function buildCoin(env) {
     let nt = 0, ntn = 0, cr = 0;
     for (const q of notches) { const t = (U - q.u) / q.w; if (t > -1 && t < 1) { const f = (1 - t * t) * (1 - t * t) * (0.8 + 0.35 * nB.n2(U / 4.5, q.u)); if (f * q.d > nt) { nt = f * q.d; ntn = L.clamp(f * 1.3); } } }
     for (const q of creeps) { const t = (U - q.u) / q.w; if (t > -1 && t < 1) cr = Math.max(cr, (1 - t * t) * (1 - t * t) * q.d); }
-    eOut[i] = -0.7 + 1.0 * nA.n2(U / 120, 1.7) + 0.45 * nA.n2(U / 21, 5.1) - nt;
+    eOut[i] = -0.7 + 1.0 * nA.n2(U / 120, 1.7) + 0.45 * nA.n2(U / 21, 5.1) + 0.4 * nB.n2(U / 7.5, 31.7) - nt;
     thick[i] = L.clamp(8.6 + 3.0 * nA.n2(U / 85, 9.3) + 2.2 * nA.n2(U / 26, 3.3) + 2.4 * Math.abs(nB.n2(U / 9, 7.7)) + cr, 2.5, 30) * (1 - 0.92 * ntn);
     stepV[i] = 148 + 7 * nA.n2(U / 150, 21.3) + 3.5 * nA.n2(U / 37, 13.1);
   }
@@ -176,12 +176,18 @@ function buildCoin(env) {
       const hRim = (RIMH * sstep(0, 22, q) + 0.42 * nA.n2(uf / 130, V / 2.7) * sstep(4, 20, q)) * rimMask;
 
       // green: the crust along the very edge + the scattered flecks
-      let gR = 0, hCr = 0, tq = 0;
-      if (th > 1.2 && q < th + 6) {
+      let gR = 0, hCr = 0, tq = 0, nod = 0, nodC = 0.5;
+      if (th > 1.2 && q < th + 11) {
+        // the crust is botryoidal — small rounded nodules of malachite — so its inner edge creeps over the red in
+        // uneven scallops and sheds a stray bead here and there, instead of running as a ruled stripe
+        cell(x / 6.4 + 21.3, y / 6.4 - 8.7);
+        nodC = ((rehash(cHh) >>> 8) & 255) / 255;
+        nod = Math.max(0, 1 - cD1 / 0.42);
         const rag = 1.5 * nB.n2(x / 4.7, y / 4.7) + 0.7 * micro;
-        gR = 1 - sstep(th - 1.3, th + 1.3, q + rag);
+        const reach = (1.2 + 6.0 * nodC * nodC) * (nod - 0.42);
+        gR = 1 - sstep(th - 1.3, th + 1.3, q + rag - reach);
         tq = L.clamp(q / th);
-        hCr = HG * sstep(0, 3.4, q) * (1 - 0.3 * sstep(0.5, 1, tq)) * gR * (0.72 + 0.45 * nA.n2(x / 5.5, y / 5.5));
+        hCr = HG * sstep(0, 3.4, q) * (1 - 0.3 * sstep(0.5, 1, tq)) * gR * (0.5 + 0.32 * nA.n2(x / 5.5, y / 5.5) + 0.5 * nod);
       }
       const gsf = Gs[k], gS = gsf > 0 ? sstep(0.1, 0.34, gsf) : 0;
       const gm = Math.max(gR, gS);
@@ -208,7 +214,9 @@ function buildCoin(env) {
         // malachite
         const gv = L.clamp(0.5 + 0.5 * nA.n2(x / 8.3 + 40, y / 8.3) + 0.2 * micro);
         const deep = 1 - 0.22 * sstep(0.6, 1, tq) * gR;
-        const mr = (30 + 34 * gv) * deep, mg = (150 + 44 * gv) * deep, mb = (92 + 30 * gv) * deep;
+        // nodule crowns a shade paler, the seams between them a shade deeper; each nodule its own depth of green
+        const nb = deep * (1 + gR * (0.2 * nod - 0.13 + 0.1 * (nodC - 0.5)));
+        const mr = (30 + 34 * gv) * nb, mg = (150 + 44 * gv) * nb, mb = (92 + 30 * gv) * nb;
         r += (mr - r) * gm; g += (mg - g) * gm; b += (mb - b) * gm;
       }
       Ar[k] = r; Ag[k] = g; Ab[k] = b; Gm[k] = gm;

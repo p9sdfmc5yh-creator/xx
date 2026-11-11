@@ -315,7 +315,11 @@ function buildUpper(env) {
       const x = X0 + i, ddx = x - cx, rr2 = ddx * ddx + ddy * ddy;
       if (rr2 < rIn2) continue;      // hidden under the malachite
       const wv = bil(fWarp, i, j);
-      const m = featherMask(a, x, y, wv), k = 0.05 + 0.95 * m, vary = 0.3 + 0.7 * m;
+      const m = featherMask(a, x, y, wv), vary = 0.3 + 0.7 * m;
+      // the tagline sits on the fused face above the crest: there the last traces of blade relief and the growth lines are
+      // stilled further (a soft ellipse, no wobble, so the calm is centred on the text) — silk, not stripes
+      const qx = (x - cx) / 480, qy = (y - (a.crestY - 150)) / 350, calm = 1 - sstep(0.5, 1.08, Math.sqrt(qx * qx + qy * qy));
+      const k = 0.05 - 0.034 * calm + 0.95 * m;
       let w = (y - 0.11 * (x - 960) + 30 * wv) / SP + 0.37;
       w += 0.17 * Math.sin(w * 2.1 + 1);               // uneven band heights
       const bi = Math.floor(w), t = w - bi, b = bi - B0;
@@ -364,7 +368,7 @@ function buildUpper(env) {
       const c1 = q * 15 + along * 0.004 + hs * 37 + 4096, c2 = q * 38 - along * 0.007 + hs * 11 + 8192;
       const i1 = c1 | 0, i2 = c2 | 0, k1 = i1 & 1023, k2 = i2 & 1023;
       const stri = SR[k1] + (SR[k1 + 1] - SR[k1]) * (c1 - i1), stri2 = SR[k2] + (SR[k2 + 1] - SR[k2]) * (c2 - i2);
-      h += (0.34 + 0.66 * k * hseg2) * (0.55 * stri + 0.4 * stri2);
+      h += (0.34 * (1 - 0.64 * calm) + 0.66 * k * hseg2) * (0.55 * stri + 0.4 * stri2);
       const tone = 1 + (0.24 * (hs - 0.5) + 0.12 * (hseg - 0.5)) * k;
       let cr = 27 * tone, cg = 72 * tone, cb = 176 * tone, sh = 1, gloss = 0.85;
       // the lit bevel is a mirror for the lamp, not a flat ribbon: its sheen pools and thins along the blade, and the growth
@@ -420,7 +424,7 @@ function buildUpper(env) {
       // slow hue drift (ultramarine ↔ cobalt), illumination falloff, a breath of surface tooth
       const hv = bil(fHue, i, j);
       const dx0 = x - 960, dy0 = y - 330;
-      sh *= 1.05 - 0.17 * sstep(420, 1250, Math.sqrt(dx0 * dx0 + dy0 * dy0));
+      sh *= (1.05 - 0.17 * sstep(420, 1250, Math.sqrt(dx0 * dx0 + dy0 * dy0))) * (1 - 0.06 * calm);
       h += 0.16 * MT[((y & 255) << 8) | (x & 255)];
       const p = j * RW + i, o = p * 4;
       d[o] = cr * (1 + 0.5 * hv); d[o + 1] = cg * (1 - 0.2 * hv); d[o + 2] = cb; d[o + 3] = 255;

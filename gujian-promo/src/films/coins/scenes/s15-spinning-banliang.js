@@ -14,6 +14,7 @@ const { W, H } = L;
 const SPIN = 0.13;     // the face turns ±SPIN rad over the shot (≈ 90 px per frame at the rim)
 const SWEEP = 0.06;    // the light's hot spot slides ±SWEEP rad along the arc (left → right)
 const TOPM = 72;       // the rotating layers reach this far above the arc
+const HOLE0 = 296, HOLE1 = 390;   // the smeared square hole: its corners reach up to HOLE0 below the edge, its flats sit at HOLE1
 let S = null;
 
 const sstep = (a, b, v) => { const t = L.clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -76,11 +77,18 @@ function buildFace(env, box) {
       const micro = nA.n2(u / 280 + 60, dw / 1.15);
       // some bands are smooth, some gritty
       const grit = 0.35 + 0.65 * sstep(-0.35, 0.35, nA.n2(u / 2300 - 40, dw / 64 + 12));
-      let t = 0.46 + 0.86 * broad + 0.5 * mid + 0.2 * fine * grit + (0.13 + 0.06 * relief) * hair * grit + 0.07 * micro * grit + 0.05 * relief;
+      let t = 0.46 + 0.86 * broad + 0.5 * mid + 0.2 * fine * grit + (0.15 + 0.06 * relief) * hair * grit + 0.09 * micro * grit + 0.05 * relief;
+      // the coin is thick: its worn, rounded shoulder catches the light as a pale lip just inside the edge (a soft roll-off, not a raised rim)
+      t += 0.36 * Math.exp(-Math.pow((dw - 7) / 5.5, 2)) + 0.12 * Math.exp(-Math.pow((dw - 14) / 16, 2));
+      // … and so does the worn edge of the hole, very faintly
+      t += 0.085 * Math.exp(-Math.pow((dw - (HOLE0 - 8)) / 5.5, 2));
       // deep-brown bands: push the low end down so they read as separate bands, not as a gradient
       t -= 0.1 * sstep(0.03, 0.2, -broad);
       // the square hole, smeared by the spin into a dark band with a streaky upper edge
-      const hole = sstep(350, 440, d + 30 * nA.n2(u / 1500 + 9, d / 30) + 9 * nB.n2(u / 600 - 3, d / 7));
+      // a SQUARE hole spun into a ring: between the circle through its corners and the circle touching its flats the
+      // darkness is the fraction of the turn spent over the hole — a slow start that tightens into a crisp inner edge
+      const hx = L.clamp((d + 15 * nA.n2(u / 1500 + 9, d / 30) + 5 * nB.n2(u / 600 - 3, d / 7) - HOLE0) / (HOLE1 - HOLE0));
+      const hole = hx <= 0 ? 0 : 1 - (4 / Math.PI) * Math.acos(Math.min(1, 1 / (Math.SQRT2 - 0.41421356 * hx)));
       T[k] = t; Ho[k] = hole;
       Hu[k] = nB.fbm(u / 2400 + 77, dw / 46 - 5, 2) - 0.07;
     }
@@ -109,12 +117,18 @@ function buildFace(env, box) {
     const bright = r.chance(0.55);
     deposit(r.range(-uMax, uMax), 4 + r() * 440, r.range(26, 110), r.range(0.5, 1.3), bright ? r.range(0.12, 0.4) : -r.range(0.12, 0.34), bright && r.chance(0.15) ? r.range(0.15, 0.5) : 0);
   }
+  // hairlines: the finest scratches and bright grains, each a crisp 1–2 px thread
+  for (let n = 0; n < 420; n++) {
+    const bright = r.chance(0.6);
+    deposit(r.range(-uMax, uMax), 3 + Math.pow(r(), 1.25) * 330, r.range(70, 430), r.range(0.5, 0.85), bright ? r.range(0.1, 0.32) : -r.range(0.1, 0.3), bright && r.chance(0.2) ? r.range(0.12, 0.4) : 0);
+  }
   for (let k = 0; k < T.length; k++) T[k] *= 1 - 0.3 * Ho[k];   // (the real darkening of the hole happens after tone-mapping, below)
 
   // 3) resample into a screen-space layer
-  const BASE = lut([[0, '#1e0d06'], [0.18, '#3d1d0c'], [0.4, '#7A4A24'], [0.58, '#a85c2a'], [0.74, '#C47A3C'], [0.88, '#da8e49'], [1, '#ecb46f']]);
-  const RUST = lut([[0, '#200906'], [0.18, '#4a160b'], [0.4, '#8f3619'], [0.58, '#b54a25'], [0.74, '#d0602f'], [0.88, '#e27f46'], [1, '#f0a878']]);
-  const OCHRE = lut([[0, '#1c0e06'], [0.18, '#3f260c'], [0.4, '#86581f'], [0.58, '#b27c2c'], [0.74, '#cf9a40'], [0.88, '#e0b257'], [1, '#eecb80']]);
+  // antique bronze, not flame: brown body, red-copper and ochre bands, and a pale, DEsaturated top end (metal highlights go pale, fire goes yellow)
+  const BASE = lut([[0, '#170b05'], [0.18, '#351a0b'], [0.4, '#7A4A24'], [0.58, '#9a6230'], [0.74, '#b98046'], [0.88, '#d3a46c'], [1, '#efd5aa']]);
+  const RUST = lut([[0, '#1b0805'], [0.18, '#43150a'], [0.4, '#873a1b'], [0.58, '#a5562c'], [0.74, '#C47A3C'], [0.88, '#d69a6a'], [1, '#efc7a2']]);
+  const OCHRE = lut([[0, '#191006'], [0.18, '#3a270d'], [0.4, '#7b5922'], [0.58, '#a07a31'], [0.74, '#bb9749'], [0.88, '#d3b46f'], [1, '#eddcab']]);
   const X0 = box.X0, Y0 = box.Y0, LW = box.X1 - box.X0, LH = box.Y1 - box.Y0;
   const img = new ImageData(LW, LH), px = img.data;
   const fiMax = NT - 1.001, fjMax = NR - 1.001;
@@ -148,11 +162,11 @@ function buildFace(env, box) {
       const li = ((t * 1023) | 0) * 3;
       let cr = BASE[li], cg = BASE[li + 1], cb = BASE[li + 2];
       let hw = hv * 2.6; hw = hw < -1 ? -1 : hw > 1 ? 1 : hw;
-      if (hw < 0) { const m = -hw * 0.9; cr += (RUST[li] - cr) * m; cg += (RUST[li + 1] - cg) * m; cb += (RUST[li + 2] - cb) * m; }
+      if (hw < 0) { const m = -hw * 0.72; cr += (RUST[li] - cr) * m; cg += (RUST[li + 1] - cg) * m; cb += (RUST[li + 2] - cb) * m; }
       else { const m = hw * 0.62; cr += (OCHRE[li] - cr) * m; cg += (OCHRE[li + 1] - cg) * m; cb += (OCHRE[li + 2] - cb) * m; }
-      if (gl > 0) { cr += gl * 200; cg += gl * 165; cb += gl * 105; }
-      if (d > 290) {   // the smeared square hole: nearly black, with a streaky upper edge
-        const ho = 1 - 0.9 * (Ho[k] * w00 + Ho[k + 1] * w10 + Ho[k2] * w01 + Ho[k2 + 1] * w11);
+      if (gl > 0) { cr += gl * 200; cg += gl * 174; cb += gl * 132; }
+      if (d > HOLE0 - 30) {   // the smeared square hole: we look straight through it into the dark
+        const ho = 1 - 0.955 * (Ho[k] * w00 + Ho[k + 1] * w10 + Ho[k2] * w01 + Ho[k2 + 1] * w11);
         cr *= ho; cg *= ho; cb *= ho;
       }
       const o = (j * LW + i) * 4;
@@ -206,17 +220,21 @@ export default {
     // light falloff (multiply): a pool of light around the hot spot, dying away to the sides and toward the hole
     const shade = polarLayer(a, box, 0.25, (th, d, o) => {
       if (d < 0) { o[0] = o[1] = o[2] = 255; return; }
-      const fr = 1 - 0.62 * sstep(40, 520, d);
-      const fa = 0.29 + 0.71 * Math.exp(-(th * th) / (0.3 * 0.3));
+      const fr = 1 - 0.5 * sstep(50, 470, d);   // the face stays lit down to the hole, so the hole reads as a band and not as falloff
+      const ef = 0.3 * (1 - sstep(6, 44, d));   // the edge lip keeps catching light out to the sides
+      const fa = 0.29 + ef + (0.71 - ef) * Math.exp(-(th * th) / (0.3 * 0.3));
       const f = fr * fa;
       o[0] = 255 * (0.05 + 0.95 * f); o[1] = 255 * (0.03 + 0.97 * f); o[2] = 255 * (0.06 + 0.94 * f);
     });
     // hot wedge (colour-dodge): the fan-shaped highlight of a spinning metal disc
-    const wedge = polarLayer(a, box, 0.25, (th, d, o) => {
-      if (d < 4) { o[0] = o[1] = o[2] = 0; return; }
-      const band = sstep(6, 78, d) * (1 - sstep(170, 470, d));
-      const w = (Math.exp(-(th * th) / (0.085 * 0.085)) + 0.32 * Math.exp(-(th * th) / (0.22 * 0.22))) * band;
-      o[0] = 114 * w; o[1] = 68 * w; o[2] = 32 * w;
+    // (near-neutral, so it lifts the bronze toward pale metal instead of pushing it to orange flame)
+    const wedge = polarLayer(a, box, 0.5, (th, d, o) => {
+      if (d < 1) { o[0] = o[1] = o[2] = 0; return; }
+      const band = sstep(6, 78, d) * (1 - sstep(150, HOLE0 + 20, d));
+      const lip = sstep(1, 4.5, d) * (1 - sstep(8, 19, d));
+      const w = (Math.exp(-(th * th) / (0.085 * 0.085)) + 0.32 * Math.exp(-(th * th) / (0.22 * 0.22))) * band
+        + (0.62 * Math.exp(-(th * th) / (0.2 * 0.2)) + 0.3 * Math.exp(-(th * th) / (0.5 * 0.5))) * lip * (1 - band);
+      o[0] = 56 * w; o[1] = 49 * w; o[2] = 40 * w;
     });
     // blue-violet rim light: a tight glow outside the edge and a spill onto the face just inside it
     const c3 = [0, 0, 0];
@@ -224,12 +242,12 @@ export default {
       o[0] = o[1] = o[2] = 0;
       if (d > 300 || d < -(TOPM - 8)) return;
       let s;
-      if (d >= 0) s = 0.52 * Math.exp(-d / 9) + 0.42 * Math.exp(-d / 38) + 0.13 * Math.exp(-d / 120);
+      if (d >= 0) s = 0.5 * Math.exp(-d / 3.2) + 0.2 * Math.exp(-d / 24) + 0.08 * Math.exp(-d / 110);   // kept tight: just under it the bronze lip must stay bronze
       else s = (0.5 * Math.exp(d / 4.5) + 0.1 * Math.exp(d / 18)) * (1 - sstep(TOPM - 30, TOPM - 8, -d));
       rimRGB(th, c3);
       let v = rimEnv(th) * s;
       // a cool sheen the same light leaves on the face out toward the sides (violet on the left, blue on the right)
-      if (d >= 0) v += 0.16 * Math.exp(-d / 170) * sstep(0.07, 0.36, Math.abs(th)) * sstep(0, 14, d);
+      if (d >= 0) v += 0.09 * Math.exp(-d / 170) * sstep(0.07, 0.36, Math.abs(th)) * sstep(0, 14, d);
       o[0] = c3[0] * v; o[1] = c3[1] * v; o[2] = c3[2] * v;
     });
 
@@ -270,7 +288,7 @@ export default {
     // a soft warm bloom inside the coin where the light is hottest
     ctx.save(); a.clipBelow(ctx, 0);
     const hp = a.pt(hot, -150);
-    L.glow(ctx, hp.x, hp.y, 560, '#ff8a3c', 0.13);
+    L.glow(ctx, hp.x, hp.y, 560, '#c9925a', 0.05);
     ctx.restore();
     // the blue-violet rim light: once as a veil, once as a dodge so the streaks under it light up in lilac
     put(ctx, a, S.rim, B, hot, 'color-dodge', 0.6);
@@ -286,6 +304,18 @@ export default {
     ctx.strokeStyle = grad;
     ctx.lineWidth = 2.6; a.stroke(ctx, -0.5);
     ctx.globalAlpha = 0.32; ctx.lineWidth = 6.5; a.stroke(ctx, 0);
+    ctx.restore();
+
+    // the lip of the thick edge: a warm, pale-bronze thread of specular just inside the cool hairline
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const lg = ctx.createLinearGradient(0, 0, W, 0);
+    for (let i = 0; i <= 32; i++) {
+      const th = a.thetaAtX((W * i) / 32) - hot;
+      lg.addColorStop(i / 32, `rgba(255,222,172,${(0.4 * Math.exp(-(th * th) / (0.24 * 0.24)) + 0.1 * Math.exp(-(th * th) / (0.6 * 0.6))).toFixed(3)})`);
+    }
+    ctx.strokeStyle = lg;
+    ctx.lineWidth = 1.5; a.stroke(ctx, -4.6);
+    ctx.globalAlpha = 0.3; ctx.lineWidth = 5; a.stroke(ctx, -6.5);
     ctx.restore();
 
     // knobs of the edge flashing through the light (they travel with the coin)

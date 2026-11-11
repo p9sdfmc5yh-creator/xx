@@ -50,7 +50,7 @@ function curve(pts) {
 }
 
 // the tops of 開: the two leaves of 門 (丨 + ㇕ on the left, 丨 + ㇆ on the right). Only their upper ~70 px ever enter the frame.
-const GLY = { yT: 1010, sw: 66, A: 400, G: 46, GH: 11.5, GE: 14, CR: 2.6 };
+const GLY = { yT: 1010, sw: 66, A: 400, G: 46, GH: 11.5, GE: 17, CR: 4.0 };
 function glyphBoxes(cx) {
   const { yT, sw, A, G } = GLY, hw = sw * 0.8, far = H + PAD + 300;
   return [
@@ -123,7 +123,7 @@ function shadeCoin(a) {
   const boxes = glyphBoxes(cx), { GH, GE, CR } = GLY, RC = 17;
   const PGN = 256, PG = new Float32Array(PGN + 1);
   { let acc = 0; for (let i = 1; i <= PGN; i++) { const t = (i - 0.5) / PGN; acc += Math.pow(t, 0.5) * Math.pow(1 - t, 1.2); PG[i] = acc; } for (let i = 1; i <= PGN; i++) PG[i] /= acc; }
-  const GhH = new Float32Array(N);
+  const GhH = new Float32Array(N), Gf = new Float32Array(N);
   for (let j = Math.max(0, GLY.yT - 40 - Y0); j < RH; j++) {
     const y = Y0 + j;
     for (let i = 0; i < RW; i++) {
@@ -138,10 +138,13 @@ function shadeCoin(a) {
         sd = Math.min(sd, s) - hk * hk * 9 * 0.25;
       }
       if (sd > 8) continue;
-      sd += 1.1 * nA.n2(x / 150 + 3, y / 150) + 0.55 * nA.n2(x / 46 - 7, y / 46) + 0.2 * nB.n2(x / 15, y / 15 + 9);
-      const ge = GE * (1 + 0.2 * nB.n2(x / 170 + 31, y / 170)), gh = GH * (1 + 0.08 * nA.n2(x / 260 + 5, y / 260 - 2));
+      sd += 1.5 * nA.n2(x / 150 + 3, y / 150) + 0.55 * nA.n2(x / 46 - 7, y / 46) + 0.2 * nB.n2(x / 15, y / 15 + 9);
+      const ge = GE * (1 + 0.2 * nB.n2(x / 170 + 31, y / 170)), gh = GH * (1 + 0.13 * nA.n2(x / 260 + 5, y / 260 - 2));
       const tf = L.clamp(-sd / ge) * PGN, ti = tf | 0, p = ti >= PGN ? 1 : PG[ti] + (PG[ti + 1] - PG[ti]) * (tf - ti);
-      const k = j * RW + i; Gh[k] = p; GhH[k] = gh * p + CR * sstep(0, 30, -sd);
+      // … and the top is a low continuous dome (no flat plateau): the bevel rolls straight into it
+      const ct = L.clamp(-sd / 24);
+      const k = j * RW + i; Gh[k] = p; GhH[k] = gh * p + CR * ct * (2 - ct);
+      const fq = (sd - 1.2) / 3.2; Gf[k] = Math.exp(-fq * fq);   // the seam where stroke meets field
     }
   }
 
@@ -163,6 +166,7 @@ function shadeCoin(a) {
   const stamp = (px, py, rx, ry, ang, depth, o = {}) => {
     const { dark = 0, pw = 1.4, l2 = 0, p2 = 0, l3 = 0, p3 = 0, minD = 2 } = o;
     const lob = l2 !== 0 || l3 !== 0, e = Math.ceil(Math.max(rx, ry) * (1 + Math.abs(l2) + Math.abs(l3))) + 2, ca = Math.cos(ang), sa = Math.sin(ang);
+    const rmin = Math.min(rx, ry), oy = 0.26 * rmin, fw = Math.min(0.5, 1.1 / rmin);
     for (let j = Math.max(1, Math.floor(py - e)); j <= Math.min(RH - 2, Math.ceil(py + e)); j++) {
       for (let i = Math.max(1, Math.floor(px - e)); i <= Math.min(RW - 2, Math.ceil(px + e)); i++) {
         const k = j * RW + i; if (Dd[k] < minD) continue;
@@ -171,7 +175,14 @@ function shadeCoin(a) {
         if (lob && q > 1e-3) { const ph = Math.atan2(ly, lx); q /= 1 + l2 * Math.cos(2 * ph + p2) + l3 * Math.cos(3 * ph + p3); }
         if (q >= 1) continue;
         Hh[k] -= depth * Math.pow(1 - q * q, pw);
-        if (dark > 0) { const c = dark * (1 - sstep(0.5, 1, q)); if (c > Cv[k]) Cv[k] = c; }
+        if (dark > 0) {
+          // the darkness sits toward the light (the top of frame), tucked under the near lip; the far wall climbs back into the light
+          const ey = dy + oy, mx = (dx * ca + ey * sa) / rx, my = (-dx * sa + ey * ca) / ry;
+          let qc = Math.sqrt(mx * mx + my * my);
+          if (lob && qc > 1e-3) { const ph = Math.atan2(my, mx); qc /= 1 + l2 * Math.cos(2 * ph + p2) + l3 * Math.cos(3 * ph + p3); }
+          const c = dark * (1 - sstep(0.46, 0.96, qc)) * Math.min(1, (1 - q) / fw);
+          if (c > Cv[k]) Cv[k] = c;
+        }
       }
     }
   };
@@ -276,6 +287,31 @@ function shadeCoin(a) {
     const len = along ? rs.range(30, 120) : rs.range(12, 40);
     seg(px, py, along ? rs.range(-0.12, 0.12) : rs.range(0, Math.PI), len, rs.range(-0.04, 0.04) * len, rs.range(0.85, 1.1), rs.range(0.1, 0.24), 2);
   }
+  // a finer generation under all of those: the faintest handling hairlines — a pixel wide, a few percent deep, most of
+  // them sharing the direction the coin was last wiped in — and, on the rim, short threads that follow the circumference
+  const rf = L.rng('c03fine');
+  for (let n = 0; n < 300; n++) {
+    const [px, py] = toPx(rf.range(-1070, 1070), W1 + 14 + Math.pow(rf(), 0.85) * 420), len = 12 + Math.pow(rf(), 1.5) * 84;
+    const ang = rf.chance(0.6) ? -0.5 + rf.gauss() * 0.22 : rf.range(0, Math.PI), c = Math.cos(ang) * len / 2, sn = Math.sin(ang) * len / 2;
+    line(Sc, px - c, py - sn, px + c, py + sn, rf.range(-0.05, 0.05) * len, rf.range(0.52, 0.66), rf.range(0.028, 0.075), 0, rf.range(0, 900));
+  }
+  for (let n = 0; n < 120; n++) {
+    const u0 = rf.range(-1090, 1060), d0 = rf.range(EDGE + 4, W0 - 8), ln = 20 + Math.pow(rf(), 1.6) * 150;
+    const [xa, ya] = toPx(u0, d0), [xb, yb] = toPx(u0 + ln, d0 + rf.range(-1.5, 1.5)), cl = Math.hypot(xb - xa, yb - ya);
+    line(Sc, xa, ya, xb, yb, -(cl * cl) / (4 * (R - d0)), rf.range(0.52, 0.64), rf.range(0.035, 0.085), 1, rf.range(0, 900));
+  }
+  // pin-pricks: the finest sand holes, a pixel or two across, lying in loose drifts where the mould shed its sand —
+  // more felt than seen, each still a real hollow with a lit lip
+  const drifts = []; for (let n = 0; n < 9; n++) drifts.push([rf.range(-1000, 1000), rf.range(W1 + 30, 500)]);
+  for (let n = 0; n < 84; n++) {
+    let u0, d0;
+    if (n < 54) { const c = drifts[rf.int(0, 8)]; u0 = c[0] + rf.gauss() * 46; d0 = c[1] + rf.gauss() * 24; }
+    else { u0 = rf.range(-1080, 1080); d0 = rf.chance(0.3) ? rf.range(26, W0 - 16) : rf.range(W1 + 14, 540); }
+    const rp = rf.range(0.95, 1.6), ry = rp * rf.range(0.7, 1), an = rf.range(0, Math.PI), dp = rp * rf.range(0.35, 0.6), dk = rf.range(0.22, 0.5);
+    if (d0 < 22 || (d0 > W0 - 12 && d0 < W1 + 12)) continue;
+    const [px, py] = toPx(u0, d0);
+    stamp(px, py, rp, ry, an, dp, { dark: dk, pw: 1.3 });
+  }
   // micro-glints for the travelling light: short bright dashes lying along the polishing direction
   for (let n = 0; n < 760; n++) {
     const u0 = rs.range(-1080, 1080), d0 = n < 560 ? rs.range(20, W0 - 6) : rs.range(W1 + 6, W1 + 150), ln = rs.range(3, 11);
@@ -351,11 +387,15 @@ function shadeCoin(a) {
       I *= 1 - 0.6 * occ;
       // the rim keeps a little of the light off the field for a long way in
       if (dW > RIM) I *= 1 - 0.13 * (1 - sstep(RIM, RIM + 150, dW));
+      // … and its contact shadow does not end at a line: a tight core at the foot of the wall thins into a long penumbra
+      // whose reach wanders along the rim
+      let pen = 0;
+      if (dW > W1 - 5) { const q = dW - (W1 - 5); pen = (0.15 * Math.exp(-q / 15) + 0.07 * Math.exp(-q / 56)) * (BNC[ui] / 0.088); I *= 1 - pen; }
       // the worn inner corner of the rim catches a thread of light
       const ce = (dW - (W0 - 1)) / 3.4;
       if (ce > -3 && ce < 3) I += F * THR[ui] * Math.exp(-ce * ce) * (1 - Math.min(1, cav * 4));
       // high points are rubbed brighter
-      I *= 1 + 0.2 * gh + 0.1 * wear;
+      I *= 1 + 0.15 * gh + 0.1 * wear;
       const top = sstep(EDGE - 12, EDGE + 8, dd) * (1 - sstep(W0 - 6, W0 + 6, dW));
       I += F * st * L.lerp(0.032, 0.085, top);
       const cm = bil(cMed, i, j);
@@ -364,18 +404,22 @@ function shadeCoin(a) {
       // has kept a deeper, redder skin; out in the open it is rubbed paler
       const dv2 = HT[k] - HW[k], tone = dv2 < 0 ? Math.min(1, -dv2 / 7) * lm : 0;
       I *= 1 - 0.07 * tone;
+      // … and a thin, uneven seam of that skin hugs the foot of every stroke, on the lit side too — it is what stands the
+      // relief off the field
+      const gf = Gf[k] * (0.65 + 0.5 * L.clamp(0.5 + cm));
+      if (gf > 0) I *= 1 - 0.15 * gf;
       // a tight glint + the broad, soft lustre of a surface polished by handling
       const ni = nh > 0 ? (nh * PN + 0.5) | 0 : 0, sp = P46[ni], lit = 1 - 0.9 * sh;
       I += sp * 0.32 * F * lit;
-      if (gh > 0 && nh > HZ) I += F * 0.26 * gh * ((Math.pow(nh, 7) - HZ7) / (1 - HZ7)) * lit;
+      if (gh > 0 && nh > HZ) I += F * 0.38 * gh * (1 + 0.45 * cm) * ((Math.pow(nh, 7) - HZ7) / (1 - HZ7)) * lit;   // the satin lustre of handled gold, never quite even
       if (cav > 0) I *= 1 - cav;
       const li = Math.max(0, Math.min(NL - 1, (I / IMAX) * (NL - 1) | 0)) * 3, o = k * 4;
       const al = L.clamp(dd + 0.75);
       // the field runs a shade hotter (more orange) than the burnished rim and stroke tops; hollows run redder still
       const ft = sstep(RIM - 8, RIM + 4, dW) * (1 - 0.55 * gh);
-      const nk = (-hx * KX - hy * KY + KZ) * inv, kick = nk > 0 ? Math.min(1, Math.pow(nk, 6) * 1.5) * (1 - cav) : 0;
+      const nk = (-hx * KX - hy * KY + KZ) * inv, kick = nk > 0 ? Math.min(1, Math.pow(nk, 6) * 1.5) * (1 - cav) * (1 - 0.45 * sstep(0.04, 0.4, gh)) : 0;
       const warm = L.clamp(0.5 * tone - 0.3 * cm, -0.5, 1);
-      const gm = (1 - 0.05 * ft) * (1 - 0.3 * kick) * (1 - 0.07 * occ) * (1 - 0.045 * warm), bm = (1 - 0.16 * ft) * (1 - 0.62 * kick) * (1 - 0.2 * occ) * (1 - 0.16 * warm);
+      const gm = (1 - 0.05 * ft) * (1 - 0.3 * kick) * (1 - 0.07 * occ) * (1 - 0.045 * warm) * (1 - 0.28 * pen) * (1 - 0.06 * gf), bm = (1 - 0.16 * ft) * (1 - 0.62 * kick) * (1 - 0.2 * occ) * (1 - 0.16 * warm) * (1 - 0.8 * pen) * (1 - 0.2 * gf);
       d8[o] = RAMP[li]; d8[o + 1] = RAMP[li + 1] * gm; d8[o + 2] = RAMP[li + 2] * bm; d8[o + 3] = al * 255;
       // sheen: broad lobe + sparkle of the polishing lines + drawn micro-glints
       let sb = P20[ni] * (0.8 + 0.9 * Math.max(0, st)) + top * 0.42 * (1 + 0.9 * st) + Gl[k] * (0.3 + 0.5 * top);

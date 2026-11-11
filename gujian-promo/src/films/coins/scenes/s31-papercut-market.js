@@ -62,7 +62,18 @@ function buildTextures(TH) {
   const crumple = L.makeCanvas(TW, TH); const cg = crumple.getContext('2d');
   cg.imageSmoothingQuality = 'high'; cg.filter = 'blur(2px)';
   cg.drawImage(small, 0, 0, TW, TH);
-  return { grain, crumple };
+  // 3) tooth: the pits of the paper a wax crayon skips over (alpha tile, used to knock crayon strokes out)
+  const tooth = L.noiseTex(384, 384, { seed: 'c31tooth', scale: 2.4, octaves: 2, res: 1, contrast: 2.0, ramp: [[0, 'rgba(0,0,0,0.95)'], [0.42, 'rgba(0,0,0,0.38)'], [0.72, 'rgba(0,0,0,0)']] });
+  return { grain, crumple, tooth };
+}
+
+/** draw something in wax crayon: fn(k) draws in the caller's coordinates on a scratch canvas, the paper's tooth is knocked out of it, then it is laid on g */
+function waxed(g, bx, by, bw, bh, fn, alpha = 1, mode = 'source-over') {
+  bx = Math.floor(bx); by = Math.floor(by); bw = Math.ceil(bw) + 1; bh = Math.ceil(bh) + 1;
+  const c = L.makeCanvas(bw, bh); const k = c.getContext('2d');
+  k.save(); k.translate(-bx, -by); fn(k); k.restore();
+  k.globalCompositeOperation = 'destination-out'; k.fillStyle = k.createPattern(T.tooth, 'repeat'); k.fillRect(0, 0, bw, bh);
+  g.save(); g.globalAlpha = alpha; g.globalCompositeOperation = mode; g.drawImage(c, bx, by); g.restore();
 }
 
 // ───────────────────────── geometry helpers ─────────────────────────
@@ -87,6 +98,11 @@ function cut(pts, seed, amp = 1.5, period = 95, step = 12, torn = 0) {
     let nx = -(b[1] - a[1]), ny = b[0] - a[0]; const m = Math.hypot(nx, ny) || 1; nx /= m; ny /= m;
     const s = len[i]; const win = L.smooth(Math.min(s, total - s) / 30);
     let o = amp * nz.n2(s / period, 1.7) + amp * 0.35 * nz.n2(s / (period * 0.2), 8.3);
+    if (!torn) {
+      // scissors travel in short straight bites: a piecewise-linear wander with a small kink where the blades re-open
+      const fp = Math.max(26, period * 0.55), kf = s / fp, k0 = Math.floor(kf), ft = kf - k0;
+      o += amp * 0.75 * L.lerp(nz.n2(k0 * 7.31, 3.3), nz.n2((k0 + 1) * 7.31, 3.3), ft);
+    }
     if (torn) o += torn * (nz.n2(s / 13, 4.4) + 0.6 * nz.n2(s / 4.6, 6.1));
     out.push([d[i][0] + nx * o * win, d[i][1] + ny * o * win]);
   }
@@ -176,7 +192,7 @@ const tracePoly = (c, pp, begin = true) => {
  */
 function paper(g, polys, o) {
   if (typeof polys[0][0] === 'number') polys = [polys];
-  const { color, sh = 1, lift = 1, tex = 0.5, crumple = 0, edge = 1, curl = 1, peel = null, core = 0, folds = null } = o;
+  const { color, sh = 1, lift = 1, tex = 0.5, crumple = 0, edge = 1, curl = 1, peel = null, core = 0, folds = null, grain = 1, crayon = 0, rim = 1, ga = null } = o;
   const id = pieceNo++;
   const r = L.rng('c31pp' + id);
   const outer = core > 0 ? [fringe(polys[0], core, id)].concat(polys.slice(1)) : polys;
@@ -198,9 +214,9 @@ function paper(g, polys, o) {
   // soft shadow of the lifted sheet + tight contact shadow
   g.save();
   g.fillStyle = core > 0 ? '#f8f5ec' : color;
-  g.shadowColor = `rgba(4,8,30,${(0.2 * sh).toFixed(3)})`; g.shadowBlur = 10 * lift; g.shadowOffsetX = 3 * lift; g.shadowOffsetY = 6 * lift;
+  g.shadowColor = `rgba(4,8,30,${(0.27 * sh).toFixed(3)})`; g.shadowBlur = 10 * lift; g.shadowOffsetX = 3 * lift; g.shadowOffsetY = 6 * lift;
   path(g, outer); g.fill('evenodd');
-  g.shadowColor = `rgba(4,8,30,${(0.34 * sh).toFixed(3)})`; g.shadowBlur = 2; g.shadowOffsetX = 0.8; g.shadowOffsetY = 1.5;
+  g.shadowColor = `rgba(4,8,30,${(0.42 * sh).toFixed(3)})`; g.shadowBlur = 2.2; g.shadowOffsetX = 1.0; g.shadowOffsetY = 1.8;
   path(g, outer); g.fill('evenodd');
   g.restore();
   if (core > 0) { g.fillStyle = color; path(g, polys); g.fill('evenodd'); }
@@ -216,6 +232,39 @@ function paper(g, polys, o) {
   if (crumple > 0) place(T.crumple, crumple, 'overlay');
   if (tex > 0) place(T.grain, tex, 'overlay');
   const pc = L.parseColor(color); const lum = (0.299 * pc[0] + 0.587 * pc[1] + 0.114 * pc[2]) / 255;
+  const gAng = ga != null ? ga : r() * Math.PI, gRad = Math.hypot(bw, bh) / 2 + 4;
+  if (grain > 0) {
+    // every sheet came off its own roll: fine laid lines / streaks of pulp running one way, a different way on each piece
+    g.save(); g.translate(cx, cy); g.rotate(gAng); g.lineCap = 'butt';
+    const pl = lum < 0.4 ? 0.62 : 0.42, gs = grain * (lum > 0.62 ? 0.62 : 1);
+    for (let y = -gRad; y < gRad; y += r.range(1.5, 3.9)) {
+      g.strokeStyle = r.chance(pl) ? `rgba(255,250,236,${(r.range(0.03, 0.105) * gs).toFixed(3)})` : `rgba(0,0,22,${(r.range(0.03, 0.095) * gs).toFixed(3)})`;
+      g.lineWidth = r.range(0.5, 1.25);
+      g.setLineDash([r.range(8, 70), r.range(3, 34), r.range(22, 130), r.range(4, 46)]); g.lineDashOffset = r() * 240;
+      g.beginPath(); g.moveTo(-gRad, y); g.quadraticCurveTo(r.range(-40, 40), y + r.range(-2.2, 2.2), gRad, y + r.range(-1.6, 1.6)); g.stroke();
+    }
+    g.setLineDash([]); g.restore();
+  }
+  if (crayon > 0) {
+    // wax crayon rubbed over the sheet in loose parallel strokes; the tooth of the paper shows through
+    const ca = gAng + r.range(0.5, 1.1), tone = lum > 0.5 ? L.shade(color, -0.2) : L.shade(color, 0.26);
+    const cc = Math.cos(ca), ss = Math.sin(ca);
+    waxed(g, bx, by, bw, bh, (k) => {
+      k.lineCap = 'round'; k.lineJoin = 'round';
+      for (let y = -gRad; y < gRad; y += r.range(7, 15)) {
+        if (r.chance(0.22)) continue;
+        const xa = -gRad * r.range(0.35, 1), xb = gRad * r.range(0.35, 1), bow = r.range(-6, 6);
+        k.strokeStyle = L.rgba(tone, r.range(0.4, 0.8)); k.lineWidth = r.range(3, 7.5);
+        k.beginPath();
+        for (let i = 0; i <= 10; i++) {
+          const t = i / 10, lx = L.lerp(xa, xb, t), ly = y + bow * Math.sin(Math.PI * t) + r.range(-1.3, 1.3);
+          const X = cx + lx * cc - ly * ss, Y = cy + lx * ss + ly * cc;
+          if (i) k.lineTo(X, Y); else k.moveTo(X, Y);
+        }
+        k.stroke();
+      }
+    }, 0.34 * crayon);
+  }
   if (curl > 0) {
     // the sheet is never perfectly flat: light falls off across it
     const a = L.deg(52) + r.range(-0.6, 0.6), rad = Math.hypot(bw, bh) / 2;
@@ -223,9 +272,9 @@ function paper(g, polys, o) {
     g.fillStyle = L.linear(g, cx - dx, cy - dy, cx + dx, cy + dy, [[0, `rgba(255,252,240,${(0.12 * curl * (0.3 + 0.7 * lum)).toFixed(3)})`], [0.45, 'rgba(255,252,240,0)'], [0.6, 'rgba(0,0,24,0)'], [1, `rgba(0,0,24,${(0.12 * curl).toFixed(3)})`]]);
     g.fillRect(bx, by, bw, bh);
   }
-  if (folds) for (const [fx0, fy0, fx1, fy1, st = 1] of folds) {
+  if (folds) for (const [fx0, fy0, fx1, fy1, st = 1, wd = 90] of folds) {
     // a crease: the facet turned to the light on one side, the facet turned away on the other, a hairline of scuffed fibre between
-    const ddx = fx1 - fx0, ddy = fy1 - fy0, len = Math.hypot(ddx, ddy), nx = -ddy / len, ny = ddx / len, wd = 90;
+    const ddx = fx1 - fx0, ddy = fy1 - fy0, len = Math.hypot(ddx, ddy), nx = -ddy / len, ny = ddx / len;
     const mx = (fx0 + fx1) / 2, my = (fy0 + fy1) / 2, ex = (ddx / len) * 600, ey = (ddy / len) * 600;
     g.fillStyle = L.linear(g, mx - nx * wd, my - ny * wd, mx + nx * wd, my + ny * wd, [[0, 'rgba(0,0,24,0)'], [0.42, `rgba(0,0,24,${(0.07 * st).toFixed(3)})`], [0.492, `rgba(0,0,24,${(0.13 * st).toFixed(3)})`],
       [0.508, `rgba(255,255,250,${(0.16 * st * (0.4 + 0.6 * lum)).toFixed(3)})`], [0.58, `rgba(255,255,250,${(0.06 * st * (0.4 + 0.6 * lum)).toFixed(3)})`], [1, 'rgba(255,255,250,0)']]);
@@ -241,6 +290,15 @@ function paper(g, polys, o) {
     g.lineJoin = 'round'; g.lineWidth = 1.4;
     g.save(); g.translate(0.8, 1.1); g.strokeStyle = `rgba(255,255,255,${(0.2 * edge * lum).toFixed(3)})`; path(g, outer); g.stroke(); g.restore();
     g.save(); g.translate(-0.8, -1.1); g.strokeStyle = `rgba(0,0,16,${(0.16 * edge).toFixed(3)})`; path(g, outer); g.stroke(); g.restore();
+  }
+  if (rim > 0 && core <= 0) {
+    // the pale core of the paper shows along every scissor cut: a hairline all round, swelling to a pixel and a half in places
+    const rc = L.mix(color, '#fff8e8', 0.62);
+    g.lineJoin = 'round'; g.lineCap = 'butt';
+    g.strokeStyle = L.rgba(rc, 0.5 * rim); g.lineWidth = 1.3; path(g, outer); g.stroke();
+    g.setLineDash([r.range(10, 40), r.range(6, 30), r.range(20, 70), r.range(8, 44), r.range(6, 22), r.range(10, 50)]); g.lineDashOffset = r() * 200;
+    g.strokeStyle = L.rgba(rc, 0.55 * rim); g.lineWidth = 2.8; path(g, outer); g.stroke();
+    g.setLineDash([]);
   }
   g.restore();
   if (core > 0) {
@@ -344,7 +402,7 @@ function buildPieces(env, Y0, LH) {
     // ── bottom right: a scrap of white paper scribbled over in pencil (it lies under the tree) ──
     {
       const poly = cut([[1546, 966], [1700, 950], [1788, 946], [1798, 900], [2030, 880], [2034, 1200], [1528, 1200]], 'scrap', 2.6, 110);
-      paper(g, poly, { color: C.white, tex: 0.7, crumple: 0.5, lift: 1.0, peel: [[1552, 972, 80]] });
+      paper(g, poly, { color: C.white, tex: 0.7, crumple: 0.5, lift: 1.0, peel: [[1552, 972, 80]], rim: 0.5 });
       const x0 = 1500, y0 = 830, w = 540, h = 380;
       const c = L.makeCanvas(w, h); const k = c.getContext('2d'); k.translate(-x0, -y0);
       const rh = L.rng('c31hatch');
@@ -376,11 +434,11 @@ function buildPieces(env, Y0, LH) {
     // ── the shop: two chestnut posts, a counter, and a deep-purple awning roof with a scalloped eave, pitched along the tear ──
     {
       paper(g, cut([[-36, 880], [52, 884], [58, 1200], [-40, 1200]], 'postL', 2, 110), { color: C.brown, tex: 0.8, crumple: 0.3, lift: 0.8 });
-      paper(g, cut([[366, 772], [449, 765], [459, 1200], [361, 1200]], 'postR', 2.4, 120), { color: C.brown, tex: 0.8, crumple: 0.3, lift: 0.9, folds: [[340, 905, 480, 925, 0.8]] });
+      paper(g, cut([[366, 772], [449, 765], [459, 1200], [361, 1200]], 'postR', 2.4, 120), { color: C.brown, tex: 0.8, crumple: 0.3, lift: 0.9, folds: [[340, 905, 480, 925, 0.8]], crayon: 0.8, ga: 1.2 });
       paper(g, cut([[-130, 1034], [528, 1018], [534, 1200], [-130, 1200]], 'counter', 2.2, 120), { color: L.shade(C.brown, -0.2), tex: 0.8, crumple: 0.3, lift: 0.8 });
-      paper(g, cut([[-130, 1000], [560, 980], [566, 1022], [-130, 1044]], 'ctop', 1.8, 100), { color: '#7d3f1c', tex: 0.8, lift: 0.6, sh: 0.9, peel: [[560, 1000, 70]] });
+      paper(g, cut([[-130, 1000], [560, 980], [566, 1022], [-130, 1044]], 'ctop', 1.8, 100), { color: '#7d3f1c', tex: 0.8, lift: 0.6, sh: 0.9, peel: [[560, 1000, 70]], crayon: 0.9, ga: 0.05 });
       paper(g, cut(scallopRoof([-150, 848], [466, 666], [488, 776], [-150, 968], 5, 'r'), 'roof', 2.0, 110, 8), {
-        color: C.purple, tex: 0.8, crumple: 0.4, lift: 1.0, curl: 1.2, peel: [[480, 770, 100]], folds: [[150, 700, 215, 960, 0.9]],
+        color: C.purple, tex: 0.8, crumple: 0.4, lift: 1.0, curl: 1.2, peel: [[480, 770, 100]], folds: [[150, 700, 215, 960, 0.9]], crayon: 1, ga: -0.9,
       });
     }
 
@@ -391,7 +449,7 @@ function buildPieces(env, Y0, LH) {
     {
       const ctrl = [[1330, 628], [1418, 716], [1464, 866], [1436, 1010], [1362, 1190]];
       const back = strip(ctrl.map(([x, y], i) => [x + 50 + i * 3, y + 40]), (t) => L.lerp(22, 70, Math.sin(Math.PI * Math.min(1, t * 1.1))), 10);
-      paper(g, cut(back, 'cordB', 1.6, 80, 8), { color: '#4a0e2a', tex: 0.8, lift: 0.5, sh: 0.9 });
+      paper(g, cut(back, 'cordB', 1.6, 80, 8), { color: '#4a0e2a', tex: 0.8, lift: 0.5, sh: 0.9, crayon: 0.8 });
       const cord = strip(ctrl, (t) => 26 + 62 * Math.pow(Math.sin(Math.PI * Math.min(1, 0.05 + t * 0.78)), 0.7), 10);
       paper(g, cut(cord, 'cord', 1.6, 80, 8, 1.2), { color: C.red, tex: 0.8, crumple: 0.5, lift: 0.9, core: 2.0, folds: [[1380, 800, 1520, 830, 0.7]] });
       const cp = L.smoothPath(ctrl, 6);
@@ -401,16 +459,17 @@ function buildPieces(env, Y0, LH) {
         const ang = L.deg([-9, 6, -4, 11][i]), ox = [5, -7, 6, -4][i];
         paper(g, [cut(roundish(x + ox, y, rr, rr, 9, 'cash' + i, 0.03, 0.15), 'cash' + i, 0.7, 50, 7), square(x + ox, y, rr * 0.3, ang, 'cash' + i)],
           { color: yel[i], tex: 0.7, lift: 0.8, curl: 1.1, crumple: 0.25, peel: i === 1 ? [[x + ox + 40, y + 40, 60]] : null });
+        coinRims(g, x + ox, y, rr, rr * 0.3, ang, 'cash' + i, 2.6);
       });
     }
 
     // ── the tree: a dark sliver of trunk, a torn, creased lump of green tissue (the trunk shows through it faintly) ──
     {
       const trunk = cut(strip([[1702, 900], [1694, 1000], [1676, 1200]], (t) => L.lerp(34, 62, t), 12), 'trunk', 2.0, 90, 10);
-      paper(g, trunk, { color: C.navy, tex: 0.8, lift: 0.6 });
+      paper(g, trunk, { color: C.navy, tex: 0.8, lift: 0.6, crayon: 0.7 });
       const crown = cut(roundish(1706, 836, 168, 128, 9, 'tree', 0.06, 0.16), 'tree', 1.8, 120, 9, 1.4);
       paper(g, crown, {
-        color: C.green, tex: 0.8, crumple: 0.85, lift: 1.1, core: 2.2, curl: 1.2,
+        color: C.green, tex: 0.8, crumple: 0.85, lift: 1.1, core: 2.2, curl: 1.2, crayon: 0.75, ga: 0.2,
         folds: [[1672, 700, 1716, 980, 1.5], [1560, 800, 1850, 760, 0.8], [1770, 700, 1800, 980, 0.9]], peel: [[1570, 900, 90]],
       });
       g.save(); tracePoly(g, [crown]); g.clip(); g.filter = 'blur(1.2px)';
@@ -425,6 +484,7 @@ function buildPieces(env, Y0, LH) {
         color: C.yellow, lift: 1.3, tex: 0.75, crumple: 0.45, curl: 1.2,
         folds: [[596, 650, 800, 900, 0.7]], peel: [[mx + 110, my + 110, 110]],
       });
+      coinRims(g, mx, my, mr, mr * 0.29, L.deg(3.5), 'moon', 4.6);
     }
     g.restore();
 
@@ -443,6 +503,20 @@ function buildPieces(env, Y0, LH) {
   return { layer, shadow };
 }
 
+/** the raised rims of a cash coin, drawn on the paper round in ochre wax crayon: one ring inside the edge, one square round the hole */
+function coinRims(g, cx, cy, R, hs, ang, seed, wd) {
+  waxed(g, cx - R - 4, cy - R - 4, R * 2 + 8, R * 2 + 8, (k) => {
+    const ring = []; const rr = R * 0.86;
+    for (let i = 0; i <= 40; i++) { const a = (i / 40) * TAU * 1.03 + 0.7; ring.push([cx + rr * Math.cos(a), cy + rr * Math.sin(a)]); }
+    L.sketchLine(k, ring, { width: wd, color: '#b97f1c', seed: seed + 'r', wobble: wd * 0.35, passes: 2, alpha: 0.8 });
+    const q = hs * 1.42;
+    const sq = rotPts([[cx - q, cy - q], [cx + q, cy - q], [cx + q, cy + q], [cx - q, cy + q], [cx - q, cy - q], [cx + q * 0.3, cy - q]], cx, cy, ang + 0.03);
+    const dn = []; for (let i = 0; i < sq.length - 1; i++) for (let j = 0; j < 4; j++) dn.push([L.lerp(sq[i][0], sq[i + 1][0], j / 4), L.lerp(sq[i][1], sq[i + 1][1], j / 4)]);
+    k.lineJoin = 'miter';
+    k.strokeStyle = L.rgba('#b97f1c', 0.8); k.lineWidth = wd * 0.85; k.beginPath(); dn.forEach((p, i) => (i ? k.lineTo(p[0], p[1]) : k.moveTo(p[0], p[1]))); k.stroke();
+  }, 0.62, 'multiply');
+}
+
 /** 算盘: oblong wooden frame, one beam, rods; on every rod two beads above the beam and five below */
 function abacus(g, cx, cy, ang) {
   const cs = Math.cos(ang), sn = Math.sin(ang);
@@ -459,16 +533,17 @@ function abacus(g, cx, cy, ang) {
     paper(g, cut(P([[x - w, -ih - 8], [x + w, -ih - 8], [x + w + r.range(-3, 3), ih + 8], [x - w + r.range(-3, 3), ih + 8]]), 'rod' + i, 0.6, 60, 10), { color: '#24130c', lift: 0.25, sh: 0.8, tex: 0.3, curl: 0, edge: 0.6 });
   }
   // frame: one piece with the window cut out
-  paper(g, [cut(P(jb(-HW, -HH, HW, HH, 9)), 'abo', 2.6, 130), cut(P(jb(-iw, -ih, iw, ih, 5)), 'abi', 1.8, 90, 10)], { color: C.brown, tex: 0.8, crumple: 0.3, lift: 1.0, peel: [[cx + HW - 14, cy - HH + 22, 90]] });
+  paper(g, [cut(P(jb(-HW, -HH, HW, HH, 9)), 'abo', 2.6, 130), cut(P(jb(-iw, -ih, iw, ih, 5)), 'abi', 1.8, 90, 10)], { color: C.brown, tex: 0.8, crumple: 0.3, lift: 1.0, peel: [[cx + HW - 14, cy - HH + 22, 90]], crayon: 0.8, ga: 0.3 });
   // the beam, glued across
   paper(g, cut(P([[-iw - 14, beamT + r.range(-3, 3)], [iw + 14, beamT + r.range(-3, 3)], [iw + 14, beamB + r.range(-3, 3)], [-iw - 14, beamB + r.range(-3, 3)]]), 'beam', 1.0, 90, 10), { color: '#7d3f1c', tex: 0.8, lift: 0.5, sh: 0.9 });
   // beads: how many of each rod's upper beads sit down on the beam / lower beads are pushed up to it
   const down = [0, 1, 2, 0], up = [2, 0, 3, 1];
   const reds = [C.red, '#cf2418', '#dc3320', '#c9201a'];
-  const bead = (x, y, color, seed) => {
+  const bead = (x, y, color, seed, dark) => {
     const w = BW / 2 * r.range(0.88, 1.05), h = BH / 2 * r.range(0.86, 1.0);
     const pts = rotPts(roundish(x + r.range(-4, 4), y + r.range(-1, 1), w, h, 9, seed, 0.05, 0.2), x, y, r.range(-0.1, 0.1));
-    paper(g, cut(P(pts), seed, 0.5, 40, 5), { color, lift: 0.45, sh: 1, tex: 0.7, curl: 1.3, edge: 0.9 });
+    const [ra, rb] = P([[x + 70, y], [x - 70, y]]);
+    paper(g, cut(P(pts), seed, 0.5, 40, 5), { color, lift: 0.5, sh: 1.1, tex: 0.7, curl: 1.3, edge: 0.9, grain: 0.8, rim: dark ? 0.75 : 0.9, folds: [[ra[0], ra[1] + r.range(-1.5, 1.5), rb[0], rb[1] + r.range(-1.5, 1.5), dark ? 2.6 : 1.5, 15]] });
   };
   for (let i = 0; i < RODS; i++) {
     const x = (i - (RODS - 1) / 2) * PITCH;
@@ -477,7 +552,7 @@ function abacus(g, cx, cy, ang) {
     for (let k = 0; k < down[i]; k++) ys.push([beamT - BH / 2 - 1 - k * BH, 0]);
     for (let k = 0; k < up[i]; k++) ys.push([beamB + BH / 2 + 1 + k * BH, 1]);
     for (let k = 0; k < 5 - up[i]; k++) ys.push([ih - BH / 2 - 1 - k * BH, 1]);
-    ys.forEach(([y, low], j) => bead(x, y, low ? L.shade(r.pick(reds), r.range(-0.06, 0.04)) : L.shade(C.black, r.range(0, 0.07)), 'bd' + i + '_' + j));
+    ys.forEach(([y, low], j) => bead(x, y, low ? L.shade(r.pick(reds), r.range(-0.06, 0.04)) : L.shade(C.black, r.range(0, 0.07)), 'bd' + i + '_' + j, !low));
   }
 }
 

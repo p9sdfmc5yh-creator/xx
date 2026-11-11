@@ -3,13 +3,10 @@
 // The arc is the OUTER edge of the coin's outer rim (外郭): a thick, slightly broken white line against the solid
 // printed black outside the coin. Below it, white paper with black line work in concentric bands:
 //   1) the rim — packed with short cuts that all point at the coin's centre (uneven spacing, knife slips, ink blots),
-//   2) a ring of small square "beads",
-//   3) the field (钱肉) — sparse parallel horizontal lines, closer together in the shadow under the rim,
-//   4) one corner of the inner rim and square hole (内郭 / 方孔) peeking in at the bottom.
+//   2) a narrow band of short oblique cuts (排线) and then a heavy + fine double line closing the rim,
+//   3) the field (钱肉) — sparse parallel horizontal lines, closer together in the shadow under the rim.
 // No inscription is shown. The hatching is the printmaker's convention, not teeth on the coin.
-// Deliberate simplification: the distance from rim to hole is compressed so that the hole's corner can enter the frame
-// (a real hole sits much deeper). The hole itself is a true square on the coin's own axes — the frame looks at the coin
-// along its diagonal, which is why the hole meets us corner-first. Its black is the same ground as outside the coin.
+// The coin sits upright as in a catalogue; at this scale the square hole (方孔) lies far below the frame and is not drawn.
 // Old coin catalogues are mostly plain line work; the dense hatching here is this shot's stylisation, not a facsimile.
 // Pipeline: crisp black/white "block" → per-pixel printing pass (ragged cut edges, uneven inking, salt specks,
 // dry grey 断墨 patches, wood-grain 飞白, stray pepper) → composite onto paper → one blit per frame + a few live specks.
@@ -25,12 +22,9 @@ let S = null;
 // depths below the arc, px
 const EDGE = 17;                        // the white line of the rim's outer edge: 0 … EDGE
 const HAT0 = 24, HAT1 = 128;            // rim hatching
-const BEAD0 = 138, BEAD1 = 195;         // black band carrying the square beads
-const SQ0 = 148, SQ1 = 184, BPITCH = 50, BHALF = 18;
-const LN3 = [201, 207], LN4 = [213, 216.2];
+const OB0 = 142, OB1 = 180;             // band of short oblique cuts (排线)
+const LN3 = [187, 203], LN4 = [210, 214.4];   // heavy + fine double line closing the rim
 const FIELD = 223;                      // the field starts here
-const HOLE_TH = 0.055;                  // direction of the hole's corner (rad from the crest)
-const HOLE_APEX = 340, HOLE_RIM = 70;   // apex depth of the inner rim's outer line; apex-to-apex width of the inner rim
 
 const sstep = (a, b, v) => { const t = v <= a ? 0 : v >= b ? 1 : (v - a) / (b - a); return t * t * (3 - 2 * t); };
 
@@ -102,7 +96,7 @@ function buildDesign(env) {
     // ── 4) the field (钱肉): sparse parallel horizontal lines; every other line only lives in the shadow under the rim ──
     g.save(); a.clipBelow(g, -(FIELD - 1));
     {
-      const Rf = R - FIELD - 2, XM = W / 2 + PAD + 40, PITCH = 12.5;
+      const Rf = R - FIELD - 2, XM = W / 2 + PAD + 40, PITCH = 14;
       const hline = (xa, xb, y, w, tapA, tapB, k) => {
         if (xb - xa < 10) return;
         const A = [], B = [];
@@ -126,7 +120,7 @@ function buildDesign(env) {
         if (k % 2 === 0) {
           // the long lines: broken here and there where the knife lifted
           let x = cx - xh + r.range(2, 12); const xEnd = cx + xh - r.range(2, 12);
-          const lw = r.pick([3.0, 3.4, 3.4, 3.8, 4.3]);
+          const lw = r.pick([3.9, 4.3, 4.3, 4.8, 5.4]);
           while (x < xEnd) {
             const len = r.range(260, 900), xb = Math.min(xEnd, x + len);
             hline(x, xb, y, lw * r.range(0.92, 1.1), r.range(10, 40), r.range(10, 70), k);
@@ -142,7 +136,7 @@ function buildDesign(env) {
             if (on && run === null) run = x;
             if ((!on || x + 12 > cx + xh) && run !== null) {
               const left = run < cx;   // the shadow dies away toward the centre of the frame
-              hline(run + r.range(0, 6), x - r.range(0, 6), y, 2.7 * r.range(0.9, 1.1), left ? 8 : r.range(50, 110), left ? r.range(50, 110) : 8, k);
+              hline(run + r.range(0, 6), x - r.range(0, 6), y, 3.3 * r.range(0.9, 1.1), left ? 8 : r.range(50, 110), left ? r.range(50, 110) : 8, k);
               run = null;
             }
           }
@@ -151,38 +145,25 @@ function buildDesign(env) {
     }
     g.restore();
 
-    // ── 5) the inner rim and the square hole: only one corner reaches the frame ──
-    {
-      const sq = (apex, rough, seed, col) => {
-        const pts = [];
-        for (let j = 0; j < 4; j++) { const q = a.pt(HOLE_TH + (j - 1) * Math.PI / 2, -apex); pts.push([q.x, q.y]); }
-        L.roughPoly(g, pts, { rough, seed, step: 26 }); g.fillStyle = col; g.fill();
-      };
-      sq(HOLE_APEX - 13, 0.5, 51, '#fff');             // a clear margin where the field lines stop short of the rim
-      sq(HOLE_APEX, 1.1, 52, '#000');
-      sq(HOLE_APEX + 11.5, 1.0, 53, '#fff');           // → a heavy outer line (≈8 px)
-      sq(HOLE_APEX + HOLE_RIM - 14, 0.8, 55, '#000');
-      sq(HOLE_APEX + HOLE_RIM - 8.5, 0.8, 56, '#fff'); // → a fine inner line: the inner rim is drawn as a double line
-      sq(HOLE_APEX + HOLE_RIM, 1.3, 54, '#000');       // the hole: the same black ground as outside the coin
-    }
-
     // ── 1) the rim (外郭): white edge line, then a band of short cuts pointing at the centre ──
     ring(EDGE, HAT0, '#000', 0.7, 1);
     ring(HAT1, HAT1 + 6.5, '#000', 0.7, 2);
     for (let u = -U; u < U;) {
       const dens = 1 + 0.2 * nz.n2(u / 310, 1.3) + 0.11 * nz.n2(u / 47, 7.7);
-      const pitch = 11.4 / dens + r.range(-0.6, 0.6);
+      const pitch = 13.4 / dens + r.range(-0.6, 0.6);
       const heft = r(); // most cuts are alike; now and then a heavy one or a hairline
-      const w = Math.min(4.7 * (0.88 + 0.24 * (nz.n2(u / 170, 4.1) * 0.5 + 0.5)) * (heft < 0.11 ? 1.5 : heft > 0.88 ? 0.68 : 1), pitch * (heft < 0.11 ? 0.62 : 0.46));
+      const w = Math.min(6.1 * (0.88 + 0.24 * (nz.n2(u / 170, 4.1) * 0.5 + 0.5)) * (heft < 0.11 ? 1.5 : heft > 0.88 ? 0.68 : 1), pitch * (heft < 0.11 ? 0.62 : 0.46));
       const top = HAT0 - 1 + (r.chance(0.12) ? r.range(4, 14) : 0);
       const bot = r.chance(0.07) ? HAT1 + 1 : HAT1 - r.range(5, 11) - (r.chance(0.2) ? r.range(6, 30) : 0);
       const lean = r.range(-1.4, 1.4);
-      const wT = w * r.range(1.0, 1.25), wB = w * r.range(0.6, 0.92);
-      if (r.chance(0.07)) {
+      const wT = w * r.range(0.96, 1.18), wB = w * r.range(0.6, 0.9);
+      if (r.chance(0.025)) {
         const mid = r.range(top + 26, bot - 26), gap = r.range(5, 12);
         wedge(u, top, u + lean * 0.5, mid - gap / 2, wT, wT * 0.7, '#000', 3);
         wedge(u + lean * 0.5, mid + gap / 2, u + lean, bot, wB * 1.1, wB, '#000', 3);
       } else wedge(u, top, u + lean, bot, wT, wB, '#000', 5);
+      // 收刀: the knife leaves the wood in a short point
+      if (bot < HAT1 - 8) wedge(u + lean, bot - 1, u + lean * 1.06 + r.range(-0.6, 0.6), Math.min(HAT1 - 5, bot + r.range(3.5, 6)), wB, 0.9, '#000', 1);
       u += pitch * (r.chance(0.045) ? 1.75 : 1);   // a cut skipped here and there
     }
     // ink blots: a few neighbouring cuts flooded into one small black patch
@@ -193,26 +174,18 @@ function buildDesign(env) {
       wedge(u, d, u + len, d + dd, r.range(3.4, 5.2), 0.8, '#fff', 3);
     }
 
-    // ── 2) the ring of small square beads ──
-    ring(BEAD0, BEAD1, '#000', 0.8, 3);
-    {
-      const nb = Math.ceil(U / BPITCH) + 1, j = () => r.range(-1.2, 1.2);
-      for (let i = -nb; i <= nb; i++) {
-        const uc = (i + 0.5) * BPITCH + r.range(-1.3, 1.3);
-        let hw = BHALF + r.range(-1.3, 1.3), t0 = SQ0 + r.range(-1.2, 1.2); const t1 = SQ1 + r.range(-1.2, 1.2);
-        if (r.chance(0.07)) { hw *= 0.74; t0 += r.range(2, 7); }       // half-clogged with ink
-        poly([[uc - hw + j(), t0 + j()], [uc + hw + j(), t0 + j()], [uc + hw + j(), t1 + j()], [uc - hw + j(), t1 + j()]], '#fff');
-        if (r.chance(0.17)) {                                           // a chip of wood left standing in one corner
-          const sx = r.sign(), top = r.chance(0.5), c = r.range(5, 10), ux = uc + sx * hw, dq = top ? t0 : t1, sy = top ? 1 : -1;
-          poly([[ux + sx, dq - sy], [ux - sx * c, dq - sy], [ux + sx, dq + sy * c]], '#000');
-        } else if (r.chance(0.045)) {                                   // the wall between two beads has broken away
-          const dm = r.range(t0 + 6, t1 - 6), hh = r.range(3, 6);
-          poly([[uc + hw - 2, dm - hh], [uc + BPITCH - BHALF + 2, dm - hh * r.range(0.4, 1)], [uc + BPITCH - BHALF + 2, dm + hh * r.range(0.4, 1)], [uc + hw - 2, dm + hh]], '#fff');
-        }
-      }
+    // ── 2) 排线: a narrow band of short oblique cuts, each with a blunt 起刀 head and a pointed 收刀 tail ──
+    for (let u = -U; u < U;) {
+      const pitch = 12.4 * (1 + 0.14 * nz.n2(u / 260, 9.1)) + r.range(-0.7, 0.7);
+      const w0 = (r.chance(0.1) ? 7.6 : 6.2) * r.range(0.92, 1.1);
+      const top = OB0 + r.range(-1.2, 1.6), bot = OB1 - r.range(0, 4) - (r.chance(0.14) ? r.range(5, 13) : 0);
+      const sl = 24 + r.range(-2, 2), kd = (bot - top) * 0.2;
+      wedge(u, top, u + sl * 0.2, top + kd, w0 * 0.72, w0 * 1.12, '#000', 1);
+      wedge(u + sl * 0.2, top + kd, u + sl, bot, w0 * 1.12, 1.6, '#000', 4);
+      u += pitch * (r.chance(0.04) ? 1.8 : 1);
     }
     // ── 3) double line closing the rim ──
-    ring(LN3[0], LN3[1], '#000', 0.7, 4);
+    ring(LN3[0], LN3[1], '#000', 1.1, 4);
     ring(LN4[0], LN4[1], '#000', 0.5, 5);
 
     // nicks in the concentric lines where the block has chipped
@@ -294,7 +267,7 @@ function buildInk(env, design) {
       // 断墨: patches where the block ran dry (only inside the coin; the black ground stays solid)
       const dry = below ? sstep(0.14, 0.46, L.lerp(L.lerp(fQ[i0], fQ[i0 + 1], tx), L.lerp(fQ[i1], fQ[i1 + 1], tx), ty)) : 0;
       // the printed edge: heavy inking fattens the lines, thin inking starves and breaks them; ragged at 2–10 px
-      const thr = 0.5 + 0.2 * P + 0.3 * (v3 - 0.5) + 0.24 * (v2 - 0.5) + 0.12 * (v1 - 0.5) - 0.17 * dry;
+      const thr = 0.5 + 0.2 * P + 0.24 * (v3 - 0.5) + 0.16 * (v2 - 0.5) + 0.05 * (v1 - 0.5) - 0.15 * dry;
       const I = sstep(-0.06, 0.06, thr - m);
       const inside = 1 - mW[(wrow + (x >> 1)) * 4] * (1 / 255);   // 1 deep inside a solid black
       let D = 0;
@@ -309,17 +282,17 @@ function buildInk(env, design) {
         let patch = 0.5 - 1.2 * P; patch = patch < 0 ? 0 : patch > 1 ? 1 : patch;   // where the block was inked thin
         // salt: tiny un-inked specks (漏印白点); none near the tagline
         const z = 0.5 * v1 + 0.3 * v2 + 0.2 * vn(l3, x * 0.19 + 40.5, y * 0.19 + 11.5);
-        const tS = 0.93 - amt * (0.075 + 0.1 * patch);
+        const tS = 0.945 - amt * (0.07 + 0.1 * patch);
         let drop = sstep(tS, tS + 0.035, z);
         let dens = 1;
         if (below) {
           // where the block ran dry the plank's grain shows as hair-thin horizontal streaks of bare paper (飞白) through the blacks,
           const gv = vn(l4, x / 220 + y * 0.003, y / 2.5 + 2.4 * G);
-          const dg = sstep(0.84 - 0.17 * dry, 0.95 - 0.13 * dry, gv) * (0.3 + 0.7 * v2) * (0.2 + 0.8 * (patch > dry ? patch : dry)) * (0.4 + 0.6 * inside);
+          const dg = sstep(0.2, 0.36, sstep(0.84 - 0.17 * dry, 0.95 - 0.13 * dry, gv) * (0.3 + 0.7 * v2) * (0.2 + 0.8 * (patch > dry ? patch : dry)) * (0.4 + 0.6 * inside));
           if (dg > drop) drop = dg;
           // … and the thin lines print a grainy grey instead of black (the solids keep their ink)
           const thin = 1 - inside * 2;
-          if (thin > 0) dens = 1 - dry * 0.9 * thin * (0.75 + 0.5 * v1);   // ≈ 断墨灰 #8A857A on the sparse field lines
+          if (thin > 0) dens = 1 - dry * 0.62 * thin * (0.75 + 0.5 * v1);   // ≈ 断墨灰 #8A857A on the sparse field lines
         }
         // the faintest tooth of the paper showing through the solid
         const tooth = 0.5 * vn(l4, x / 31 + 91.5, y / 8 + 13.5) + 0.5 * v3;
@@ -328,7 +301,7 @@ function buildInk(env, design) {
       if (I < 0.5 && inside > 0.015) {
         // pepper: flecks of ink that strayed onto the cleared wood beside the lines
         const z2 = 0.5 * v1 + 0.5 * vn(l2, x * 0.33 + 9.5, y * 0.33 + 71.5);
-        const tP = 0.885 - 0.13 * inside;
+        const tP = 0.9 - 0.12 * inside;
         const pe = sstep(tP, tP + 0.03, z2) * 0.9;
         if (pe > D) D = pe;
       }

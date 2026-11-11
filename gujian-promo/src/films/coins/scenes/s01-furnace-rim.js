@@ -31,13 +31,10 @@ const HEAT = [[0, '#000000'], [0.05, '#140509'], [0.10, '#3a0d10'], [0.18, '#541
 const SKY = [[0, '#081511'], [650, '#07130f'], [900, '#07120f'], [1200, '#060f0d'], [1700, '#050d0b']];
 
 // embers: [U = px along the arc from the crest, dr = px above the arc, core radius, brightness, soft (out-of-focus radius, 0 = sharp)]
+// Five in all, no more: four small sharp ones low in the glow and one nearer the lens, out of focus.
 const SPARKS = [
-  [-318, 26, 1.4, 1.0, 0], [96, 44, 1.6, 1.0, 0], [432, 20, 1.1, 0.8, 0], [-112, 84, 1.2, 0.85, 0], [-540, 38, 1.0, 0.7, 0],
-  [246, 150, 1.0, 0.6, 0],
-  // nearer the lens, far out of focus: flat little discs
-  [168, 66, 0, 0.55, 5.5], [-402, 132, 0, 0.4, 7.5], [520, 112, 0, 0.3, 9], [-40, 214, 0, 0.3, 6],
-  // a very few, far up in the dark (they sit outside the title's place)
-  [-648, 612, 0.8, 0.3, 0], [596, 748, 0.8, 0.26, 0],
+  [-318, 26, 1.4, 1.0, 0], [96, 44, 1.6, 1.0, 0], [-112, 92, 1.2, 0.85, 0], [452, 30, 1.1, 0.8, 0],
+  [226, 134, 0, 0.5, 6],
 ];
 
 const sstep = (a, b, v) => { const t = L.clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -82,6 +79,15 @@ function build(env) {
   const hzL = new Float32Array(UN), shL = new Float32Array(UN), eL = new Float32Array(UN), wL = new Float32Array(UN), bdL = new Float32Array(UN);
   const rwL = new Float32Array(UN), dpL = new Float32Array(UN), lyL = new Float32Array(UN);
   const BURR = [[-412, 1.9, 9], [188, 1.5, 7], [655, 2.1, 11], [-770, 1.8, 8], [930, 1.6, 10]];   // [U, height, half-width] px
+  // the cast edge under a loupe: grains of moulding sand standing proud of the silhouette (each one catches a bead of fire),
+  // and blow-holes (砂眼) nicked into it. Heights of a pixel or so — far inside the match-cut tolerance.
+  const nubL = new Float32Array(UN), eq = L.rng('s01edge');
+  const nub = (u0, hh, ww) => {
+    const i0 = Math.max(0, Math.floor(u0 - 3 * ww) + UOFF), i1 = Math.min(UN - 1, Math.ceil(u0 + 3 * ww) + UOFF);
+    for (let i = i0; i <= i1; i++) { const q = (i - UOFF - u0) / ww; nubL[i] += hh * Math.exp(-q * q); }
+  };
+  for (let n = 0; n < 64; n++) nub(eq.range(-1260, 1260), eq.range(0.55, 1.6), eq.range(1.5, 4.0));
+  for (let n = 0; n < 22; n++) nub(eq.range(-1200, 1200), -eq.range(0.8, 2.1), eq.range(2.0, 4.4));
   for (let i = 0; i < UN; i++) {
     const U = i - UOFF, Uh = U - HOT;
     const g0 = Math.exp(-Math.pow(Uh / (Uh < 0 ? 570 : 670), 2)), g1 = Math.exp(-Math.pow(Uh / 1200, 2)), gb = Math.exp(-Math.pow(Uh / 820, 2));
@@ -93,9 +99,11 @@ function build(env) {
     // the silhouette: a cast and filed edge is never compass-true (± a pixel or so, far inside the match-cut tolerance)
     let e = 0.8 * nA.n2(U / 230, 3.3) + 0.4 * nB.n2(U / 52, 6.1);
     for (const [u0, hh, ww] of BURR) { const q = (U - u0) / ww; if (q > -3 && q < 3) e += hh * Math.exp(-q * q); }
+    e += 0.4 * nB.n2(U / 10 + 17, 4.2) + 0.2 * nS.n2(U / 4.2 + 3, 8.4) + nubL[i];   // the grain of the sand mould
     eL[i] = e;
     wL[i] = 0.55 + 1.5 * Math.pow(U / 1000, 2);                     // focus is at the crest: the edge softens toward the sides
-    bdL[i] = 0.82 + 0.3 * nS.n2(U / 96, 1.7) + 0.14 * nS.n2(U / 15, 9.1);   // the fire-line beads along the edge
+    bdL[i] = 0.82 + 0.3 * nS.n2(U / 96, 1.7) + 0.14 * nS.n2(U / 15, 9.1)    // the fire-line beads along the edge,
+      + (nubL[i] > 0 ? 0.6 * nubL[i] : 0.22 * nubL[i]);                      // brightest on the proud grains, dim in the nicks
     // the inner edge of the rim wanders a little, and its step is worn shallow in places
     rwL[i] = RIMW + 5 * nA.n2(U / 430, 5.5) + 1.8 * nA.n2(U / 130, 2.2) + 0.6 * nB.n2(U / 41, 8.8);
     dpL[i] = 0.42 + 0.58 * sstep(-0.35, 0.3, nB.n2(U / 360 + 3, 12.3));
@@ -133,8 +141,22 @@ function build(env) {
         const e = (cId - 0.5) / 0.5, rad = 0.13 + 0.2 * e, q = 1 - Math.sqrt(cD1) / rad;
         if (q > 0) nod = q * q * (3 - 2 * q) * (0.5 + 0.9 * e) * (0.3 + 0.7 * drift) * (0.35 + 0.65 * foc);
       }
-      const fade = sstep(0, 5, Vc);   // roughness grows in from the silhouette, which stays a clean arc
-      hgt[k] = prof + fade * (0.26 * g2 * (0.1 + 0.9 * foc) * (0.45 + 0.9 * drift) + 0.5 * m + file + nod);
+      // the sand-cast skin close under the edge, where the fire rakes it: blow-holes (砂眼) with a lit far lip, and proud
+      // grains of moulding sand. Kept to the first few dozen px: the place of the brand name below stays calm.
+      let sand = 0;
+      if (Vc > 1.5 && Vc < 92) {
+        const near = sstep(1.5, 6, Vc) * (1 - sstep(44, 92, Vc)) * (0.22 + 0.78 * foc);
+        cell(U / 12 + 5.5, Vc / 12 + 1.5);
+        if (cId > 0.88) {
+          const e = (cId - 0.88) / 0.12, rad = 0.15 + 0.15 * e, q = 1 - Math.sqrt(cD1) / rad;
+          if (q > 0) sand = -q * q * (3 - 2 * q) * (0.4 + 0.55 * e) * near;
+        } else if (cId < 0.42) {
+          const e = cId / 0.42, rad = 0.09 + 0.1 * e, q = 1 - Math.sqrt(cD1) / rad;
+          if (q > 0) sand = q * q * (3 - 2 * q) * (0.26 + 0.34 * e) * near;
+        }
+      }
+      const fade = sstep(0, 5, Vc);   // roughness grows in from the silhouette
+      hgt[k] = prof + fade * (0.19 * g2 * (0.1 + 0.9 * foc) * (0.45 + 0.9 * drift) + 0.5 * m + file + nod) + sand;
       vrd[k] = L.clamp(0.45 + 0.8 * big + 0.3 * m + 0.6 * nod);
       rimM[k] = onRim; focM[k] = foc;
     }
@@ -184,7 +206,7 @@ function build(env) {
             if (drc > 8) {
               // soft layers in the glow, lying along the arc like smoke under a ceiling (never a flame shape)
               const lay = drc + lyL[ui];
-              st = 1 + (0.065 * nS.n2(U / 1300, lay / 62) + 0.022 * nS.n2(U / 800 + 9, lay / 27 + 5)) * sstep(8, 60, drc);
+              st = 1 + (0.034 * nS.n2(U / 820, lay / 62) + 0.012 * nS.n2(U / 460 + 9, lay / 27 + 5)) * sstep(8, 60, drc);
             }
             sky(drc, bi, mA[ui], aA[ui], st, hz); r = oR; g = oG; b = oB;
             sky(drc, bi, mB[ui], aB[ui], st, hz); rB = oR; gB = oG; bB = oB;

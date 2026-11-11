@@ -168,7 +168,7 @@ function makeString() {
       ar: dark ? 0.28 : 0.4, ag: dark ? 0.155 : 0.23, ab: dark ? 0.055 : 0.078,                             // matte patina
       kb: r.range(0.8, 1.1), file: K.file * r.range(0.7, 1.2), lump: K.lump * r.range(0.8, 1.2),
       su: r.range(0, 4000), sv: r.range(0, 4000), pitTh: kind === 'B' ? 0.975 : r.range(0.92, 0.965),
-      aoff: r.range(-0.05, 0.05), tone: r.range(0.92, 1.08), verd: K.verd ? K.verd * r.range(0.85, 1.15) : 0, dirt: r.range(0.4, 1),
+      aoff: r.range(-0.085, 0.085), tone: r.range(0.92, 1.08), verd: K.verd ? K.verd * r.range(0.85, 1.15) : 0, dirt: r.range(0.4, 1),
       ridge: r.chance(0.45) ? r.range(0.5, 1.1) * r.sign() : 0, ur: r.range(-0.3, 0.3) * w,                 // trace of the mould seam round the edge
       edgeWear: r.range(0.25, 0.6),
     };
@@ -264,15 +264,27 @@ function renderString(arc) {
   const finish = (c, nx, ny, nz, P, occ, ao, grime, verd, vn, xcol) => {
     if (nz < 0.015) nz = 0.015;
     const rT = 2 * nz * nx, rR = 2 * nz * ny, rZ = 2 * nz * nz - 1;
-    let psi = Math.atan2(rR, -rZ) + c.aoff; if (psi < -0.6) psi += TAU;
-    psi = psi < 0 ? 0 : psi > PMAX ? PMAX : psi;
+    // a mirrored ray that dips just under the horizon behind the string (ψ < 0) fades smoothly from the back light into the
+    // dark below it — a hard switch here used to pepper the turned faces with one-pixel black specks
+    let psi = Math.atan2(rR, -rZ) + c.aoff, under = 0;
+    if (psi < 0) { if (psi < -1.3) psi += TAU; else { under = sstep(0.6, 1.3, -psi); psi = 0; } }
+    psi = psi > PMAX ? PMAX : psi;
     P = P < 0 ? 0 : P > 1 ? 1 : P;
     let rough = c.rough + 0.72 * sstep(0.12, 0.92, P); if (rough > 1) rough = 1;
     let ft = (rT * 0.5 + 0.5) * (NT - 1); ft = ft < 0 ? 0 : ft > NT - 1.001 ? NT - 1.001 : ft;
-    const it = ft | 0, kf = ft - it, o = (((psi * PK) | 0) * NT + it) * 3;
-    const sr = ES[o] + (ES[o + 3] - ES[o]) * kf, sg = ES[o + 1] + (ES[o + 4] - ES[o + 1]) * kf, sb = ES[o + 2] + (ES[o + 5] - ES[o + 2]) * kf;
-    const qr = ER[o] + (ER[o + 3] - ER[o]) * kf, qg = ER[o + 1] + (ER[o + 4] - ER[o + 1]) * kf, qb = ER[o + 2] + (ER[o + 5] - ER[o + 2]) * kf;
-    const er = sr + (qr - sr) * rough, eg = sg + (qg - sg) * rough, eb = sb + (qb - sb) * rough;
+    // bilinear in the table (ψ rows as well as columns): no stepping in the mirrored bands
+    let fp = psi * PK; if (fp > NP - 1.001) fp = NP - 1.001;
+    const it = ft | 0, kf = ft - it, ipr = fp | 0, kp = fp - ipr, o = (ipr * NT + it) * 3, o2 = o + NT * 3;
+    let sr = ES[o] + (ES[o + 3] - ES[o]) * kf, sg = ES[o + 1] + (ES[o + 4] - ES[o + 1]) * kf, sb = ES[o + 2] + (ES[o + 5] - ES[o + 2]) * kf;
+    let qr = ER[o] + (ER[o + 3] - ER[o]) * kf, qg = ER[o + 1] + (ER[o + 4] - ER[o + 1]) * kf, qb = ER[o + 2] + (ER[o + 5] - ER[o + 2]) * kf;
+    sr += (ES[o2] + (ES[o2 + 3] - ES[o2]) * kf - sr) * kp; sg += (ES[o2 + 1] + (ES[o2 + 4] - ES[o2 + 1]) * kf - sg) * kp; sb += (ES[o2 + 2] + (ES[o2 + 5] - ES[o2 + 2]) * kf - sb) * kp;
+    qr += (ER[o2] + (ER[o2 + 3] - ER[o2]) * kf - qr) * kp; qg += (ER[o2 + 1] + (ER[o2 + 4] - ER[o2 + 1]) * kf - qg) * kp; qb += (ER[o2 + 2] + (ER[o2 + 5] - ER[o2 + 2]) * kf - qb) * kp;
+    let er = sr + (qr - sr) * rough, eg = sg + (qg - sg) * rough, eb = sb + (qb - sb) * rough;
+    if (under > 0) {
+      const oD = ((NP - 1) * NT + it) * 3;
+      const dr = ES[oD] + (ER[oD] - ES[oD]) * rough, dg = ES[oD + 1] + (ER[oD + 1] - ES[oD + 1]) * rough, db2 = ES[oD + 2] + (ER[oD + 2] - ES[oD + 2]) * rough;
+      er += (dr - er) * under; eg += (dg - eg) * under; eb += (db2 - eb) * under;
+    }
     const tt = sstep(0.05, 0.8, P), metal = 1 - 0.78 * sstep(0.62, 1.0, P);
     const tr = c.tr + (c.pr - c.tr) * tt, tg = c.tg + (c.pg - c.tg) * tt, tb = c.tb + (c.pb - c.tb) * tt;
     let dk = nx * LKx + ny * LKy + nz * LKz, db = nx * LBx + ny * LBy + nz * LBz, df = ny * LFy + nz * LFz, dw = ny * LWy + nz * LWz;
@@ -352,7 +364,11 @@ function renderString(arc) {
     gn(rho / 3.4 + 11, (p - q) / 70); const ring = gV;                                                                  // fine scratches round the outer rim
     // dirt settles at the foot of the rims
     const foot = sstep(f.rho1 - BEV - 16, f.rho1 - BEV, rho) + (1 - sstep(f.wi + BEV, f.wi + BEV + 14, rcSd));
-    const P = f.fPat + (f.rPat - f.fPat) * raised + 0.14 * b1 + (1 - raised) * (0.1 * grain + 0.12 * (foot > 1 ? 1 : foot)) + raised * 0.16 * ring;
+    // the rims are not one flat gold: honey toning lies on them in patches, finer flecks inside the patches, rubbed bright between
+    gn(p / 23 + f.sv, q / 31 - f.su); const mot = gV;
+    gn(p / 6.5 - f.su, q / 6.5 + f.sv); const fleck = gV;
+    const P = f.fPat + (f.rPat - f.fPat) * raised + 0.14 * b1 + (1 - raised) * (0.1 * grain + 0.12 * (foot > 1 ? 1 : foot))
+      + raised * (0.2 * ring + 0.16 * b1 + 0.36 * mot + 0.14 * fleck + 0.1);
     const grime = (1 - raised) * 0.45 * (foot > 1 ? 1 : foot);
     finish(f, nx, ny, nz, P, shade, deep * (0.86 + 0.14 * raised), grime, 0, 0, xcol);
   };

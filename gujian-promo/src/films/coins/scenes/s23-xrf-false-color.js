@@ -18,7 +18,7 @@ import * as L from '../../../lib/core.js';
 
 const { W, H } = L;
 const PAD = 60;                         // rot only slides the picture ~±20 px
-const Q = 4;                            // one scan pixel = Q screen px
+const Q = 2;                            // one scan pixel = Q screen px
 const LW = (W + PAD * 2) / Q, LH = (H + PAD * 2) / Q;
 const MW = (W + PAD * 2) / 2, MH = (H + PAD * 2) / 2;   // the frame is composed at half resolution
 const CELL = Math.round(40 / Q);        // a halo block ≈ 40 screen px
@@ -35,8 +35,8 @@ const LUT_STOPS = [
   [0.000, '#05040a'], [0.045, '#0d0626'], [0.105, '#261069'], [0.175, '#5617bc'], [0.245, '#9c1fdc'], [0.300, '#dc28da'],
   [0.335, '#ff2bd6'], [0.354, '#ff4ede'], [0.372, '#ffb2f4'], [0.390, '#ff56e0'], [0.406, '#ff34d8'], [0.428, '#ee2bd6'],
   [0.470, '#9019d0'], [0.535, '#5413c2'], [0.580, '#7016bc'], [0.612, '#d81f86'], [0.636, '#ff3a5e'],
-  [0.675, '#ff8a1f'], [0.720, '#ff9a22'], [0.762, '#ffbe34'], [0.815, '#ffe14a'], [0.870, '#f8ea44'],
-  [0.910, '#cfe92e'], [0.945, '#9be81e'], [0.985, '#6fdd24'], [1.030, '#3fd24a'], [1.090, '#22dcae'], [1.160, '#3cf0e6'],
+  [0.675, '#ff8a1f'], [0.720, '#ff9a22'], [0.762, '#ffa626'], [0.782, '#ffd638'], [0.815, '#ffdf3c'], [0.870, '#f8e938'],
+  [0.886, '#f2e934'], [0.904, '#b6e826'], [0.945, '#9be81e'], [0.985, '#6fdd24'], [1.030, '#3fd24a'], [1.090, '#22dcae'], [1.160, '#3cf0e6'],
 ];
 // ── depth below the rim (px) → scalar: plateaus (the bands) joined by short ramps (their borders).
 //    wide · narrow · wide · narrow · wide, so the rings have a rhythm ──
@@ -47,7 +47,10 @@ const PROFILE = [
   [260, 0.818], [298, 0.836], [334, 0.856],                                       // bright yellow
   [350, 0.945], [420, 0.965], [520, 0.99], [800, 1.04],                           // fluorescent green
 ];
-const P0 = -8, PSTEP = 0.5;
+const P0 = -8, PSTEP = 0.125, PINV = 8;
+// contour lines of the map: [level, strength]. The first five sit on the borders between the colour bands (thin dark
+// isolines, the way a contour map separates its tints); the rest are faint intermediate levels that wander inside a band.
+const CONTOURS = [[0.455, 0.34], [0.598, 0.3], [0.772, 0.36], [0.895, 0.34], [1.062, 0.28], [0.7, 0.14], [0.836, 0.13], [0.966, 0.13]];
 
 // the neon spectral lines: each is an intensity profile pushed through its own little colour scale (dark edge → hot core)
 const STRIPE_RAMPS = {
@@ -62,8 +65,10 @@ const RAMP_IDS = ['m', 'o', 'g', 'c'], TMAX = 1.1, TN = 256;
 const STRIPES = [
   [-1, 1012, 120, 'o', 1.0], [-1, 902, 8, 'c', 0.9], [-1, 800, 86, 'm', 1.0], [-1, 700, 9, 'g', 0.95],
   [-1, 628, 50, 'o', 0.9], [-1, 548, 7, 'm', 0.7], [-1, 486, 24, 'g', 0.6], [-1, 408, 6, 'c', 0.36],
+  [-1, 884, 4, 'g', 0.5], [-1, 676, 4, 'c', 0.42], [-1, 566, 4, 'o', 0.36],                     // faint companions: doublets
   [1, 996, 108, 'g', 1.0], [1, 900, 9, 'm', 0.95], [1, 812, 80, 'o', 1.0], [1, 726, 8, 'c', 0.9],
   [1, 648, 58, 'm', 0.92], [1, 570, 7, 'g', 0.72], [1, 504, 22, 'o', 0.58], [1, 426, 6, 'm', 0.34],
+  [1, 882, 4, 'c', 0.5], [1, 744, 4, 'g', 0.44], [1, 588, 4, 'o', 0.36],
 ];
 
 function build(env) {
@@ -82,6 +87,11 @@ function build(env) {
   const NT = new Float32Array(NMASK + 1);
   for (let i = 0; i <= NMASK; i++) NT[i] = (rn() + rn() + rn() + rn() - 2) * 1.73;   // ≈ unit gaussian
 
+  // nearest contour level for every LUT index
+  const TI = new Uint8Array(NL), CT = new Float32Array(CONTOURS.length), TA = new Float32Array(CONTOURS.length);
+  CONTOURS.forEach(([lv, st], q) => { CT[q] = lv; TA[q] = st; });
+  for (let i = 0; i < NL; i++) { const sv = i / (NL - 1) * SMAX; let b = 0, bd = 9; for (let q = 0; q < CT.length; q++) { const dd = Math.abs(sv - CT[q]); if (dd < bd) { bd = dd; b = q; } } TI[i] = b; }
+  const SC = new Float32Array(N), RW = new Float32Array(N);
   const D = new Float32Array(N), TH = new Float32Array(N), COV = new Float32Array(N);
   const Deff = new Float32Array(N), CA = new Float32Array(N), CB = new Float32Array(N), BL = new Float32Array(N), FN = new Float32Array(N);
   const HV = new Float32Array(N), GL = new Float32Array(N), CID = new Uint16Array(N);
@@ -117,6 +127,7 @@ function build(env) {
       v = 0.3 * Math.pow(1 - uu, 1.2) * L.lerp(0.66, 1.1, h1) * (1 + 0.18 * sb);
       if (h2 < sstep(0.3, 1, uu) * 0.55) v = 0;
       if (v < 0.04) v = 0;
+      if (v > 0.318) v = 0.318;                                   // never past the magenta of the rim into its pale core
     }
     cellV[cj * CW + ci] = v;
   }
@@ -129,8 +140,8 @@ function build(env) {
       const rr = Math.sqrt(ddx * ddx + ddy * ddy), d = R - rr, th = Math.atan2(ddx, ddy), u = th * R;
       D[k] = d; TH[k] = th;
       const cov = L.clamp(0.5 + d / Q); COV[k] = cov;
-      FN[k] = NT[(k * 7 + 12345) & NMASK];
-      NA[k] = 0.0145 * L.lerp(0.42, 1, sstep(48, 84, d));          // counting noise: the rim is the strongest signal, so the cleanest
+      FN[k] = NT[(Math.imul(k, 40503) + 12345) & NMASK];
+      NA[k] = 0.0062 * L.lerp(0.26, 1, sstep(48, 84, d));          // counting noise: the rim is the strongest signal, so the cleanest
       if (cov > 0) {
         const g = sstep(40, 220, d) * (1 + d / 500);
         const wv = g * (14 * nA.n2(u / 520, d / 700 + 3) + 5 * nA.n2(u / 190 + 9, d / 340))
@@ -138,7 +149,8 @@ function build(env) {
         Deff[k] = d + wv;
         const cg = sstep(50, 190, d) * 9;
         CA[k] = cg * nB.n2(u / 240 + 31, d / 240); CB[k] = cg * nB.n2(u / 240 - 17, d / 240 + 55);
-        BL[k] = 0.012 * nA.fbm(u / 70 + 5, d / 70, 3) + 0.009 * NT[(j * 131 + 77) & NMASK] * sstep(60, 100, d);   // + line-to-line gain wobble of the raster
+        BL[k] = 0.012 * nA.fbm(u / 70 + 5, d / 70, 3);
+        RW[k] = 0.0036 * NT[(j * 131 + 77) & NMASK] * sstep(60, 100, d);   // + line-to-line gain wobble of the raster
       }
       if (cov < 1) {
         const ci = Math.floor((i - colOff) / CELL) + 1, cj = Math.floor((j - rowOff) / CELL) + 1, c = cj * CW + ci;
@@ -152,12 +164,13 @@ function build(env) {
         for (const st of stripes) {
           const hw = st.hw >= 16 ? st.hw * (1 + 0.24 * nB.n2(st.n * 5.7 + 0.3, y / 430 + st.n * 1.9)) : Math.max(st.hw, Q * 0.5);
           const dx = Math.abs(xw - st.x); if (dx > hw * 5 + 30) continue;
-          const qq = dx / (hw + 1.5);
+          const qq = dx / (hw + (st.hw >= 16 ? 1.5 : 0.7));
           const m = L.clamp(0.84 + 0.4 * nB.fbm(st.n * 7.31, y / 560 + st.n * 3.1, 2), 0.45, 1.1);
           const v = st.peak * m * (Math.exp(-0.69 * qq * qq) + 0.1 * Math.exp(-qq / 2.2));
           if (v > best) { best = v; bq = st.n; }
         }
-        ST[k] = best * L.lerp(0.74, 1, sstep(-PAD, 300, y)) * (1 - cov); SID[k] = bq;
+        // the halo blocks stand in front of the lines: a line dims where a block covers it instead of burning out to white
+        ST[k] = best * L.lerp(0.74, 1, sstep(-PAD, 300, y)) * (1 - cov) * (1 - 0.72 * Math.min(1, HV[k] / 0.26)); SID[k] = bq;
       }
     }
   }
@@ -181,7 +194,7 @@ function build(env) {
     for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
       const k = j * LW + i; if (COV[k] <= 0) continue;
       const du = (TH[k] - th0) * (R - d0), dv = D[k] - d0;
-      const wob = 1 + 0.3 * nA.n2(du / (ru * 0.6) + th0 * 91, dv / (rv * 0.8) + d0);
+      const wob = 1 + (ru < 24 ? 0.1 : 0.3) * nA.n2(du / (ru * 0.6) + th0 * 91, dv / (rv * 0.8) + d0);
       const q2 = ((du * du) / (ru * ru) + (dv * dv) / (rv * rv)) * wob * wob;
       if (q2 >= 1) continue;
       BL[k] += amp * (1 - q2) * (1 - q2) * sstep(-2, 14, D[k]);
@@ -204,14 +217,14 @@ function build(env) {
     mg.putImageData(mi, 0, 0);
     return m;
   };
-  const mask1 = mkMask(0.4, 0.9), mask2 = mkMask(0.72, 1.22);
+  const mask1 = mkMask(0.62, 1.15), mask2 = mkMask(0.95, 1.4);
   const cellM = new Float32Array(CW * CH), stripeM = new Float32Array(stripes.length), stripeQ = stripes.map((st) => st.q * TN);
   const mid = L.makeCanvas(MW, MH);
   // a light vignette, baked in layer space
   const vig = L.makeCanvas(MW / 4, MH / 4), vg = vig.getContext('2d');
   vg.fillStyle = L.radial(vg, vig.width / 2, vig.height / 2, vig.height * 0.62, vig.width * 0.62, [[0, 'rgba(0,0,0,0)'], [1, 'rgba(0,0,0,0.26)']]);
   vg.fillRect(0, 0, vig.width, vig.height);
-  return { N, Deff, CA, CB, BL, FN, NA, half, quart, far, mid, vig, stripeM, stripeQ, COV, HV, GL, CID, ST, SID, TR, TG, TB, Ptab, PN, LR, LG, LB, NT, small, sg, img, px, soft, bloom, mask1, mask2, cellM, CW, CH };
+  return { SC, RW, TI, CT, TA, N, Deff, CA, CB, BL, FN, NA, half, quart, far, mid, vig, stripeM, stripeQ, COV, HV, GL, CID, ST, SID, TR, TG, TB, Ptab, PN, LR, LG, LB, NT, small, sg, img, px, soft, bloom, mask1, mask2, cellM, CW, CH };
 }
 
 /** evaluate the field for this frame and write the scan-resolution picture into S.small */
@@ -222,27 +235,51 @@ function paint(p, f) {
   for (let c = 0; c < cellM.length; c++) cellM[c] = 0.86 + 0.3 * Math.sin(hsh(c, 5) * L.TAU + p * L.TAU * (0.6 + hsh(c, 9)));
   for (let q = 0; q < stripeM.length; q++) stripeM[q] = 1 + 0.07 * Math.sin(hsh(q, 21) * L.TAU + p * L.TAU * (0.5 + hsh(q, 33)));
   const K = (NL - 1) / SMAX, KT = (TN - 1) / TMAX;
+  const { SC, RW, TI, CT, TA } = S;
+  // pass 1: the clean field (no counting noise) — the contour lines are traced on this, so they stay continuous
+  for (let k = 0; k < N; k++) {
+    if (COV[k] > 0) {
+      let di = ((Deff[k] + ca * CA[k] + cb * CB[k] - P0) * PINV) | 0; if (di < 0) di = 0; else if (di >= PN) di = PN - 1;
+      SC[k] = Ptab[di] + BL[k];
+    } else SC[k] = -1;
+  }
+  const kLo = LW, kHi = N - LW;
   for (let k = 0; k < N; k++) {
     const cov = COV[k];
     const n = FN[k] * 0.6 + NT[(k + off) & NMASK] * 0.55;
-    let s;
+    let s, ka = 0;
     if (cov >= 1) {
-      let di = ((Deff[k] + ca * CA[k] + cb * CB[k] - P0) * 2) | 0; if (di < 0) di = 0; else if (di >= PN) di = PN - 1;
-      s = Ptab[di] + BL[k] + NA[k] * n;
+      const sc = SC[k];
+      s = sc + RW[k] + NA[k] * n;
+      // antialiased isoline: distance to the nearest contour level, measured in scan pixels through the local gradient
+      let ci = (sc * K) | 0; if (ci < 0) ci = 0; else if (ci >= NL) ci = NL - 1;
+      const tq = TI[ci];
+      let td = sc - CT[tq]; if (td < 0) td = -td;
+      if (td < 0.03 && k > kLo && k < kHi) {
+        let l = SC[k - 1], rt = SC[k + 1], up = SC[k - LW], dn = SC[k + LW];
+        if (l < 0) l = sc; if (rt < 0) rt = sc; if (up < 0) up = sc; if (dn < 0) dn = sc;
+        const gx = (rt - l) * 0.5, gy = (dn - up) * 0.5;
+        let gm = Math.sqrt(gx * gx + gy * gy); if (gm < 0.0005) gm = 0.0005;
+        const dpx = td / gm;
+        if (dpx < 1.1) {
+          ka = TA[tq] * (dpx < 0.3 ? 1 : (1.1 - dpx) * 1.25);
+          // the faint in-band levels only where the field has a real slope — on the flats they would scribble
+          if (tq >= 5) { const fl = (gm - 0.00065) * 1250; ka = fl <= 0 ? 0 : fl < 1 ? ka * fl : ka; }
+        }
+      }
     } else {
       const hv = HV[k];
-      const so = (hv > 0 ? hv * cellM[CID[k]] + 0.014 * n : 0.011 * n) + GL[k];
-      if (cov > 0) {
-        let di = ((Deff[k] + ca * CA[k] + cb * CB[k] - P0) * 2) | 0; if (di < 0) di = 0; else if (di >= PN) di = PN - 1;
-        s = so + (Ptab[di] + BL[k] + NA[k] * n - so) * cov;
-      } else s = so;
+      const so = (hv > 0 ? hv * cellM[CID[k]] + 0.005 * n : 0.005 * n) + GL[k];
+      if (cov > 0) s = so + (SC[k] + RW[k] + NA[k] * n - so) * cov;
+      else s = so;
     }
     let li = (s * K) | 0; if (li < 0) li = 0; else if (li >= NL) li = NL - 1;
     let r = LR[li], g = LG[li], b = LB[li];
+    if (ka > 0) { const m = 1 - ka; r = (r * m) | 0; g = (g * m + b * ka * 0.1) | 0; b = (b * (1 - ka * 0.8)) | 0; }
     const t = ST[k];
     if (t > 0.02) {
       const q = SID[k];
-      let ti = ((t * (stripeM[q] + 0.1 * n) + 0.012 * n) * KT) | 0; if (ti < 0) ti = 0; else if (ti >= TN) ti = TN - 1;
+      let ti = ((t * (stripeM[q] + 0.035 * n) + 0.005 * n) * KT) | 0; if (ti < 0) ti = 0; else if (ti >= TN) ti = TN - 1;
       ti += stripeQ[q];
       r += TR[ti]; g += TG[ti]; b += TB[ti];
       if (r > 255) r = 255; if (g > 255) g = 255; if (b > 255) b = 255;
@@ -270,12 +307,12 @@ export default {
     paint(p, f);
     // two out-of-focus copies (masked) and the bloom source, all made by shrinking the scan-resolution picture
     copyInto(S.half, S.small);
-    copyInto(S.quart, S.half, 'blur(0.6px)');
-    let g = copyInto(S.soft, S.half);
+    copyInto(S.quart, S.half);
+    let g = copyInto(S.soft, S.half, 'blur(0.9px)');
     g.globalCompositeOperation = 'destination-in'; g.drawImage(S.mask1, 0, 0, S.soft.width, S.soft.height);
-    g = copyInto(S.far, S.quart);
+    g = copyInto(S.far, S.quart, 'blur(0.7px)');
     g.globalCompositeOperation = 'destination-in'; g.drawImage(S.mask2, 0, 0, S.far.width, S.far.height);
-    copyInto(S.bloom, S.half, 'contrast(1.8) brightness(0.82) blur(2.4px)');
+    copyInto(S.bloom, S.quart, 'contrast(1.8) brightness(0.82) blur(2.4px)');
 
     // compose at half resolution: hard scan pixels, the out-of-focus copies over them, bloom, vignette
     const mg = S.mid.getContext('2d');
@@ -284,7 +321,7 @@ export default {
     mg.globalCompositeOperation = 'source-over'; mg.imageSmoothingEnabled = true;
     mg.drawImage(S.soft, 0, 0, MW, MH);
     mg.drawImage(S.far, 0, 0, MW, MH);
-    mg.globalCompositeOperation = 'screen'; mg.globalAlpha = 0.36;
+    mg.globalCompositeOperation = 'screen'; mg.globalAlpha = 0.31;
     mg.drawImage(S.bloom, 0, 0, MW, MH);
     mg.globalCompositeOperation = 'source-over'; mg.globalAlpha = 1;
     mg.drawImage(S.vig, 0, 0, MW, MH);
@@ -303,7 +340,7 @@ export default {
     const ys = Math.round(L.lerp(a.crestY + 76, H - 26, p) / Q) * Q;
     ctx.save();
     ctx.globalCompositeOperation = 'color-dodge';
-    ctx.fillStyle = L.linear(ctx, 0, ys - 60, 0, ys + 4, [[0, '#000000'], [0.7, '#141414'], [0.9, '#4c4c4c'], [0.96, '#5a5a5a'], [1, '#000000']]);
+    ctx.fillStyle = L.linear(ctx, 0, ys - 60, 0, ys + 4, [[0, '#000000'], [0.7, '#0e0e0e'], [0.9, '#303030'], [0.96, '#3c3c3c'], [1, '#000000']]);
     ctx.fillRect(0, ys - 60, W, 64);
     ctx.globalCompositeOperation = 'screen';
     ctx.fillStyle = L.linear(ctx, 0, ys - 10, 0, ys + 6, [[0, 'rgba(255,170,240,0)'], [0.55, 'rgba(255,190,244,0.2)'], [0.7, 'rgba(255,214,248,0.2)'], [1, 'rgba(255,170,240,0)']]);

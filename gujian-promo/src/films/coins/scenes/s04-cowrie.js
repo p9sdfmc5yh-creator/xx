@@ -50,12 +50,16 @@ function lut3(stops, n = 256) {
 // palette (任务单): 牙白 / 蜜 / 焦糖 (土锈 specks, the shaded margin, the skin line on the facet) / 茶渍
 const IV = [248, 239, 218], HN = [243, 190, 78], CA = [154, 88, 30], TEA = [208, 132, 46];
 // the ground-open hole: an irregular ellipse, lower right
+const HOLE = false;             // the big ground-open facet is retired: the aperture below is what reads as a cowrie
+// the aperture (齿口): a long narrow slit lower right, running with the shell
+const SL = { x: 1300, y: 0, rx: 640, c: Math.cos(0.2), s: Math.sin(0.2) };
 const HO = { x: 1580, y: 1172, rx: 730, ry: 352, c: Math.cos(0.17), s: Math.sin(0.17) };
 
 function buildShell(env) {
   const a = env.arc, R = a.R, cx = a.cx, cy = a.cy;
   const X0 = -PAD, Y0 = Math.floor(a.crestY) - 2;
   const RW = W + PAD * 2, RH = H + PAD - Y0;
+  SL.y = Math.min(H - 235, a.yAt(1300) + 400);
   const nA = L.makeNoise('s04a'), nB = L.makeNoise('s04b'), nH = L.makeNoise('s04h');
 
   // outline of the opening (m) and of the chamber edge (inner) as functions of the angle round the ellipse
@@ -98,7 +102,7 @@ function buildShell(env) {
       if (rr > R + 2) continue;
       // where are we relative to the opening?
       let e = 9, eIn = 0, radL = 1, cph = 0, sph = 0;
-      if (x > 720 && y > 720) {
+      if (HOLE && x > 720 && y > 720) {
         const hx = x - HO.x, hy = y - HO.y, X = (hx * HO.c + hy * HO.s) / HO.rx, Y = (-hx * HO.s + hy * HO.c) / HO.ry;
         const f = Math.sqrt(X * X + Y * Y) + 1e-6;
         const fk = ((Math.atan2(Y, X) + Math.PI) / L.TAU) * NL, k0 = Math.min(NL - 1, fk | 0), kt = fk - k0;
@@ -130,7 +134,12 @@ function buildShell(env) {
         // … and peppered with fine earth-rust specks, thick in some drifts, almost absent in others
         cell(U / 17 + 3.3, Sv / 17 - 8.1);
         if (cA < 0.13 + 0.7 * pd) {
-          const rad = 0.08 + 0.23 * cB * cB, dot = (1 - sstep(rad * 0.5, rad, cD)) * (0.6 + 0.35 * cB) * fade;
+          const rad = 0.05 + 0.36 * cB * cB * cB, dot = (1 - sstep(rad * 0.5, rad, cD)) * (0.6 + 0.35 * cB) * fade;
+          r += (CA[0] - r) * dot; g += (CA[1] - g) * dot; b += (CA[2] - b) * dot;
+        }
+        cell(U / 41 + 27.9, Sv / 41 + 61.3);
+        if (cA < 0.02 + 0.2 * pd * pd) {
+          const rad = 0.1 + 0.2 * cB, dot = (1 - sstep(rad * 0.55, rad, cD)) * (0.45 + 0.3 * cB) * fade;
           r += (CA[0] - r) * dot; g += (CA[1] - g) * dot; b += (CA[2] - b) * dot;
         }
         cell(U / 7.5 + 71.3, Sv / 7.5 - 20.9);
@@ -149,7 +158,7 @@ function buildShell(env) {
           r += (240 - r) * sc; g += (229 - g) * sc; b += (204 - b) * sc;
         }
         // hair-fine growth lines running with the arc (kept faint: this is glaze, not grain)
-        const gm = 1 + (0.012 * nA.n2(U / 520, Sv / 2.7) + 0.018 * nB.n2(U / 800 + 4, Sv / 10 + 2)) * fade;
+        const gm = 1 + (0.02 * nA.n2(U / 520, Sv / 2.7) + 0.032 * nB.n2(U / 800 + 4, Sv / 10 + 2) + 0.026 * nA.n2(U / 1400 - 6, Sv / 31 + 8)) * fade;
         // key light from the upper left; the limb sinks into a dark caramel margin so the outline bites against the pale ground
         const diff = (ddx / R) * LX - (ddy / R) * LY + nz * LZ;
         const li = ((sstep(-0.1, 0.9, diff) * 255) | 0) * 3;
@@ -160,6 +169,44 @@ function buildShell(env) {
         // the cool ground mirrored in the glaze on the shadow side
         const cool = Math.exp(-sq((nz - 0.21) / 0.075)) * sstep(-0.05, 0.4, ddx / R) * 0.1;
         r += (176 - r) * cool; g += (198 - g) * cool; b += (206 - b) * cool;
+
+        // ───── the aperture (齿口): a dark slit, a porcelain lip either side, a row of fine teeth on each lip ─────
+        const ax = x - SL.x, ay = y - SL.y, lx = ax * SL.c + ay * SL.s, lyr = -ax * SL.s + ay * SL.c;
+        if (lx > -SL.rx - 70 && lx < SL.rx + 70 && lyr > -250 && lyr < 250) {
+          const un = lx / SL.rx, tw = cl(1 - un * un), endF = sstep(0, 0.1, tw);
+          const ly = lyr + 54 * un * un - 18, up = ly < 0, ad = up ? -ly : ly;     // the slit bows gently
+          const ph = lx / (up ? 43 : 37) + (up ? 0.13 : 0.61) + 0.22 * nH.n2(lx / 140 + (up ? 3 : 17), 0.5);
+          const wear = 0.72 + 0.28 * nH.n2(Math.floor(ph + 0.5) * 3.17 + (up ? 0 : 50), 7.7);   // each tooth worn differently
+          const rg = 0.5 + 0.5 * Math.cos(L.TAU * ph);                                  // 1 on a tooth crest, 0 in the groove
+          const half = (26 + 5 * nH.n2(lx / 210, 3.3)) * Math.pow(tw, 0.55) * sstep(0, 0.07, tw);
+          const dl = ad - (half - (up ? 10 : 13) * wear * endF * rg);                  // px outside the dark opening
+          const covD = cl(-dl / 1.4 + 0.5) * sstep(0, 0.012, tw), ts = 0.35 + 0.65 * Math.sqrt(tw);   // lip tapers to a point at each end
+          const GL = up ? 46 : 64, fl = (1 - sstep(4, GL, dl)) * wear * endF;
+          const lipK = (1 - sstep((up ? 40 : 58) * ts, (up ? 120 : 150) * ts, dl)) * sstep(0, 0.2, tw) * 0.86;
+          if (lipK > 0 || covD > 0) {
+            // the lip: unpigmented porcelain, rolling over into the opening (upper lip turns from the light, lower lip catches it)
+            const roll = 1 - sstep(0, up ? 26 : 16, dl);
+            const rsh = (up ? 1 - 0.42 * roll : 1 - 0.3 * (1 - sstep(0, 5, dl))) * (1 - 0.15 * Math.sin(L.TAU * ph) * fl);
+            let pr = 251 * (0.3 + 0.7 * SH[li]) * rsh, pg = 245 * (0.3 + 0.7 * SH[li + 1]) * rsh, pb = 229 * (0.3 + 0.7 * SH[li + 2]) * rsh;
+            // grooves between the teeth, packed with old dirt — deeper and darker toward the opening
+            const dirt = 0.6 + 0.4 * nA.n2(lx / 19 + 5, ly / 11);
+            const gk = cl((Math.pow(1 - rg, 12) * 0.98 + Math.pow(1 - rg, 2.2) * 0.2) * fl * dirt * 1.15), gd = 1 - sstep(0, 22, dl);
+            pr += (118 - 60 * gd - pr) * gk; pg += (66 - 38 * gd - pg) * gk; pb += (28 - 16 * gd - pb) * gk;
+            // each tooth crest carries a small wet glint near the opening (stronger on the lower, light-facing lip)
+            const gl = Math.pow(rg, 8) * (1 - sstep(2, up ? 16 : 28, dl)) * sstep(-1, 3, dl) * (up ? 0.16 : 0.42) * wear * endF;
+            pr += (255 - pr) * gl; pg += (252 - pg) * gl; pb += (244 - pb) * gl;
+            // a faint tea line of grime where the lip meets the glaze
+            const st = Math.exp(-sq((dl - (up ? 78 : 104) * ts) / 20)) * 0.22 * endF * (0.6 + 0.4 * nB.n2(lx / 60, 9.1));
+            r += (TEA[0] * 0.9 - r) * st; g += (TEA[1] * 0.9 - g) * st; b += (TEA[2] * 0.9 - b) * st;
+            r += (pr - r) * lipK; g += (pg - g) * lipK; b += (pb - b) * lipK;
+            if (covD > 0) {
+              // inside: dark, the teeth running down into it as dim ridges
+              const dd = dl < 0 ? -dl : 0, deep = sstep(0, 10, dd), tin = rg * rg * Math.exp(-dd / 9) * 0.38 * wear * endF;
+              const kr = 32 - 13 * deep + (150 - 30) * tin, kg = 16 - 8 * deep + (108 - 15) * tin, kb = 8 - 4 * deep + (66 - 7) * tin;
+              r += (kr - r) * covD; g += (kg - g) * covD; b += (kb - b) * covD;
+            }
+          }
+        }
       }
 
       if (covH > 0) {
@@ -210,7 +257,9 @@ function buildShell(env) {
   for (let n = 0; n < 84; n++) {
     const sx = rs.range(-PAD, W + PAD), sy = rs.range(a.yAt(L.clamp(sx, 0, W)) + 90, H), ang = rs.range(-0.5, 0.5) + (rs.chance(0.3) ? 1.2 : 0), len = rs.range(30, 190);
     const ex = sx + Math.cos(ang) * len, ey = sy + Math.sin(ang) * len * 0.6;
-    const inHole = (qx, qy) => { const hx = qx - HO.x, hy = qy - HO.y; return sq((hx * HO.c + hy * HO.s) / HO.rx) + sq((-hx * HO.s + hy * HO.c) / HO.ry) < 1.25; };
+    const inHole = (qx, qy) => { const hx = qx - HO.x, hy = qy - HO.y; return HOLE && sq((hx * HO.c + hy * HO.s) / HO.rx) + sq((-hx * HO.s + hy * HO.c) / HO.ry) < 1.25; };
+    const inSlit = (qx, qy) => { const hx = qx - SL.x, hy = qy - SL.y; return sq((hx * SL.c + hy * SL.s) / (SL.rx + 60)) + sq((-hx * SL.s + hy * SL.c) / 190) < 1; };
+    if (inSlit(sx, sy) || inSlit(ex, ey) || inSlit((sx + ex) / 2, (sy + ey) / 2)) continue;
     if (inHole(sx, sy) || inHole(ex, ey)) continue;
     const alp = rs.range(0.07, 0.24), lw = rs.range(0.6, 1.1), bend = rs.range(-8, 8);
     const run = (dy, style) => { g.strokeStyle = style; g.lineWidth = lw; g.beginPath(); g.moveTo(sx, sy + dy); g.quadraticCurveTo((sx + ex) / 2, (sy + ey) / 2 + bend + dy, ex, ey + dy); g.stroke(); };

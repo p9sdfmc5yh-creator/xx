@@ -208,6 +208,29 @@ function buildStrokes(a, G) {
   rimPull({ th: thOf(880), dr: -40, len: 420, tilt: -0.015, w: 76, press: 1.3, frame: 4 });
   moonPull(-170, 320, { w: 56, press: 1.2, dy: 3, frame: 5 });
   rimPull({ th: thOf(1080), dr: -84, len: 380, tilt: 0.04, w: 68, press: 1.3, frame: 5 });
+
+  // ── the flat of the crayon carried on past the rim (all there from the first frame) ──
+  // a light chain straddling the rim's inner edge, so that step is printed by the coin and not by where the strokes stop
+  for (let th = -sEnd * 0.8; th < sEnd * 0.86;) {
+    const len = r.range(340, 620), h = len / R / 2, c = th + h, x = xOf(c);
+    if (!r.chance(0.14))
+      rimPull({ th: c, dr: -(RIM + r.range(-16, 10)), len, tilt: r.range(-0.025, 0.025), w: r.range(76, 96), press: r.range(0.4, 0.6) * fade(x), tail: r.range(0.1, 0.3) });
+    th += 2 * h * r.range(0.6, 0.9);
+  }
+  // slanted hatching that runs off the rim, over the field and onto the crescent: the field takes only a thin pepper of wax
+  for (let x = 560; x < 1000; x += r.range(92, 140))
+    rimPull({ th: thOf(x), dr: -r.range(172, 214), len: r.range(300, 420), tilt: r.range(0.3, 0.44), w: r.range(46, 62), press: r.range(0.3, 0.5) });
+  for (let x = 1200; x < 1480; x += r.range(96, 140))
+    rimPull({ th: thOf(x), dr: -r.range(168, 204), len: r.range(280, 380), tilt: r.range(0.28, 0.42), w: r.range(46, 60), press: r.range(0.2, 0.32) });
+  // two broad passes through the field itself, between rim and crescent
+  rimPull({ th: thOf(770), dr: -184, len: 600, tilt: 0.02, w: 96, press: 0.36 });
+  rimPull({ th: thOf(1300), dr: -192, len: 460, tilt: -0.04, w: 90, press: 0.22 });
+  // and under the crescent, down to the inner rim
+  push(a.cx - 540, a.crestY + 372, a.cx + 40, a.crestY + 358, { w: 94, press: 0.4, bow: 10 });
+  push(a.cx - 110, a.crestY + 364, a.cx + 400, a.crestY + 380, { w: 84, press: 0.3, bow: 8 });
+  // the inner rim's left corner: the bar turns down beside the square hole
+  barPull(-700, -470, { w: 62, press: 0.7 });
+  push(a.cx - 627, G.hTop - 14, a.cx - 622, H + 34, { w: 66, press: 0.72, bow: 0, tail: 0.1 });
   return list;
 }
 
@@ -272,13 +295,16 @@ function buildRubbing(env) {
         if (dr > -9 || below > -36) {
           const sA = Math.atan2(ddx, ddy) * R;
           if (dr > -9) { ew = nG.n2(sA / 36, 1.7) * 0.9 + nG.n2(sA / 6.5, 5.3) * 0.45; nick = 4.5 * sstep(0.6, 0.92, nG.n2(sA / 80, 9.9)); }   // small dents in an old rim
-          else es = nG.n2(sA / 95, 3.3) * 13 + nG.n2(sA / 24, 8.1) * 5;
+          else es = nG.n2(sA / 130, 3.3) * 4.5 + nG.n2(sA / 27, 8.1) * 2.2 + nG.n2(sA / 7.5, 2.6) * 0.9;   // a worn rim: its inner edge wanders a few px
         }
-        // the outer edge is a sharp step (crisp line on the arc); the inner side slopes gently into the field (soft, woolly edge)
-        const inner = sstep(17, -15, below + es);
+        // the outer edge is a sharp step (crisp line on the arc); the inner edge is a second, concentric step — a little
+        // rounder, so it prints a touch softer — and the crayon catches on both, which is what makes the band read as a rim
+        const be = below + es;
+        const inner = sstep(8, -6, be);
         raised = sstep(1.5, -1.5, dr + nick - ew) * inner;
-        boost = 0.5 * Math.exp(-sq((dr + nick + 5) / 6));
-        swell = 0.25 * sstep(4, -12, dr) * inner;
+        boost = 0.5 * Math.exp(-sq((dr + nick + 5) / 6)) + 0.36 * Math.exp(-sq((be + 9) / 7));
+        swell = 0.25 * sstep(4, -12, dr) * sstep(17, -15, be);
+        if (be > 0 && be < dE) dE = be;          // the sheet bridges from the rim down to the field: a blank halo just inside it
       }
       // crescent, in its own slightly tilted frame: a low rounded ridge, so its edges print soft
       if (moonRow && ddx > -640 && ddx < 620) {

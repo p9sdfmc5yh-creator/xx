@@ -225,11 +225,20 @@ function buildCells(env, F, SD) {
       core = L.shade(core, tone * 0.03 - 0.005);
       skin = L.mix('#dcedc8', '#d9ea4c', L.clamp(dk * 1.15));
     }
-    gr.fillStyle = skin; gr.beginPath(); roundPath(gr, P, s.x, s.y, mx, my, 1); gr.fill();
+    // the etched grain boundary: a hairline of deep green hugging the outline (only its outer half survives the fill)
+    gr.beginPath(); roundPath(gr, P, s.x, s.y, mx, my, 1);
+    if (!dim && maxR > 3.2) { gr.strokeStyle = dk > 0.5 ? 'rgba(6,40,44,0.55)' : 'rgba(7,88,74,0.62)'; gr.lineWidth = 1.7; gr.stroke(); }
+    gr.fillStyle = skin; gr.fill();
     const cw = dim ? 1.2 : L.lerp(1.3, 3.2, L.clamp(s.r / 55));
     gc.fillStyle = core; gc.beginPath(); roundPath(gc, P, s.x, s.y, mx, my, L.clamp(1 - cw / Math.max(2.5, maxR), 0.45, 0.96)); gc.fill();
+    // coring: the big grains froze from the middle outward — one or two faint growth lines inside them
+    if (!dim && maxR > 17) {
+      gc.lineWidth = 1.1;
+      gc.strokeStyle = 'rgba(176,190,120,0.17)'; gc.beginPath(); roundPath(gc, P, s.x, s.y, mx, my, r.range(0.66, 0.76)); gc.stroke();
+      if (maxR > 30) { gc.strokeStyle = 'rgba(176,190,120,0.11)'; gc.beginPath(); roundPath(gc, P, s.x, s.y, mx, my, r.range(0.36, 0.48)); gc.stroke(); }
+    }
   }
-  gr.drawImage(L.blurred(coreL, 1.4), -PAD, -PAD);
+  gr.drawImage(L.blurred(coreL, 0.55), -PAD, -PAD);
   // uneven etch: slow, same-hue blotches so no two grains are quite the same white
   L.overlayOn(rimL, L.noiseLayer(PAD, { seed: 's32etch', scale: 210, octaves: 3, res: 0.16, contrast: 1.5, ramp: [[0, '#eceacb'], [0.6, '#ffffff'], [1, '#ffffff']] }), { blend: 'multiply', alpha: 0.5 });
   return rimL;
@@ -261,6 +270,13 @@ function buildPockets(env, CL, fine) {
       }
     }
     a.at(g, c.th, -c.dep, () => {
+      // the eutectoid between the arms: a crowd of tiny pale and dark specks, densest in the heart of the pocket
+      const nsp = Math.round(c.rad * c.rad / 11);
+      for (let k = 0; k < nsp; k++) {
+        const rr = c.rad * 0.84 * Math.pow(r(), 0.62), an = r.range(0, L.TAU), q = r.range(0.55, 1.45), lite = r.chance(0.62);
+        g.fillStyle = lite ? `rgba(${lite && r.chance(0.3) ? '178,246,222' : '74,214,176'},${r.range(0.28, 0.6).toFixed(2)})` : `rgba(3,22,34,${r.range(0.3, 0.55).toFixed(2)})`;
+        g.beginPath(); g.ellipse(Math.cos(an) * rr, Math.sin(an) * rr, q * r.range(1, 1.5), q, r.range(0, Math.PI), 0, L.TAU); g.fill();
+      }
       const cols = ['#17a183', '#3bd8ae', '#a5f8e0'], shr = [0, 2.6, 7.2];
       for (let pass = 0; pass < 3; pass++) {
         g.strokeStyle = g.fillStyle = cols[pass];
@@ -287,10 +303,12 @@ function buildPockets(env, CL, fine) {
       for (const [x, y, rr] of blobs) {
         const sq = r.range(0.86, 1), rot = r.range(0, Math.PI);
         lg.save(); lg.translate(x, y); lg.rotate(rot); lg.scale(1, sq);
-        lg.fillStyle = L.radial(lg, 0, 0, rr * 0.7, rr + 4.5, [[0, 'rgba(4,10,30,0.75)'], [1, 'rgba(4,10,30,0)']]);
-        lg.beginPath(); lg.arc(0, 0, rr + 4.5, 0, L.TAU); lg.fill();
+        lg.fillStyle = L.radial(lg, 0, 0, rr * 0.8, rr + 2.8, [[0, 'rgba(4,10,30,0.7)'], [1, 'rgba(4,10,30,0)']]);
+        lg.beginPath(); lg.arc(0, 0, rr + 2.8, 0, L.TAU); lg.fill();
         lg.fillStyle = L.radial(lg, -rr * 0.15, -rr * 0.2, 0, rr * 1.05, [[0, '#12162a'], [0.6, '#090b16'], [1, '#04050c']]);
         lg.beginPath(); lg.arc(0, 0, rr, 0, L.TAU); lg.fill();
+        // the lip of the globule catches the lamp all the way round
+        if (rr > 6) { lg.strokeStyle = 'rgba(86,120,150,0.34)'; lg.lineWidth = 0.9; lg.beginPath(); lg.arc(0, 0, rr - 1.1, 0, L.TAU); lg.stroke(); }
         lg.restore();
       }
     });
@@ -380,7 +398,7 @@ function buildScene(env) {
       g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
     };
     halo(16, 0.25, 'rgba(24,170,150,0.95)', 0.24);
-    halo(4.5, 0.5, 'rgba(214,238,80,0.7)', 0.7);
+    halo(3.2, 0.5, 'rgba(214,238,80,0.7)', 0.5);
     g.drawImage(cells, -PAD, -PAD);
     g.drawImage(lead, -PAD, -PAD);
     // a few polishing scratches left on the section
@@ -396,9 +414,41 @@ function buildScene(env) {
     full(g);
     g.globalCompositeOperation = 'soft-light'; g.globalAlpha = 0.5;
     g.fillStyle = g.createPattern(fine, 'repeat'); full(g);
+    g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+    // the crust grew in layers: broken laminae running with the edge, hairline cracks across them, a few pale pits
+    {
+      const nl = L.makeNoise('s32lam'), rc = L.rng('s32crk'), N = G.outer.length;
+      const at = (i, f) => { const o = G.outer[i], q = G.inner[i]; return [o.x + (q.x - o.x) * f, o.y + (q.y - o.y) * f]; };
+      g.lineJoin = 'round'; g.lineCap = 'round';
+      for (const [f, col, lw, sd] of [[0.2, 'rgba(98,114,222,0.34)', 0.9, 1.7], [0.43, 'rgba(4,5,22,0.6)', 1.1, 5.3], [0.62, 'rgba(74,90,186,0.26)', 0.8, 9.1], [0.82, 'rgba(3,4,18,0.55)', 1.0, 13.9]]) {
+        g.strokeStyle = col; g.lineWidth = lw; g.beginPath();
+        let pen = false;
+        for (let i = 0; i < N; i++) {
+          if (nl.n2(i / 55, sd + 20) < -0.22) { pen = false; continue; }
+          const p = at(i, L.clamp(f + 0.12 * nl.n2(i / 36, sd) + 0.045 * nl.n2(i / 7, sd + 3), 0.06, 0.95));
+          if (pen) g.lineTo(p[0], p[1]); else { g.moveTo(p[0], p[1]); pen = true; }
+        }
+        g.stroke();
+      }
+      g.strokeStyle = 'rgba(2,3,14,0.6)'; g.lineWidth = 0.7; g.beginPath();
+      for (let k = 0; k < 420; k++) {
+        const i = rc.int(2, N - 6), f0 = rc.range(0.02, 0.6), f1 = Math.min(0.98, f0 + rc.range(0.18, 0.5)), sk = rc.int(-2, 2);
+        const p = at(i, f0), q = at(L.clamp(i + sk, 0, N - 1), f1);
+        g.moveTo(p[0], p[1]); g.lineTo(q[0], q[1]);
+      }
+      g.stroke();
+      for (let k = 0; k < 520; k++) {
+        const p = at(rc.int(1, N - 2), rc.range(0.08, 0.9)), q = rc.range(0.5, 1.15);
+        g.fillStyle = rc.chance(0.6) ? `rgba(126,142,236,${rc.range(0.22, 0.5).toFixed(2)})` : 'rgba(2,3,14,0.6)';
+        g.beginPath(); g.arc(p[0] + rc.range(-1.5, 1.5), p[1], q, 0, L.TAU); g.fill();
+      }
+    }
     g.restore();
+    // the cut edge itself: one clean dark line
+    g.strokeStyle = 'rgba(12,14,52,0.85)'; g.lineWidth = 1.6; g.lineJoin = 'round';
+    g.beginPath(); G.outer.forEach((p, i) => (i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y))); g.stroke();
     // bloom, kept inside the section
-    g.globalCompositeOperation = 'screen'; g.globalAlpha = 0.2;
+    g.globalCompositeOperation = 'screen'; g.globalAlpha = 0.16;
     stretch(g, blurSmall(g.canvas, 14, 0.25));
     g.restore();
   });
@@ -413,17 +463,17 @@ function buildScene(env) {
     // the thick edge of the section shades the field a little, right outside the arc
     g.fillStyle = L.radial(g, a.cx, a.cy, a.R, a.R + 64, [[0, 'rgba(84,96,92,0.2)'], [0.3, 'rgba(84,96,92,0.08)'], [1, 'rgba(84,96,92,0)']]);
     full(g);
-    g.filter = 'blur(1.1px)'; g.drawImage(spec, -PAD, -PAD); g.filter = 'none';
+    g.filter = 'blur(0.4px)'; g.drawImage(spec, -PAD, -PAD); g.filter = 'none';
   });
   // field curvature: the periphery of the view falls slightly out of focus
-  const soft = blurSmall(slide, 3.8, 0.5), big = L.makeCanvas(LW, LH), bg = big.getContext('2d');
+  const soft = blurSmall(slide, 2.0, 0.5), big = L.makeCanvas(LW, LH), bg = big.getContext('2d');
   bg.drawImage(soft, 0, 0, LW, LH);
   bg.globalCompositeOperation = 'destination-in';
-  bg.fillStyle = L.radial(bg, a.cx + PAD, a.crestY + 60 + PAD, 520, 1250, [[0, 'rgba(0,0,0,0)'], [1, 'rgba(0,0,0,1)']]);
+  bg.fillStyle = L.radial(bg, a.cx + PAD, a.crestY + 60 + PAD, 780, 1500, [[0, 'rgba(0,0,0,0)'], [1, 'rgba(0,0,0,1)']]);
   bg.fillRect(0, 0, LW, LH);
   slide.getContext('2d').drawImage(big, -PAD, -PAD);
   tick('slide');
-  const out = chroma(slide, 0.0015, W / 2 + PAD, H / 2 + PAD);
+  const out = chroma(slide, 0.0008, W / 2 + PAD, H / 2 + PAD);
   tick('chroma');
   let msg = 's32 timing:'; for (let i = 1; i < T.length; i += 2) msg += ` ${T[i + 1]}=${(T[i] - (i > 1 ? T[i - 2] : T[0])).toFixed(0)}`;
   console.warn(msg);
@@ -451,6 +501,6 @@ export default {
     ctx.restore();
     // sensor noise, new every frame
     const f = env.frame | 0, gr = S.grain[f % S.grain.length], r = L.rng('s32n' + f);
-    L.overlayGrain(ctx, gr, 0.5, 'overlay', Math.floor(r() * 48), Math.floor(r() * 48));
+    L.overlayGrain(ctx, gr, 0.42, 'overlay', Math.floor(r() * 48), Math.floor(r() * 48));
   },
 };

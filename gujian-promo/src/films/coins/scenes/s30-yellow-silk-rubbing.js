@@ -114,7 +114,9 @@ function buildRub(env) {
       bset(i, j);
       // paper tooth + the weave of the dabber's cloth + a pinch of white noise
       const g1 = nA.n2(u / 2.4, v / 2.4), g2 = nB.n2(u / 6.5 + 11, v / 6.5), wh = hash2(i, j);
-      const grain = 0.5 + 0.3 * g1 + 0.17 * g2 + 0.16 * (wh - 0.5);
+      // the stipple itself is carried by a much finer tooth (≈1–2 px particles); the coarser octaves only modulate it
+      const gf = nC.n2(u / 1.3 + 5.5, v / 1.3 - 3.5), gm = nB.n2(u / 1.9 - 21, v / 1.9 + 8);
+      const grain = 0.5 + 0.22 * gf + 0.14 * gm + 0.1 * g1 + 0.07 * g2 + 0.12 * (wh - 0.5);
       const dry = bil(gDry);
 
       let D = 0;

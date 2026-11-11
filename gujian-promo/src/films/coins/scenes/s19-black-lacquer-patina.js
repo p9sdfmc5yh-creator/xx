@@ -138,7 +138,7 @@ function buildFace(env) {
       if (sd < LW + 12) h += AL * sstep(-3, 8, sd) * (1 - sstep(LW - 16, LW + 8, sd));
       const g1 = nA.n2(U / 21, V / 21), g2 = nB.n2(U / 4.1 + 50, V / 4.1);   // faint orange-peel of the casting + micro-grain
       // thin blue-green rust: a few patches, gathering where rim meets field
-      const pt = bil(fPt, i, j) + 0.14 * Math.exp(-Math.abs(V - V2 - 14) / 30) + 0.1 * nA.n2(U / 30 + 9, V / 30 - 4) + 0.07 * g2;
+      const pt = bil(fPt, i, j) + 0.14 * Math.exp(-Math.abs(V - V2 - 14) / 30) + 0.1 * nA.n2(U / 30 + 9, V / 30 - 4) + 0.045 * nB.n2(U / 10 + 5, V / 10 - 31) + 0.025 * g2;
       const pm = sstep(0.47, 0.63, pt) * sstep(V1 - 40, V1 + 14, V);
       Pm[k] = pm; G1[k] = g1;
       Hh[k] = h + AG1 * g1 + AG2 * g2 + pm * 0.012 * g2;
@@ -186,6 +186,14 @@ function buildFace(env) {
       const e1 = fx - 0.012, e2 = fy + 0.02, s1 = gx - 0.003, s2 = gy + 0.005;
       lum += Math.exp(-(e1 * e1 + e2 * e2) / 3.2e-5) * E * 1.1 * (1 - Pm[k]);                   // pin-point glints on pore walls that face the light
       lum += Math.exp(-(s1 * s1 + s2 * s2) / 3e-5) * E * 0.2 * (1 - 0.6 * Pm[k]);            // the gentle swell of the surface gathers a little extra sheen
+      // lacquer gloss on the raised outer rim: a broad, soft reflected band, broken up by the cloud field
+      const gl = (V - 0.72 * V1) / (0.17 * V1);
+      lum += 0.085 * Math.exp(-gl * gl) * plat * (0.72 + 0.28 * sstep(-0.4, 0.5, c1)) * (0.5 + 0.5 * E) * (1 - 0.6 * Pm[k]);
+      // the crest of the rim's inner bevel: a hair-thin rubbed highlight, interrupted along its length, and a fine crease at its foot
+      const cq = (V - (V1 + 2.2)) / 1.5, cbk = sstep(-0.3, 0.25, c2 + 0.6 * g1);
+      lum += 0.2 * Math.exp(-cq * cq) * (0.35 + 0.65 * E) * cbk;
+      const fq = (V - (V2 + 1.5)) / 1.7;
+      lum *= 1 - 0.22 * Math.exp(-fq * fq) * (0.5 + 0.5 * cbk);
       const cav = Cv[k]; if (cav > 0) lum *= 1 - 0.7 * cav;
       const lf = Math.min(NL - 1.001, (lum / LMAX) * (NL - 1)), l0 = lf | 0, lu = lf - l0, o = l0 * 3;
       let cr = lut[o] + (lut[o + 3] - lut[o]) * lu, cg = lut[o + 1] + (lut[o + 4] - lut[o + 1]) * lu, cb = lut[o + 2] + (lut[o + 5] - lut[o + 2]) * lu;
@@ -224,6 +232,26 @@ function buildFace(env) {
     for (const [f, aa] of [[1, 0.45], [0.55, 0.55]]) {      // faint full length + stronger middle → tapered ends
       g.strokeStyle = `rgba(150,168,196,${(al * aa).toFixed(3)})`; g.lineWidth = lw;
       g.beginPath(); g.moveTo(x0 - dx * f, y0 - dy * f); g.quadraticCurveTo(x0 + nx, y0 + ny, x0 + dx * f, y0 + dy * f); g.stroke();
+    }
+  }
+  // 5b) a finer generation of handling marks: short hairlines, thinner than a pixel, mostly along the two rubbing directions
+  for (let n = 0; n < 620; n++) {
+    const x0 = rs.range(-PAD, W + PAD), y0 = rs.range(a.crestY, H + PAD), fam = rs();
+    const ang = fam < 0.45 ? -0.5 + rs.gauss() * 0.16 : fam < 0.75 ? 0.95 + rs.gauss() * 0.2 : rs.range(0, Math.PI);
+    const len = rs.range(7, 46), bend = rs.range(-0.05, 0.05) * len, al = rs.range(0.07, 0.3), lw = rs.range(0.35, 0.6);
+    if (a.drAt(x0, y0) > -30) continue;
+    const dx = Math.cos(ang) * len * 0.5, dy = Math.sin(ang) * len * 0.5;
+    g.strokeStyle = `rgba(150,168,196,${al.toFixed(3)})`; g.lineWidth = lw;
+    g.beginPath(); g.moveTo(x0 - dx, y0 - dy); g.quadraticCurveTo(x0 - Math.sin(ang) * bend, y0 + Math.cos(ang) * bend, x0 + dx, y0 + dy); g.stroke();
+  }
+  // 5c) circumferential rub marks on the raised outer rim (the coin's high ground takes the wear): faint arcs that follow the edge
+  g.globalCompositeOperation = 'screen';
+  for (let n = 0; n < 64; n++) {
+    const th0 = rs.range(-span, span), v0 = rs.range(52, V1 - 8), dth = rs.range(18, 110) / R, al = rs.range(0.04, 0.11), lw = rs.range(0.4, 0.8);
+    const rr = R - v0 + rs.range(-1.2, 1.2), drift = rs.range(-2.5, 2.5);     // not perfectly concentric
+    for (const [f, aa] of [[1, 0.5], [0.5, 0.6]]) {
+      g.strokeStyle = `rgba(118,138,176,${(al * aa).toFixed(3)})`; g.lineWidth = lw;
+      g.beginPath(); g.arc(cx, cy + drift, rr, th0 - dth * f - Math.PI / 2, th0 + dth * f - Math.PI / 2); g.stroke();
     }
   }
   g.restore();

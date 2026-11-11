@@ -116,9 +116,9 @@ function layCoins(a) {
     }
   }
   // the three coins the eye lands on
-  add(560, 270, 272, 0.3, 0.27, 0.5, 0.34, 1.9, { eat: 0.35, hk: 0.42, halo: 0.1 });
-  add(250, 424, 276, 0.78, -0.6, 1.0, 0.72, 1.35, { eat: 0.5, chip: [2.5, 0.2], hk: 0.5, halo: 0.15 });
-  add(-215, 382, 280, 0.955, 0.5, 0.33, 1.0, 1.25, { eat: 0.25, chip: [-2.2, 0.13], hk: 0.62, halo: 0.17 });
+  add(560, 270, 272, 0.3, 0.27, 0.5, 0.34, 1.9, { eat: 0.35, hk: 0.56, halo: 0.18 });
+  add(250, 424, 276, 0.78, -0.6, 1.0, 0.72, 1.35, { eat: 0.5, chip: [2.5, 0.2], hk: 0.66, halo: 0.22 });
+  add(-215, 382, 280, 0.955, 0.5, 0.33, 1.0, 1.25, { eat: 0.25, chip: [-2.2, 0.13], hk: 0.78, halo: 0.24 });
   return coins;
 }
 
@@ -165,7 +165,7 @@ function castCoins(coins, C, Hm, Ha, RW, RH, X0, Y0) {
         const re = rc * (1 + 0.008 * m2 + 0.02 * m1);                       // a worn, slightly nibbled edge
         let field = 0.41 * (0.86 + 0.3 * m1 + 0.13 * m2) * (1 + lx0 * wx + ly0 * wy);
         field *= 1 - 0.3 * sstep(0.42, 0.8, m2);                             // pitting
-        let top = (1.22 + 0.08 * m2) * (0.84 + 0.16 * sstep(-0.5, 0.3, m1));   // the raised rims are worn unevenly
+        let top = (1.46 + 0.08 * m2) * (0.84 + 0.16 * sstep(-0.5, 0.3, m1));   // the raised rims are worn unevenly
         if (q.eat) { const e = q.eat * sstep(0.05, 0.6, m1 * 0.85 + m2 * 0.3); field *= 1 - e; top *= 1 - 0.6 * e; }
         const lipGain = top - field;
         let acc = 0, hAcc = 0;
@@ -358,7 +358,7 @@ function buildClump(env) {
     fVx[k] = nA.fbm(px / 70 + 3, py / 70 + 71, 2); fVy[k] = nB.fbm(px / 70 - 47, py / 70 + 13, 2);
     const ux = px + 120 * wx, uy = py + 120 * wy;
     // the matrix: slow billows, a little denser to the upper left, thinning toward the lower right
-    fBody[k] = 1.1 + 0.27 * nB.fbm(ux / 460, uy / 460, 3) - 0.2 * L.clamp((ddx + 0.7 * (py - a.crestY) - 420) / 800, -1, 1);
+    fBody[k] = 1.06 + 0.4 * nB.fbm(ux / 460, uy / 460, 3) - 0.2 * L.clamp((ddx + 0.7 * (py - a.crestY) - 420) / 800, -1, 1);
     // cloudy veins of denser corrosion drifting through it
     fCl[k] = nC.ridged(ux / 330 + 3.3, uy / 250 - 8.1, 3);
     // rounded hollows (smooth dark pockets, each with a firm bright lip): few and large, mostly on the right;
@@ -450,7 +450,7 @@ function buildClump(env) {
       // cloudy veins
       m += 0.15 * sstep(0.58, 0.95, cl);
       // a flake: a plateau with a crisp contour, like a sheet of rust lying over the rest
-      if (s1 > 0.14) m += 0.22 * Math.sqrt(Math.min(1, (s1 - 0.14) / 0.5));
+      if (s1 > 0.08) m += 0.22 * sstep(0.08, 0.6, s1);
       // rounded hollows: a denser lip, then steep at the edge and flat inside (the projection of a round hollow)
       if (vd > -0.09) {
         const gx = (v10 - v00) * (1 - ty) + (v11 - v01) * ty, gy = (v01 - v00) * (1 - tx) + (v11 - v10) * tx;
@@ -475,7 +475,7 @@ function buildClump(env) {
       const crack = d1[o] * i255, grit = d1[o + 1] * i255, pore = d1[o + 2] * i255;
       if (crack + grit + pore > 0) {
         const off = (1 - 0.75 * sstep(0.12, 0.45, Ck)) * (1 - hm);
-        m = m * (1 - 0.44 * crack * off) * (1 - 0.5 * pore * off) + 0.3 * grit;
+        m = m * (1 - 0.24 * crack * off) * (1 - 0.5 * pore * off) + 0.3 * grit;
         sh *= 1 - 0.55 * crack;
       }
       // the crust lies looser against the metal: a faint dark fringe outside each coin's edge
@@ -507,9 +507,10 @@ function buildClump(env) {
             const c = cA + (cB - cA) * (0.5 - 0.5 * sstep(0, 14, fd)) * sstep(0.4 * w, w, opn);   // two bubbles run together share their emptiness
             let vl = eId * 7.31; vl -= Math.floor(vl);                     // a film lying face-on across some bubbles: a soft veil
             const veil = vl > 0.68 ? (vl - 0.68) * 0.55 * sstep(2, 34, fd < cd ? fd : cd) : 0;
-            const in1 = sstep(w, w + 2.4, cd);
-            const F1 = (1 - in1) * (0.72 + 0.28 * wg) + in1 * ((0.5 * Math.exp(-(cd - w) / 15) + 0.24 * Math.exp(-(cd - w) / 4.5)) * wg + veil);
-            S1 = 1 - c * (1 - F1);
+            // rusted-up lumps, not glass: the hollow deepens slowly from its wall and never empties out
+            const in1 = sstep(w * 0.4, w + 30, cd);
+            const F1 = (1 - in1) * (0.72 + 0.28 * wg) + in1 * ((0.5 * Math.exp(-(cd - w) / 22) + 0.2) * wg + veil);
+            S1 = 1 - 0.76 * c * (1 - F1);
           }
         }
         // the lace of small cells; on the fringe of the foam the solid matrix is only nibbled by them
@@ -522,9 +523,9 @@ function buildClump(env) {
             const opn = 7 * sstep(0.1, 0.55, -op) * (1 - Math.min(1, 2.5 * dC));
             const fd = eBd * 44, dd = (0.5 + 0.3 * eId) * 44 - Math.sqrt(eD1) * 44, cd = fd + opn < dd ? fd + opn : dd;
             const tb = (0.5 - 0.5 * sstep(0, 9, fd)) * sstep(0.36, 0.9, opn);
-            const in2 = sstep(0.9, 2.9, cd), lip2 = Math.exp(-(cd - 0.9) / 7), F2 = (1 - in2) + in2 * 0.5 * lip2;
-            S2 = 1 - (cA + (cB - cA) * tb) * (1 - F2);
-            Sf = 1 - 0.8 * (nA2 + (nB2 - nA2) * tb) * in2 * (1 - 0.65 * lip2);
+            const in2 = sstep(0.4, 11, cd), lip2 = Math.exp(-(cd - 0.9) / 9), F2 = (1 - in2) + in2 * (0.3 + 0.4 * lip2);
+            S2 = 1 - 0.8 * (cA + (cB - cA) * tb) * (1 - F2);
+            Sf = 1 - 0.5 * (nA2 + (nB2 - nA2) * tb) * in2 * (1 - 0.65 * lip2);
           }
         }
         const small = 0.02 + 0.66 * upper, w1 = (0.95 - 0.5 * upper) * big, w2 = small + (0.8 - small) * (1 - big);
@@ -533,13 +534,13 @@ function buildClump(env) {
           // the net behind: membranes only, gone in places
           cell(ux / 92 - 3.9, uy / 80 + 21.7);
           const bd = cBd * 86 + 5 * sstep(0.05, 0.5, vx);
-          const F3 = 0.5 * (1 - sstep(0.8, 3.0, bd)) + 0.16 * Math.exp(-bd / 9);
+          const F3 = 0.2 * (1 - sstep(0.6, 7, bd)) + 0.2 * Math.exp(-bd / 14);
           // further back still, out of focus: broad soft walls
           cell(ux / 250 + 7.7, uy / 205 - 3.3);
           const F4 = Math.exp(-cBd * 225 / 13);
           // filaments: the computed ones, and the ones that were drawn
           const f1 = 1 - Math.abs(nB.n2(ux / 96 + 1.2 * wx, uy / 96 + 1.2 * wy)), f2 = f1 * f1, f4 = f2 * f2;
-          const fil = (f4 * f4 * f4 * f4 * f2 * 0.5 + f4 * f1 * 0.035) * sstep(-0.4, 0.2, vy + mem) + 0.62 * d2[o] * i255 + 0.42 * d2[o + 1] * i255;
+          const fil = (f4 * f4 * f4 * f4 * f2 * 0.22 + f4 * f1 * 0.035) * sstep(-0.4, 0.2, vy + mem) + 0.28 * d2[o] * i255 + 0.42 * d2[o + 1] * i255;
           m = m * base + 1.1 * opn * (0.02 + 0.13 * upper + F3 * (0.5 + 0.3 * upper) * (0.35 + 0.65 * sstep(-0.5, 0.3, mem))
             + 0.07 * F4 * (1 - 0.6 * upper) + fil * (0.4 + 0.6 * upper));
           sh *= 1 - 0.8 * opn;
@@ -560,7 +561,7 @@ function buildClump(env) {
       v *= 1 - 0.25 * sstep(400, 1080, Math.sqrt(vdx * vdx + vdy * vdy));
       // the grain of the film: per pixel, fine
       let h = (Math.imul(i, 374761393) ^ Math.imul(j, 668265263)) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16;
-      v += (((h & 1023) + ((h >>> 10) & 1023)) / 2046 - 0.5) * 0.03 * (0.35 + v);
+      v += (((h & 1023) + ((h >>> 10) & 1023)) / 2046 - 0.5) * 0.022 * (0.35 + v);
       v = v < 0 ? 0 : v > 1 ? 1 : v;
       const li = ((v * (NL - 1)) | 0) * 3;
       d[o] = lut[li]; d[o + 1] = lut[li + 1]; d[o + 2] = lut[li + 2]; d[o + 3] = edge * 255;

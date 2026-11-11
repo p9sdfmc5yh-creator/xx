@@ -378,7 +378,13 @@ function buildMetal(env) {
     if (cov[k] > 0) {
       // the casting skin: fine tooth in the hollows, rubbed smooth on the high points; slow swells from hand finishing
       const fx = x + X0, fy = y + Y0, pol = sstep(0.58, 0.9, rl);
-      h += (0.12 * NZ.n2(fx / 2.7, fy / 2.7) * (1 - 0.85 * pol) + 0.3 * NZ.n2(fx / 15 + 40, fy / 15) * (1 - 0.5 * pol) + 0.75 * NZ.n2(fx / 72 + 9, fy / 72 + 3)) * e;
+      h += (0.085 * NZ.n2(fx / 2.7, fy / 2.7) * (1 - 0.85 * pol) + 0.22 * NZ.n2(fx / 15 + 40, fy / 15) * (1 - 0.5 * pol) + 0.5 * NZ.n2(fx / 72 + 9, fy / 72 + 3)) * e;
+      // the rim's face was dressed on a lathe and then handled for centuries: hair-fine lines running with the circle
+      const ddx = fx - A.cx, ddy = fy - A.cy, vv = A.R - Math.sqrt(ddx * ddx + ddy * ddy);
+      if (vv < RIM + 2) {
+        const uu = Math.atan2(ddx, -ddy) * A.R, m = sstep(3, 15, vv) * (1 - sstep(RIM - 17, RIM - 4, vv));
+        if (m > 0) h += m * (0.05 * NZ.n2(vv / 1.6 + 3, uu / 520) + 0.028 * NZ.n2(vv / 0.95 - 7, uu / 230 + 5));
+      }
     }
     Hh[k] = h; Rl[k] = rl;
   }
@@ -406,10 +412,14 @@ function buildMetal(env) {
     }
   }
 
-  // response of frosted silver to the key light (index = N·L): the faces stay near white, only the turned-away bevels go grey
+  // response of white metal to the key light (index = N·L). Unlike plaster it is steep: the level faces sit at a satin
+  // silver, anything leaning toward the lamp runs up to white, anything leaning away drops quickly into dark steel.
   const RESP = new Float32Array(513);
-  { const f = L.makeRamp([[0, '#333333'], [0.4, '#4a4a4a'], [0.55, '#6a6a6a'], [0.66, '#989898'], [0.76, '#d0d0d0'], [0.83, '#eeeeee'], [0.9, '#ffffff'], [1, '#ffffff']]);
-    for (let i = 0; i <= 512; i++) RESP[i] = (f(i / 512)[0] / 255) * (i > 470 ? 1 + (i - 470) / 140 : 1); }
+  { const pts = [[0, 0.12], [0.38, 0.18], [0.5, 0.24], [0.62, 0.34], [0.72, 0.5], [0.8, 0.69], [0.83, 0.77], [0.87, 0.85], [0.92, 0.915], [1, 0.97]];
+    for (let i = 0, q = 1; i <= 512; i++) {
+      const t = i / 512; while (q < pts.length - 1 && t > pts[q][0]) q++;
+      const a = pts[q - 1], b = pts[q]; RESP[i] = a[1] + (b[1] - a[1]) * L.clamp((t - a[0]) / (b[0] - a[0]));
+    } }
   let lx = -0.42, ly = -0.62, lz = 0.66; { const m = Math.hypot(lx, ly, lz); lx /= m; ly /= m; lz /= m; }
   let hx = lx, hy = ly, hz = lz + 1; { const m = Math.hypot(hx, hy, hz); hx /= m; hy /= m; hz /= m; }
   let gx = -0.1, gy = -0.5, gz = 1.5; { const m = Math.hypot(gx, gy, gz); gx /= m; gy /= m; gz /= m; }
@@ -432,19 +442,26 @@ function buildMetal(env) {
       const nx = -sx * inv, ny = -sy * inv, nz = inv, rl = Rl[k];
       const ndl = nx * lx + ny * ly + nz * lz;
       let v = RESP[(L.clamp(ndl * 0.5 + 0.5) * 512) | 0];
-      // tarnish stays in whatever lies low (incised lines, the roots of petals and feathers); the high points are rubbed bright
-      const alb = (0.93 + 0.07 * sstep(0.4, 0.85, rl)) * (0.6 + 0.4 * sstep(0.13, 0.36, rl));
-      const occ = 1 - 1.5 * L.clamp((dO[k * 4] - dR[k * 4]) / 255 - 0.03, 0, 0.3);
-      const tone = 1 + 0.05 * NZ.n2((x + X0) / 190, (y + Y0) / 150);
-      v *= alb * occ * tone;
+      // patina (包浆): dark tarnish stays in whatever lies low — incised lines, the roots of petals and feathers, the
+      // seams where one form sits on another — and thins out in uneven patches; the high points are rubbed bright
+      const fx = x + X0, fy = y + Y0, pol = sstep(0.52, 0.92, rl);
+      const hol = L.clamp(((dO[k * 4] - dR[k * 4]) / 255 - 0.015) / 0.2);
+      const low = 1 - sstep(0.13, 0.5, rl);
+      let pat = Math.max(low, 0.85 * hol) + 0.3 * low * hol;
+      pat = L.clamp(pat * (0.84 + 0.3 * NZ.n2(fx / 13 + 7, fy / 13 - 2) + 0.16 * NZ.n2(fx / 61 - 4, fy / 61 + 9)));
+      const tone = 1 + 0.06 * NZ.n2(fx / 190, fy / 150) + 0.035 * NZ.n2(fx / 43 + 12, fy / 43);
+      v *= (0.85 + 0.17 * pol) * (1 - 0.7 * pat) * tone;
+      // two highlights: the soft sheen of the satin skin and, on the polished arrises, a hard bright line
       const nh = Math.max(0, nx * hx + ny * hy + nz * hz);
-      const sp = 0.45 * Math.pow(nh, 40) + 0.55 * Math.pow(nh, 180) * (0.4 + 0.6 * sstep(0.5, 0.9, rl));
-      const fl = Math.max(0, nx * 0.6 + ny * 0.62 - 0.22);
-      v = (v + 0.7 * sp) * fall;
+      const sp = 0.42 * Math.pow(nh, 34) + 0.95 * Math.pow(nh, 190) * (0.45 + 0.55 * pol);
+      v = (v + sp * (1 - 0.7 * pat)) * fall;
       const cav = Cv[k]; if (cav > 0) v *= 1 - 0.5 * cav;
-      tr = 238 * v + 14 * fl; tg = 240 * v + 22 * fl; tb = 238 * v + 20 * (1 - Math.min(1, v)) + 34 * fl;
-      const g = Math.pow(Math.max(0, nx * gx + ny * gy + nz * gz), 16);
-      const ga = c * L.clamp(0.1 + 1.1 * g) * (1 - 0.7 * cav);
+      // cold light bounced back into the bevels that face away from the lamp
+      const fl = sstep(0.24, 0.8, nx * 0.6 + ny * 0.62) * (1 - 0.5 * pat) * fall;
+      const vc = Math.min(1, v), wm = pat * (1 - vc);   // the tarnish itself is a touch warm; the bare metal is cold
+      tr = 231 * v + 8 * vc * vc + 10 * wm + 14 * fl; tg = 238 * v + 2 * wm + 25 * fl; tb = 242 * v + 12 * (1 - vc) - 12 * wm + 38 * fl;
+      const g = Math.pow(Math.max(0, nx * gx + ny * gy + nz * gz), 36);
+      const ga = c * L.clamp(0.05 + 1.15 * g) * (1 - 0.7 * cav) * (1 - 0.6 * pat);
       const j = k * 4; go[j] = 232; go[j + 1] = 242; go[j + 2] = 255; go[j + 3] = ga * 255;
     }
     let wr = 0, wg = 0, wb = 0;
@@ -473,8 +490,8 @@ function buildMetal(env) {
   {
     const h1 = L.blurred(metal, 8), h2 = L.blurred(metal, 24), g = metal.getContext('2d');
     g.save(); g.globalCompositeOperation = 'lighter';
-    g.globalAlpha = 0.17; g.drawImage(h1, 0, 0);
-    g.globalAlpha = 0.07; g.drawImage(h2, 0, 0);
+    g.globalAlpha = 0.14; g.drawImage(h1, 0, 0);
+    g.globalAlpha = 0.06; g.drawImage(h2, 0, 0);
     g.restore();
   }
   return { metal, glint, X0, Y0 };

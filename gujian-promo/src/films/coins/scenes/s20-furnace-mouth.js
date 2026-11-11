@@ -197,6 +197,16 @@ function buildBase(env, lights) {
       return st.map(([dr, c]) => [(dr + 700) / 832, c]).reverse();
     })());
     a.pathBelow(g, 132); g.fill();
+    // the air lying right over the lip burns deeper and redder: one calm, even band that follows the arc (the caption sits
+    // on it, so white type reads cleanly); it starts clear of the halo and thins back to the yellow-orange of the upper air
+    g.save(); g.globalCompositeOperation = 'multiply';
+    g.fillStyle = L.radial(g, a.cx, a.cy, a.R + 22, a.R + 622, (() => {
+      const st = [[22, '#ffffff'], [40, '#f3e0d8'], [62, '#e4c0b0'], [90, '#d8a894'], [130, '#d3a08a'], [200, '#d5a48e'], [270, '#dcb09e'],
+        [350, '#e7c6b8'], [440, '#f2ded6'], [530, '#fbf3ef'], [622, '#ffffff']];
+      return st.map(([dr, c]) => [(dr - 22) / 600, c]);
+    })());
+    full(g);
+    g.restore();
 
     // ── 3) the furnace wall below ──
     // soot and scorch: broad uneven patches so the lights sit in pools of dark

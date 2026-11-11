@@ -246,6 +246,32 @@ function buildBase(env) {
       g.strokeStyle = `rgba(96,56,12,${al})`; g.beginPath(); g.moveTo(p.x - ca, p.y - sa); g.lineTo(p.x + ca, p.y + sa); g.stroke();
       g.strokeStyle = `rgba(255,240,190,${al * 0.9})`; g.beginPath(); g.moveTo(p.x - ca, p.y - sa + 1.1); g.lineTo(p.x + ca, p.y + sa + 1.1); g.stroke();
     }
+    // vessels: boxwood's pores are tiny, so they read as hair-fine dashes lying along the growth rings, each a dark
+    // slot with a lit lower lip; they gather into loose bands and thin out in the gouged field
+    {
+      const Gx = a.cx - 0.22 * R, Gy = a.cy - 0.2 * R, rv = L.rng('s13pore'), nP = L.makeNoise('s13pore');
+      g.lineCap = 'round';
+      for (let i = 0; i < 7600; i++) {
+        const x = rv.range(-PAD, W + PAD), y = rv.range(a.crestY, H + PAD);
+        const dr = Math.hypot(x - a.cx, y - a.cy) - R;
+        if (dr > -(CHW + 4)) continue;
+        const gx = x - Gx, gy = y - Gy, gl = Math.hypot(gx, gy), tx = -gy / gl, ty = gx / gl;
+        if (nP.n2(gl / 11, Math.atan2(gx, -gy) * gl / 260) < -0.12) continue;      // banded with the rings
+        const fld = dr < -(RIMW + STW) ? 0.62 : 1;
+        const len = rv.range(2.2, 8.5), al = rv.range(0.17, 0.44) * fld, hx = tx * len / 2, hy = ty * len / 2;
+        g.lineWidth = rv.range(0.5, 0.85);
+        g.strokeStyle = `rgba(84,46,8,${al})`; g.beginPath(); g.moveTo(x - hx, y - hy); g.lineTo(x + hx, y + hy); g.stroke();
+        g.strokeStyle = `rgba(255,238,184,${al * 0.7})`; g.lineWidth = 0.5; g.beginPath(); g.moveTo(x - hx * 0.8, y - hy * 0.8 + 0.9); g.lineTo(x + hx * 0.8, y + hy * 0.8 + 0.9); g.stroke();
+      }
+      // knife work at the wall: the stop-cut was made as a run of short straight cuts, and each overran a little onto the rim
+      const rk = L.rng('s13knife');
+      for (let th = -a.span(PAD + 40); th < a.span(PAD + 40); th += rk.range(26, 64) / R) {
+        const p = a.pt(th, -(RIMW - rk.range(0.5, 2.5))), an = th + rk.sign() * rk.range(0.035, 0.1) + (rk.chance(0.5) ? Math.PI : 0);
+        const len = rk.range(14, 38), al = rk.range(0.32, 0.6), ex = p.x + Math.cos(an) * len, ey = p.y + Math.sin(an) * len;
+        g.lineWidth = 0.9; g.strokeStyle = `rgba(70,38,8,${al})`; g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(ex, ey); g.stroke();
+        g.lineWidth = 0.6; g.strokeStyle = `rgba(255,242,196,${al * 0.8})`; g.beginPath(); g.moveTo(p.x, p.y + 1); g.lineTo(ex, ey + 1); g.stroke();
+      }
+    }
     // the scribed circle: a hair-fine incised line (dark groove, lit lower lip), pressure varying from step to step
     const step = PITCH / (R - DOT), nd = Math.ceil(a.span(PAD + 80) / step);
     const rd = L.rng('s13dots');
@@ -285,7 +311,7 @@ const CURL_IN = L.makeRamp([[0, '#7a4208'], [0.45, '#b9741a'], [0.75, '#e09c2e']
 /** a plane shaving: a thin ribbon wound into an open corkscrew about an axis lying on the table */
 function drawCurl(g, o) {
   const ax = Math.cos(o.ang), ay = Math.sin(o.ang), nx = -ay, ny = ax;
-  const n = Math.max(24, Math.round(o.turns * 48));
+  const n = Math.max(36, Math.round(o.turns * 84));
   const P = [];
   for (let i = 0; i <= n; i++) {
     const f = i / n, t = o.ph + f * o.turns * L.TAU;
@@ -310,13 +336,20 @@ function drawCurl(g, o) {
     else col = L.css(CURL_IN(L.clamp(0.18 + 0.5 * Math.max(0, -dOut) + 0.75 * Math.max(0, dOut))));   // inner face: in its own shade, but the thin wood glows through
     g.fillStyle = col; g.strokeStyle = col; g.lineWidth = 0.8;
     g.beginPath(); g.moveTo(A.x0, A.y0); g.lineTo(B.x0, B.y0); g.lineTo(B.x1, B.y1); g.lineTo(A.x1, A.y1); g.closePath(); g.fill(); g.stroke();
-    if (front) {
-      g.strokeStyle = 'rgba(150,96,30,0.26)'; g.lineWidth = 0.8;           // grain running the length of the ribbon
-      for (const q of [0.2, 0.43, 0.62, 0.83]) {
-        g.beginPath(); g.moveTo(L.lerp(A.x0, A.x1, q), L.lerp(A.y0, A.y1, q)); g.lineTo(L.lerp(B.x0, B.x1, q), L.lerp(B.y0, B.y1, q)); g.stroke();
-      }
-      g.strokeStyle = 'rgba(255,248,220,0.85)'; g.lineWidth = 1.3;         // the paper-thin edges catch the light
-    } else { g.strokeStyle = 'rgba(92,50,8,0.55)'; g.lineWidth = 1; }
+    g.lineCap = 'butt';
+    for (let q = 0; q < 9; q++) {                                          // grain running the length of the ribbon, line by line
+      const u = 0.09 + q * 0.102 + 0.03 * (ihash(q * 7 + 3) - 0.5), al = 0.1 + 0.26 * ihash(q * 13 + 5);
+      g.strokeStyle = front ? `rgba(146,92,26,${al})` : `rgba(74,38,4,${al * 0.8})`; g.lineWidth = 0.45 + 0.4 * ihash(q * 5 + 1);
+      g.beginPath(); g.moveTo(L.lerp(A.x0, A.x1, u), L.lerp(A.y0, A.y1, u)); g.lineTo(L.lerp(B.x0, B.x1, u), L.lerp(B.y0, B.y1, u)); g.stroke();
+    }
+    if (i % 5 === 2 && ihash(i * 3 + 11) < 0.7) {                          // chatter left by the blade: faint ripples across the ribbon
+      g.strokeStyle = front ? 'rgba(126,76,18,0.2)' : 'rgba(60,30,4,0.2)'; g.lineWidth = 0.6;
+      g.beginPath(); g.moveTo(L.lerp(A.x0, A.x1, 0.06), L.lerp(A.y0, A.y1, 0.06)); g.lineTo(L.lerp(A.x0, A.x1, 0.94), L.lerp(A.y0, A.y1, 0.94)); g.stroke();
+      if (front) { g.strokeStyle = 'rgba(255,248,222,0.28)'; g.beginPath(); g.moveTo(L.lerp(B.x0, B.x1, 0.06), L.lerp(B.y0, B.y1, 0.06)); g.lineTo(L.lerp(B.x0, B.x1, 0.94), L.lerp(B.y0, B.y1, 0.94)); g.stroke(); }
+    }
+    g.lineCap = 'round';
+    if (front) { g.strokeStyle = 'rgba(255,248,220,0.88)'; g.lineWidth = 1.1; }   // the paper-thin edges catch the light
+    else { g.strokeStyle = 'rgba(92,50,8,0.55)'; g.lineWidth = 0.9; }
     g.beginPath(); g.moveTo(A.x0, A.y0); g.lineTo(B.x0, B.y0); g.moveTo(A.x1, A.y1); g.lineTo(B.x1, B.y1); g.stroke();
   }
   g.restore();
@@ -369,54 +402,92 @@ function buildProps(env) {
     g.globalAlpha = 1; g.drawImage(sp, x0, y0);
   }
 
-  // ── the ink-line: a twisted cord soaked in cinnabar; it lies along the rim, then its end lifts clear of the edge
-  const ctl = [[-182, -112], [-152, -94], [-114, -88], [-80, -108], [-48, -134], [-12, -128], [14, -98], [32, -58], [44, -14], [54, 34], [62, 84], [57, 124], [40, 152], [22, 163]];
-  const pts = L.smoothPath(ctl.map(([t, dr]) => { const p = P(t, dr); return [p.x, p.y]; }), 3);
-  const np = pts.length, TW = 7.6;
-  const lift = (i) => sstep(0.5, 1, i / (np - 1));
+  // ── the end of the ink-line: a short loose length of fine two-ply thread soaked in cinnabar. It lies flat on the rim,
+  //    slips over the edge, and its tip untwists into a few fibres.
+  const ctl = [[-176, -108], [-150, -93], [-116, -88], [-84, -104], [-52, -128], [-16, -124], [10, -98], [28, -60], [40, -20], [50, 22], [61, 58], [76, 82]];
+  const raw = L.smoothPath(ctl.map(([t, dr]) => { const p = P(t, dr); return [p.x, p.y]; }), 1.5);
+  const cum = [0];
+  for (let i = 1; i < raw.length; i++) cum.push(cum[i - 1] + Math.hypot(raw[i][0] - raw[i - 1][0], raw[i][1] - raw[i - 1][1]));
+  const pts = [];                                   // resampled at 1 px of length
+  for (let sl = 0, j = 1; sl <= cum[cum.length - 1]; sl += 1) {
+    while (j < raw.length - 1 && cum[j] < sl) j++;
+    const f = (sl - cum[j - 1]) / ((cum[j] - cum[j - 1]) || 1);
+    pts.push([L.lerp(raw[j - 1][0], raw[j][0], f), L.lerp(raw[j - 1][1], raw[j][1], f)]);
+  }
+  const np = pts.length, TW = 3.3, HWT = TW / 2, END = np - 10;
+  const tan = (i) => { const p = pts[Math.max(0, i - 2)], q = pts[Math.min(np - 1, i + 2)], l = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1; return [(q[0] - p[0]) / l, (q[1] - p[1]) / l]; };
+  let iEdge = np - 1;
+  for (let i = 0; i < np; i++) if (Math.hypot(pts[i][0] - a.cx, pts[i][1] - a.cy) > R) { iEdge = i; break; }
+  // height above what lies beneath: flat on the wood, a short bridge in the air past the edge, down on the paper at the tip
+  const lift = (i) => { if (i < iEdge - 6) return 0; const q = (i - iEdge + 6) / Math.max(1, np - 1 - iEdge + 6); return Math.sin(Math.min(1, q * 1.9) * Math.PI * 0.5) * (1 - 0.8 * sstep(0.45, 1, q)); };
   const run = (gg, dxy, i0 = 0, i1 = np - 1) => { gg.beginPath(); for (let i = i0; i <= i1; i++) { const o = dxy(i); if (i === i0) gg.moveTo(pts[i][0] + o[0], pts[i][1] + o[1]); else gg.lineTo(pts[i][0] + o[0], pts[i][1] + o[1]); } gg.stroke(); };
-  // cinnabar rubbed off on the wood where the cord lay
+  // a breath of cinnabar rubbed off on the wood where the thread lay
   g.save(); a.clipBelow(g, 0); g.lineCap = 'round'; g.lineJoin = 'round';
-  g.strokeStyle = 'rgba(200,50,30,0.07)'; g.lineWidth = 22; run(g, () => [0, 0]);
-  g.strokeStyle = 'rgba(200,50,30,0.1)'; g.lineWidth = 13; run(g, () => [0, 0]);
+  g.strokeStyle = 'rgba(200,50,30,0.06)'; g.lineWidth = 11; run(g, () => [0, 0]);
+  g.strokeStyle = 'rgba(200,50,30,0.09)'; g.lineWidth = 6; run(g, () => [0, 0]);
   g.restore();
-  // shadow: tight where the cord rests, drifting away and softening where it lifts
+  // shadows: a tight contact line where it rests, a slightly softer one sliding away where it bridges the edge
   {
     const sx0 = Math.floor(a.cx - 300), sy0 = Math.floor(a.crestY - 260), sw = 560, sh2 = 460;
-    const far = sprite(sx0, sy0, sw, sh2, (s) => { s.lineCap = 'round'; s.lineJoin = 'round'; s.strokeStyle = '#3a2008'; s.lineWidth = TW + 1; run(s, (i) => { const l = lift(i); return [2 + 17 * l, 4 + 33 * l]; }); });
-    g.globalAlpha = 0.42; g.drawImage(L.blurred(far, 5.5), sx0, sy0);
-    const near = sprite(sx0, sy0, sw, sh2, (s) => { s.lineCap = 'round'; s.lineJoin = 'round'; s.strokeStyle = '#341a06'; s.lineWidth = TW; run(s, () => [1.6, 3.4], 0, Math.round(np * 0.62)); });
-    g.globalAlpha = 0.5; g.drawImage(L.blurred(near, 2.2), sx0, sy0);
+    const air = sprite(sx0, sy0, sw, sh2, (q) => { q.lineCap = 'round'; q.lineJoin = 'round'; q.strokeStyle = '#3a2008'; q.lineWidth = TW + 0.6; run(q, (i) => { const l = lift(i); return [1.2 + 5 * l, 2.4 + 10 * l]; }, Math.max(0, iEdge - 8), END); });
+    g.globalAlpha = 0.48; g.drawImage(L.blurred(air, 2.2), sx0, sy0);
+    const near = sprite(sx0, sy0, sw, sh2, (q) => { q.lineCap = 'round'; q.lineJoin = 'round'; q.strokeStyle = '#2e1604'; q.lineWidth = TW + 0.4; run(q, () => [0.9, 1.9], 0, Math.min(END, iEdge + 3)); });
+    g.globalAlpha = 0.62; g.drawImage(L.blurred(near, 1.1), sx0, sy0);
     g.globalAlpha = 1;
   }
-  g.lineCap = 'round'; g.lineJoin = 'round';
-  // frayed ends
+  // every loose fibre: collected first, so that all their shadows go down before any fibre
   const rt = L.rng('s13thread');
-  const fray = (i, dir, count, len) => {
-    const p = pts[i], q = pts[i - dir * 4], an = Math.atan2(p[1] - q[1], p[0] - q[0]);
-    for (let k = 0; k < count; k++) {
-      const b = an + rt.range(-0.6, 0.6), l = len * rt.range(0.5, 1.15), bend = rt.range(-0.5, 0.5);
-      g.strokeStyle = rt.pick(['#C8321E', '#a82414', '#e2553a']); g.lineWidth = rt.range(0.9, 1.8);
-      g.beginPath(); g.moveTo(p[0], p[1]);
-      g.quadraticCurveTo(p[0] + Math.cos(b + bend) * l * 0.55, p[1] + Math.sin(b + bend) * l * 0.55, p[0] + Math.cos(b) * l, p[1] + Math.sin(b) * l); g.stroke();
+  const REDS = ['#C8321E', '#a82414', '#e2553a', '#d8442c', '#b52a18'];
+  const fibs = [];
+  const addFib = (x, y, an, len, lw, bend, col) => fibs.push({ x, y, mx: x + Math.cos(an + bend) * len * 0.55, my: y + Math.sin(an + bend) * len * 0.55, ex: x + Math.cos(an) * len, ey: y + Math.sin(an) * len, lw, col });
+  {
+    // the tip: the two plies part, and each opens into a few hair-fine fibres
+    const [tx, ty] = tan(END), an = Math.atan2(ty, tx), p = pts[END];
+    for (const sd of [-1, 1]) {
+      const pa = an + sd * rt.range(0.2, 0.34), pl = rt.range(12, 16);
+      addFib(p[0] - tx * 2, p[1] - ty * 2, pa, pl + 2, 1.75, -sd * 0.14, sd < 0 ? '#C8321E' : '#b52a18');
+      const ex = p[0] + Math.cos(pa) * pl, ey = p[1] + Math.sin(pa) * pl, nf = sd > 0 ? 4 : 3;
+      for (let k = 0; k < nf; k++) addFib(ex - Math.cos(pa) * 4, ey - Math.sin(pa) * 4, pa + rt.range(-0.7, 0.7), rt.range(12, 30), rt.range(0.55, 0.95), rt.range(-0.6, 0.6), rt.pick(REDS));
     }
-  };
-  fray(np - 1, 1, 8, 30); fray(0, -1, 5, 16);
-  // body
-  g.strokeStyle = '#7a170c'; g.lineWidth = TW + 1.8; run(g, () => [0.5, 0.8]);
-  g.strokeStyle = '#C8321E'; g.lineWidth = TW; run(g, () => [0, 0]);
-  g.strokeStyle = 'rgba(236,104,72,0.85)'; g.lineWidth = TW * 0.34; run(g, () => [-1.2, -1.9]);
-  // the twist of the plies + loose fibres
-  for (let i = 2; i < np - 2; i += 2) {
-    const p = pts[i], q = pts[i + 1], tl = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1, tx = (q[0] - p[0]) / tl, ty = (q[1] - p[1]) / tl, ux = -ty, uy = tx, hw = TW * 0.5;
-    g.strokeStyle = 'rgba(96,16,8,0.5)'; g.lineWidth = 1.15;
-    g.beginPath(); g.moveTo(p[0] + ux * hw - tx * 2.4, p[1] + uy * hw - ty * 2.4); g.lineTo(p[0] - ux * hw + tx * 2.4, p[1] - uy * hw + ty * 2.4); g.stroke();
-    if (rt.chance(0.3)) {
-      const sd = rt.sign(), l = rt.range(4, 12), b = rt.range(-0.9, 0.9);
-      g.strokeStyle = L.rgba(rt.pick(['#C8321E', '#e2553a', '#a82414']), rt.range(0.5, 0.9)); g.lineWidth = rt.range(0.6, 1.1);
-      g.beginPath(); g.moveTo(p[0] + ux * hw * sd, p[1] + uy * hw * sd);
-      g.lineTo(p[0] + ux * (hw + l * Math.cos(b)) * sd + tx * l * Math.sin(b), p[1] + uy * (hw + l * Math.cos(b)) * sd + ty * l * Math.sin(b)); g.stroke();
+    addFib(p[0], p[1], an + rt.range(-0.08, 0.08), rt.range(24, 32), 0.7, rt.range(-0.3, 0.3), '#e2553a');
+    // the cut end lying on the wood: a short stiff brush
+    const [sx, sy] = tan(0), bn = Math.atan2(-sy, -sx), p0 = pts[2];
+    for (let k = 0; k < 5; k++) addFib(p0[0], p0[1], bn + rt.range(-0.5, 0.5), rt.range(4, 10), rt.range(0.55, 0.9), rt.range(-0.4, 0.4), rt.pick(REDS));
+    // stray fibres standing off the body
+    for (let i = 6; i < END - 4; i += 5) {
+      if (!rt.chance(0.42)) continue;
+      const [ux, uy] = tan(i), sd = rt.sign(), fa = Math.atan2(uy, ux) + sd * rt.range(0.3, 1.1);
+      addFib(pts[i][0] - uy * HWT * 0.6 * sd, pts[i][1] + ux * HWT * 0.6 * sd, fa, rt.range(3, 8.5), rt.range(0.45, 0.75), rt.range(-0.6, 0.6), rt.pick(REDS));
     }
+  }
+  g.lineCap = 'round'; g.lineJoin = 'round';
+  for (const f of fibs) {
+    g.strokeStyle = 'rgba(58,32,8,0.3)'; g.lineWidth = f.lw + 0.4;
+    g.beginPath(); g.moveTo(f.x + 0.8, f.y + 1.7); g.quadraticCurveTo(f.mx + 0.8, f.my + 1.7, f.ex + 0.8, f.ey + 1.7); g.stroke();
+  }
+  for (const f of fibs) {
+    g.strokeStyle = f.col; g.lineWidth = f.lw;
+    g.beginPath(); g.moveTo(f.x, f.y); g.quadraticCurveTo(f.mx, f.my, f.ex, f.ey); g.stroke();
+    if (f.lw > 1.2) {                                // a ply: lit along its upper side
+      g.strokeStyle = 'rgba(244,130,98,0.75)'; g.lineWidth = 0.6;
+      g.beginPath(); g.moveTo(f.x - 0.25, f.y - 0.5); g.quadraticCurveTo(f.mx - 0.25, f.my - 0.5, f.ex - 0.25, f.ey - 0.5); g.stroke();
+    }
+  }
+  // body: dark under-edge, cinnabar, a shaded flank away from the light
+  g.strokeStyle = '#6e140a'; g.lineWidth = TW + 0.9; run(g, () => [0.2, 0.35], 1, END);
+  g.strokeStyle = '#C8321E'; g.lineWidth = TW; run(g, () => [0, 0], 1, END);
+  g.strokeStyle = 'rgba(122,22,10,0.5)'; g.lineWidth = 1.1; run(g, () => [0.39 * HWT * 0.62, 0.92 * HWT * 0.62], 1, END);
+  // the twist: the seam between the two plies crosses the thread on a slant, and every ply-turn carries its own glint
+  g.lineCap = 'butt';
+  const TP = 2.7;
+  for (let sl = 2; sl < END - 1; sl += TP) {
+    const i = Math.floor(sl), fr = sl - i, px = L.lerp(pts[i][0], pts[i + 1][0], fr), py = L.lerp(pts[i][1], pts[i + 1][1], fr);
+    const [tx, ty] = tan(i), sx = -ty * HWT - tx * 1.5, sy = tx * HWT - ty * 1.5;
+    g.strokeStyle = 'rgba(88,12,6,0.62)'; g.lineWidth = 0.85;
+    g.beginPath(); g.moveTo(px + sx, py + sy); g.lineTo(px - sx, py - sy); g.stroke();
+    const hx = px + tx * TP * 0.5 - 0.39 * HWT * 0.42, hy = py + ty * TP * 0.5 - 0.92 * HWT * 0.42;
+    g.strokeStyle = 'rgba(248,138,104,0.9)'; g.lineWidth = 0.9;
+    g.beginPath(); g.moveTo(hx + sx * 0.36, hy + sy * 0.36); g.lineTo(hx - sx * 0.36, hy - sy * 0.36); g.stroke();
   }
   return { c, x: bx, y: by };
 }

@@ -22,6 +22,8 @@ const sstep = (a, b, v) => { const t = L.clamp((v - a) / (b - a)); return t * t 
 let GID = 128, BID = 128;
 const grey = (v, al = 1) => { const c = Math.round(L.clamp(v) * 255); return `rgba(${c},${GID},${BID},${al})`; };
 const dark = (al) => `rgba(0,${GID},${BID},${al})`;
+// a fixed random number in -1…1 for the n-th denticle / reed (s picks which property)
+const hsh = (n, s) => { let x = Math.imul(n + 7919, 374761393) ^ Math.imul(s, 668265263); x = Math.imul(x ^ (x >>> 13), 1274126177); x ^= x >>> 16; return (x & 1023) / 511.5 - 1; };
 
 // ── layout, measured inward from the edge (V = px below the arc) and along it (U = px of arc length at the rim) ──
 const FIELD = 0.1;                      // height of the flat field (地章)
@@ -139,23 +141,42 @@ function buildHeight(env) {
       put(250, 164, 16, -1, 0.5, 3.2);
     }
     // ── bead ring (珠圈) ──
-    const nb = Math.ceil(UM / BPITCH);
+    // no two beads come back from circulation alike: each sits a hair off its station, is a touch fuller or leaner and not
+    // quite round, has its crown rubbed flat to a different degree (and a little off-centre), and carries its own G/B ids
+    // so it takes its own shade of toning and its own brightness; a few have caught a contact mark
+    const nb = Math.ceil(UM / BPITCH), rb = L.rng('s06bead');
     for (let i = -nb; i <= nb; i++) {
-      const [x, y] = P(i * BPITCH, BEAD_V);
-      g.fillStyle = L.radial(g, x, y, 0, BEAD_R, [[0, grey(0.97)], [0.45, grey(0.88)], [0.72, grey(0.7)], [0.9, grey(0.47)], [1, grey(FIELD)]]);
-      g.beginPath(); g.arc(x, y, BEAD_R, 0, TAU); g.fill();
+      const br = BEAD_R * rb.range(0.945, 1.04), wear = rb(), ecc = rb.range(0.945, 1), ea = rb.range(0, Math.PI);
+      const [x, y] = P(i * BPITCH + rb.range(-0.9, 0.9), BEAD_V + rb.range(-0.8, 0.8));
+      const ox = rb.range(-0.9, 0.9), oy = rb.range(-0.9, 0.9);
+      const flat = 0.05 + 0.27 * wear, top = 0.985 - 0.09 * wear;
+      GID = 128 + Math.round(rb.range(-48, 48)); BID = 128 + Math.round(rb.range(-52, 52));
+      g.save(); g.translate(x, y); g.rotate(ea); g.scale(1, ecc);
+      g.fillStyle = L.radial(g, ox, oy, 0, br + 0.8, [[0, grey(top)], [flat, grey(top - 0.012)], [0.45 + 0.12 * wear, grey(0.88 - 0.03 * wear)],
+        [0.72 + 0.03 * wear, grey(0.7)], [0.9, grey(0.47)], [1, grey(FIELD)]]);
+      g.beginPath(); g.arc(0, 0, br, 0, TAU); g.fill();
+      if (rb.chance(0.16)) {
+        g.fillStyle = dark(rb.range(0.035, 0.085));
+        g.beginPath(); g.ellipse(rb.range(-7, 7), rb.range(-7, 7), rb.range(1.8, 3.6), rb.range(0.7, 1.2), rb.range(0, Math.PI), 0, TAU); g.fill();
+      }
+      g.restore();
     }
+    GID = 128; BID = 128;
     // ── the plain rim (光边): a broad flat band with a rounded outer shoulder ──
     const r0 = R - RIM - 8, r1 = R + 0.5, tv = (V) => (R - V - r0) / (r1 - r0);
     a.fillBand(g, L.radial(g, a.cx, a.cy, r0, r1, [[tv(RIM + 8), grey(FIELD)], [tv(RIM + 2), grey(0.32)], [tv(RIM - 4), grey(0.8)], [tv(RIM - 11), grey(0.9)],
       [tv(22), grey(0.93)], [tv(9), grey(0.88)], [tv(3.5), grey(0.62)], [tv(0), grey(0.2)]]), 1, -(RIM + 8));
     // ── denticles (边齿): short rounded bars hanging off the inside of the rim ──
     g.globalCompositeOperation = 'lighten'; g.lineCap = 'round';
-    const nt = Math.ceil(UM / TPITCH);
+    // each one a little different: longer or shorter, stouter or leaner, leaning a hair, its crest sharp or rubbed broad and low
+    const nt = Math.ceil(UM / TPITCH), rt = L.rng('s06tooth');
     for (let i = -nt; i <= nt; i++) {
-      a.at(g, (i * TPITCH) / R, -(RIM - 5), () => {
-        const len = TOOTH_END - (RIM - 5);
-        for (const [w, v] of [[13.5, 0.3], [10, 0.54], [6.4, 0.74], [2.8, 0.87]]) {
+      const wear = rt(), ws = rt.range(0.9, 1.08), lenJ = rt.range(-1.9, 1.5) - 1.7 * wear * wear, tilt = rt.range(-0.035, 0.035), jU = rt.range(-0.9, 0.9);
+      a.at(g, (i * TPITCH + jU) / R, -(RIM - 5), () => {
+        g.rotate(tilt);
+        const len = TOOTH_END - (RIM - 5) + lenJ;
+        for (const [w0, v0, top] of [[13.5, 0.3, 0], [10, 0.54, 0], [6.4, 0.74, 0], [2.8, 0.87, 1]]) {
+          const w = top ? w0 + 2.3 * wear : w0 * ws, v = v0 * (1 - 0.09 * wear) - (top ? 0.03 * wear : 0);
           g.strokeStyle = grey(v); g.lineWidth = w; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, len - w / 2); g.stroke();
         }
       });
@@ -165,8 +186,9 @@ function buildHeight(env) {
     const nr = Math.ceil(UM / REED);
     for (let i = -nr; i <= nr; i++) {
       a.at(g, (i * REED) / R, 0, () => {
-        g.fillStyle = dark(0.6);
-        g.beginPath(); g.moveTo(-3.2, -2); g.lineTo(3.2, -2); g.lineTo(1.3, 8); g.lineTo(-1.3, 8); g.closePath(); g.fill();
+        const q = hsh(i, 13), d = 8 + 1.6 * q;
+        g.fillStyle = dark(0.56 + 0.14 * hsh(i, 17));
+        g.beginPath(); g.moveTo(-3.2, -2); g.lineTo(3.2, -2); g.lineTo(1.3, d); g.lineTo(-1.3, d); g.closePath(); g.fill();
       });
     }
     // ── knocks and bag marks from circulation: short gouges with a raised burr on one side ──
@@ -202,10 +224,21 @@ function boxBlur(src, w, h, r) {
 // thin-film toning, indexed by distance from the edge: gold at the rim, then rose, violet, cobalt, cyan
 const NLUT = 1024, TSPAN = 620;
 function toneLut() {
-  const f = L.makeRamp([[0, '#f8d878'], [0.035, '#f0c248'], [0.085, '#e8b33a'], [0.118, '#ea963c'], [0.145, '#d8558a'], [0.172, '#aa43b2'],
-    [0.21, '#8e3fb8'], [0.3, '#7d42c4'], [0.38, '#5548d4'], [0.47, '#2a56d6'], [0.62, '#1f76e6'], [0.76, '#18a9de'], [0.9, '#1fcac8'], [1, '#149aa8']]);
-  const out = new Float32Array(NLUT * 3);
-  for (let i = 0; i < NLUT; i++) { const c = f(i / (NLUT - 1)); out[i * 3] = c[0]; out[i * 3 + 1] = c[1]; out[i * 3 + 2] = c[2]; }
+  // the order silver sulphide really runs through as it thickens: pale gold, amber, russet, rose, magenta, violet, cobalt, ice blue
+  const f = L.makeRamp([[0, '#f6dc8c'], [0.035, '#f0c654'], [0.08, '#e8b33a'], [0.11, '#e69c42'], [0.14, '#dd7862'], [0.17, '#cf578e'],
+    [0.205, '#b048ae'], [0.25, '#8e3fb8'], [0.32, '#7a43c5'], [0.39, '#5549d3'], [0.47, '#2a56d6'], [0.62, '#1f76e6'], [0.76, '#18a9de'], [0.9, '#1fcac8'], [1, '#149aa8']]);
+  const raw = new Float32Array(NLUT * 3), out = new Float32Array(NLUT * 3);
+  for (let i = 0; i < NLUT; i++) { const c = f(i / (NLUT - 1)); raw[i * 3] = c[0]; raw[i * 3 + 1] = c[1]; raw[i * 3 + 2] = c[2]; }
+  // a real patina has no edges between its colours: a soft window over the ramp lets every band melt into the next
+  const rad = 24;
+  for (let i = 0; i < NLUT; i++) {
+    let ws = 0, r = 0, gg = 0, b = 0;
+    for (let d = -rad; d <= rad; d++) {
+      const j = (i + d < 0 ? 0 : i + d >= NLUT ? NLUT - 1 : i + d) * 3, w = 1 - Math.abs(d) / (rad + 1);
+      r += raw[j] * w; gg += raw[j + 1] * w; b += raw[j + 2] * w; ws += w;
+    }
+    out[i * 3] = r / ws; out[i * 3 + 1] = gg / ws; out[i * 3 + 2] = b / ws;
+  }
   return out;
 }
 
@@ -275,13 +308,20 @@ function buildCoin(env) {
       if (k > o2) { const hm = Math.max(Hs[k - o1], Hs[k - o2] * 0.9); sh = L.clamp((hm - h - 0.1) * 2.4, 0, 0.66); }
       const id1 = Id1[k], id2 = Id2[k];
       const tar = sstep(0.12, 0.5, bil(cTar, i, j)) * sstep(120, 200, V);
-      let Lm = G * Bm * ah * (1 - cav) * (1 - sh) * Math.max(0.05, 1.15 + rel) * (1 + 0.55 * id2) * (1 - 0.5 * tar);
+      // every denticle is its own: a shade apart in toning, in how bright it stands, in how hard its crest has been rubbed
+      // (beads and scales get the same from their G/B ids)
+      let et = 0, eb = 0, ew = 1 + 0.6 * id2;
+      if (V > RIM - 3 && V < TOOTH_END + 3) {
+        const n = Math.round(U / TPITCH), f = relief * sstep(RIM - 3, RIM + 5, V);
+        et = 0.028 * hsh(n, 3) * f; eb = 0.17 * hsh(n, 5) * f; ew = 1 + 0.45 * hsh(n, 7) * f;
+      }
+      let Lm = G * Bm * ah * (1 - cav) * (1 - sh) * Math.max(0.05, 1.15 + rel) * (1 + 0.55 * id2 + eb) * (1 - 0.5 * tar);
       // die-flow streaks in the field, slow blotches of toning
       Lm *= (1 + (1 - relief) * 0.32 * nA.n2(U / 3.2 + 7, V / 80)) * (1 + 0.22 * (1 - 0.75 * rimB) * bil(cBlot, i, j));
       // specular lobe on the slopes turned to the light, and cold-white wear on every thin edge that stands proud —
       // strongest on the side that faces the light
       const e1 = gx - 0.021, e2 = gy - 0.031, spec = Math.exp(-(e1 * e1 + e2 * e2) / 0.0004);
-      Lm += (spec * 1.1 * relief * (1 - 0.6 * tar) + rz * (0.55 + 0.5 * sstep(-0.7, 0.7, rel))) * (0.32 + 0.68 * G);
+      Lm += (spec * 1.1 * relief * (1 - 0.6 * tar) + rz * (0.55 + 0.5 * sstep(-0.7, 0.7, rel))) * ew * (0.32 + 0.68 * G);
       // the rim is burnished: a band of reflected light runs round it, broken into fine circular brush lines
       if (rimB > 0) {
         const sb = (V - 14) / 7.5, streak = nA.n2(U / 70, V / 1.6 + 40), room = 0.82 + 0.34 * nB.n2(U / 380 + 5, 0.3);
@@ -294,15 +334,18 @@ function buildCoin(env) {
       if (gl > 0.986) Lm += relief * (gl - 0.986) * 55 * G;
       // toning: film thickness grows inward from the edge, wanders with the noise, differs between high and low relief
       // and from one scale to the next; in the dark islands it falls back toward violet
-      const Tn = (V + bil(cWarp, i, j) * sstep(6, 120, V)) / TSPAN + 0.05 * (h - 0.45) + 0.11 * id1 - 0.15 * tar;
+      const Tn = (V + bil(cWarp, i, j) * sstep(6, 120, V)) / TSPAN + 0.05 * (h - 0.45) + 0.085 * id1 + et - 0.15 * tar;
+      // the film is thin — silver shows through it, most on the high points where handling has rubbed it thinnest
+      const thin = (0.065 + 0.085 * sstep(0.55, 0.97, h) * (1 - 0.7 * rimB)) * (1 - 0.6 * tar);
       const o = k * 4;
       let al = 255;
-      if (V < 4) { const nc = Math.cos((U / REED) * TAU), cut = nc > 0 ? 3 * nc * nc * nc : 0; al = L.clamp(V + 0.5 - cut) * 255; }
+      if (V < 4) { const nc = Math.cos((U / REED) * TAU), cut = nc > 0 ? (3 + 0.7 * hsh(Math.round(U / REED), 13)) * nc * nc * nc : 0; al = L.clamp(V + 0.5 - cut) * 255; }
       for (let pass = 0; pass < 2; pass++) {
         const d = pass ? dB : dA;
         let t = Tn + (pass ? 0.035 : 0); t = t < 0 ? 0 : t > 1 ? 1 : t;
         const li = ((t * (NLUT - 1)) | 0) * 3;
         let r = TONE[li], gg = TONE[li + 1], b = TONE[li + 2];
+        r += (204 - r) * thin; gg += (209 - gg) * thin; b += (222 - b) * thin;
         if (Lm <= 1) {
           // gold in shadow goes amber, not olive: pull green and blue down faster where the toning is warm
           const warm = (1 - sstep(0.1, 0.17, t)) * (1 - Lm);

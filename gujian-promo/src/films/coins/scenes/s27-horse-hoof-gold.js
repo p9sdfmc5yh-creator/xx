@@ -400,14 +400,17 @@ function buildLive(env, beads) {
     const q = life({ th, dr, hs, sp: far ? SP_SOFT : r.pick([SP_GOLD, SP_GOLD, SP_PALE, SP_EMBER]), al: al * (far ? 0.42 : 1) * Math.exp(-dr / 520), base: 0.5, v });
     q.fl = false; dust.push(q);
   }
-  // star flares: each owns a frame, so two or three are always alight
+  // star flares: three places on the whole wall and no more — one big one under the crest, a smaller one on each shoulder.
+  // They breathe slowly and overlap (left dies as right is born), so two or three are alight on every frame.
+  // [angle, depth below the arc, half-size, peak frame, half-life in frames]
   const stars = [];
-  for (let n = 0; n < 24; n++) {
-    const th = r.range(-0.45, 0.45), hs = r.range(78, 150) * (1 - 0.35 * Math.abs(th) / 0.45);
-    let d = 10 + Math.pow(r(), 1.5) * 200;
-    if (Math.abs(th) < 0.2) d = Math.max(d, 0.5 * hs + 6);      // keep the vertical ray out of the tagline zone
-    const p = a.pt(th, -d);
-    stars.push({ x: p.x, y: p.y, hs, al: r.range(0.8, 1) * L.clamp(macro(d, Math.sin(th)) * 1.7), f0: (n * 3) % 8 + r.range(-0.3, 0.3), w: r.range(1.5, 2.1) });
+  for (const [th0, d0, hs, f0, w] of [[0.062, 96, 138, 3.4, 5.2], [-0.262, 68, 102, 0.6, 4.6], [0.305, 54, 84, 6.6, 4.6]]) {
+    const th = th0 + r.range(-0.012, 0.012);
+    const d = Math.max(d0 + r.range(-6, 6), Math.abs(th) < 0.2 ? 0.5 * hs + 6 : 0);      // keep the vertical ray out of the tagline zone
+    const p = a.pt(th, -d), al = r.range(0.88, 1) * L.clamp(macro(d, Math.sin(th)) * 1.7);
+    stars.push({ x: p.x, y: p.y, hs, al, f0, w });
+    // the grain that throws the flare: a hot glint on the skin under it, on the same schedule
+    surf.push({ id: id++, x: p.x, y: p.y, hs: 0.17 * hs, sp: SP_PALE, al, base: 0, f0, w, fl: false });
   }
   return { surf, dust, stars };
 }

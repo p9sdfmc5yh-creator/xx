@@ -4,8 +4,8 @@
 // loess packed into every cut. Straight down from the crest runs the carved slot with its short saw-cut "teeth" on both
 // sides (the imitation of a cowrie's mouth); to the left a drilled hole for the cord. Lit from the upper left; the right
 // third falls into warm brown shadow, and the earth it lies in banks up over the two lower corners.
-// Above the arc: the ochre loess wall of the excavation square — coarse grains, a few mud cracks stained burnt red, a few
-// white chips — with a dark crevice shadow hugging the bone. Directly over the crest the earth is kept calm for the tagline.
+// Above the arc: the ochre loess wall of the excavation square — coarse grains, gently dipping beds (土层) that break off in
+// small ledges, a soft lens of burnt-red earth in the odd bed, a few white chips — with a dark crevice shadow hugging the bone. Directly over the crest the earth is kept calm for the tagline.
 //
 // Both materials are shaded per pixel in init() from height fields (px): surface normal → raking key light from the upper
 // left, a short ray-march toward the light for cast shadows, then an illumination → colour ramp per material (so shadows turn
@@ -191,8 +191,8 @@ function buildBone(env) {
         if (hd < rh) {
           h = -46 + 6 * nA.n2(hu / 30, hv / 30 + 9) + 1.3 * nB.n2(hu / 11, hv / 11) + 0.6 * nA.n2(hu / 4.3, hv / 4.3) + hs * 1.1; soil = 1; cav = 1;
         } else if (hd < rh + HOLE.bevel) {
-          const t = (rh + HOLE.bevel - hd) / HOLE.bevel;
-          h = h * (1 - t) - 26 * t * (0.75 + 0.25 * t) + 0.45 * Math.sin(hd * 1.7) * t; if (t * 0.5 > cav) cav = t * 0.5;
+          const t = (rh + HOLE.bevel - hd) / HOLE.bevel, tp = t < 0.22 ? t * t / 0.44 : t - 0.11;      // the lip is rounded over, not a knife edge
+          h = h * (1 - t) - 29 * tp * (0.75 + 0.25 * t) + (0.45 * Math.sin(hd * 1.7) + 0.5 * Math.sin(hd * 0.63 + 2)) * t; if (t * 0.5 > cav) cav = t * 0.5;
           const sm = sstep(0.82, 1, t + 0.1 * nB.n2(hu / 6, hv / 6)) * 0.9; if (sm > soil) soil = sm;
         }
       }
@@ -274,12 +274,51 @@ function buildBone(env) {
     const cracks = [[-1010, 4, 300], [-760, 60, 260], [-640, 330, 300], [-250, 250, 200], [300, 300, 320], [520, 2, 240], [760, 140, 380], [1020, 40, 300], [-900, 380, 260],
       [HOLE.U + 22, HOLE.V + HOLE.r + 14, 190], [HOLE.U - 30, HOLE.V - HOLE.r - 150, 138]];
     g.globalCompositeOperation = 'multiply'; g.lineCap = 'round'; g.lineJoin = 'round';
-    cracks.forEach(([U0, V0, len], n) => {
+    // each crack is a tapered ribbon (widest where it opens at the rim or at a fork), filled once so nothing beads
+    const ribbon = (pts, kw, base, style, dx) => {
+      const n = pts.length, lf = [], rt = [];
+      for (let t = 0; t < n; t++) {
+        const a0 = pts[t > 0 ? t - 1 : 0], a1 = pts[t < n - 1 ? t + 1 : n - 1];
+        let tx = a1[0] - a0[0], ty = a1[1] - a0[1]; const l = Math.hypot(tx, ty) || 1; tx /= l; ty /= l;
+        const hw = (pts[t][2] * kw + base) * 0.5;
+        lf.push([pts[t][0] + dx - ty * hw, pts[t][1] + tx * hw]); rt.push([pts[t][0] + dx + ty * hw, pts[t][1] - tx * hw]);
+      }
+      g.fillStyle = style; g.beginPath();
+      lf.forEach((p, t) => (t ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])));
+      for (let t = n - 1; t >= 0; t--) g.lineTo(rt[t][0], rt[t][1]);
+      g.closePath(); g.fill();
+    };
+    const trace = (U0, V0, len, lean, w0, open, n) => {
       const pts = []; let u = U0;
-      for (let v = 0; v <= len; v += 7) { u += rc.range(-1.6, 1.6) + 2.2 * nz.n2(v / 60, n * 3.1); pts.push(toXY(u, V0 + v)); }
-      const run = (lw, style, dx) => { g.strokeStyle = style; g.lineWidth = lw; g.beginPath(); pts.forEach((p, t) => (t ? g.lineTo(p[0] + dx, p[1]) : g.moveTo(p[0] + dx, p[1]))); g.stroke(); };
-      run(3.4, 'rgba(214,170,98,0.3)', 0.6); run(1.5, 'rgba(120,78,36,0.72)', 0); run(0.7, 'rgba(60,34,14,0.8)', 0);
+      for (let v = 0; v <= len; v += 4) {
+        const t = v / len;
+        u += lean * 4 + rc.range(-0.7, 0.7) + 1.0 * nz.n2(v / 52, n * 3.1);
+        const p = toXY(u, V0 + v);
+        p.push(w0 * (open ? Math.pow(1 - t, 0.8) : Math.pow(Math.max(0, Math.sin(Math.PI * (0.04 + 0.96 * t))), 0.7)), u, V0 + v);
+        pts.push(p);
+      }
+      return pts;
+    };
+    const main = [], hair = [];
+    cracks.forEach(([U0, V0, len], n) => {
+      const pts = trace(U0, V0, len, 0, 1, V0 < 30, n); pts.lit = U0 < 250; main.push(pts);
+      if (len >= 260) {      // a short fork leaving the crack at a shallow angle
+        const q = pts[(pts.length * rc.range(0.3, 0.55)) | 0];
+        const br = trace(q[3], q[4], len * rc.range(0.16, 0.26), rc.sign() * rc.range(0.22, 0.4), q[2] * 0.62, true, n + 20); br.lit = pts.lit; main.push(br);
+      }
     });
+    // the finest level: short hairline checks scattered over the face (kept off the slot and the hole)
+    for (let n = 0; n < 54; n++) {
+      const U0 = rc.range(-1150, 1150), V0 = rc.range(34, 520), len = rc.range(24, 86), lean = rc.range(-0.05, 0.05), w0 = rc.range(0.28, 0.5);
+      const hu = U0 - HOLE.U, hv = V0 + len / 2 - HOLE.V;
+      if (Math.abs(U0) < 175 || hu * hu + hv * hv < 130 * 130) continue;
+      hair.push(trace(U0, V0, len, lean, w0, false, 40 + n));
+    }
+    for (const pts of hair) ribbon(pts, 1.5, 0.12, 'rgba(126,84,40,0.5)', 0);
+    for (const pts of main) { ribbon(pts, 4.2, 0.6, 'rgba(214,170,98,0.26)', 0.5); ribbon(pts, 1.9, 0.22, 'rgba(120,78,36,0.72)', 0); ribbon(pts, 0.9, 0, 'rgba(56,30,12,0.85)', 0); }
+    // the far lip of each crack catches the raking light (lit side of the face only)
+    g.globalCompositeOperation = 'screen';
+    for (const pts of main) if (pts.lit) ribbon(pts, 0.9, 0, 'rgba(255,244,220,0.3)', 1.35);
     g.restore();
   });
   // shallow depth of field: the face comes toward the lens at the bottom of frame and goes a touch soft (only that strip is blurred)
@@ -292,52 +331,6 @@ function buildBone(env) {
   const lg = layer.getContext('2d');
   lg.save(); a.clipBelow(lg, 0); lg.drawImage(near, -PAD, yb); lg.restore();
   return layer;
-}
-
-/**
- * mud cracks (龟裂) as a few designed fissures: jagged, forking at near right angles, tapering out.
- * Returns the V-shaped cut as a byte map (RGBA, read the red channel) and a sampler for a wide soft halo around it (for staining).
- */
-function fissures(RW, RH, X0, Y0) {
-  const r = L.rng('s29fissure'), segs = [];
-  const grow = (x, y, ang, len, w0, depth) => {
-    let done = 0, a = ang;
-    while (done < len) {
-      const st = r.range(16, 44), t = done / len;
-      a = ang + (a - ang) * 0.5 + r.range(-0.55, 0.55);
-      const nx = x + Math.cos(a) * st, ny = y + Math.sin(a) * st;
-      segs.push([x, y, nx, ny, w0 * Math.pow(1 - t, 0.7) + 1.2]);
-      if (depth < 2 && t > 0.12 && t < 0.85 && r.chance(0.2)) grow(nx, ny, a + r.sign() * r.range(1.1, 1.7), (len - done) * r.range(0.35, 0.6), w0 * Math.pow(1 - t, 0.7) * 0.62, depth + 1);
-      x = nx; y = ny; done += st;
-    }
-  };
-  grow(-70, 185, 0.2, 560, 13, 0);
-  grow(-70, 560, -0.75, 300, 9, 1);
-  grow(2000, 250, Math.PI - 0.22, 560, 14, 0);
-  grow(1995, 650, Math.PI + 0.55, 300, 9, 1);
-  grow(640, -90, 1.05, 230, 10, 1);
-  const acc = L.makeCanvas(RW, RH), ag = acc.getContext('2d', { willReadFrequently: true });
-  ag.fillStyle = '#000'; ag.fillRect(0, 0, RW, RH);
-  const pass = L.makeCanvas(RW, RH), pg = pass.getContext('2d');
-  pg.lineCap = 'round'; pg.strokeStyle = '#fff';
-  ag.globalCompositeOperation = 'lighter'; ag.globalAlpha = 0.34;
-  for (const f of [1, 0.6, 0.26]) {
-    pg.setTransform(1, 0, 0, 1, 0, 0); pg.clearRect(0, 0, RW, RH); pg.translate(-X0, -Y0);
-    for (const [x0, y0, x1, y1, w] of segs) { pg.lineWidth = Math.max(0.8, w * f); pg.beginPath(); pg.moveTo(x0, y0); pg.lineTo(x1, y1); pg.stroke(); }
-    ag.drawImage(pass, 0, 0);
-  }
-  // halo at quarter resolution
-  const Q = 4, qw = Math.ceil(RW / Q) + 1, qh = Math.ceil(RH / Q) + 1;
-  const hc = L.makeCanvas(qw, qh), hg = hc.getContext('2d', { willReadFrequently: true });
-  hg.fillStyle = '#000'; hg.fillRect(0, 0, qw, qh);
-  hg.filter = 'blur(6px)'; hg.drawImage(acc, 0, 0, RW / Q, RH / Q); hg.filter = 'none';
-  const hd = hg.getImageData(0, 0, qw, qh).data;
-  const halo = (i, j) => {
-    const fx = i / Q, fy = j / Q, i0 = fx | 0, j0 = fy | 0, tx = fx - i0, ty = fy - j0, k = (j0 * qw + i0) * 4;
-    const a0 = hd[k], a1 = hd[k + 4], b0 = hd[k + qw * 4], b1 = hd[k + qw * 4 + 4];
-    return ((a0 + (a1 - a0) * tx) * (1 - ty) + (b0 + (b1 - b0) * tx) * ty) / 255;
-  };
-  return { cut: ag.getImageData(0, 0, RW, RH).data, halo };
 }
 
 /** a 256 px repeating tile of sand: small grains (domes) at two sizes + their tone */
@@ -372,9 +365,10 @@ function buildSoil(env) {
     cPale[k] = nB.fbm(x / 330 - 7, y / 260 + 3, 3);
     cMac[k] = nB.fbm(x / 520 + 21, y / 520 + 77, 3);
   }
-  const fis = fissures(RW, RH, X0, Y0), sand = sandTile();
+  const sand = sandTile();
 
   const Hh = new Float32Array(N), Tn = new Float32Array(N), Ck = new Float32Array(N), Chip = new Float32Array(N), Calm = new Float32Array(N);
+  const Bed = new Float32Array(N), Rd = new Float32Array(N);
   for (let j = 0; j < RH; j++) {
     const y = Y0 + j, ddy = cy - y;
     for (let i = 0; i < RW; i++) {
@@ -399,9 +393,15 @@ function buildSoil(env) {
           if (q < 1) { const dome = Math.sqrt(1 - q); h += dome * rp * 34 * 0.46; tn += (cId / 0.44 - 0.45) * (1 - q * q) * (0.5 + 1.4 * rp); }
         }
       }
-      // mud cracks (龟裂): V-shaped cuts, so the wall facing the light catches it
-      const fc = fis.cut[k * 4];
-      if (fc > 0 && kc > 0.02) { const c = (fc / 255) * kc; h -= 26 * c; Ck[k] = c; }
+      // 土层: the wall is cut through gently dipping beds; each stands a little proud and breaks off in a small ledge at its base
+      if (kc > 0.02) {
+        const sp = (y + 0.05 * x + 17 * cg.bil(cWy, i, j) + 60 * cg.bil(cMac, i, j) + 2.5 * nB.n2(x / 31 + 9, y / 31)) / 128 + 8;
+        const sb = Math.floor(sp), sf = sp - sb;
+        h += (7 + 6 * hash2(sb, 91)) * sstep(0, 0.7, sf) * (1 - sstep(0.88, 0.99, sf)) * kc;
+        Ck[k] = 0.45 * sstep(0.86, 0.95, sf) * (1 - sstep(0.95, 1, sf)) * kc;
+        Bed[k] = (L.lerp(hash2(sb, 17) - 0.5, hash2(sb + 1, 17) - 0.5, sstep(0.86, 1, sf)) + 0.2 * nA.n2(x / 210 + 5, sp * 11)) * kc;      // + fine laminae inside each bed
+        Rd[k] = sstep(0.6, 0.8, hash2(sb, 53)) * sstep(0.3, 0.6, sf) * (1 - sstep(0.9, 1, sf)) * kc;
+      }
       Hh[k] = h; Tn[k] = tn;
     }
   }
@@ -443,17 +443,14 @@ function buildSoil(env) {
       let il = (0.26 + 0.74 * rel * (1 - 0.92 * lSh * relK)) * m * crev * (1 - 0.5 * ck);
       if (chip > 0) il *= 1 + 0.75 * chip;
       const tn = Tn[k];
-      il *= 1 + 0.22 * tn;
+      il *= (1 + 0.22 * tn) * (1 + 0.42 * Bed[k]);          // each bed a shade lighter or darker than its neighbours
       let li = (il / IMAX * (NL - 1)) | 0; li = (li < 0 ? 0 : li > NL - 1 ? NL - 1 : li) * 3;
       let r = SOIL[li], g = SOIL[li + 1], b = SOIL[li + 2];
-      // 土红斑: burnt-red earth staining the fissures at the two sides
-      if (kc > 0.02 && (x < 680 || x > 1390)) {
-        const ex = x < 960 ? x - 150 : x - 1800, ey = x < 960 ? (y - 250) * 1.3 : (y - 430) * 1.2, ed = Math.sqrt(ex * ex + ey * ey);
-        const rw = x < 960 ? 1 - sstep(140, 520, ed) : 0.85 * (1 - sstep(110, 400, ed));
-        if (rw > 0) {
-          const red = sstep(0.5, 0.76, cg.bil(cRed, i, j) * 0.5 + 0.2 + 0.22 * rw + 3 * fis.halo(i, j) + 0.05 * tn + 0.07 * nA.n2(x / 9, y / 9)) * kc * 0.9 * sstep(0, 0.3, rw);
-          if (red > 0) { r += (RED[li] - r) * red; g += (RED[li + 1] - g) * red; b += (RED[li + 2] - b) * red; }
-        }
+      // 土红斑: here and there a bed carries lenses of burnt-red earth (a soft band along the bedding, never a line)
+      const rdw = Rd[k];
+      if (rdw > 0.01) {
+        const red = rdw * sstep(-0.15, 0.3, cg.bil(cRed, i, j) + 0.3 * tn) * 0.42;
+        if (red > 0) { r += (RED[li] - r) * red; g += (RED[li + 1] - g) * red; b += (RED[li + 2] - b) * red; }
       }
       // paler, dustier drifts / pale and dark grains
       const pale = sstep(0.1, 0.5, cg.bil(cPale, i, j)) * 0.22 * kc;
@@ -471,7 +468,7 @@ function buildSoil(env) {
   out._pad = PAD;
   og.fillStyle = '#1a0d05'; og.fillRect(0, 0, out.width, out.height);
   og.drawImage(cnv, 0, 0);                                   // (keeps the outermost rows solid under the blurred copy)
-  og.filter = 'blur(4.5px)'; og.drawImage(cnv, 0, 0); og.filter = 'none';
+  og.filter = 'blur(3px)'; og.drawImage(cnv, 0, 0); og.filter = 'none';
   sg.globalCompositeOperation = 'destination-in';
   sg.fillStyle = L.radial(sg, a.cx + PAD, a.cy + PAD, R + 90, R + 470, [[0, 'rgba(0,0,0,1)'], [1, 'rgba(0,0,0,0)']]);
   sg.fillRect(0, 0, RW, RH);

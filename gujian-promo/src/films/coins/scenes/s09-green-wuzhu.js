@@ -1,8 +1,8 @@
 // s09 — 绿锈五铢. Flat-lay macro of the top edge of a Han wuzhu coin lying on cream xuan paper.
 // The arc is the coin's outer edge; just inside it runs the raised outer rim (外郭), then the sunken field (肉),
-// all under a thick malachite crust that reads like a leaf: the crust is quilted into pillowy plates by a net of shallow
-// crackle grooves, its skin is pebbly (botryoidal), and a few long fissures sweep up from the lower left and flatten out
-// under the rim like the veins of a leaf (they are cracks in the corrosion layer, not casting marks).
+// all under a thick malachite crust. The crust is a mineral skin, not one even texture: it is built up in thin layers
+// with hard scalloped risers, knobbly (botryoidal) in some stretches, chalky and powdery in others, crackled here and
+// there; where plates of it have spalled off along the crackle the dark red-brown metal shows a step lower.
 // A patch of ochre burial soil lies centre-right: dry and cracked where it is thick, crumbling into the crust at its margin.
 // Only the uppermost ~3 mm of the coin is in frame, so the inscription and the square hole never appear.
 //
@@ -14,8 +14,8 @@ import * as L from '../../../lib/core.js';
 
 const { W, H } = L;
 const PAD = 90;
-const RIMW = 114;      // mean width of the outer rim (外郭) in px — it wanders ±15 along the edge
-const HR = 13;         // how far the rim stands above the field (px of relief)
+const RIMW = 86;       // mean width of the outer rim (外郭) in px — it wanders ±15 along the edge
+const HR = 17;         // how far the rim stands above the field (px of relief)
 let S = null;
 
 const sstep = (a, b, v) => { let t = (v - a) / (b - a); t = t < 0 ? 0 : t > 1 ? 1 : t; return t * t * (3 - 2 * t); };
@@ -81,50 +81,6 @@ function edgeTables(a) {
   return T;
 }
 
-/**
- * The long crust fissures. Each main one is walked backwards from the point where it dies out under the rim: it leaves
- * the rim at a shallow angle and steepens toward the lower left, so in frame they read as a few near-parallel sweeping
- * curves (a leaf's secondary veins). A couple of shorter branches split off toward the rim.
- * Returns [{ pts:[[x,y]…], ws:[width…] }]
- */
-function veinCurves(a) {
-  const r = L.rng('s09vein3'), nz = L.makeNoise('s09veinw');
-  const out = [], inner = RIMW + 6, STEP = 10;
-  const ENDS = [-230, 190, 585, 1030, 1485, 1930, 2380, 2830];
-  ENDS.forEach((ex0, n) => {
-    const ex = ex0 + r.range(-45, 45);
-    const th = a.thetaAtX(ex, -inner), p0 = a.pt(th, -inner);
-    const b0 = r.range(0.2, 0.3), b1 = r.range(0.58, 0.7), kk = r.range(330, 470), seed = n * 7.1 + 1;
-    // heading (−cos φ, +sin φ): down-left, φ eases from b0 (measured off the rim's tangent) to b1
-    let x = p0.x, y = p0.y;
-    const pts = [[x, y]], phis = [b0 - th];
-    for (let s = 0; s < 3400; s += STEP) {
-      const phi = (b0 - th) + ((b1 - th * 0.45) - (b0 - th)) * (1 - Math.exp(-s / kk)) + 0.085 * nz.n2(s / 250, seed) + 0.05 * nz.n2(s / 64, seed + 9.7);
-      x -= Math.cos(phi) * STEP; y += Math.sin(phi) * STEP;
-      pts.push([x, y]); phis.push(phi);
-      if (x < -PAD - 140 || y > H + PAD + 140) break;
-    }
-    const wMain = r.range(11.5, 15);
-    out.push({ pts, ws: pts.map((_, i) => 4.5 + (wMain - 4.5) * (1 - Math.exp(-(i * STEP) / 420))) });
-    // branches: leave the main fissure some way back from its end and climb more steeply to the rim
-    const nb = n % 3 === 1 ? 2 : 1;
-    for (let q = 0; q < nb; q++) {
-      const i0 = Math.min(pts.length - 2, Math.round(r.range(24, 44) + q * r.range(26, 40)));
-      let bx = pts[i0][0], by = pts[i0][1];
-      const bp = [[bx, by]], d0 = r.range(0.62, 0.86), bs = seed * 1.7 + q * 4.4;
-      for (let s = 0; s < 560; s += STEP) {
-        const psi = phis[i0] + 0.16 + d0 * Math.exp(-s / 210) + 0.1 * nz.n2(s / 120, bs);      // forward = (cos ψ, −sin ψ)
-        bx += Math.cos(psi) * STEP; by -= Math.sin(psi) * STEP;
-        bp.push([bx, by]);
-        if (a.drAt(bx, by) > -inner) break;
-      }
-      const wb = r.range(6.5, 8.5);
-      out.push({ pts: bp, ws: bp.map((_, i) => L.lerp(wb, 3.4, i / (bp.length - 1))) });
-    }
-  });
-  return out;
-}
-
 /** radial alpha mask (0 inside r0, 1 beyond r1) around the focus point, squashed vertically; canvas coords */
 function focusMask(w, h, fx, fy, r0, r1, sy) {
   const c = L.makeCanvas(w, h), g = c.getContext('2d');
@@ -165,21 +121,6 @@ function buildCoin(env) {
     for (let k = 0; k < N; k++) out[k] = px[k * 4];
     return out;
   };
-  const veins = veinCurves(a);
-  const strokeVeins = (g, wk, wmin, grey = '#fff') => {
-    g.save(); a.clipBelow(g, -(RIMW - 14));
-    g.strokeStyle = grey; g.lineCap = 'round';
-    for (const v of veins) {
-      for (let i = 1; i < v.pts.length; i++) {
-        g.lineWidth = Math.max(wmin, 0.5 * (v.ws[i - 1] + v.ws[i]) * wk);
-        g.beginPath(); g.moveTo(v.pts[i - 1][0], v.pts[i - 1][1]); g.lineTo(v.pts[i][0], v.pts[i][1]); g.stroke();
-      }
-    }
-    g.restore();
-  };
-  // the fissure itself, a pale shallow groove: its full width at 60 %, the middle third at 100 %
-  const Vc = mask((g) => { strokeVeins(g, 1, 2.8, '#999'); strokeVeins(g, 0.4, 1.7); }, 1.5);
-  const Vw = mask((g) => strokeVeins(g, 5.4, 26), 17);            // the broad valley it sits in (the crust pillows up between fissures)
   const soilShape = (g) => {                                      // burial soil: a diagonal patch centre-right, broken in two
     const nz = L.makeNoise('s09soilshape'), r = L.rng('s09soil');
     g.fillStyle = '#fff';
@@ -190,21 +131,22 @@ function buildCoin(env) {
       const t = i / (spine.length - 1);
       // widest a third of the way down, pinched to almost nothing near t≈0.66, a second smaller patch below
       const e1 = Math.exp(-Math.pow((t - 0.3) / 0.19, 2)), e2 = 0.75 * Math.exp(-Math.pow((t - 0.88) / 0.13, 2));
-      const rad = 6 + 50 * e1 + 54 * e2 + 20 * nz.n2(t * 7, 4.1);
+      const rad = 4 + 24 * e1 + 17 * e2 + 13 * nz.n2(t * 7, 4.1);
       if (rad > 13) blob(x + 26 * nz.n2(t * 6, 1.3), y, rad);
     });
     // lobes that spoil the almond: a shoulder on the right, a tongue licking down-left
-    for (const [x, y, rad] of [[1218, top + 196, 34], [1246, top + 236, 22], [1118, top + 262, 26], [1100, top + 300, 15], [1160, top + 60, 20]]) blob(x, y, rad);
-    // a few ragged satellites, and two faint smears far to the left like the spots on a leaf
+    for (const [x, y, rad] of [[1206, top + 196, 21], [1228, top + 232, 14], [1126, top + 258, 17], [1108, top + 292, 10], [1150, top + 66, 13]]) blob(x, y, rad);
+    // a few ragged satellites, and two faint smears far to the left
     const sat = [[1040, 930, 14], [1300, 850, 12], [1076, 800, 8], [1290, 990, 10], [262, 930, 17], [585, 800, 9]];
     for (const [x, y, rad] of sat) for (let q = 0; q < 4; q++) blob(x + r.range(-rad, rad), y + r.range(-rad, rad) * 0.7, rad * r.range(0.5, 1));
   };
-  const Sm = mask(soilShape, 15), Sw = mask(soilShape, 46);       // the soil itself / the wide stain around it
+  const Sm = mask(soilShape, 10), Sw = mask(soilShape, 38);       // the soil itself / the wide stain around it
 
   // ── slow fields on a coarse grid (bilinear-sampled) ──
   const CS = 4, cw = Math.ceil(RW / CS) + 2, ch = Math.ceil(RH / CS) + 2, cn = cw * ch;
   const cLump = new Float32Array(cn), cHue = new Float32Array(cn), cPow = new Float32Array(cn), cWx = new Float32Array(cn),
-    cWy = new Float32Array(cn), cSoil = new Float32Array(cn), cZone = new Float32Array(cn), cMid = new Float32Array(cn), cCor = new Float32Array(cn);
+    cWy = new Float32Array(cn), cSoil = new Float32Array(cn), cZone = new Float32Array(cn), cMid = new Float32Array(cn), cCor = new Float32Array(cn),
+    cPz = new Float32Array(cn), cBz = new Float32Array(cn), cEx = new Float32Array(cn);
   for (let j = 0; j < ch; j++) for (let i = 0; i < cw; i++) {
     const x = X0 + i * CS, y = Y0 + j * CS, k = j * cw + i;
     cLump[k] = nA.fbm(x / 150, y / 150, 3, 2, 0.5);
@@ -215,12 +157,15 @@ function buildCoin(env) {
     cZone[k] = nA.fbm(x / 360 + 70, y / 360 + 21, 2);
     cMid[k] = nA.fbm(x / 34 - 12, y / 34 + 44, 2, 2, 0.6);
     cCor[k] = nB.fbm(x / 230 + 3, y / 230 - 8, 2);
+    cPz[k] = nA.fbm(x / 300 + 123, y / 300 - 55, 3);              // where the crust is chalky powder
+    cBz[k] = nB.fbm(x / 260 - 77, y / 260 + 131, 3);              // where it is knobbly (botryoidal)
+    cEx[k] = nB.fbm(x / 310 + 211, y / 310 - 97, 3);              // where plates of it have spalled off
   }
   let bk = 0, btx = 0, bty = 0;
   const B = (s) => { const a0 = s[bk], a1 = s[bk + 1], b0 = s[bk + cw], b1 = s[bk + cw + 1]; return (a0 + (a1 - a0) * btx) * (1 - bty) + (b0 + (b1 - b0) * btx) * bty; };
 
-  const GREEN = lut([[0, '#0d3a23'], [0.2, '#1c5f3c'], [0.46, '#2f9a5f'], [0.63, '#4aae66'], [0.82, '#84c877'], [1, '#bbe292']]);
-  const SOIL = lut([[0, '#5f4018'], [0.22, '#93702a'], [0.5, '#c9a24a'], [0.76, '#d9b95f'], [1, '#ead390']]);
+  const GREEN = lut([[0, '#0d3a23'], [0.2, '#1c5f3c'], [0.46, '#2f9a5f'], [0.63, '#4aae66'], [0.82, '#7cc68a'], [1, '#b6e3b4']]);
+  const SOIL = lut([[0, '#5a3d1a'], [0.22, '#876a30'], [0.5, '#ae8d48'], [0.76, '#c2a25c'], [1, '#d8c088']]);
 
   // ── pass 1: height (full, and without the finest grain), albedo, occlusion, gloss ──
   const Hh = new Float32Array(N), Hs = new Float32Array(N), Hr = new Float32Array(N), Ao = new Float32Array(N), Gs = new Float32Array(N), Gl = new Float32Array(N);
@@ -249,11 +194,18 @@ function buildCoin(env) {
       const groove2 = 1 - sstep(0.02, 0.2, e2);
       const peb = 1 - Math.min(1, cD1 * 3.1);
       const zone = sstep(-0.32, 0.26, B(cZone));
+      const powder = sstep(0.05, 0.3, B(cPz));                        // chalky malachite: smooth, matte, pale
+      const botz = sstep(0.06, 0.3, B(cBz)) * (1 - powder);           // botryoidal clusters: big glossy knobs packed together
+      let knob = 0, knobId = 0.5;
+      if (botz > 0.01) { cell(x / 43 - 9 + wx * 0.5 + w1 * 0.05, y / 43 + 27 + wy * 0.5 + w2 * 0.05); knob = Math.sqrt(1 - Math.min(1, cD1 * 2.4)); knobId = cId; }
+      // layered crust: the slow relief is cut into thin terraces, each ending in a hard scalloped riser
+      const lq = lump * 2.6 + 0.32 * mid + 40, lfl = Math.floor(lq), lfr = lq - lfl;
+      const terr = lfl - 40 + sstep(0, 0.075, lfr), lay = (lfl & 1) ? 1 : -1;
 
       // rim profile: a rounded shoulder up from the edge, a slightly crowned top, then the step down to the field —
       // a crisp arris where the rim is rubbed, a soft slope where crust has crept over it. Both the outline and the step
       // are beaded by the pebbles of the crust, so neither is a ruled line.
-      let ins = v, cov = 1, rimIn = 0, rimTop = 0, hRim = 0, foot = 0, sh = 1, facet = 0, wearG = 0, eTint = 0, ws = 24, rw = RIMW, sf = 6;
+      let crown = 0, ins = v, cov = 1, rimIn = 0, rimTop = 0, hRim = 0, foot = 0, sh = 1, facet = 0, wearG = 0, eTint = 0, ws = 24, rw = RIMW, sf = 6;
       if (v < RIMW + 84) {
         const u = Math.atan2(ddx, ddy) * R;
         let ti = ((u + EU) * 2 + 0.5) | 0; ti = ti < 0 ? 0 : ti > EN ? EN : ti;
@@ -265,6 +217,7 @@ function buildCoin(env) {
           cov = ins / EG[ti] + 0.5; cov = cov < 0 ? 0 : cov > 1 ? 1 : cov;
           ws = WST[ti] + 2.5 * wy;
           if (ins < ws) { const q = ins <= 0 ? 1 : 1 - ins / ws; sh = Math.sqrt(1 - q * q); }
+          const cq = (ins - 0.42 * ws) / (0.36 * ws); crown = Math.exp(-cq * cq);        // the crown of the shoulder, where the light runs along the rim
           if (CLT[ti] > 0) facet = CLT[ti] * (1 - sstep(CRT[ti] * 0.45, CRT[ti], ins));
           eTint = EKT[ti];
         }
@@ -275,8 +228,8 @@ function buildCoin(env) {
         wearG = WGT[ti];
         if (v > rw - sf - 3 && v < rw + 48) Fz[k] = 1;
       }
-      const cs = (0.3 + 0.7 * zone) * (1 - 0.5 * rimIn);             // crackle strength comes and goes; the rim top is rubbed nearly smooth
-      const pa = (0.4 + 0.6 * sstep(-0.3, 0.3, pw)) * (1 - 0.28 * rimIn) * (0.55 + 0.45 * sh);
+      const cs = sstep(0.4, 0.85, zone) * (1 - 0.5 * rimIn);             // crackle strength comes and goes; the rim top is rubbed nearly smooth
+      const pa = (0.18 + 0.82 * sstep(-0.3, 0.3, pw)) * (1 - 0.28 * rimIn) * (0.55 + 0.45 * sh) * (1 - 0.82 * powder) * (1 - 0.55 * botz);
       // the nicks: a small broken face running in from the edge, rough and dark where the crust has not grown back
       if (facet > 0) facet = sstep(0.3, 0.62, facet + 0.16 * mid + 0.06 * g1);
       // where the rim is handled most — the crown of the rounded shoulder, the inner arris — the crust is rubbed thin
@@ -284,7 +237,7 @@ function buildCoin(env) {
       let wear = 0;
       if (wearG > 0 && rimIn > 0.4) {
         const c0 = (ins - 0.5 * ws) / (0.5 * ws), c1 = (v - (rw - sf - 6)) / 9;
-        const band = Math.max(Math.exp(-c0 * c0), 0.8 * Math.exp(-c1 * c1));
+        const band = Math.max(0.3 * Math.exp(-c0 * c0), 0.9 * Math.exp(-c1 * c1));
         wear = wearG * band * sstep(-0.25, 0.35, 0.6 * mid + 0.5 * lump + 0.25 * (peb - 0.5)) * (1 - facet);
       }
 
@@ -323,70 +276,79 @@ function buildCoin(env) {
       const seep = sstep(0.18, 0.5, sm) * (1 - soil) * near * gather * (0.4 + 0.6 * (1 - peb));
       const stain = sstep(0.06, 0.75, halo * 1.9 + 0.3 * sn + 0.12 * mid) * (1 - soil);
 
-      // fissures: the pale bloom gathers between the pebbles along the crack, so its edges are scalloped and it comes and goes
-      const fld = 1 - rimIn, vraw = Vc[k] / 255, vw = (Vw[k] / 255) * fld;
-      let vc = 0;
-      if (vraw > 0.01) {
-        const along = sstep(-0.35, 0.25, pw + 0.5 * mid);
-        const flank = sstep(0.1, 0.44, vraw * (0.84 + 0.34 * along) + 0.22 * (0.45 - peb) * Math.min(1, vraw * 4));
-        vc = (0.56 * flank + 0.44 * sstep(0.66, 0.92, vraw)) * fld * (0.74 + 0.26 * along);
-      }
+      // spalled crust: here and there whole plates have flaked off along the crackle, baring the dark red-brown metal a step lower.
+      // Along the crackle the break is straight and hard; where the patch ends inside a plate it is ragged.
+      let ex = 0;
+      const exz = B(cEx) - 0.27 + 0.07 * mid + 0.012 * g1;
+      if (exz > 0 && id1 > 0.4) ex = sstep(0, 0.035, exz) * sstep(0.012, 0.04, e1 + 0.006 * g1) * (1 - 0.9 * rimIn) * (1 - soil);
       const pit = id2 > 0.972 && lump + 0.6 * mid < 0.05 ? peb : 0, crys = id2 < 0.045 ? peb : 0;
 
-      const det = (1 - 0.8 * soil) * (1 - 0.85 * facet) * (1 - 0.4 * wear);
+      const det = (1 - 0.8 * soil) * (1 - 0.85 * facet) * (1 - 0.4 * wear) * (1 - 0.72 * ex);
       const soilH = soil * (0.5 + 2.0 * thick);
-      const hs = hRim + (2.5 * lump * (1 - 0.5 * rimIn) + 1.0 * mid * (1 - 0.35 * rimIn)) * (0.45 + 0.55 * sh)
+      const hs = hRim + ((1.2 * lump + 1.15 * terr * (1 - 0.6 * ex) * (1 - 0.5 * rimIn)) * (1 - 0.5 * rimIn) + 1.0 * mid * (1 - 0.35 * rimIn)) * (0.45 + 0.55 * sh)
         + det * cs * (1.5 * dome1 - 2.4 * crack)
-        + det * (pa * (1.5 * peb - 0.45 * groove2) - 1.6 * pit + 0.7 * crys)
-        - (3.2 * vw + 2.3 * vc) * (1 - 0.6 * soil)
+        + det * (pa * (1.5 * peb - 0.45 * groove2) + 3.1 * botz * knob * (1 - 0.65 * rimIn) - 1.6 * pit + 0.7 * crys)
+        - 3.2 * ex
         + soilH + soil * (0.3 * peb * (1 - thick) + 0.7 * clod + 0.35 * sand + 0.8 * sn - 0.5 * crack - 1.3 * mc) + 1.1 * crumb
         - facet * (1.6 + 1.1 * mid) - 0.4 * wear;
       Hs[k] = hs;
-      Hh[k] = hs + (0.3 * g1 + 0.13 * g2) * (1 - 0.4 * soil) * (1 + 1.6 * facet);
-      Hr[k] = hRim + soilH;
+      Hh[k] = hs + (0.3 * g1 + 0.13 * g2) * (1 - 0.4 * soil) * (1 + 1.6 * facet) * (1 + 0.7 * powder + 1.3 * ex);
+      Hr[k] = hRim + soilH - 3.2 * ex;
+      if (ex > 0.02) Fz[k] = 1;
       if (soilNear && halo > 0.012) Fz[k] = 1;
 
       // albedo: one family of greens — malachite in the middle, deeper in the hollows, tender on the high, powdery spots
       const bloom = sstep(0.05, 0.6, cor + 0.45 * mid) * (1 - 0.6 * rimIn);                      // powdery, paler malachite lying in patches
-      let t = 0.47 + 0.2 * lump + 0.11 * mid + 0.1 * pw + 0.09 * (peb - 0.45) * pa + 0.08 * (dome1 - 0.6) * cs + 0.035 * g1 + 0.2 * crys + 0.1 * vw
-        + 0.07 * (id1 - 0.5) * (1 - 0.6 * rimIn) + 0.09 * (id2 - 0.5) + 0.1 * bloom;
+      let t = 0.45 + 0.17 * lump + 0.1 * mid + 0.1 * pw + 0.09 * (peb - 0.45) * pa + 0.08 * (dome1 - 0.6) * cs + 0.035 * g1 + 0.2 * crys
+        + 0.07 * (id1 - 0.5) * (1 - 0.6 * rimIn) + 0.09 * (id2 - 0.5) * (1 - powder) + 0.1 * bloom
+        + 0.2 * powder + 0.045 * lay * (1 - 0.5 * powder) + botz * (0.22 * knob - 0.2 + 0.1 * (knobId - 0.5));
       t = t < 0.2 ? 0.2 : t > 1 ? 1 : t;
       let li = ((t * 255) | 0) * 3;
       let cr = GREEN[li], cg = GREEN[li + 1], cb = GREEN[li + 2];
       const hu = B(cHue);
       const hw = hu + 0.08 + 0.2 * (id1 - 0.5) * (1 - 0.5 * rimIn);
-      if (hw > 0) { cr += hw * 46; cg += hw * 15; cb -= hw * 32; } else { cr += hw * 16; cg += hw * 8; }   // toward yellow-green / a shade deeper — never toward blue
+      if (hw > 0) { cr += hw * 22; cg += hw * 10; cb -= hw * 16; } else { cr += hw * 16; cg += hw * 4; cb -= hw * 14; }   // a touch warmer / a touch toward blue-green
+      if (powder > 0) { const pk = 0.3 * powder; cr += (150 - cr) * pk; cg += (204 - cg) * pk; cb += (170 - cb) * pk; }   // the powder is chalkier, cooler
       // the rim: a shade deeper, more so where it is rubbed
       const rk = rimIn * (0.32 + 0.2 * sstep(0, 0.45, lump)); cr += (30 - cr) * rk; cg += (102 - cg) * rk; cb += (56 - cb) * rk;
       // crackle & pits go dark (brown where the soil has stained them)
       const dk = Math.min(1, det * (0.12 * groove2 * pa + 0.75 * pit));
       cr += (16 + 66 * seep - cr) * dk; cg += (66 - cg) * dk; cb += (40 - 14 * seep - cb) * dk;
-      const ck = det * crack * cs * (0.4 - 0.22 * rimIn) * (1 - 0.8 * seep);
-      cr += (146 - cr) * ck; cg += (206 - cg) * ck; cb += (124 - cb) * ck;
-      // fissures: pale tender green, the powdery bloom that fills a crack
-      const vk = Math.min(1, vc * 1.25) * (0.82 + 0.1 * g1 + 0.1 * (peb - 0.5)) * (1 - 0.7 * soil);
-      cr += (164 - cr) * vk; cg += (218 - cg) * vk; cb += (134 - cb) * vk;
+      const ck = det * crack * cs * (0.55 - 0.25 * rimIn) * (1 - 0.8 * seep);
+      cr += (20 - cr) * ck; cg += (58 - cg) * ck; cb += (42 - cb) * ck;
       // the green yellows around the soil, a brown seep where it has run, then the soil itself
-      if (stain > 0) { const s1 = stain * 0.6; cr += (168 - cr) * s1; cg += (184 - cg) * s1; cb += (72 - cb) * s1; }
+      if (stain > 0) { const s1 = stain * 0.34; cr += (168 - cr) * s1; cg += (184 - cg) * s1; cb += (72 - cb) * s1; }
       if (seep > 0) { const s2 = seep * (0.46 + 0.2 * mid); cr += (128 - cr) * s2; cg += (96 - cg) * s2; cb += (40 - cb) * s2; }
+      if (ex > 0) {                                                 // bare metal: dark red-brown, verdigris left in its pits
+        const rem = 0.6 * sstep(0.08, 0.5, sn + 0.5 * mid + 0.12 * g1);
+        let er = 92 + 18 * mid + 9 * g1 + 14 * lump + 10 * sn, eg = 56 + 10 * mid + 5 * g1 + 7 * lump + 4 * sn, eb = 37 + 6 * mid;
+        er += (54 - er) * rem; eg += (104 - eg) * rem; eb += (78 - eb) * rem;
+        cr += (er - cr) * ex; cg += (eg - cg) * ex; cb += (eb - cb) * ex;
+        const lk = 1.6 * ex * (1 - ex);                                  // the broken lip of the crust: pale, powdery
+        cr += (160 - cr) * lk; cg += (210 - cg) * lk; cb += (168 - cb) * lk;
+      }
       if (soil > 0) {
-        let ts = 0.43 + 0.3 * thick + 0.2 * sn + 0.14 * mid + 0.1 * (clod - 0.4) + 0.1 * (clodId - 0.5) + 0.05 * g1 - 0.3 * crack - 0.4 * mc
+        let ts = 0.36 + 0.26 * thick + 0.2 * sn + 0.14 * mid + 0.1 * (clod - 0.4) + 0.1 * (clodId - 0.5) + 0.05 * g1 - 0.3 * crack - 0.4 * mc
           - 0.14 * (gather - 0.25) * (1 - thick) + 0.14 * crumb;                                          // damper, browner where it has seeped; loose crumbs are dry and pale
         if (sandId > 0.9) ts += 0.28 * sand; else if (sandId < 0.07) ts -= 0.4 * sand;                  // a few pale grains, a few dark ones
         ts = ts < 0 ? 0 : ts > 1 ? 1 : ts; li = ((ts * 255) | 0) * 3;
         cr += (SOIL[li] - cr) * soil; cg += (SOIL[li + 1] - cg) * soil; cb += (SOIL[li + 2] - cb) * soil;
       }
       // thin crust on the rubbed parts of the rim: darker and browner; the broken faces of the nicks are browner still
-      if (wear > 0) { const wk = wear * (0.34 + 0.3 * peb); cr += (58 - cr) * wk; cg += (64 - cg) * wk; cb += (38 - cb) * wk; }
+      if (wear > 0) { const wk = wear * (0.34 + 0.3 * peb); cr += (86 - cr) * wk; cg += (60 - cg) * wk; cb += (38 - cb) * wk; }
       if (facet > 0) { const fk = facet * (0.74 + 0.2 * g1); cr += (88 + 26 * mid - cr) * fk; cg += (62 + 14 * mid - cg) * fk; cb += (38 - cb) * fk; }
       // the very edge: a thin deeper line where the crust is thinnest, heavier in some stretches than in others
       if (eTint > 0) { const ek = eTint * (1 - sstep(0.4, 3.6, ins)); cr += (26 - cr) * ek; cg += (64 - cg) * ek; cb += (38 - cb) * ek; }
+      // the crown of the rim's shoulder: rubbed a shade paler, so the light draws a bright line along the edge
+      if (crown > 0.02) { const hk = 0.36 * crown * rimIn * (1 - facet) * (1 - 0.5 * wear) * (0.75 + 0.5 * peb); cr += (132 - cr) * hk; cg += (206 - cg) * hk; cb += (150 - cb) * hk; }
 
       const o = k * 4;
       d[o] = cr; d[o + 1] = cg; d[o + 2] = cb; d[o + 3] = cov * 255;
-      Ao[k] = 1 - 0.1 * foot - 0.1 * dk;
-      Gs[k] = peb * (id2 > 0.55 ? 1 : 0.16) * (1 - 0.9 * soil) * (1 - 0.5 * rimIn) * (1 - facet) + 0.5 * crys + (sandId > 0.9 ? 0.5 * sand * soil : 0);
-      Gl[k] = (0.2 + 0.8 * sstep(0.3, 0.62, id1 + 0.3 * lump)) * (1 - 0.92 * soil) * (0.55 + 0.45 * zone) * (1 - 0.8 * facet) * (1 - 0.3 * vw);   // some plates are waxy, some chalky
+      Ao[k] = 1 - 0.1 * foot - 0.1 * dk - 0.08 * ex;
+      Gs[k] = (peb * (id2 > 0.55 ? 1 : 0.16) * (1 - 0.8 * powder) + 0.9 * botz * knob * knob) * (1 - 0.9 * soil) * (1 - 0.5 * rimIn) * (1 - facet) * (1 - 0.8 * ex)
+        + 0.5 * crys + (sandId > 0.9 ? 0.5 * sand * soil : 0);
+      Gl[k] = ((0.2 + 0.8 * sstep(0.3, 0.62, id1 + 0.3 * lump)) * (0.55 + 0.45 * zone) * (1 - 0.85 * powder) * (1 - 0.6 * ex) + 0.3 * botz)
+        * (1 - 0.92 * soil) * (1 - 0.8 * facet);                    // some plates are waxy, some chalky; the knobs are glassy
     }
   }
   // the outline as an image (white, alpha = coverage): the shadow on the paper is made from it
@@ -417,7 +379,7 @@ function buildCoin(env) {
       if (Fz[k]) {
         let rel = 0.6 * (Hs[k] - Hr[k]); rel = rel < -0.7 ? -0.7 : rel > 2.2 ? 2.2 : rel;
         const base = Hr[k] + rel;
-        for (let q = 1; q <= 14; q++) {
+        for (let q = 1; q <= 19; q++) {
           const t = q * 2.2, px = i - LX * t, py = j - LY * t;
           if (px < 0 || py < 0) break;
           const x0 = px | 0, y0 = py | 0, tx = px - x0, ty = py - y0, kk = y0 * RW + x0;
@@ -427,7 +389,7 @@ function buildCoin(env) {
         }
         if (shd > 1) shd = 1;
       }
-      let sh = 0.47 + 0.53 * (1 - 0.74 * shd) * (df > 0 ? df : 0) / LK[2];
+      let sh = 0.47 + 0.53 * (1 - 0.86 * shd) * (df > 0 ? df : 0) / LK[2];
       sh = (sh > 1.42 ? 1.42 : sh) * Ao[k];
       // broad light falloff: brightest upper-left, a touch deeper toward the lower right
       sh *= 1.09 - 0.19 * (i / RW) - 0.13 * (j / RH);
@@ -439,8 +401,8 @@ function buildCoin(env) {
       const sk = mx * HK[0] + my * HK[1] + mz * HK[2];
       let veil = 0, sp = 0;
       if (sk > 0) {
-        veil = Math.pow(sk, 13) - 0.22; veil = veil > 0 ? veil * 0.42 * Gl[k] * hot : 0;                  // broad, greyish sheen on the flanks that face the light
-        sp = Math.pow(sk, 28) * (0.1 + 0.34 * gs) * hot + veil;
+        veil = Math.pow(sk, 13) - 0.22; veil = veil > 0 ? veil * 0.27 * Gl[k] * hot : 0;                  // broad, greyish sheen on the flanks that face the light
+        sp = Math.pow(sk, 28) * (0.07 + 0.27 * gs) * hot + veil;
         if (shd > 0) { veil *= 1 - shd; sp *= 1 - shd; }
       }
       d[o] = d[o] * sh * (1 - 0.35 * veil) + 204 * sp; d[o + 1] = d[o + 1] * sh * (1 - 0.35 * veil) + 236 * sp; d[o + 2] = d[o + 2] * sh * (1 - 0.35 * veil) + 200 * sp;
