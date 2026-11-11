@@ -32,13 +32,15 @@ python film/blender/b_sheets.py                                      # QA sheets
 
 Logs: `$S/b_logs/queue.log` (START / DONE / FAIL), `$S/b_logs/<id>.log`, a JPEG of every finished still in
 `$S/b_logs/<id>.jpg`.  A still is up to date when the hash of its table entry (`$S/b_logs/<id>.key`) is unchanged
-and it is newer than its ingredient modules.  NEVER edit b_render_all.sh while a runner is active (bash reads
+and it is newer than its ingredient modules (`IGNORE_MODULES=1` skips the second test - the version-A agents keep
+editing the modules, so a plain run re-renders every plate whose ingredient file was touched since).  NEVER edit b_render_all.sh while a runner is active (bash reads
 scripts incrementally).
 
 **New since the first write-up** (all in flatlay.py):
 
-* `--speed fast` (default; `full` = common.py's settings): Burley SSS, bounces 6/2/3/6, adaptive threshold 0.07.
-  1080p / 32 spp: glyph plates 45-190 s, wreaths 150-350 s on the loaded 4-core box.
+* `--speed fast` (default; `full` = common.py's settings): Burley SSS, bounces 5/1/2/5, adaptive threshold 0.09,
+  min 8 samples, FAST denoise prefilter.  1080p / 32 spp on the shared box (one render gets about one of the four
+  cores: every agent session is its own scheduler autogroup): glyph plates 40-110 s, wreaths 65-250 s.
 * `--lock FILE`: flock around the Cycles render only (the scene build runs outside the lock).
 * frame width derived from the MEASURED items: `params.stroke_items` (glyph / landing: regular stroke width in
   item widths) and `params.lengths_across` (wreath) - robust against edits of the ingredient modules.
@@ -51,6 +53,7 @@ scripts incrementally).
 * `variation` (shot key, `macro_variation`): per-instance value / saturation / hue offsets + mottling + speckle
   multiplied into the base colour - cut slices (yam, ginger, liquorice, turmeric, hawthorn, reishi, poria) look
   like paper cut-outs from above without it.  A preset dict, or `{source id: preset}` on mixed plates.
+  Optional `tint` [r, g, b] + `tint_amt` + `tint_mm`: warm stained patches (chalk-white yam slices).
 * paper: the fibre / cloud STRUCTURE is drawn as if the sheet were `PAPER_REF_W` (0.45 m) wide, whatever the
   physical frame (a 3 m plate of monk fruit shows the same paper as a 30 cm plate of seeds); pale strands get
   less contrast on mid-tone sheets.  Saturated mid-tones come out a little lighter / pinker than the table asks
