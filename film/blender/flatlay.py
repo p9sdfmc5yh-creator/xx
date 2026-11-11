@@ -226,38 +226,6 @@ class ItemSet(object):
 
 
 # ============================================================================= sampling helpers
-def blue_noise(pts, rad, rng):
-    """Greedy dart throwing with per-point radii: scan the points in random order and keep one
-    unless an already kept point lies closer than r_i + r_j.  Vectorised (KD-tree pairs + rounds).
-    Returns the indices of the kept points."""
-    n = len(pts)
-    if n == 0:
-        return np.zeros(0, int)
-    rad = np.broadcast_to(np.asarray(rad, float), (n,))
-    order = rng.permutation(n)
-    P, Rr = np.asarray(pts, float)[order], rad[order]
-    pairs = cKDTree(P).query_pairs(2.0 * float(Rr.max()), output_type='ndarray')
-    if len(pairs):
-        d = np.linalg.norm(P[pairs[:, 0]] - P[pairs[:, 1]], axis=1)
-        pairs = pairs[d < Rr[pairs[:, 0]] + Rr[pairs[:, 1]]]
-    lo, hi = pairs.min(1) if len(pairs) else np.zeros(0, int), pairs.max(1) if len(pairs) else np.zeros(0, int)
-    state = np.zeros(n, np.int8)                                   # 0 undecided, 1 kept, -1 dropped
-    while True:
-        und = state == 0
-        if not und.any():
-            break
-        act = (state[lo] >= 0) & (state[hi] == 0)
-        blocked = np.zeros(n, bool)
-        blocked[hi[act]] = True
-        new = und & ~blocked
-        state[new] = 1
-        kill = (state[lo] == 1) & (state[hi] == 0)
-        state[hi[kill]] = -1
-        if not new.any():
-            break
-    return order[state == 1]
-
-
 def fbm2(h, w, base_px, rng, octaves=4, gain=0.5):
     """Cheap 2-D fractal value noise (cubic-upsampled random grids), roughly N(0, 0.6), float32 (h, w)."""
     out = np.zeros((h, w), np.float32)
@@ -457,47 +425,147 @@ def settle(place, sets, extent, rng, base=None, candidates=1, jitter=0.6, allowe
 
 
 # ============================================================================= layouts
-def _scatter_passes(extent, sets, mix, dens_fns, rng, spacing=(1.0, 0.92, 0.9), oversample=5.0, keep=None,
-                    size_jitter=0.07, group=0):
+def pack_select(x, y, ang, a, b, rng, k=0.92, n_fixed=0):
+    """Random sequential packing of ORIENTED footprints.  Every footprint is a stadium (a row of discs
+    of radius b along the long axis, half length a, direction ang).  Candidates are scanned in random
+    order (the first n_fixed are already accepted and keep their place); one is kept unless it overlaps
+    a kept one by more than (1 - k).  Vectorised: KD-tree pairs -> disc/disc test -> greedy rounds.
+    Returns the kept indices (fixed ones first)."""
+    n = len(x)
+    if n == 0:
+        return np.zeros(0, int)
+    pr = np.concatenate([np.arange(n_fixed), n_fixed + rng.permutation(n - n_fixed)])
+    X = np.stack([x, y], 1)[pr]
+    A, B, ANG = np.asarray(a, float)[pr], np.asarray(b, float)[pr], np.asarray(ang, float)[pr]
+    pairs = cKDTree(X).query_pairs(2.0 * float(A.max()) * k, output_type='ndarray')
+    lo = hi = np.zeros(0, int)
+    if len(pairs):
+        pairs = pairs[~((pairs[:, 0] < n_fixed) & (pairs[:, 1] < n_fixed))]
+        nd = int(np.clip(math.ceil(2.0 * float((A / B).max()) - 1.0), 1, 9))
+        ts = np.linspace(-1.0, 1.0, nd) if nd > 1 else np.zeros(1)
+        los, his = [], []
+        for c0 in range(0, len(pairs), 400000):
+            i, j = pairs[c0:c0 + 400000, 0], pairs[c0:c0 + 400000, 1]
+            d = X[i] - X[j]
+            m = np.hypot(d[:, 0], d[:, 1]) < (A[i] + A[j]) * k
+            i, j, d = i[m], j[m], d[m]
+            if nd > 1:
+                ei = (A[i] - B[i])[:, None] * ts[None, :]
+                ej = (A[j] - B[j])[:, None] * ts[None, :]
+                dx = d[:, 0][:, None, None] + ei[:, :, None] * np.cos(ANG[i])[:, None, None] - ej[:, None, :] * np.cos(ANG[j])[:, None, None]
+                dy = d[:, 1][:, None, None] + ei[:, :, None] * np.sin(ANG[i])[:, None, None] - ej[:, None, :] * np.sin(ANG[j])[:, None, None]
+                dmin = np.sqrt((dx * dx + dy * dy).reshape(len(i), -1).min(1))
+            else:
+                dmin = np.hypot(d[:, 0], d[:, 1])
+            cf = dmin < (B[i] + B[j]) * k
+            los.append(np.minimum(i, j)[cf])
+            his.append(np.maximum(i, j)[cf])
+        lo, hi = np.concatenate(los), np.concatenate(his)
+    state = np.zeros(n, np.int8)
+    while True:
+        und = state == 0
+        if not und.any():
+            break
+        act = (state[lo] >= 0) & (state[hi] == 0)
+        blocked = np.zeros(n, bool)
+        blocked[hi[act]] = True
+        new = und & ~blocked
+        state[new] = 1
+        kill = (state[lo] == 1) & (state[hi] == 0)
+        state[hi[kill]] = -1
+        if not new.any():
+            break
+    return np.sort(pr[state == 1])
+
+
+def blue_noise(pts, rad, rng):
+    """Variable-radius blue noise (discs): indices of the kept points."""
+    pts = np.asarray(pts, float)
+    rad = np.broadcast_to(np.asarray(rad, float), (len(pts),))
+    return pack_select(pts[:, 0], pts[:, 1], np.zeros(len(pts)), rad, rad, rng, k=1.0)
+
+
+def _candidates(sets, mix, x, y, rng, size_jitter=0.07, assign=None):
+    """Give every candidate position an ingredient, a variant, a size and its footprint (a, b)."""
+    n = len(x)
+    if assign is not None:
+        iset = assign(x, y)
+    else:
+        mix = np.asarray(mix, float) / np.sum(mix)
+        iset = rng.choice(len(sets), size=n, p=mix)
+    var = np.zeros(n, int)
+    scale = np.ones(n)
+    a = np.zeros(n)
+    b = np.zeros(n)
+    for si, S in enumerate(sets):
+        m = iset == si
+        v, sc = _pick_variants(S, int(m.sum()), rng, size_jitter)
+        var[m], scale[m] = v, sc
+        a[m], b[m] = S.a[v] * sc, S.b[v] * sc
+    return dict(x=np.asarray(x, float), y=np.asarray(y, float), iset=iset, var=var, scale=scale, a=a, b=np.minimum(b, a))
+
+
+def _cat_c(c1, c2):
+    return c2 if c1 is None else {k: np.concatenate([c1[k], c2[k]]) for k in c2}
+
+
+def pack_pass(sample, n_try, rng, k=0.92, rounds=1):
+    """One pouring pass: `sample(n)` returns a candidate dict (x, y, ang, iset, var, scale, a, b) that
+    already respects the region; candidates are packed without overlap.  rounds > 1 keeps throwing
+    new candidates between the accepted ones until the layer is jammed."""
+    acc = None
+    for r in range(rounds):
+        c = sample(n_try)
+        if c is None or len(c['x']) == 0:
+            continue
+        nf = 0 if acc is None else len(acc['x'])
+        m = _cat_c(acc, c)
+        keep = pack_select(m['x'], m['y'], m['ang'], m['a'], m['b'], rng, k=k, n_fixed=nf)
+        acc = {kk: v[keep] for kk, v in m.items()}
+    return acc
+
+
+def _to_placement(c, sets, order, group=0):
+    n = 0 if c is None else len(c['x'])
+    pl = Placement(n)
+    if n:
+        pl.x, pl.y, pl.iset, pl.var, pl.scale = c['x'], c['y'], c['iset'], c['var'], c['scale']
+        th = np.zeros(n)
+        for si, S in enumerate(sets):
+            m = c['iset'] == si
+            th[m] = S.theta[c['var'][m]]
+        pl.yaw = c['ang'] - th                                       # ang = world direction of the long axis
+        pl.order[:] = order
+        pl.group[:] = group
+    return pl
+
+
+def _scatter_passes(extent, sets, mix, dens_fns, rng, k=(0.94, 0.88, 0.85), oversample=6.0, keep=None,
+                    size_jitter=0.07, group=0, assign=None, rounds=1, ang_fn=None):
     """Density-driven scatter.  For every pouring pass p: throw candidates into `extent` with
-    probability dens_fns[p](x, y) in 0..1, give each one an ingredient (probabilities `mix`), a
-    variant and a size, and thin them by variable-radius blue noise (radius = footprint-equivalent
-    radius x spacing[p]).  keep(x, y, r) -> bool mask can veto candidates (clear zones)."""
+    probability dens_fns[p](x, y) in 0..1, give each one an ingredient (probabilities `mix`, or
+    assign(x, y) -> set index), a variant, a size and a direction (random, or ang_fn(x, y)), and pack
+    them as oriented footprints (pack_pass).  keep(x, y, a) -> bool mask can veto candidates."""
     xmin, xmax, ymin, ymax = extent
     area = (xmax - xmin) * (ymax - ymin)
-    mix = np.asarray(mix, float) / np.sum(mix)
-    r_mean = float(np.sum(mix * np.array([s.r_eff for s in sets])))
+    mixn = np.asarray(mix, float) / np.sum(mix)
+    foot = float(np.sum(mixn * np.array([math.pi * s.L * s.Wd / 4.0 for s in sets])))
     parts = []
     for p, fn in enumerate(dens_fns):
-        n = int(oversample * area / (math.pi * r_mean ** 2))
-        n = min(n, 3000000)
-        x = rng.uniform(xmin, xmax, n)
-        y = rng.uniform(ymin, ymax, n)
-        ok = rng.random(n) < np.clip(fn(x, y), 0, 1)
-        x, y = x[ok], y[ok]
-        n = len(x)
-        if n == 0:
-            continue
-        iset = rng.choice(len(sets), size=n, p=mix)
-        var = np.zeros(n, int)
-        scale = np.ones(n)
-        rad = np.zeros(n)
-        for si, S in enumerate(sets):
-            m = iset == si
-            v, sc = _pick_variants(S, int(m.sum()), rng, size_jitter)
-            var[m], scale[m] = v, sc
-            rad[m] = np.sqrt(S.a[v] * S.b[v]) * sc
-        if keep is not None:
-            kk = keep(x, y, rad)
-            x, y, iset, var, scale, rad = x[kk], y[kk], iset[kk], var[kk], scale[kk], rad[kk]
-        sp = spacing[min(p, len(spacing) - 1)]
-        sel = blue_noise(np.stack([x, y], 1), rad * sp, rng)
-        pl = Placement(len(sel))
-        pl.x, pl.y, pl.iset, pl.var, pl.scale = x[sel], y[sel], iset[sel], var[sel], scale[sel]
-        pl.yaw = rng.uniform(0, 2 * math.pi, len(sel))
-        pl.order[:] = p
-        pl.group[:] = group
-        parts.append(pl)
+        def sample(n, fn=fn):
+            x = rng.uniform(xmin, xmax, n)
+            y = rng.uniform(ymin, ymax, n)
+            ok = rng.random(n) < np.clip(fn(x, y), 0, 1)
+            x, y = x[ok], y[ok]
+            c = _candidates(sets, mix, x, y, rng, size_jitter, assign)
+            if keep is not None:
+                kk = keep(c['x'], c['y'], c['a'])
+                c = {q: v[kk] for q, v in c.items()}
+            c['ang'] = rng.uniform(0, 2 * math.pi, len(c['x'])) if ang_fn is None else ang_fn(c['x'], c['y'])
+            return c
+        n_try = int(min(oversample * area / foot, 3.0e6))
+        c = pack_pass(sample, n_try, rng, k=k[min(p, len(k) - 1)], rounds=rounds)
+        parts.append(_to_placement(c, sets, p, group))
     return Placement.cat(parts)
 
 
@@ -1160,22 +1228,22 @@ def window_light(frame, P=None):
     s = frame.W
     az = math.radians(float(P.get('az', 135.0)))
     el = math.radians(float(P.get('el', 44.0)))
-    dist = float(P.get('dist', 7.0)) * s
-    size = float(P.get('size', 3.4)) * s
+    dist = float(P.get('dist', 10.0)) * s
+    size = float(P.get('size', 4.4)) * s
     d = np.array([math.cos(az) * math.cos(el), math.sin(az) * math.cos(el), math.sin(el)])
     k = float(P.get('key', 1.0))
     key = C._area_light('key', tuple(d * dist), (0, 0, 0), size, 1.0, P.get('key_color', (1.0, 0.965, 0.915)),
                         shape='RECTANGLE')
     key.data.size_y = size * 0.72
-    key.data.energy = 104.0 * k * dist * dist * 1.0                  # W; calibrated: white card = LIGHT_E scene-linear
+    key.data.energy = 25.3 * k * dist * dist                         # W; calibrated: key 1.62 + fill 0.30 + ambient 0.08 = LIGHT_E
     f = float(P.get('fill', 1.0))
     if f > 0:
         df = np.array([math.cos(az + math.pi) * math.cos(math.radians(62)), math.sin(az + math.pi) * math.cos(math.radians(62)),
                        math.sin(math.radians(62))])
         fl = C._area_light('fill', tuple(df * 6.0 * s), (0, 0, 0), 7.0 * s, 1.0, P.get('fill_color', (0.90, 0.95, 1.0)),
                            shape='DISK')
-        fl.data.energy = 15.0 * f * (6.0 * s) ** 2
-    a = 0.055 * float(P.get('ambient', 1.0))
+        fl.data.energy = 4.70 * f * (6.0 * s) ** 2
+    a = 0.096 * float(P.get('ambient', 1.0))
     C.world_gradient(horizon=(a * 0.6,) * 3, zenith=(a,) * 3, ground=(a * 0.3,) * 3)
     return key
 

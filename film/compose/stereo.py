@@ -910,3 +910,445 @@ def disparity_preview(disparity, alpha=None, sky_px=None, limit=None):
     t = np.clip(d / max(lim, 1e-6), -1, 1)[..., None]
     red, blue, white = np.float32([0.85, 0.12, 0.10]), np.float32([0.10, 0.25, 0.85]), np.float32([1, 1, 1])
     return np.where(t < 0, white + (red - white) * (-t), white + (blue - white) * t).astype(np.float32)
+
+
+# ==============================================================================================
+# CLI
+# ==============================================================================================
+HERE = os.path.dirname(os.path.abspath(__file__))
+FILM_DIR = os.path.dirname(HERE)
+SCRATCH = os.environ.get('YSTY_SCRATCH',
+                         '/tmp/claude-0/-home-user-xx/7e18b1fa-923d-5a7b-99f5-35aa0b46033b/scratchpad')
+
+
+def _read_image(path):
+    im = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+    assert im is not None, 'cannot read ' + path
+    im = to_float(im)
+    if im.ndim == 3:
+        im = im[..., [2, 1, 0, 3]] if im.shape[2] == 4 else im[..., ::-1]
+    return np.ascontiguousarray(im)
+
+
+def _write_image(path, rgb, quality=93, width=None):
+    rgb = np.clip(rgb, 0.0, 1.0)
+    if width and rgb.shape[1] > width:
+        h = int(round(rgb.shape[0] * width / float(rgb.shape[1])))
+        rgb = cv2.resize(rgb, (width, h), interpolation=cv2.INTER_AREA)
+    d = os.path.dirname(os.path.abspath(path))
+    os.makedirs(d, exist_ok=True)
+    if path.lower().endswith('.png'):
+        arr = (rgb * 65535.0 + 0.5).astype(np.uint16)
+        cv2.imwrite(path, arr[..., ::-1])
+    else:
+        arr = (rgb * 255.0 + 0.5).astype(np.uint8)
+        cv2.imwrite(path, arr[..., ::-1], [cv2.IMWRITE_JPEG_QUALITY, quality,
+                                           cv2.IMWRITE_JPEG_SAMPLING_FACTOR, cv2.IMWRITE_JPEG_SAMPLING_FACTOR_444])
+    return path
+
+
+def demo_sky(H, W, top=(0.012, 0.010, 0.014), bottom=(0.105, 0.050, 0.034), stars=True, seed=7):
+    """Dark vertical gradient (the m02 backdrop mood) + a few pin-point stars (they make the
+    sky's parallax visible in the check images)."""
+    t = np.linspace(0.0, 1.0, H, dtype=np.float32)[:, None, None] ** 1.6
+    sky = np.float32(top)[None, None, :] * (1.0 - t) + np.float32(bottom)[None, None, :] * t
+    sky = np.ascontiguousarray(np.broadcast_to(sky, (H, W, 3))).copy()
+    if stars:
+        rng = np.random.default_rng(seed)
+        n = 260
+        layer = np.zeros((H, W), np.float32)
+        ys = (rng.random(n) ** 1.5 * 0.5 * H).astype(int)
+        xs = (rng.random(n) * W).astype(int)
+        layer[ys, xs] = rng.random(n).astype(np.float32) ** 2 * 6.0 + 0.6
+        layer = cv2.GaussianBlur(layer, (0, 0), W / 3840.0 * 1.1)
+        sky += layer[..., None] * np.float32([1.0, 0.96, 0.9])
+    return np.clip(sky, 0.0, 1.0)
+
+
+def demo_title(H, W, text=u'枸杞子', cy=0.405, em=0.118, tracking=0.22, font=None):
+    """Dummy white title with a soft shadow, straight-alpha RGBA float32 (Pillow)."""
+    from PIL import Image, ImageDraw, ImageFont, ImageFilter
+    font = font or os.path.join(SCRATCH, 'fonts', 'NotoSerifCJKsc-Bold.otf')
+    px = int(em * H)
+    try:
+        fnt = ImageFont.truetype(font, px)
+    except Exception:
+        fnt = ImageFont.load_default()
+    adv = [fnt.getlength(c) for c in text]
+    tot = sum(adv) + tracking * px * (len(text) - 1)
+    x = (W - tot) / 2.0
+    cov = Image.new('L', (W, H), 0)
+    dr = ImageDraw.Draw(cov)
+    for c, a in zip(text, adv):
+        dr.text((x, cy * H), c, font=fnt, fill=255, anchor='lm')
+        x += a + tracking * px
+    sh = cov.filter(ImageFilter.GaussianBlur(px * 0.06))
+    c = np.asarray(cov, np.float32) / 255.0
+    s = np.asarray(sh, np.float32) / 255.0 * 0.55
+    a = c + s * (1.0 - c)
+    out = np.zeros((H, W, 4), np.float32)
+    out[..., :3] = (c / np.maximum(a, 1e-6))[..., None]        # white text over black shadow
+    out[..., 3] = a
+    return out
+
+
+def _fmt_px(v, W):
+    return '%+.1f px (%+.2f %% W)' % (v, 100.0 * v / W)
+
+
+def cmd_demo(args):
+    cv2.setNumThreads(args.threads)
+    out_dir = args.out_dir
+    os.makedirs(out_dir, exist_ok=True)
+    t0 = time.perf_counter()
+    fg = _read_image(args.fg)
+    depth = np.load(args.depth)
+    if args.scale != 1.0:
+        s = args.scale
+        fg = cv2.resize(fg, None, fx=s, fy=s, interpolation=cv2.INTER_AREA)
+        depth = cv2.resize(depth, (fg.shape[1], fg.shape[0]), interpolation=cv2.INTER_NEAREST)
+    H, W = fg.shape[:2]
+    sky = demo_sky(H, W)
+    title = demo_title(H, W)
+    t_load = time.perf_counter() - t0
+
+    t0 = time.perf_counter()
+    D, info = disparity_from_depth(depth, fg[..., 3], mode='A', return_info=True)
+    t_disp = time.perf_counter() - t0
+    t0 = time.perf_counter()
+    L, R, inf = stereo_pair_A(sky, fg, depth, title, disparity=D, info=info, return_info=True,
+                              threads=args.threads, interp=args.interp)
+    t_pair = time.perf_counter() - t0
+    t0 = time.perf_counter()
+    half = pack_sbs(L, R, 'half')
+    t_half = time.perf_counter() - t0
+    t0 = time.perf_counter()
+    ana = pack_anaglyph(L, R)
+    t_ana = time.perf_counter() - t0
+
+    _write_image(os.path.join(out_dir, 'stereo_goji_anaglyph.jpg'), ana, width=1920)
+    _write_image(os.path.join(out_dir, 'stereo_goji_anaglyph_gray.jpg'), pack_anaglyph(L, R, 'gray'), width=1920)
+    _write_image(os.path.join(out_dir, 'stereo_goji_sbs_half.jpg'), half)
+    _write_image(os.path.join(out_dir, 'stereo_goji_disparity.jpg'),
+                 disparity_preview(D, fg[..., 3], inf['sky_px']), width=1920)
+    # 100 % crops around silhouette berries: left | right
+    cw, ch = int(0.14 * W), int(0.11 * H)
+    alpha = fg[..., 3]
+    crops = []
+    for fx in (0.14, 0.43, 0.56, 0.86):
+        x0 = int(fx * W - cw / 2)
+        col = alpha[:, x0 + cw // 2]
+        top = int(np.argmax(col > 0.5))
+        y0 = int(np.clip(top - ch * 0.42, 0, H - ch))
+        crops.append((x0, y0))
+    crops.append((int(0.47 * W), int(0.86 * H)))                 # near field, inside the heap
+    rows = []
+    gap = np.ones((ch, 6, 3), np.float32) * 0.5
+    for x0, y0 in crops:
+        rows.append(np.concatenate([L[y0:y0 + ch, x0:x0 + cw], gap, R[y0:y0 + ch, x0:x0 + cw]], axis=1))
+        rows.append(np.ones((6, rows[-1].shape[1], 3), np.float32) * 0.5)
+    _write_image(os.path.join(out_dir, 'stereo_goji_edges.jpg'), np.concatenate(rows[:-1], axis=0), quality=95)
+
+    solid = alpha > 0.5
+    dv = D[solid]
+    print('== goji stereo demo  %dx%d ==' % (W, H))
+    print('depth range (percentiles)   z_near %.4f m   z_far %.4f m   screen plane (conv) %.4f m   k = %.2f px*m'
+          % (info['z_near'], info['z_far'], info['conv'], info['k']))
+    print('foreground disparity        min %s   max %s' % (_fmt_px(dv.min(), W), _fmt_px(dv.max(), W)))
+    print('   percentile targets       near %s   far %s' % (_fmt_px(info['near_px'], W), _fmt_px(info['far_px'], W)))
+    print('sky disparity               %s' % _fmt_px(inf['sky_px'], W))
+    print('text disparity              %s' % _fmt_px(inf['text_px'], W))
+    print('total parallax used         %.1f px = %.2f %% of the width' % (inf['sky_px'] - dv.min(), 100 * (inf['sky_px'] - dv.min()) / W))
+    print('disoccluded pixels filled   left %.3f %%   right %.3f %%  of the frame (%.3f %% / %.3f %% of the foreground)'
+          % (100 * inf['hole_frac_left'], 100 * inf['hole_frac_right'],
+             100 * inf['hole_frac_left'] / solid.mean(), 100 * inf['hole_frac_right'] / solid.mean()))
+    if inf['window'] is not None:
+        print('floating window             left edge up to %.1f px, right edge up to %.1f px'
+              % (inf['window'][0].max(), inf['window'][1].max()))
+    print('timings: load %.2f s | disparity_from_depth %.2f s | stereo_pair_A (cached disparity) %.2f s | '
+          'pack half %.2f s | anaglyph %.2f s' % (t_load, t_disp, t_pair, t_half, t_ana))
+    print('written to', out_dir)
+    return L, R, inf
+
+
+def synthetic_plate(H=1080, W=1920, seed=3):
+    """A synthetic top-down 'specimen plate': textured ground with soft contact shadows and a few
+    items (domes, a thin stem, a ring) -> (rgb, depth[m]).  Used by selftest / bench."""
+    rng = np.random.default_rng(seed)
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    s = W / 1920.0
+    cam = 0.60                                               # camera height above the ground (m)
+    height = np.zeros((H, W), np.float32)
+    col = np.zeros((H, W, 3), np.float32)
+    item = np.zeros((H, W), bool)
+    n1 = cv2.GaussianBlur(rng.random((H, W)).astype(np.float32), (0, 0), 1.2 * s)
+    n2 = cv2.GaussianBlur(rng.random((H, W)).astype(np.float32), (0, 0), 14 * s)
+    ground = 0.80 + 0.9 * (n1 - 0.5) + 0.25 * (n2 - 0.5)
+    ground = ground[..., None] * np.float32([0.93, 0.88, 0.78])
+    ground[(yy.astype(int) // int(40 * s)) % 6 == 0] *= 0.93  # some structure: faint ruled lines
+    shadow = np.zeros((H, W), np.float32)
+    for _ in range(26):
+        cx, cy = rng.uniform(0.04, 0.96) * W, rng.uniform(0.06, 0.94) * H
+        r = rng.uniform(22, 70) * s
+        hgt = rng.uniform(0.006, 0.030)
+        d2 = ((xx - cx) ** 2 + (yy - cy) ** 2) / (r * r)
+        m = d2 < 1.0
+        dome = hgt * np.sqrt(np.clip(1.0 - d2, 0, 1)) ** 0.7
+        upd = m & (dome > height)
+        height[upd] = dome[upd]
+        base = np.float32(rng.uniform(0.25, 0.9, 3)) * np.float32([1.0, 0.55, 0.4])
+        tex = 0.75 + 0.5 * (n1 - 0.5) + 0.35 * np.sqrt(np.clip(1.0 - d2, 0, 1))
+        col[upd] = (tex[..., None] * base)[upd]
+        item |= upd
+        shadow = np.maximum(shadow, np.exp(-np.clip(np.sqrt(d2) - 1.0, 0, None) * r / (22 * s)) * (d2 >= 1.0) * (hgt / 0.03))
+    # a thin stem (3 px) high above the ground and a hairline
+    for (x0, y0, x1, y1, wd, hg) in ((0.2, 0.3, 0.45, 0.62, 3.0, 0.028), (0.6, 0.2, 0.8, 0.75, 1.5, 0.02)):
+        px, py = x1 * W - x0 * W, y1 * H - y0 * H
+        ln = np.hypot(px, py)
+        tpar = np.clip(((xx - x0 * W) * px + (yy - y0 * H) * py) / (ln * ln), 0, 1)
+        dist = np.hypot(xx - (x0 * W + tpar * px), yy - (y0 * H + tpar * py))
+        m = dist < wd * s
+        height[m] = hg
+        col[m] = np.float32([0.25, 0.16, 0.08])
+        item |= m
+    img = np.where(item[..., None], col, ground * (1.0 - 0.55 * np.clip(shadow, 0, 1))[..., None])
+    # anti-alias the colour only (the depth stays hard, like a Z pass)
+    img = cv2.GaussianBlur(np.clip(img, 0, 1).astype(np.float32), (0, 0), 0.7)
+    depth = (cam - height).astype(np.float32)
+    return img, depth
+
+
+def cmd_selftest(args):
+    cv2.setNumThreads(args.threads)
+    ok = True
+    # 1. constant disparity = pure shift
+    rng = np.random.default_rng(0)
+    img = cv2.GaussianBlur(rng.random((64, 256, 3)).astype(np.float32), (0, 0), 1.5)
+    D = np.full((64, 256), 8.0, np.float32)
+    l = synth_view(img, D, -1)
+    r = synth_view(img, D, 1)
+    e = max(np.abs(l[:, :-8] - img[:, 4:-4]).max(), np.abs(r[:, 8:] - img[:, 4:-4]).max())
+    print('constant disparity -> exact +-4 px shift, max err %.2e' % e)
+    ok &= e < 1e-5
+    # 2. random piecewise rows against a brute-force z-buffer
+    worst = 0.0
+    for trial in range(40):
+        H, W = 4, int(rng.integers(40, 100))
+        D = np.zeros((H, W), np.float32)
+        for y in range(H):
+            x = 0
+            while x < W:
+                w = int(rng.integers(1, 22))
+                D[y, x:x + w] = rng.uniform(-25, 25) + rng.uniform(-0.3, 0.3) * np.arange(min(w, W - x))
+                x += w
+        cut = float(rng.choice([0.5, 1.0, 2.0]))
+        u, holes = _warp_map(D, 1, cut)
+        ref = np.full((H, W), np.nan)
+        zb = np.full((H, W), np.inf)
+        for y in range(H):
+            d = D[y].astype(np.float64)
+            g = np.arange(W) + 0.5 * d
+            conn = np.zeros(W, bool)
+            conn[:-1] = np.abs(np.float32(0.5) * D[y, 1:] - np.float32(0.5) * D[y, :-1]) <= np.float32(0.5 * cut)
+            for j in range(W):
+                c = []
+                if conn[j]:
+                    for n in range(int(np.ceil(g[j])), int(np.ceil(g[j + 1]))):
+                        fr = (n - g[j]) / (g[j + 1] - g[j])
+                        c.append((n, j + fr, d[j] + fr * (d[j + 1] - d[j])))
+                else:
+                    n = int(np.ceil(g[j]))
+                    if n - g[j] < 0.5:
+                        c.append((n, j + n - g[j], d[j]))
+                if j == 0 or not conn[j - 1]:
+                    n = int(np.ceil(g[j])) - 1
+                    if g[j] - n <= 0.5 and n < g[j]:
+                        c.append((n, j + n - g[j], d[j]))
+                for n, uu, dd in c:
+                    if 0 <= n < W and dd < zb[y, n]:
+                        zb[y, n], ref[y, n] = dd, uu
+        hm = np.zeros(H * W, bool)
+        if holes is not None:
+            hm[holes['idx']] = True
+        if not np.array_equal(hm.reshape(H, W), np.isnan(ref)):
+            ok = False
+            print('  hole mask mismatch in trial', trial)
+            continue
+        m = ~np.isnan(ref)
+        worst = max(worst, float(np.abs(u - ref)[m].max()))
+    print('inverse map vs brute-force z-buffer: worst |du| = %.2e px' % worst)
+    ok &= worst < 2e-3
+    # 3. a near bar over a far ground: the fill must never read the bar
+    D = np.full((4, 200), 10, np.float32)
+    D[:, 80:120] = -30
+    src = np.zeros((4, 200, 3), np.float32)
+    src[:, 80:120] = 1.0
+    for eye in (-1, 1):
+        v, inf = synth_view(src, D, eye, return_info=True)
+        leak = float(v[inf['hole_mask']].max())
+        cols = np.flatnonzero(v[0, :, 0] > 0.5)
+        good = leak == 0.0 and cols[0] == 80 - eye * 15 and cols[-1] == 119 - eye * 15
+        print('near bar, eye %+d: bar at %d..%d, leak into the disocclusion %.3f  %s'
+              % (eye, cols[0], cols[-1], leak, 'ok' if good else 'FAIL'))
+        ok &= good
+    # 4. synthetic plate (mode B)
+    img, depth = synthetic_plate(args.h, args.w)
+    t0 = time.perf_counter()
+    L, R, inf = stereo_pair_B(img, depth, None, return_info=True, threads=args.threads)
+    print('synthetic plate %dx%d: stereo_pair_B %.2f s, disparity %.1f .. %.1f px, holes L %.2f %% R %.2f %%'
+          % (args.w, args.h, time.perf_counter() - t0, inf['min_px'], inf['max_px'],
+             100 * inf['hole_frac_left'], 100 * inf['hole_frac_right']))
+    if args.out_dir:
+        _write_image(os.path.join(args.out_dir, 'stereo_plate_anaglyph.jpg'), pack_anaglyph(L, R), width=1920)
+        _write_image(os.path.join(args.out_dir, 'stereo_plate_sbs_full.jpg'), pack_sbs(L, R, 'full'))
+    print('SELFTEST', 'OK' if ok else 'FAILED')
+    return 0 if ok else 1
+
+
+def cmd_bench(args):
+    cv2.setNumThreads(args.threads)
+    H, W = args.h, args.w
+
+    def tm(label, fn, n=args.repeat):
+        best = 1e9
+        for _ in range(n):
+            t0 = time.perf_counter()
+            r = fn()
+            best = min(best, time.perf_counter() - t0)
+        print('  %-52s %7.2f s' % (label, best))
+        return r
+
+    print('bench %dx%d, cv2 threads %d' % (W, H, args.threads))
+    if os.path.exists(args.fg) and os.path.exists(args.depth):
+        fg = _read_image(args.fg)
+        depth = np.load(args.depth)
+        if fg.shape[1] != W:
+            fg = cv2.resize(fg, (W, H), interpolation=cv2.INTER_AREA)
+            depth = cv2.resize(depth, (W, H), interpolation=cv2.INTER_NEAREST)
+        sky = demo_sky(H, W)
+        title = demo_title(H, W)
+        print('mode A (goji foreground + sky + title)')
+        D, info = tm('disparity_from_depth (once per shot)', lambda: disparity_from_depth(depth, fg[..., 3], mode='A', return_info=True))
+        pm = fg.copy()
+        pm[..., :3] *= pm[..., 3:4]
+        tm('synth_view RGBA, one eye, lanczos', lambda: synth_view(pm, D, 1, premultiplied=True))
+        tm('synth_view RGBA, one eye, cubic', lambda: synth_view(pm, D, 1, premultiplied=True, interp='cubic'))
+        tm('_warp_map only, one eye', lambda: _warp_map(D, 1, 1.0))
+        tm('stereo_pair_A, cached disparity, lanczos', lambda: stereo_pair_A(sky, fg, depth, title, disparity=D, info=info, threads=args.threads))
+        tm('stereo_pair_A, cached disparity, cubic', lambda: stereo_pair_A(sky, fg, depth, title, disparity=D, info=info, threads=args.threads, interp='cubic'))
+        L, R = stereo_pair_A(sky, fg, depth, title, disparity=D, info=info, threads=args.threads)
+        tm('pack_sbs half', lambda: pack_sbs(L, R, 'half'))
+        tm('pack_anaglyph dubois', lambda: pack_anaglyph(L, R))
+    img, depth = synthetic_plate(H, W)
+    print('mode B (synthetic plate)')
+    D, info = tm('disparity_from_depth (once per shot)', lambda: disparity_from_depth(depth, mode='B', return_info=True))
+    tm('stereo_pair_B, cached disparity, lanczos', lambda: stereo_pair_B(img, depth, None, disparity=D, info=info, threads=args.threads))
+    tm('stereo_pair_B, cached disparity, cubic', lambda: stereo_pair_B(img, depth, None, disparity=D, info=info, threads=args.threads, interp='cubic'))
+    return 0
+
+
+def _report(inf, W):
+    print('disparity range %s .. %s%s   text %s   holes L %.3f %% R %.3f %%'
+          % (_fmt_px(inf['min_px'], W), _fmt_px(inf['max_px'], W),
+             ('   sky ' + _fmt_px(inf['sky_px'], W)) if inf.get('mode') == 'A' else '',
+             _fmt_px(inf['text_px'], W), 100 * inf['hole_frac_left'], 100 * inf['hole_frac_right']))
+
+
+def _pack_out(args, L, R):
+    if args.format == 'half':
+        out = pack_sbs(L, R, 'half')
+    elif args.format == 'full':
+        out = pack_sbs(L, R, 'full')
+    elif args.format == 'anaglyph':
+        out = pack_anaglyph(L, R)
+    else:
+        base, ext = os.path.splitext(args.out)
+        _write_image(base + '_L' + ext, L)
+        _write_image(base + '_R' + ext, R)
+        return
+    _write_image(args.out, out)
+
+
+def cmd_pair_a(args):
+    cv2.setNumThreads(args.threads)
+    fg = _read_image(args.fg)
+    depth = np.load(args.depth)
+    H, W = fg.shape[:2]
+    sky = _read_image(args.sky)[..., :3] if args.sky else demo_sky(H, W, stars=False)
+    text = _read_image(args.text) if args.text else None
+    L, R, inf = stereo_pair_A(sky, fg, depth, text, return_info=True, threads=args.threads,
+                              max_px=args.max_px, interp=args.interp)
+    _report(inf, W)
+    _pack_out(args, L, R)
+    return 0
+
+
+def cmd_pair_b(args):
+    cv2.setNumThreads(args.threads)
+    rgb = _read_image(args.rgb)
+    depth = np.load(args.depth)
+    text = _read_image(args.text) if args.text else None
+    L, R, inf = stereo_pair_B(rgb, depth, text, return_info=True, threads=args.threads,
+                              max_px=args.max_px, interp=args.interp)
+    _report(inf, rgb.shape[1])
+    _pack_out(args, L, R)
+    return 0
+
+
+def main(argv=None):
+    p = argparse.ArgumentParser(description='stereoscopic 3D synthesis (see module docstring)')
+    sub = p.add_subparsers(dest='cmd')
+    goji = os.path.join(FILM_DIR, 'renders', 'm02_gouqi.png')
+    gojid = os.path.join(FILM_DIR, 'renders', 'm02_gouqi_depth.npy')
+
+    d = sub.add_parser('demo', help='goji validation images')
+    d.add_argument('--out-dir', default=os.path.join(SCRATCH, 'previews'))
+    d.add_argument('--fg', default=goji)
+    d.add_argument('--depth', default=gojid)
+    d.add_argument('--scale', type=float, default=1.0)
+    d.add_argument('--interp', default='lanczos', choices=list(_INTERP))
+    d.add_argument('--threads', type=int, default=2)
+    d.set_defaults(fn=cmd_demo)
+
+    b = sub.add_parser('bench', help='timings')
+    b.add_argument('--w', type=int, default=3840)
+    b.add_argument('--h', type=int, default=2160)
+    b.add_argument('--fg', default=goji)
+    b.add_argument('--depth', default=gojid)
+    b.add_argument('--repeat', type=int, default=2)
+    b.add_argument('--threads', type=int, default=2)
+    b.set_defaults(fn=cmd_bench)
+
+    s = sub.add_parser('selftest', help='engine checks + synthetic plate')
+    s.add_argument('--w', type=int, default=1920)
+    s.add_argument('--h', type=int, default=1080)
+    s.add_argument('--out-dir', default=None)
+    s.add_argument('--threads', type=int, default=2)
+    s.set_defaults(fn=cmd_selftest)
+
+    for name, fn in (('pair-a', cmd_pair_a), ('pair-b', cmd_pair_b)):
+        q = sub.add_parser(name)
+        if name == 'pair-a':
+            q.add_argument('--fg', required=True, help='RGBA still (PNG)')
+            q.add_argument('--sky', default=None, help='sky plate (default: dark gradient)')
+        else:
+            q.add_argument('--rgb', required=True, help='opaque still')
+        q.add_argument('--depth', required=True, help='.npy depth in metres')
+        q.add_argument('--text', default=None, help='RGBA text layer')
+        q.add_argument('--out', required=True)
+        q.add_argument('--format', default='half', choices=['half', 'full', 'anaglyph', 'pair'])
+        q.add_argument('--max-px', dest='max_px', type=float, default=None)
+        q.add_argument('--interp', default='lanczos', choices=list(_INTERP))
+        q.add_argument('--threads', type=int, default=2)
+        q.set_defaults(fn=fn)
+
+    args = p.parse_args(argv)
+    if not getattr(args, 'fn', None):
+        p.print_help()
+        return 2
+    r = args.fn(args)
+    return r if isinstance(r, int) else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

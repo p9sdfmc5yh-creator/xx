@@ -75,7 +75,7 @@ def face_material(dry=False):
     flesh = m.mix(flesh, (0.92, 0.91, 0.87), m.map_range(grain, 0.56, 0.78, 0.0, 0.8))
     band = m.map_range(din, 0.35, 2.0, 1.0, 0.0, smooth=True)             # translucent cortex under the skin
     flesh = m.mix(flesh, (0.58, 0.47, 0.24), m.math('MULTIPLY', band, 0.70))
-    flesh = m.mix(flesh, (0.50, 0.46, 0.36), m.math('MULTIPLY', dot, m.map_range(dotid, 0, 1, 0.25, 0.8)))
+    flesh = m.mix(flesh, (0.50, 0.46, 0.36), m.math('MULTIPLY', dot, m.map_range(dotid, 0, 1, 0.45, 0.95)))
     flesh = m.mix(flesh, (0.30, 0.21, 0.12), m.math('MULTIPLY', m.map_range(dot, 0.75, 1.0), m.map_range(dotid, 0.55, 0.9, 0.0, 0.6)))
     # skin in cross-section (noisy thickness 0.15-0.4 mm) and on the outer wall (din < 0)
     thick = m.map_range(m.noise(scale=2200, detail=3, vector=P), 0.2, 0.8, 0.15, 0.34)
@@ -104,7 +104,7 @@ def face_material(dry=False):
         bead = m.map_range(m.voronoi(scale=5200, feature='F1', vector=P), 0.0, 0.30, 1.0, 0.0, smooth=True)
         bead = m.math('MULTIPLY', bead, m.map_range(m.noise(scale=1300, detail=2, vector=P), 0.52, 0.62))
         cn = m.bump(dome, strength=0.55, distance=0.000020)
-        cn = m.bump(bead, strength=0.9, distance=0.000022, normal=cn)
+        cn = m.bump(bead, strength=0.8, distance=0.000013, normal=cn)
         film = m.math('MAXIMUM', m.math('MULTIPLY', film, 0.9), drop)
         kw = dict(coat=film, coat_ior=1.38, coat_normal=cn,
                   coat_roughness=m.mixf(m.map_range(streak, 0.2, 0.8, 0.10, 0.26), 0.035, drop))
@@ -163,10 +163,10 @@ def main():
     D.hero_face('yam_face', ol, info, fields, face_material(), n_max=D.n_max_for(args), fillet=0.00006, seed=args.seed)
     D.rootlets('yam_rootlets', ol, info, rootlet_material(), n=24, th_range=(-0.85, 0.85), length=(0.002, 0.009),
                radius=(0.00004, 0.00011), depth=(0.0002, 0.0016), rise=(-0.10, 0.50), seed=args.seed + 5)
-    D.flakes('yam_fray', ol, info, skin_material(), n=34, th_range=(-0.85, 0.85), width=(0.00015, 0.0006),
-             length=(0.00015, 0.0007), lift=(0.3, 1.4), curl=(-0.6, 1.2), z0=-0.00004, seed=args.seed + 9)
+    D.flakes('yam_fray', ol, info, skin_material(), n=26, th_range=(-0.85, 0.85), width=(0.00006, 0.00026),
+             length=(0.00010, 0.00042), lift=(0.3, 1.4), curl=(-0.6, 1.2), z0=-0.00004, seed=args.seed + 9)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.2)
-    D.lights(info, tint=(0.82, 1.0, 0.93), key=0.42, fill=0.50, rim=0.9, top=0.15, sheen=1.6, sheen_size=0.6, sheen_az=-9, sheen_el=28)
+    D.lights(info, tint=(0.82, 1.0, 0.93), key=0.42, fill=0.50, rim=0.9, top=0.15, sheen=1.25, sheen_size=0.6, sheen_az=-9, sheen_el=28)
     D.finish(args, SHOT)
 
 

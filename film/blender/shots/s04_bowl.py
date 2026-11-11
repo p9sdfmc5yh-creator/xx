@@ -351,7 +351,7 @@ def soaked_goji_material():
     fur = m.attr('furrow')
     n_patch = m.noise(scale=150, detail=2, vector=oc)
     n_fine = m.noise(scale=1500, detail=3, vector=oc)
-    col = m.ramp(n_patch, [(0.22, (0.115, 0.0030, 0.0020)), (0.50, (0.190, 0.0080, 0.0026)), (0.80, (0.265, 0.024, 0.0036))])
+    col = m.ramp(n_patch, [(0.22, (0.115, 0.0048, 0.0018)), (0.50, (0.190, 0.0125, 0.0022)), (0.80, (0.265, 0.034, 0.0030))])
     vor = m.voronoi(scale=560, vector=oc, feature='SMOOTH_F1', smoothness=0.4)
     seedm = m.map_range(vor, 0.10, 0.50, 1.0, 0.0, smooth=True)                 # seeds showing through
     col = m.mix(col, (0.34, 0.066, 0.008), m.math('MULTIPLY', seedm, 0.20))
@@ -753,10 +753,10 @@ def build_scene(args):
     rect_light('strip', 64.0, 36.0, 1.0, T, 0.22, 0.70, 9.0, (1.0, 0.90, 0.78))
     # The 1 cm berries would mirror those metre-wide boxes as white slabs along their whole length
     # (= lacquered plastic).  They get the same light from the same directions through SMALL sources
-    # instead: identical shading, but the wet film shows small sharp glints.
-    small = [rect_light('key_b', -38.0, 50.0, 1.05, T, 0.150, 0.110, 70.0, (1.0, 0.955, 0.88)),
-             rect_light('top_b', 0.0, 66.0, 1.00, T, 0.090, 0.070, 17.0, (1.0, 0.975, 0.94)),
-             rect_light('front_b', -150.0, 52.0, 1.25, T, 0.30, 0.25, 16.0, (0.94, 0.97, 1.0))]
+    # instead (a little under-powered: AgX turns over-lit red into salmon): the wet film shows small sharp glints.
+    small = [rect_light('key_b', -38.0, 50.0, 1.05, T, 0.150, 0.110, 40.0, (1.0, 0.955, 0.88)),
+             rect_light('top_b', 0.0, 66.0, 1.00, T, 0.090, 0.070, 9.0, (1.0, 0.975, 0.94)),
+             rect_light('front_b', -150.0, 52.0, 1.25, T, 0.30, 0.25, 8.0, (0.94, 0.97, 1.0))]
     try:
         ex = bpy.data.collections.new('ll_not_berries')
         ex.objects.link(berries_ob)

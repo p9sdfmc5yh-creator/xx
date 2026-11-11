@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _botanicals import C, rot, merge_parts, hair_tubes, settle, finish                # noqa: E402
 
 SHOT = 'k05_bohe'
-R_DOME = 0.16             # a 48 mm leaf is ~870 px (1920 frame) at the horizon: 2 leaves across
+R_DOME = 0.19             # a 48 mm leaf is ~730 px (1920 frame) at the horizon: 2-3 leaves across
 SEED = 1
 N_UP, N_FLIP = 6, 1
 SKY_TINT = (0.93, 1.0, 0.90)   # pale green-white sky of the shot
@@ -65,7 +65,7 @@ def make_leaf(seed, nu=760, nv=440, flipped=False, hairs=True):
     for side in (-1.0, 1.0):
         alt = rng.uniform(0.25, 0.75) if side > 0 else 0.0
         for k in range(K):
-            sk = 0.05 + 0.72 * ((k + alt + rng.uniform(-0.2, 0.2)) / K) ** 1.1
+            sk = 0.05 + 0.72 * (max(k + alt + rng.uniform(-0.2, 0.2), 0.03) / K) ** 1.1
             se = min(sk + (0.15 + 0.11 * (1 - sk)) * rng.uniform(0.9, 1.12), 0.975)
             ye = 0.95 * Wh * float(fprof(np.array(se)))
             p0 = np.array([sk * L, 0.0])
@@ -126,10 +126,11 @@ def make_leaf(seed, nu=760, nv=440, flipped=False, hairs=True):
     ln = rng.uniform(0.003, 0.007)
     zb = float(Z[nv // 2, 0])
     path = np.array([-0.5 * L + 0.0006, 0.0, zb - 0.0003]) + tt * ln * np.array([-1.0, rng.normal(0, 0.2), rng.normal(-0.1, 0.15)])
-    pr = np.linspace(0.00050, 0.00060, n)
-    pr[-1] *= 0.85
+    pr = np.linspace(0.00042, 0.00046, n)
+    pr[-2] *= 0.9
+    pr[-1] *= 0.25
     pv, pf = C.tube(path, pr, nv=12)
-    parts.append((pv, pf, 0, dict(luv=np.tile([0.0, 0.0, r01], (len(pv), 1)), lv=np.tile([0.8, 0.0, 0.3], (len(pv), 1)),
+    parts.append((pv, pf, 0, dict(luv=np.tile([0.0, 0.0, r01], (len(pv), 1)), lv=np.tile([1.0, 0.0, 0.9], (len(pv), 1)),
                                   lw=np.tile([0.0, 0.0, 0.0], (len(pv), 1)))))
 
     # --- hairs: margin cilia, on the veins, sparse on the blade
@@ -174,33 +175,33 @@ def leaf_material():
     mott = m.noise(scale=0.22, detail=3, roughness=0.6, vector=uv)   # ~5 mm blotches
     fine = m.noise(scale=2.4, detail=3, roughness=0.6, vector=uv)
     # upper side
-    top = m.mix((0.026, 0.092, 0.010), (0.060, 0.180, 0.016), m.map_range(puff, 0.15, 0.95))
-    top = m.mix(top, (0.090, 0.225, 0.020), m.math('MULTIPLY', m.map_range(mott, 0.40, 0.75), 0.55))
-    top = m.mix(top, (0.014, 0.055, 0.008), m.map_range(groove, 0.35, 1.0, 0.0, 0.62, smooth=True))
-    top = m.mix(top, (0.150, 0.290, 0.050), m.map_range(vein, 0.60, 0.97, 0.0, 0.50, smooth=True))
-    top = m.mix(top, (0.105, 0.250, 0.018), m.math('MULTIPLY', m.map_range(tone, 0.0, 0.45, 1.0, 0.0), 0.45))
-    top = m.mix(top, (0.018, 0.070, 0.016), m.math('MULTIPLY', m.map_range(tone, 0.6, 1.0), 0.50))
+    top = m.mix((0.036, 0.125, 0.012), (0.085, 0.250, 0.022), m.map_range(puff, 0.15, 0.95))
+    top = m.mix(top, (0.125, 0.310, 0.028), m.math('MULTIPLY', m.map_range(mott, 0.40, 0.75), 0.55))
+    top = m.mix(top, (0.020, 0.078, 0.010), m.map_range(groove, 0.35, 1.0, 0.0, 0.62, smooth=True))
+    top = m.mix(top, (0.190, 0.360, 0.060), m.map_range(vein, 0.60, 0.97, 0.0, 0.55, smooth=True))
+    top = m.mix(top, (0.140, 0.330, 0.022), m.math('MULTIPLY', m.map_range(tone, 0.0, 0.45, 1.0, 0.0), 0.45))
+    top = m.mix(top, (0.026, 0.100, 0.020), m.math('MULTIPLY', m.map_range(tone, 0.6, 1.0), 0.50))
     top = m.mix(top, m.mix(top, (0.6, 0.6, 0.6), 1.0, blend='MULTIPLY'), m.map_range(fine, 0.35, 0.75))
     gl = m.voronoi(scale=2.9, feature='F1', vector=uv)               # oil glands: tiny pale dots
     gdot = m.map_range(gl, 0.07, 0.13, 1.0, 0.0, smooth=True)
     top = m.mix(top, (0.30, 0.42, 0.10), m.math('MULTIPLY', gdot, 0.55))
     # underside: paler, matte, veins pale and prominent
-    under = m.mix((0.070, 0.150, 0.035), (0.105, 0.200, 0.055), mott)
+    under = m.mix((0.060, 0.135, 0.030), (0.090, 0.180, 0.048), mott)
     under = m.mix(under, (0.22, 0.33, 0.11), m.map_range(vein, 0.35, 0.9, 0.0, 0.8, smooth=True))
     col = m.mix(top, under, back)
     col = m.jitter(col, hue=0.012, saturation=0.10, value=0.14)
     col = m.mix(col, (0.55, 0.68, 0.40), hair)
     rn = m.noise(scale=0.9, detail=3, roughness=0.6, vector=uv)
-    rough = m.map_range(puff, 0.2, 0.95, 0.50, 0.30)
+    rough = m.map_range(puff, 0.2, 0.95, 0.56, 0.37)
     rough = m.math('ADD', rough, m.map_range(rn, 0.3, 0.7, -0.06, 0.08))
-    rough = m.mixf(rough, 0.55, m.map_range(groove, 0.4, 1.0))
+    rough = m.mixf(rough, 0.60, m.map_range(groove, 0.4, 1.0))
     rough = m.mixf(rough, 0.62, back)
     # micro relief: finest vein reticulation + cell grain + gland bumps
     ret = m.voronoi(scale=2.3, feature='DISTANCE_TO_EDGE', vector=uv)
     nrm = m.bump(m.map_range(ret, 0.0, 0.22), strength=0.75, distance=0.000028)
     nrm = m.bump(m.noise(scale=11.0, detail=3, roughness=0.6, vector=uv), strength=0.5, distance=0.000012, normal=nrm)
     nrm = m.bump(gdot, strength=0.6, distance=0.000015, normal=nrm)
-    m.set(base_color=col, roughness=rough, ior=1.45, specular=0.50, normal=nrm)
+    m.set(base_color=col, roughness=rough, ior=1.45, specular=0.42, normal=nrm)
     # light through the blade: bright yellow-green, darker under veins
     tc = m.mix((0.130, 0.360, 0.015), (0.270, 0.560, 0.040), m.map_range(puff, 0.1, 0.9))
     tc = m.mix(tc, (0.05, 0.16, 0.01), m.map_range(vein, 0.4, 0.95, 0.0, 0.7))
@@ -244,11 +245,11 @@ def main():
         h = make_leaf(i, nu=nu, nv=nv, flipped=(i >= N_UP))
         variants.append(_object('leaf%d' % i, h, mat))
         shapes.append(h['half'])
-    weights = [1.0] * N_UP + [0.5] * N_FLIP
+    weights = [1.0] * N_UP + [0.35] * N_FLIP
 
     sol = C.planet_solve(R_DOME)
-    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=2.5, coverage=0.75, weights=weights, seed=args.seed,
-                       scale_range=(0.84, 1.12), tilt_deg=9, roll_deg=10, candidates=6, sink=0.10, rough=0.004)
+    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=4.2, coverage=0.80, weights=weights, seed=args.seed,
+                       scale_range=(0.84, 1.12), tilt_deg=6, roll_deg=7, candidates=8, sink=0.10, rough=0.002)
     n = len(heap)
     C.instance_on_points('heap', variants, heap, attrs={'tone': np.clip(rng.beta(1.8, 2.2, n), 0, 1)})
     C.dome_base(R_DOME - 0.002, C.simple_material('base', (0.006, 0.022, 0.004), 0.9))
