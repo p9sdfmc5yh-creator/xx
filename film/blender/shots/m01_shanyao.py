@@ -84,6 +84,8 @@ def face_material(dry=False):
     skin_col = m.ramp(m.noise(scale=2600, detail=3, roughness=0.7, vector=P),
                       [(0.25, (0.030, 0.016, 0.008)), (0.50, (0.12, 0.068, 0.030)), (0.80, (0.27, 0.17, 0.08))])
     skin_col = m.mix(skin_col, (0.022, 0.012, 0.007), m.map_range(din, 0.0, 0.09, 0.8, 0.0))   # outer cork line
+    if dry:                                                              # dried slices: pale, thin, peeled-looking rim (not a dark bark ring)
+        skin_col = m.mix(skin_col, (0.66, 0.57, 0.44), 0.88)
     col = m.mix(flesh, skin_col, is_skin)
     if dry:
         col = m.mix(col, (0.86, 0.85, 0.80), m.math('MULTIPLY', m.math('SUBTRACT', 1.0, is_skin), 0.45))
