@@ -1,0 +1,40 @@
+{
+ "shot": "b30_lingzhi",
+ "layout": "glyph",
+ "frame_width_m": 5.080728883011215,
+ "frame_height_m": 2.8579099966938086,
+ "items": [
+  "k16_lingzhi"
+ ],
+ "seed": 55,
+ "empty": false,
+ "text": "源",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.27999999999999997,
+ "engine": "packed",
+ "px_per_m": 396.717806052468,
+ "stroke_width_m": 0.17644784008193,
+ "stroke_items_wide": 3.0,
+ "block_m": [
+  2.1652670661482554,
+  2.1148533975534183
+ ],
+ "char_boxes": [
+  [
+   0.29634,
+   0.10499,
+   0.70465,
+   0.82912
+  ]
+ ],
+ "align": 0.25376526310708736,
+ "n_items": 573,
+ "layers_max": 2,
+ "heap_top_mm": 41.33274841308594,
+ "display_gain": 1.1057,
+ "render_seconds": 72.9,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
