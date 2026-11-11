@@ -1,209 +1,354 @@
 // p13 — 彩绳钱串: little bundles of cash coins tied with coloured cord (red / blue / yellow / green), photographed from above on
-// grey-white paper (the reference's page of small flags). Twelve fanned bundles hug the outer circle and eight line the four sides
-// of the square hole, so the page spells the coin glyph — its first full appearance, registered to K.GLYPH.
-// Every coin is drawn where it lies (rim / field / inner rim shaded for a top-left light in PAGE space), cords are twisted ropes.
+// grey-white paper (the reference's page of small flags). The bundles lie ALONG THE STROKES OF THE CURRENT GLYPH: K.pack gives
+// the beads on each stroke's centre line, neighbouring beads of one stroke are joined into an oblong bundle of staggered coins
+// that follows the stroke's direction (ang), and every coin is as wide as the stroke is there. Nothing here knows which
+// character it spells — this is the first time the glyph appears in the film.
+// Each coin is shaded per DEVICE pixel from a height field (outer rim, sunken field, inner rim round the square hole, worn
+// lumps, casting grain) with the light fixed in PAGE space at the top-left; it has a visible edge wall, and throws a contact
+// and a cast shadow on whatever lies under it. The cords are twisted ropes built ply by ply.
 import * as L from '../../../lib/core.js';
 import * as K from '../../../lib/plate.js';
 const { S } = K;
 const TAU = Math.PI * 2;
-const G = K.GLYPH;
+const PAD = 16;                                          // the layer is a little larger than the frame: the push-in never shows its edge
 let layer = null;
 
-//            light      base       dark       field (recess)
-const COIN = [
-  ['#ecd08a', '#b9933f', '#6a4e1d', '#4d3a14'],     // brass
-  ['#d3ab6c', '#96723a', '#553c1a', '#3c2b12'],     // old bronze
-  ['#bda071', '#806639', '#47341a', '#2f2311'],     // dark, handled
-  ['#deab7a', '#a9713f', '#5f3b1d', '#44290f'],     // reddish copper
+//               rubbed-bright metal    tarnished field
+const METAL = [
+  { bright: [218, 176, 92], dull: [128, 97, 46] },       // brass
+  { bright: [198, 154, 94], dull: [110, 81, 44] },       // old bronze
+  { bright: [178, 146, 100], dull: [88, 67, 38] },       // dark, handled
+  { bright: [212, 152, 102], dull: [122, 79, 42] },      // reddish copper
 ];
+//             light      base       dark
 const CORD = [
-  ['#f47a62', '#cb2a20', '#76110e'],                // red
-  ['#74a4dc', '#2b5eaa', '#122d60'],                // blue
-  ['#f8df80', '#e2ac1e', '#8c5f07'],                // yellow
-  ['#80c890', '#2f8b4d', '#134e29'],                // green
+  ['#f8846a', '#cb2a20', '#6e0f0c'],                     // red
+  ['#7eaee6', '#2b5eaa', '#10295a'],                     // blue
+  ['#fbe58c', '#e2ac1e', '#86590a'],                     // yellow
+  ['#8ad29a', '#2f8b4d', '#114724'],                     // green
 ];
-const LX = -0.7071, LY = -0.7071;                    // toward the light
+// the light: from the top-left, about 38° above the page
+const LX = -0.52, LY = -0.60, LZ = 0.61;
+const HX = -0.29, HY = -0.334, HZ = 0.897;               // half-vector toward a camera straight above
+const PLX = -0.655, PLY = -0.756, TAN_EL = 0.768;        // its direction in the page plane (unit), and the slope of its rays
+const clamp = L.clamp;
+const ss = (a, b, x) => { const t = (x - a) / (b - a); return t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t); };
 
-function sqPath(g, h, rot) {
-  const c = Math.cos(rot), s = Math.sin(rot);
-  [[-h, -h], [h, -h], [h, h], [-h, h]].forEach(([x, y], i) => { const X = x * c - y * s, Y = x * s + y * c; i ? g.lineTo(X, Y) : g.moveTo(X, Y); });
-  g.closePath();
+// ── one fbm tile, sampled bilinearly: cheap enough to evaluate for every device pixel of every coin ──
+const NT = 512;
+let TILE = null, HB = new Float32Array(0);
+function noiseTile() {
+  const nz = L.makeNoise('p13tile'), t = new Float32Array(NT * NT);
+  for (let j = 0, o = 0; j < NT; j++) for (let i = 0; i < NT; i++, o++) t[o] = nz.fbm(i / 24, j / 24, 4);
+  return t;
 }
-const bodyPath = (g, R, h, rot) => { g.beginPath(); g.arc(0, 0, R, 0, TAU); sqPath(g, h, rot); };
-
-function drawCoin(g, c, tex) {
-  const { x, y, R, rot, pal } = c; const r = L.rng('p13c' + c.seed);
-  const h = R * 0.2, q = R * 0.3, rf = R * 0.83;
-  const lg = (a, b) => L.linear(g, LX * -R * -1, LY * -R * -1, -LX * R, -LY * R, [[0, a], [0.5, 'rgba(120,100,60,0)'], [1, b]]);
-  g.save(); g.translate(x, y);
-  // contact shadow (page space)
-  g.save(); g.shadowColor = 'rgba(30,19,8,0.58)'; g.shadowBlur = 6; g.shadowOffsetX = 2.6; g.shadowOffsetY = 4.2;
-  bodyPath(g, R, h, rot); g.fillStyle = pal[1]; g.fill('evenodd'); g.restore();
-  g.save(); bodyPath(g, R, h, rot); g.clip('evenodd');
-  g.fillStyle = L.linear(g, -R * 0.75, -R * 0.75, R * 0.75, R * 0.75, [[0, pal[0]], [0.48, pal[1]], [1, pal[2]]]); g.fillRect(-R, -R, 2 * R, 2 * R);
-  // patina: mottled tone, rotated with the coin
-  g.save(); g.rotate(rot + r() * TAU); g.globalCompositeOperation = 'multiply'; g.globalAlpha = 0.78;
-  g.drawImage(tex, -r.range(R + 2, tex.width - R - 2), -r.range(R + 2, tex.height - R - 2)); g.restore();
-  // recessed field between the outer rim and the inner rim
-  g.beginPath(); g.arc(0, 0, rf, 0, TAU); sqPath(g, q, rot); g.fillStyle = L.rgba(pal[3], 0.46); g.fill('evenodd');
-  // the worn-flat ghosts of the four characters: soft polished lumps, nothing legible
-  for (let k = 0; k < 4; k++) {
-    const a = rot + k * Math.PI / 2 + r.range(-0.08, 0.08), d = (q + rf) * 0.5 + r.range(-1, 1), bx = Math.cos(a) * d, by = Math.sin(a) * d, br = R * r.range(0.16, 0.22);
-    g.fillStyle = L.radial(g, bx - 1, by - 1, 0, br, [[0, L.rgba(pal[0], r.range(0.22, 0.4))], [0.6, L.rgba(pal[0], 0.1)], [1, L.rgba(pal[0], 0)]]);
-    g.beginPath(); g.ellipse(bx, by, br, br * r.range(0.7, 1), a, 0, TAU); g.fill();
-    g.fillStyle = L.rgba(pal[3], 0.3); g.beginPath(); g.ellipse(bx + 1.6, by + 1.8, br * 0.5, br * 0.22, a + 0.6, 0, TAU); g.fill();
-  }
-  // verdigris and dirt gathered in the recesses
-  for (let k = 0, n = r.int(1, 4); k < n; k++) {
-    const a = r() * TAU, d = r.chance(0.6) ? rf - r.range(1, 5) : q + r.range(0.5, 4), bx = Math.cos(a) * d, by = Math.sin(a) * d, br = r.range(2.5, 7);
-    g.fillStyle = L.radial(g, bx, by, 0, br, [[0, `rgba(88,150,128,${r.range(0.4, 0.7)})`], [0.55, 'rgba(70,128,108,0.22)'], [1, 'rgba(70,128,108,0)']]);
-    g.beginPath(); g.arc(bx, by, br, 0, TAU); g.fill();
-    for (let m = 0; m < 5; m++) { g.fillStyle = `rgba(150,196,170,${r.range(0.35, 0.7)})`; g.beginPath(); g.arc(bx + r.range(-br, br) * 0.7, by + r.range(-br, br) * 0.7, r.range(0.4, 0.9), 0, TAU); g.fill(); }
-  }
-  // rim: shadow it throws onto the field (top-left), light caught by its far inner wall (bottom-right)
-  g.lineWidth = 3.2; g.strokeStyle = lg('rgba(28,18,6,0.62)', L.rgba(pal[0], 0.5)); g.beginPath(); g.arc(0, 0, rf - 1.4, 0, TAU); g.stroke();
-  g.lineWidth = (R - rf) * 0.6; g.strokeStyle = lg(L.rgba('#fff3cf', 0.5), 'rgba(40,26,10,0.16)'); g.beginPath(); g.arc(0, 0, (R + rf) * 0.5, 0, TAU); g.stroke();
-  g.lineWidth = 1.5; g.strokeStyle = lg('rgba(255,246,214,0.9)', 'rgba(30,18,6,0.8)'); g.beginPath(); g.arc(0, 0, R - 0.8, 0, TAU); g.stroke();
-  // specular glint where the polished rim turns to the light
-  g.lineCap = 'round'; g.lineWidth = 1.7; g.strokeStyle = 'rgba(255,250,228,0.62)'; g.beginPath(); g.arc(0, 0, (R + rf) * 0.5 + 0.6, Math.PI * (1.25 - r.range(0.1, 0.17)), Math.PI * (1.25 + r.range(0.06, 0.15))); g.stroke();
-  g.lineWidth = 0.9; g.strokeStyle = 'rgba(255,250,228,0.4)'; g.beginPath(); g.arc(0, 0, (R + rf) * 0.5 - 1.2, Math.PI * 1.02, Math.PI * 1.5); g.stroke(); g.lineCap = 'butt';
-  // inner rim round the hole: top face, then each side lit by its own normal
-  g.beginPath(); sqPath(g, q, rot); sqPath(g, h, rot); g.fillStyle = L.rgba(pal[0], 0.24); g.fill('evenodd');
-  g.lineWidth = 1.25; g.lineCap = 'round';
-  for (let k = 0; k < 4; k++) {
-    const a = rot + k * Math.PI / 2, nx = Math.cos(a), ny = Math.sin(a), b = nx * LX + ny * LY;
-    const side = (d, col) => { g.strokeStyle = col; g.beginPath(); g.moveTo(nx * d + ny * d, ny * d - nx * d); g.lineTo(nx * d - ny * d, ny * d + nx * d); g.stroke(); };
-    side(q, b > 0 ? `rgba(255,244,208,${0.2 + b * 0.6})` : `rgba(26,16,6,${0.2 - b * 0.55})`);
-    side(h + 0.5, b > 0 ? `rgba(22,13,5,${0.25 + b * 0.5})` : `rgba(255,240,200,${0.15 - b * 0.5})`);
-  }
-  // micro: hairline scratches and casting pits
-  for (let k = 0, n = r.int(7, 12); k < n; k++) {
-    const a = r() * TAU, d = r.range(0, R * 0.85), sx = Math.cos(a) * d, sy = Math.sin(a) * d, sa = r() * TAU, sl = r.range(4, 15);
-    g.lineWidth = r.range(0.5, 0.9); g.strokeStyle = r.chance(0.6) ? `rgba(255,243,206,${r.range(0.18, 0.4)})` : `rgba(30,19,7,${r.range(0.15, 0.32)})`;
-    g.beginPath(); g.moveTo(sx, sy); g.lineTo(sx + Math.cos(sa) * sl, sy + Math.sin(sa) * sl); g.stroke();
-  }
-  for (let k = 0, n = r.int(8, 15); k < n; k++) {
-    const a = r() * TAU, d = r.range(q, R * 0.95), px = Math.cos(a) * d, py = Math.sin(a) * d, pr = r.range(0.5, 1.2);
-    g.fillStyle = `rgba(26,16,6,${r.range(0.35, 0.65)})`; g.beginPath(); g.arc(px, py, pr, 0, TAU); g.fill();
-    g.fillStyle = 'rgba(255,240,200,0.4)'; g.beginPath(); g.arc(px + pr * 0.7, py + pr * 0.7, pr * 0.5, 0, TAU); g.fill();
-  }
-  g.restore(); g.restore();
+function tile(x, y) {
+  const i = Math.floor(x), j = Math.floor(y), a = x - i, b = y - j, i0 = i & 511, i1 = (i + 1) & 511, j0 = (j & 511) * NT, j1 = ((j + 1) & 511) * NT, t = TILE;
+  return (t[j0 + i0] * (1 - a) + t[j0 + i1] * a) * (1 - b) + (t[j1 + i0] * (1 - a) + t[j1 + i1] * a) * b;
 }
 
-/** a twisted cord along a dense polyline */
-function rope(g, pts, w, col, shadow = 1) {
-  const path = (dx = 0, dy = 0) => { g.beginPath(); pts.forEach((p, i) => (i ? g.lineTo(p[0] + dx, p[1] + dy) : g.moveTo(p[0] + dx, p[1] + dy))); };
-  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
-  g.save(); g.shadowColor = `rgba(26,15,6,${0.6 * shadow})`; g.shadowBlur = 3.4; g.shadowOffsetX = 1.7; g.shadowOffsetY = 2.7;
-  path(); g.strokeStyle = col[2]; g.lineWidth = w; g.stroke(); g.restore();
-  path(-0.35, -0.45); g.strokeStyle = col[1]; g.lineWidth = w - 1.5; g.stroke();
-  path(-w * 0.2, -w * 0.24); g.strokeStyle = L.rgba(col[0], 0.75); g.lineWidth = w * 0.3; g.stroke();
-  // the twist: short slanted nicks every ply
-  g.lineWidth = 0.95; g.lineCap = 'butt';
-  let acc = 0;
-  for (let i = 1; i < pts.length; i++) {
-    const dx = pts[i][0] - pts[i - 1][0], dy = pts[i][1] - pts[i - 1][1], len = Math.hypot(dx, dy) || 1; acc += len;
-    if (acc < w * 0.72) continue; acc = 0;
-    const tx = dx / len, ty = dy / len, nx = -ty, ny = tx, hw = w * 0.44, sl = w * 0.3, px = pts[i][0], py = pts[i][1];
-    g.strokeStyle = L.rgba(col[2], 0.62); g.beginPath(); g.moveTo(px - nx * hw - tx * sl, py - ny * hw - ty * sl); g.lineTo(px + nx * hw + tx * sl, py + ny * hw + ty * sl); g.stroke();
-    g.strokeStyle = L.rgba(col[0], 0.34); g.beginPath(); g.moveTo(px - nx * hw * 0.5 - tx * sl + tx * 1.3, py - ny * hw * 0.5 - ty * sl + ty * 1.3); g.lineTo(px + nx * hw * 0.2 + tx * 1.3, py + ny * hw * 0.2 + ty * 1.3); g.stroke();
+/**
+ * One coin as a sprite, shaded where it lies. c: { R, rot, pal, seed, size (sprite side), cx, cy (coin centre inside the sprite),
+ * ex, ey (how far the bottom face shows beyond the top face: the coin's thickness), tx, ty (slope of the face: it leans on the coin below) }
+ */
+function coinSprite(c) {
+  const { R, cx, cy, ex, ey } = c, B = METAL[c.pal].bright, D = METAL[c.pal].dull, r = L.rng('p13coin' + c.seed);
+  const cs = Math.cos(c.rot), sn = Math.sin(c.rot), ee = ex * ex + ey * ey;
+  const hq = r.range(0.195, 0.215), iq = r.range(0.305, 0.335), rf = r.range(0.80, 0.835), lm = (iq + rf) * 0.5;   // hole, inner rim, field (in radii)
+  const HR = r.range(0.044, 0.054), HI = r.range(0.034, 0.044);                                                        // heights of the two rims
+  const o1x = r.range(120, 390), o1y = r.range(120, 390), o2x = r.range(200, 310), o2y = r.range(200, 310), o3x = r.range(100, 410), o3y = r.range(100, 410);
+  const lump = [r.range(0.2, 1), r.range(0.2, 1), r.range(0.2, 1), r.range(0.2, 1)];
+  const verd = r.chance(0.5) ? r.range(0.15, 0.5) : 0, tone = r.range(0.93, 1.06), polish = r.range(0.65, 1);
+  const spr = L.pixelCanvas(c.size, c.size, (d, pw, ph, q) => {
+    if (HB.length < pw * ph) HB = new Float32Array(pw * ph);
+    const H = HB, eps = 3 / (R * q);
+    // pass 1 — the relief of the face, in radii
+    for (let j = 0, k = 0; j < ph; j++) {
+      const y = (j + 0.5) / q - cy;
+      for (let i = 0; i < pw; i++, k++) {
+        const x = (i + 0.5) / q - cx, u = (x * cs + y * sn) / R, v = (y * cs - x * sn) / R;
+        const rho = Math.sqrt(u * u + v * v), au = u < 0 ? -u : u, av = v < 0 ? -v : v, sq = au > av ? au : av;
+        if (rho > 1 + eps || sq < hq - eps) { H[k] = 0; continue; }
+        const lo = tile(o1x + u * 42, o1y + v * 42), fi = tile(o2x + u * 150, o2y + v * 150);
+        const rim = (0.35 + 0.65 * ss(1, 0.955, rho)) * ss(rf - 0.03, rf + 0.012, rho);            // outer rim: bevelled outside, a step down to the field
+        const inner = ss(iq + 0.022, iq - 0.018, sq) * (0.4 + 0.6 * ss(hq, hq + 0.035, sq));        // inner rim round the hole
+        let bu, bv, li;                                                                              // four worn-flat lumps: polished, shapeless
+        if (au > av) { bu = au - lm; bv = av; li = u > 0 ? 0 : 2; } else { bu = av - lm; bv = au; li = v > 0 ? 1 : 3; }
+        const lmp = Math.exp(-(bu * bu) / 0.0145 - (bv * bv) / 0.026) * lump[li] * Math.max(0, 0.55 + 0.9 * lo);
+        const rough = 1 - 0.62 * Math.max(ss(rf - 0.03, rf + 0.012, rho), inner);                   // the rims are rubbed smooth, the field keeps its casting grain
+        H[k] = HR * rim + HI * inner + 0.019 * lmp + (0.007 * lo + 0.0038 * fi) * rough;
+      }
+    }
+    // pass 2 — light it
+    const gk = R * q * 0.5;
+    const k1 = Math.round(PLY * 0.032 * R * q) * pw + Math.round(PLX * 0.032 * R * q), k2 = Math.round(PLY * 0.064 * R * q) * pw + Math.round(PLX * 0.064 * R * q);
+    for (let j = 0, k = 0, o = 0; j < ph; j++) {
+      const y = (j + 0.5) / q - cy;
+      for (let i = 0; i < pw; i++, k++, o += 4) {
+        const x = (i + 0.5) / q - cx;
+        const pe = x * ex + y * ey, te = pe <= 0 ? 0 : pe >= ee ? 1 : pe / ee, dcap = Math.hypot(x - te * ex, y - te * ey) - R;
+        if (dcap > 1) continue;                                                                       // outside the coin (the data starts transparent)
+        const u = (x * cs + y * sn) / R, v = (y * cs - x * sn) / R, sq = Math.max(Math.abs(u), Math.abs(v));
+        const x2 = x - ex, y2 = y - ey, sq2 = Math.max(Math.abs(x2 * cs + y2 * sn), Math.abs(y2 * cs - x2 * sn)) / R;
+        const thr = Math.max(sq, sq2) - hq;                                                           // < 0: you look straight through the hole
+        const aSil = clamp(0.5 - Math.max(dcap, -thr * R) * q);
+        if (aSil <= 0) continue;
+        const rr = Math.sqrt(x * x + y * y), rho = rr / R;
+        const aTop = clamp(0.5 - Math.max(rr - R, (hq - sq) * R) * q);
+        let tr = 0, tg = 0, tb = 0, wr = 0, wg = 0, wb = 0;
+        if (aTop > 0) {
+          const h = H[k], gx = (H[k + 1] - H[k - 1]) * gk + c.tx, gy = (H[k + pw] - H[k - pw]) * gk + c.ty;
+          const inv = 1 / Math.sqrt(gx * gx + gy * gy + 1);
+          const dif = Math.max(0, (LZ - gx * LX - gy * LY) * inv), spe = Math.pow(Math.max(0, (HZ - gx * HX - gy * HY) * inv), 30);
+          const sh = Math.max(ss(0, 0.012, H[k + k1] - h - 0.032 * TAN_EL), ss(0, 0.012, H[k + k2] - h - 0.064 * TAN_EL));   // the rims' own shadow on the field
+          const pol = rho > rf + 0.012 || sq < iq - 0.018 ? 1 : ss(0.006, 0.03, h);                   // raised = rubbed bright
+          const lo2 = tile(o3x + u * 34, o3y + v * 34);
+          const m = clamp(0.2 + (0.66 * pol + 0.42 * lo2) * polish);
+          const foot = (1 - pol) * Math.max(rho < rf ? Math.exp(-Math.max(0, rf - 0.02 - rho) / 0.05) : 0, sq > iq ? Math.exp(-(sq - iq) / 0.045) : 0);
+          const gr = (1 - 0.36 * foot) * tone, vg = verd * foot * ss(-0.1, 0.3, lo2);                  // grime, and a little verdigris, where the field meets the rims
+          let ar = (D[0] + (B[0] - D[0]) * m) * gr, ag = (D[1] + (B[1] - D[1]) * m) * gr, ab = (D[2] + (B[2] - D[2]) * m) * gr;
+          ar += (92 - ar) * vg; ag += (146 - ag) * vg; ab += (124 - ab) * vg;
+          const lit = 0.40 + 0.92 * dif * (1 - 0.72 * sh), sp = 170 * spe * (0.3 + 0.7 * pol) * (1 - sh);
+          tr = ar * lit + sp; tg = ag * lit + sp * 0.94; tb = ab * lit + sp * 0.78;
+        }
+        if (aTop < 1) {
+          let w;
+          if (sq < hq) w = 0.3 - 0.14 * clamp((hq - sq) / (sq2 - sq || 1));                           // the far walls of the hole, in shade
+          else {                                                                                       // the edge of the coin, seen on its lower-right side
+            const disc = pe * pe - ee * (rr * rr - R * R), tw = disc > 0 ? clamp((pe - Math.sqrt(disc)) / ee) : 1;
+            const wx = x - tw * ex, wy = y - tw * ey, nl = (wx * PLX + wy * PLY) / (Math.hypot(wx, wy) || 1);
+            w = (0.4 + 0.3 * Math.max(0, 1 + nl)) * (1 - 0.3 * tw) + 0.24 * Math.exp(-(((tw - 0.32) / 0.2) ** 2));
+            w *= 0.9 + 0.3 * tile(o2x + Math.atan2(wy, wx) * 40, o2y + tw * 4);
+          }
+          w *= tone; wr = B[0] * w * 0.92; wg = B[1] * w * 0.86; wb = B[2] * w * 0.8;
+        }
+        d[o] = tr * aTop + wr * (1 - aTop); d[o + 1] = tg * aTop + wg * (1 - aTop); d[o + 2] = tb * aTop + wb * (1 - aTop); d[o + 3] = aSil * 255;
+      }
+    }
+  });
+  // hairline scratches: a dark cut with a bright lip
+  const g = spr.getContext('2d'); g.save(); g.globalCompositeOperation = 'source-atop'; g.lineCap = 'round'; g.translate(cx, cy);
+  for (let k = 0, n = r.int(4, 8); k < n; k++) {
+    const a = r() * TAU, dd = r.range(0.1, 0.85) * R, sx = Math.cos(a) * dd, sy = Math.sin(a) * dd, sa = r() * TAU, sl = R * r.range(0.12, 0.42), lw = Math.max(0.3, R * r.range(0.008, 0.015));
+    const qx = sx + Math.cos(sa) * sl, qy = sy + Math.sin(sa) * sl;
+    g.lineWidth = lw;
+    g.strokeStyle = `rgba(28,17,6,${r.range(0.14, 0.26)})`; g.beginPath(); g.moveTo(sx + lw * 0.7, sy + lw * 0.8); g.lineTo(qx + lw * 0.7, qy + lw * 0.8); g.stroke();
+    g.strokeStyle = `rgba(255,243,208,${r.range(0.16, 0.32)})`; g.beginPath(); g.moveTo(sx, sy); g.lineTo(qx, qy); g.stroke();
   }
   g.restore();
+  return spr;
 }
-const seg = (a, b, n = 12) => { const o = []; for (let i = 0; i <= n; i++) o.push([L.lerp(a[0], b[0], i / n), L.lerp(a[1], b[1], i / n)]); return o; };
+
+// ── cords ──
 const quad = (a, c, b, n = 22) => { const o = []; for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; o.push([u * u * a[0] + 2 * u * t * c[0] + t * t * b[0], u * u * a[1] + 2 * u * t * c[1] + t * t * b[1]]); } return o; };
 
-function drawCord(g, b) {
-  const P = b.coins, n = P.length, col = b.col, r = L.rng('p13k' + b.seed), w = 5.2;
-  let tx = P[1].x - P[0].x, ty = P[1].y - P[0].y; const s = Math.hypot(tx, ty); tx /= s; ty /= s;
-  let nx = -ty, ny = tx; if (nx * b.gx + ny * b.gy < 0) { nx = -nx; ny = -ny; }        // n̂ points to the gap side
-  const kx = P[1].x + tx * (s / 2 - P[1].R), ky = P[1].y + ty * (s / 2 - P[1].R);        // middle of the second coin's exposed crescent
-  const top = P[n - 1];
-  // cords lying on the coins: clipped to the bundle (they pass round underneath)
-  g.save(); g.beginPath(); for (const c of P) { g.moveTo(c.x + c.R, c.y); g.arc(c.x, c.y, c.R - 0.3, 0, TAU); } g.clip();
-  // threaded through the square hole of the top coin and back along the stack
-  const mid = [(kx + top.x) / 2 + nx * r.range(-3, 3), (ky + top.y) / 2 + ny * r.range(-3, 3)];
-  rope(g, quad([P[0].x - tx * (P[0].R + 4), P[0].y - ty * (P[0].R + 4)], [kx, ky], mid, 14).concat(seg(mid, [top.x, top.y], 12).slice(1)), w, col);
-  // three turns lashed across the stack
-  const R0 = P[0].R + 8;
-  for (let m = -1; m <= 1; m++) {
-    const ox = kx + tx * m * (w + 0.3), oy = ky + ty * m * (w + 0.3), bow = r.range(-2.5, -0.5);
-    rope(g, quad([ox - nx * R0, oy - ny * R0], [ox + tx * bow, oy + ty * bow], [ox + nx * R0, oy + ny * R0], 20), w, col, 0.8);
-  }
-  g.restore();
-  // the cord drops into the hole: darken its far end
-  g.fillStyle = 'rgba(20,12,5,0.5)'; g.beginPath(); g.arc(top.x + tx * 2, top.y + ty * 2, top.R * 0.13, 0, TAU); g.fill();
-  // two loose ends from the knot, lying out over the edge onto the paper
-  for (let m = 0; m < 2; m++) {
-    const a = (m ? 1 : -1) * r.range(0.22, 0.62), ca = Math.cos(a), sa = Math.sin(a), dx = nx * ca - ny * sa, dy = nx * sa + ny * ca, len = r.range(56, 74);
-    const bend = r.range(-14, 14), end = [kx + dx * len, ky + dy * len], ctl = [kx + dx * len * 0.5 - dy * bend, ky + dy * len * 0.5 + dx * bend];
-    const pts = quad([kx, ky], ctl, end, 24); rope(g, pts, w * 0.92, col);
-    // frayed tip
-    const q = pts[pts.length - 3], ex = end[0] - q[0], ey = end[1] - q[1], ea = Math.atan2(ey, ex);
-    g.save(); g.lineCap = 'round';
-    for (let f = 0; f < 7; f++) {
-      const fa = ea + r.range(-0.5, 0.5), fl = r.range(6, 12);
-      g.strokeStyle = L.rgba(col[f % 3 === 0 ? 0 : f % 3 === 1 ? 1 : 2], 0.9); g.lineWidth = r.range(0.7, 1.2);
-      g.beginPath(); g.moveTo(end[0] + r.range(-1.5, 1.5), end[1] + r.range(-1.5, 1.5)); g.quadraticCurveTo(end[0] + Math.cos(fa) * fl * 0.5 + r.range(-1.5, 1.5), end[1] + Math.sin(fa) * fl * 0.5 + r.range(-1.5, 1.5), end[0] + Math.cos(fa) * fl, end[1] + Math.sin(fa) * fl); g.stroke();
+/** a twisted cord along a dense polyline: a dark core with its shadow, then one slanted, lit ply after another */
+function rope(g, pts, w, col, shadow = 1) {
+  const path = () => { g.beginPath(); for (let i = 0; i < pts.length; i++) i ? g.lineTo(pts[i][0], pts[i][1]) : g.moveTo(pts[i][0], pts[i][1]); };
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  g.save(); g.shadowColor = `rgba(22,12,4,${0.6 * shadow})`; g.shadowBlur = w * 0.6; g.shadowOffsetX = w * 0.3; g.shadowOffsetY = w * 0.46;
+  path(); g.strokeStyle = col[2]; g.lineWidth = w; g.stroke(); g.restore();
+  path(); g.strokeStyle = L.rgba(col[1], 0.9); g.lineWidth = w * 0.7; g.stroke();
+  const pl = w * 0.62, tw = 0.95;                              // length of a ply along the cord; the angle of the twist
+  let next = pl * 0.5, acc = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const x0 = pts[i - 1][0], y0 = pts[i - 1][1], dx = pts[i][0] - x0, dy = pts[i][1] - y0, len = Math.hypot(dx, dy);
+    if (!len) continue;
+    while (next <= acc + len) {
+      const t = (next - acc) / len, a = Math.atan2(dy, dx) + tw, ca = Math.cos(a), sa = Math.sin(a);
+      const lx = PLX * ca + PLY * sa, ly = PLY * ca - PLX * sa;                       // the light's direction in the ply's own frame
+      g.save(); g.translate(x0 + dx * t, y0 + dy * t); g.rotate(a);
+      g.fillStyle = L.linear(g, lx * w * 0.5, ly * w * 0.5, -lx * w * 0.5, -ly * w * 0.5, [[0, col[0]], [0.42, col[1]], [1, col[2]]]);
+      g.beginPath(); g.ellipse(0, 0, w * 0.5, pl * 0.5, 0, 0, TAU); g.fill();
+      g.strokeStyle = L.rgba(col[2], 0.55); g.lineWidth = Math.max(0.3, w * 0.085); g.beginPath(); g.ellipse(0, 0, w * 0.5, pl * 0.5, 0, 0.2, Math.PI - 0.2); g.stroke();   // the groove to the next ply
+      g.fillStyle = 'rgba(255,252,240,0.42)'; g.beginPath(); g.ellipse(lx * w * 0.2, ly * pl * 0.2, w * 0.15, pl * 0.1, 0, 0, TAU); g.fill();                              // the bright core of its highlight
+      g.restore();
+      next += pl;
     }
-    // a binding thread just before the fray
-    g.strokeStyle = L.rgba(col[2], 0.85); g.lineWidth = 1.6; g.beginPath(); g.moveTo(q[0] - Math.sin(ea) * 2.6, q[1] + Math.cos(ea) * 2.6); g.lineTo(q[0] + Math.sin(ea) * 2.6, q[1] - Math.cos(ea) * 2.6); g.stroke();
-    g.restore();
+    acc += len;
   }
-  // the knot
-  g.save(); g.shadowColor = 'rgba(26,15,6,0.6)'; g.shadowBlur = 3.5; g.shadowOffsetX = 1.8; g.shadowOffsetY = 2.8;
-  g.translate(kx + nx * 2, ky + ny * 2); g.rotate(Math.atan2(ny, nx));
-  g.fillStyle = L.radial(g, -1.6, -1.8, 0.5, 8.5, [[0, col[0]], [0.45, col[1]], [1, col[2]]]);
-  g.beginPath(); g.ellipse(0, 0, 7.6, 6.2, 0, 0, TAU); g.fill(); g.restore();
-  g.save(); g.translate(kx + nx * 2, ky + ny * 2); g.rotate(Math.atan2(ny, nx)); g.lineCap = 'round';
-  g.strokeStyle = L.rgba(col[2], 0.75); g.lineWidth = 1.1;
-  for (const o of [-2.6, 0.4, 3.2]) { g.beginPath(); g.moveTo(o - 1.8, -5); g.quadraticCurveTo(o + 1.6, 0, o - 1.2, 5); g.stroke(); }
-  g.strokeStyle = L.rgba(col[0], 0.6); g.lineWidth = 0.9; g.beginPath(); g.moveTo(-4.6, -2.6); g.quadraticCurveTo(-1, -4.6, 2.6, -3.4); g.stroke();
   g.restore();
 }
 
-function bundles() {
-  const r = L.rng('p13lay'), out = [];
-  const coin = (x, y, R) => ({ x, y, R, rot: r.range(-0.3, 0.3) + (r.chance(0.12) ? r.range(-0.35, 0.35) : 0), pal: COIN[r.chance(0.4) ? 0 : r.int(1, 3)], seed: out.length + '_' + Math.round(x) + '_' + Math.round(y) });
-  // outer ring: 12 bundles of 4, fanned along the circle, every coin's edge on the circle
-  const NB = 12, n = 4, R0 = 40, per = TAU / NB, rr = G.R - R0, s = (per * rr - 2 * R0 - 4) / (n - 1), dth = s / rr;
-  const ringCol = [0, 1, 2, 0, 3, 1, 0, 2, 3, 0, 1, 3];
-  for (let i = 0; i < NB; i++) {
-    const th0 = -Math.PI / 2 + 0.11 + i * per - ((n - 1) / 2) * dth, coins = [];
-    for (let k = 0; k < n; k++) {
-      const Rc = R0 + r.range(-2.2, 0.6), rad = G.R - Rc - r.range(0, 1.1), th = th0 + k * dth + r.range(-0.005, 0.005);
-      coins.push(coin(G.cx + Math.cos(th) * rad, G.cy + Math.sin(th) * rad, Rc));
-    }
-    out.push({ coins, gx: G.cx - coins[1].x, gy: G.cy - coins[1].y, col: CORD[ringCol[i]], seed: 'r' + i });
+function drawCord(g, b) {
+  const P = b.coins, n = P.length, w = b.w, col = b.col, r = L.rng('p13k' + b.key), top = P[n - 1], bot = P[0];
+  const ax = b.ax, ay = b.ay, nx = -ay, ny = ax;                                       // unit axis of the bundle: from its bottom coin to its top coin
+  // where the lashing goes: about the middle of the pile, clear of the top coin's hole
+  let Lt = 0; for (let k = 1; k < n; k++) Lt += Math.hypot(P[k].x - P[k - 1].x, P[k].y - P[k - 1].y);
+  const sM = Math.min(Lt + bot.R * 0.55, Math.max(Lt * 0.5 + top.R * 0.12, top.R * 0.62));
+  let mx = bot.x - ax * (sM - Lt), my = bot.y - ay * (sM - Lt), Rm = bot.R;
+  for (let k = n - 1, acc = 0; k > 0; k--) {
+    const l = Math.hypot(P[k].x - P[k - 1].x, P[k].y - P[k - 1].y);
+    if (acc + l >= sM) { const t = (sM - acc) / (l || 1); mx = L.lerp(P[k].x, P[k - 1].x, t); my = L.lerp(P[k].y, P[k - 1].y, t); Rm = L.lerp(P[k].R, P[k - 1].R, t); break; }
+    acc += l;
   }
-  // square hole: 2 bundles of 4 per side, pin-wheeled so each corner holds a full coin; every coin's edge on the hole's side
-  const Q0 = 36, ds = G.a + Q0, gapS = 6, span = 2 * ds - 2 * Q0 - gapS, sS = (span - (2 * Q0 + gapS)) / (2 * (n - 1));
-  const sides = [[1, 0, 0, -1], [0, 1, 1, 0], [-1, 0, 0, 1], [0, -1, -1, 0]];          // direction along the side, outward normal
-  const sqCol = [2, 0, 3, 1, 0, 2, 1, 3];
-  sides.forEach(([dx, dy, nx, ny], si) => {
-    for (let j = 0; j < 2; j++) {
-      const u0 = j * ((n - 1) * sS + 2 * Q0 + gapS), coins = [];
-      for (let k = n - 1; k >= 0; k--) {
-        const Rc = Q0 + r.range(-1.6, 1.0), dn = G.a + Rc + r.range(0, 0.9), al = (j === 0 && k === 0 ? -(G.a + Rc) : -ds + u0 + k * sS + r.range(-0.8, 0.8));
-        coins.push(coin(G.cx + dx * al + nx * dn, G.cy + dy * al + ny * dn, Rc));
-      }
-      out.push({ coins, gx: nx, gy: ny, col: CORD[sqCol[si * 2 + j]], seed: 's' + si + j });
+  const turns = n >= 4 ? 3 : 2, ext = Rm + w * 2;
+  // everything that lies ON the coins is clipped to the pile: the cord passes round underneath
+  g.save();
+  g.beginPath();
+  for (const c of P) for (const [ox, oy] of [[0, 0], [c.ex, c.ey]]) { g.moveTo(c.x + ox + c.R + 0.3, c.y + oy); g.arc(c.x + ox, c.y + oy, c.R + 0.3, 0, TAU); }
+  g.clip();
+  // the cord the coins are strung on: up out of the top coin's hole, back along the pile and round its far end
+  const pts = [[top.x, top.y]];
+  for (let k = n - 2; k >= 0; k--) pts.push([P[k].x + nx * r.range(-0.07, 0.07) * P[k].R, P[k].y + ny * r.range(-0.07, 0.07) * P[k].R]);
+  pts.push([bot.x - ax * (bot.R + w * 2.5), bot.y - ay * (bot.R + w * 2.5)]);
+  rope(g, L.smoothPath(pts, Math.max(0.6, w * 0.3)), w, col);
+  g.fillStyle = L.radial(g, top.x, top.y, 0, top.R * 0.21, [[0, 'rgba(14,8,3,0.8)'], [0.55, 'rgba(14,8,3,0.45)'], [1, 'rgba(14,8,3,0)']]);   // it dives into the hole
+  g.beginPath(); g.arc(top.x, top.y, top.R * 0.21, 0, TAU); g.fill();
+  // the lashing: two or three turns across the pile
+  for (let m = 0; m < turns; m++) {
+    const o = (m - (turns - 1) / 2) * w * 1.04, px = mx + ax * o, py = my + ay * o, bow = r.range(-0.4, 0.4) * w;
+    rope(g, quad([px - nx * ext, py - ny * ext], [px + ax * bow, py + ay * bow], [px + nx * ext, py + ny * ext], Math.max(12, Math.ceil(ext / Math.max(0.5, w * 0.3)))), w, col, 0.85);
+  }
+  // …turning away from the light as it goes over the edge of the coins
+  const lit = PLX * nx + PLY * ny, hw = turns * w * 0.52 + 0.4;
+  g.save(); g.translate(mx, my); g.rotate(Math.atan2(ny, nx));
+  g.fillStyle = L.linear(g, -Rm, 0, Rm, 0, [[0, `rgba(20,10,3,${0.3 + 0.2 * lit})`], [0.2, 'rgba(20,10,3,0)'], [0.8, 'rgba(20,10,3,0)'], [1, `rgba(20,10,3,${0.3 - 0.2 * lit})`]]);
+  g.fillRect(-ext, -hw, ext * 2, hw * 2);
+  g.restore();
+  g.restore();
+  // the knot, on top of the lashing: two short tails, a bow of two loops, the knot itself
+  const side = r.sign(), kx = mx + nx * side * Rm * 0.1, ky = my + ny * side * Rm * 0.1, wk = w * 0.9;
+  const dir = (da, dn) => { const jt = r.range(-0.15, 0.15), cj = Math.cos(jt), sj = Math.sin(jt), x = ax * da + nx * dn, y = ay * da + ny * dn, l = Math.hypot(x, y) || 1; return [(x * cj - y * sj) / l, (x * sj + y * cj) / l]; };
+  for (const s of [1, -1]) {
+    const [dx, dy] = dir(s * 0.85, -side * 0.7), len = w * r.range(2.7, 3.5), bend = w * r.range(-0.8, 0.8);
+    const end = [kx + dx * len, ky + dy * len], tp = quad([kx, ky], [kx + dx * len * 0.5 - dy * bend, ky + dy * len * 0.5 + dx * bend], end, 16);
+    rope(g, tp, wk, col);
+    const p2 = tp[tp.length - 3], ea = Math.atan2(end[1] - p2[1], end[0] - p2[0]);
+    g.save(); g.lineCap = 'round';
+    for (let f = 0; f < 6; f++) {                                                      // the frayed end
+      const fa = ea + r.range(-0.55, 0.55), fl = w * r.range(0.6, 1.3), fx = end[0] + r.range(-0.25, 0.25) * w, fy = end[1] + r.range(-0.25, 0.25) * w;
+      g.strokeStyle = L.rgba(col[f % 3], 0.92); g.lineWidth = Math.max(0.3, w * r.range(0.09, 0.16));
+      g.beginPath(); g.moveTo(fx, fy); g.lineTo(fx + Math.cos(fa) * fl, fy + Math.sin(fa) * fl); g.stroke();
     }
+    g.strokeStyle = L.rgba(col[2], 0.9); g.lineWidth = Math.max(0.4, w * 0.24); g.lineCap = 'butt';   // the whipping just before it
+    g.beginPath(); g.moveTo(p2[0] - Math.sin(ea) * wk * 0.5, p2[1] + Math.cos(ea) * wk * 0.5); g.lineTo(p2[0] + Math.sin(ea) * wk * 0.5, p2[1] - Math.cos(ea) * wk * 0.5); g.stroke();
+    g.restore();
+  }
+  for (const s of [1, -1]) {
+    const [dx, dy] = dir(s, side * 0.55), ll = w * r.range(2.4, 3), lw = w * r.range(1.3, 1.7), lp = [];
+    for (let i = 0; i <= 26; i++) { const t = i / 26, al = ll * Math.sin(Math.PI * t), la = lw * 0.5 * Math.sin(TAU * t) * s; lp.push([kx + dx * al - dy * la, ky + dy * al + dx * la]); }
+    rope(g, lp, wk, col);
+  }
+  g.save(); g.shadowColor = 'rgba(22,12,4,0.6)'; g.shadowBlur = w * 0.6; g.shadowOffsetX = w * 0.3; g.shadowOffsetY = w * 0.46;
+  g.fillStyle = L.radial(g, kx - w * 0.32, ky - w * 0.38, w * 0.1, w * 1.25, [[0, col[0]], [0.5, col[1]], [1, col[2]]]);
+  g.beginPath(); g.ellipse(kx, ky, w * 1.02, w * 0.84, Math.atan2(ny, nx), 0, TAU); g.fill(); g.restore();
+  g.save(); g.translate(kx, ky); g.rotate(Math.atan2(ny, nx)); g.lineCap = 'round';
+  g.strokeStyle = L.rgba(col[2], 0.7); g.lineWidth = Math.max(0.3, w * 0.14);
+  for (const o of [-0.45, 0.08, 0.6]) { g.beginPath(); g.moveTo((o - 0.3) * w, -0.7 * w); g.quadraticCurveTo((o + 0.3) * w, 0, (o - 0.2) * w, 0.7 * w); g.stroke(); }
+  g.restore();
+  g.fillStyle = 'rgba(255,252,240,0.5)'; g.beginPath(); g.ellipse(kx - w * 0.3, ky - w * 0.34, w * 0.3, w * 0.16, -0.7, 0, TAU); g.fill();
+}
+
+/** the bundles: beads from K.pack, neighbours on the same stroke joined in twos (or threes), coins staggered along each group */
+function layout(info) {
+  const sw = info.strokeWidth, R1 = sw * 0.5, POKE = Math.min(3.2, sw * 0.045), q = L.SS;
+  const depth = (x, y) => -K.sdGlyph(x, y);
+  const discs = K.pack({ seed: 'p13cord', rmax: R1, rmin: R1 * 0.42, gap: 1, margin: -POKE * 0.7 });
+  const N = discs.length, angDiff = (a, b) => { const d = Math.abs(a - b) % Math.PI; return d > Math.PI / 2 ? Math.PI - d : d; };
+  // each bead's nearest neighbour up and down its own stroke
+  const nb = discs.map((A, i) => {
+    const ca = Math.cos(A.ang), sa = Math.sin(A.ang); let f = -1, fd = 1e9, bk = -1, bd = 1e9;
+    for (let j = 0; j < N; j++) {
+      if (j === i) continue;
+      const Bd = discs[j], dx = Bd.x - A.x, dy = Bd.y - A.y, d = Math.hypot(dx, dy);
+      if (d > (A.r + Bd.r) * 1.3 || Math.min(A.r, Bd.r) < Math.max(A.r, Bd.r) * 0.62) continue;
+      const al = (dx * ca + dy * sa) / d;
+      if (Math.abs(al) < 0.8 || angDiff(Math.atan2(dy, dx), Bd.ang) > 0.7) continue;                 // the chord has to run along both beads' strokes
+      if (depth(A.x + dx * 0.5, A.y + dy * 0.5) < Math.min(A.r, Bd.r) * 0.55) continue;              // …and stay inside the ink (not jump to the next stroke)
+      if (al > 0) { if (d < fd) { fd = d; f = j; } } else if (d < bd) { bd = d; bk = j; }
+    }
+    return [f, bk];
+  });
+  const links = discs.map(() => []);
+  nb.forEach((pair, i) => { for (const j of pair) if (j >= 0 && nb[j].includes(i) && !links[i].includes(j)) links[i].push(j); });
+  const seen = new Uint8Array(N), chains = [];
+  const walk = (s) => { const c = []; let a = s, p = -1; while (a >= 0 && !seen[a]) { seen[a] = 1; c.push(a); const nx = links[a].find((j) => j !== p && !seen[j]); p = a; a = nx === undefined ? -1 : nx; } return c; };
+  for (let i = 0; i < N; i++) if (!seen[i] && links[i].length < 2) chains.push(walk(i));
+  for (let i = 0; i < N; i++) if (!seen[i]) chains.push(walk(i));
+  const groups = [];
+  for (const c of chains) for (let i = 0; i < c.length;) { const take = c.length - i === 3 ? 3 : Math.min(2, c.length - i); groups.push(c.slice(i, i + take)); i += take; }
+
+  const out = [];
+  for (const grp of groups) {
+    const A = grp.map((i) => discs[i]), key = info.key + Math.round(A[0].x) + '_' + Math.round(A[0].y), r = L.rng('p13b' + key), st = [];
+    if (A.length === 1) {                                           // a lone bead: a short pile along the stroke
+      const a = A[0], n = a.r > R1 * 0.6 ? 3 : 2, sp = a.r * (n === 3 ? 0.5 : 0.6), ca = Math.cos(a.ang), sa = Math.sin(a.ang);
+      for (let k = 0; k < n; k++) { const o = (k - (n - 1) / 2) * sp; st.push({ x: a.x + ca * o, y: a.y + sa * o, r: a.r }); }
+    } else {                                                        // coins staggered from the first bead to the last
+      const cum = [0]; for (let i = 1; i < A.length; i++) cum.push(cum[i - 1] + Math.hypot(A[i].x - A[i - 1].x, A[i].y - A[i - 1].y));
+      const D = cum[cum.length - 1], ra = A.reduce((s, a) => s + a.r, 0) / A.length, n = 1 + Math.max(2, Math.round(D / (ra * r.range(0.5, 0.62))));
+      for (let k = 0; k < n; k++) {
+        const s = (k / (n - 1)) * D; let i = 1; while (i < A.length - 1 && cum[i] < s) i++;
+        const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1] || 1);
+        st.push({ x: L.lerp(A[i - 1].x, A[i].x, t), y: L.lerp(A[i - 1].y, A[i].y, t), r: L.lerp(A[i - 1].r, A[i].r, t) });
+      }
+    }
+    // the top coin usually sits at the upper-left end, so that its shadow falls on the coins below it
+    const lastUL = (st[st.length - 1].x + st[st.length - 1].y) < (st[0].x + st[0].y);
+    if (lastUL !== r.chance(0.7)) st.reverse();
+    let ax = st[st.length - 1].x - st[0].x, ay = st[st.length - 1].y - st[0].y; const al = Math.hypot(ax, ay) || 1; ax /= al; ay /= al;
+    const axA = Math.atan2(ay, ax), pb = r.chance(0.45) ? 0 : r.int(1, 3), coins = [];
+    st.forEach((s, k) => {
+      const want = s.r * r.range(0.95, 1);
+      let x = s.x + r.range(-0.03, 0.03) * s.r, y = s.y + r.range(-0.03, 0.03) * s.r, d = depth(x, y);
+      for (let it = 0; it < 6 && d + POKE < want; it++) {           // settle toward the middle of the stroke until the coin fits
+        const nn = K.glyphNormal(x, y, 2), qx = x - nn.x * 1.2, qy = y - nn.y * 1.2, d2 = depth(qx, qy);
+        if (d2 <= d) break; x = qx; y = qy; d = d2;
+      }
+      const R = Math.min(want, d + POKE);                           // never more than POKE px (plus half its edge) over the outline
+      if (R < s.r * 0.5 || R < 3) return;
+      let tx = r.range(-0.02, 0.02), ty = r.range(-0.02, 0.02); const prev = coins[coins.length - 1];
+      if (prev) { const dx = x - prev.x, dy = y - prev.y, dl = Math.hypot(dx, dy) || 1; tx -= 0.14 * dx / dl; ty -= 0.14 * dy / dl; }   // it leans on the coin below
+      const ex = R * 0.06, ey = R * 0.1, half = Math.ceil(R + ey + 2);
+      x -= ex * 0.5; y -= ey * 0.5;                                // face + edge together sit centred on the stroke
+      const ox = Math.round((x - half) * q) / q, oy = Math.round((y - half) * q) / q;
+      coins.push({ x, y, R, rot: axA + r.range(-0.2, 0.2) + (r.chance(0.15) ? r.range(-0.5, 0.5) : 0), pal: r.chance(0.8) ? pb : r.int(0, 3), seed: key + '_' + k,
+        tx, ty, ex, ey, size: half * 2, ox, oy, cx: x - ox, cy: y - oy });
+    });
+    if (!coins.length) continue;
+    const Rb = coins.reduce((s, c) => s + c.R, 0) / coins.length;
+    out.push({ coins, key, ax, ay, w: clamp(Rb * 0.145, 1.5, 6.5), cx: coins.reduce((s, c) => s + c.x, 0) / coins.length, cy: coins.reduce((s, c) => s + c.y, 0) / coins.length, ci: 0, col: null });
+  }
+  out.sort((a, b) => (b.cx + b.cy) - (a.cx + a.cy));              // lower-right first: every shadow then falls on something already there
+  const rc = L.rng('p13col' + info.key);
+  out.forEach((b, i) => {                                           // cord colours: keep bundles of one colour apart
+    let best = 0, bs = -1;
+    for (let c = 0; c < CORD.length; c++) {
+      let dm = 1e9; for (let j = 0; j < i; j++) if (out[j].ci === c) dm = Math.min(dm, Math.hypot(out[j].cx - b.cx, out[j].cy - b.cy));
+      const sc = Math.min(dm, sw * 6) + rc() * sw * 0.8 + (c === 0 ? sw * 0.3 : 0);
+      if (sc > bs) { bs = sc; best = c; }
+    }
+    b.ci = best; b.col = CORD[best];
   });
   return out;
 }
 
 function build() {
-  const c = L.makeCanvas(S, S), g = c.getContext('2d');
-  g.drawImage(K.paper({ base: '#e9e7df', tone: '#6e685a', seed: 'p13paper', fiber: 0.65, stain: 0.2, foxing: 0.06, edge: 0.14 }), 0, 0);
-  const tex = L.noiseTex(280, 280, { seed: 'p13pat', scale: 34, octaves: 5, res: 1, contrast: 1.5, ramp: [[0, '#84735a'], [0.5, '#d9cfb9'], [1, '#ffffff']] });
-  const B = bundles();
-  // broad soft shadow each bundle throws on the paper
-  g.save(); g.shadowColor = 'rgba(46,34,20,0.30)'; g.shadowBlur = 18; g.shadowOffsetX = 7; g.shadowOffsetY = 11; g.fillStyle = '#8a7a5a';
-  for (const b of B) for (const k of b.coins) { g.beginPath(); g.arc(k.x, k.y, k.R - 2, 0, TAU); g.fill(); }
-  g.restore();
-  for (const b of B) for (const k of b.coins) drawCoin(g, k, tex);
-  for (const b of B) drawCord(g, b);
+  const info = K.glyphInfo(), sw = info.strokeWidth, W = S + PAD * 2;
+  TILE = TILE || noiseTile();
+  const c = L.makeCanvas(W, W), g = c.getContext('2d', { alpha: false });      // the page is opaque: cheaper to draw every frame
+  g.drawImage(K.paper({ base: '#e9e7df', tone: '#6e685a', seed: 'p13paper', fiber: 0.65, stain: 0.2, foxing: 0.06, edge: 0.14, size: W }), 0, 0);
+  g.translate(PAD, PAD);
+  const B = layout(info);
+  // what the piles throw on the paper: a soft pool of shade, the cast shadow (toward the lower right), the dark line of contact
+  const sil = L.makeCanvas(W, W), sg = sil.getContext('2d'); sg.translate(PAD, PAD); sg.fillStyle = '#2a1c0e';
+  for (const b of B) for (const k of b.coins) { sg.beginPath(); sg.arc(k.x, k.y, k.R, 0, TAU); sg.fill(); sg.beginPath(); sg.arc(k.x + k.ex, k.y + k.ey, k.R, 0, TAU); sg.fill(); }
+  const shade = (blur, dx, dy, a) => { g.globalAlpha = a; g.drawImage(L.blurred(sil, blur), dx - PAD, dy - PAD); };
+  shade(sw * 0.34, sw * 0.07, sw * 0.1, 0.2);
+  shade(sw * 0.12, sw * 0.085, sw * 0.125, 0.4);
+  shade(sw * 0.035, sw * 0.02, sw * 0.03, 0.6);
+  g.globalAlpha = 1;
+  for (const b of B) {
+    for (const k of b.coins) {
+      const spr = coinSprite(k);
+      g.save();
+      g.shadowColor = 'rgba(24,14,5,0.56)'; g.shadowBlur = k.R * 0.22; g.shadowOffsetX = k.R * 0.1; g.shadowOffsetY = k.R * 0.145; g.drawImage(spr, k.ox, k.oy);    // cast on the coins below
+      g.shadowColor = 'rgba(20,11,4,0.62)'; g.shadowBlur = k.R * 0.05; g.shadowOffsetX = k.R * 0.02; g.shadowOffsetY = k.R * 0.032; g.drawImage(spr, k.ox, k.oy);  // contact
+      g.restore();
+    }
+    drawCord(g, b);
+  }
   return c;
 }
 
@@ -211,6 +356,6 @@ export default {
   name: '彩绳钱串',
   init() { layer = build(); },
   draw(ctx, env, p) {
-    K.drift(ctx, layer, p, { z0: 1.012, z1: 1.0 });        // settles exactly onto the glyph for the flash-cuts that follow
+    K.drift(ctx, layer, p, { z0: 0.988, z1: 1 });           // the faintest push-in, landing exactly on the glyph for the flash-cuts that follow
   },
 };

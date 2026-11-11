@@ -53,7 +53,7 @@ MATERIALS = {
 RUNS = [
  ('志', ['elm', 'damask', 'seals', 'cakes', 'knife', 'penny', 'rubs', 'beads', 'dollar', 'cord', 'stars', 'slips', 'mahjong', 'map', 'woodcut']),
  ('和', ['mala', 'mould', 'false', 'ink', 'go', 'metal', 'leaf', 'dots', 'strings', 'elm', 'stars', 'seals', 'dollar', 'slips', 'cakes']),
- ('诚', ['rubs', 'mahjong', 'damask', 'cord', 'woodcut', 'map', 'knife', 'beads', 'false', 'penny', 'mould', 'ink', 'go', 'mala', 'dots']),
+ ('诚', ['rubs', 'mahjong', 'damask', 'cord', 'woodcut', 'map', 'knife', 'metal', 'false', 'penny', 'mould', 'ink', 'go', 'mala', 'dots']),   # abacus beads cannot spell 诚 legibly: its strokes are too dense for objects that size
 ]
 ALL = '志和诚'
 HOLDS = [

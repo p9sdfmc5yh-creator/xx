@@ -1,6 +1,6 @@
 // h3 — 梅枝铜钱: a gongbi / botanical-plate study on grey-pink old paper. One old plum bough forks and bends into a circle (the coin's
 // outer rim), four short sticks lashed into a square sit in the middle (the square hole), vermilion blossoms and buds fill the body
-// between them, and a few patinated cash coins hang from the wood on red cords. A handful of petals drift down over the 22 frames.
+// between them, and a few patinated cash coins hang from the wood on red cords. A few petals drift down while the camera eases in (the plate now sits among the slow plates: 6 frames).
 import * as L from '../../../lib/core.js';
 import * as K from '../../../lib/plate.js';
 const { S } = K;
@@ -243,7 +243,7 @@ function build() {
   // blossoms fill the body; each grows on a short spur from the ring or from the square frame
   const avoid = coins.map((c) => ({ x: c.x, y: c.y, r: 56 }));
   coins.forEach((c) => { avoid.push({ x: c.hx, y: (c.hy + c.y) / 2, r: 6 }); });
-  const spots = K.scatter({ seed: 'h3flowers', spacing: 86, margin: 37, avoid, max: 40 });
+  const spots = scatterInCoin({ seed: 'h3flowers', spacing: 86, margin: 37, avoid, max: 40 });
   const fr = a + 8;                                 // centre line of the square frame sticks
   const spurs = [];
   spots.forEach((p, i) => {
@@ -365,6 +365,19 @@ function build() {
     return { spr, x, y, vx: pr.range(-0.7, 0.9), vy: pr.range(1.9, 2.9), r0: pr() * TAU, w: pr.range(-0.035, 0.035), ph: pr() * 6, sw: pr.range(0.1, 0.16) };
   });
   return pap;
+}
+
+/** dart-throwing inside the coin shape: points at least `spacing` apart, `margin` px inside the outline, clear of `avoid` discs */
+function scatterInCoin({ seed, spacing, margin, avoid = [], max = 400, tries = 6000 }) {
+  const rnd = L.rng(seed), g = K.COIN, pts = [];
+  for (let t = 0; t < tries && pts.length < max; t++) {
+    const x = g.cx + (rnd() * 2 - 1) * g.R, y = g.cy + (rnd() * 2 - 1) * g.R;
+    if (!K.inCoin(x, y, margin)) continue;
+    if (pts.some((q) => Math.hypot(q.x - x, q.y - y) < spacing)) continue;
+    if (avoid.some((q) => Math.hypot(q.x - x, q.y - y) < spacing * 0.5 + (q.r || 0))) continue;
+    pts.push({ x, y, ang: Math.atan2(y - g.cy, x - g.cx), rot: rnd() * Math.PI * 2, i: pts.length });
+  }
+  return pts;
 }
 
 export default {

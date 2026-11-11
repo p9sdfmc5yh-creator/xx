@@ -28,7 +28,7 @@ export default {
     K.drift(ctx, bg, p, move);
     K.drift(ctx, txt, p, move);
     if (flyers) {
-      const t = L.clamp(env.frame / 26);
+      const t = L.clamp((env.frame + 2) / 28);     // start two frames into the flight: the coins are already moving when the card cuts in
       if (t < 1) { ctx.save(); try { flyers(ctx, t, env); } finally { ctx.restore(); } }
     }
   },

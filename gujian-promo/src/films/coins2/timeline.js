@@ -54,7 +54,7 @@ const LIST = [
   { id: "f35", scene: "g20-woodcut", frames: 3, glyph: "诚" },   // 木刻·诚
   { id: "f36", scene: "g19-island-map", frames: 3, glyph: "诚" },   // 岛屿地图·诚
   { id: "f37", scene: "g05-knife-coins-engraved", frames: 3, glyph: "诚" },   // 刀币线刻·诚
-  { id: "f38", scene: "g08-abacus-beads", frames: 3, glyph: "诚" },   // 算珠·诚
+  { id: "f38", scene: "g31-metallograph", frames: 3, glyph: "诚" },   // 金相·诚
   { id: "f39", scene: "g28-false-colour", frames: 3, glyph: "诚" },   // 伪彩扫描·诚
   { id: "f40", scene: "g06-pennywort", frames: 3, glyph: "诚" },   // 铜钱草·诚
   { id: "f41", scene: "g22-mould-fragments", frames: 3, glyph: "诚" },   // 钱范残片·诚

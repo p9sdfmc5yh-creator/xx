@@ -18,7 +18,10 @@ esac
 # GJ_SS=2: encode the supersampled frames (build/<film>/frames-ss2) as a 4K master → out/<name>-4k.mp4
 SS="${GJ_SS:-1}"
 FRAMES="build/$FILM/frames"; SUFFIX=""; LEVEL="4.2"
+SCALE=""
 if [ "$SS" != "1" ]; then FRAMES="build/$FILM/frames-ss$SS"; SUFFIX="-4k"; LEVEL="5.1"; CRF="${2:-19}"; fi
+# GJ_HALF=1 (with GJ_SS=2): the standard-size file made by downsampling the 4K frames, so both files show the same picture
+if [ "$SS" != "1" ] && [ "${GJ_HALF:-0}" = "1" ]; then SUFFIX=""; LEVEL="4.2"; CRF="${2:-18}"; SCALE="scale=iw/$SS:ih/$SS:flags=lanczos,"; fi
 OUT="${3:-out/$NAME$SUFFIX.mp4}"
 mkdir -p "$(dirname "$OUT")"
 # square plate films (those with src/films/<film>/PLAYER) have their own arrangement in tools/audio2.py
@@ -32,7 +35,7 @@ GAIN=$(python3 -c "import sys; l=float('$LUFS'); p=float('$PEAK'); g=float('$TAR
 echo "soundtrack: ${LUFS} LUFS, true peak ${PEAK} dBTP → gain ${GAIN} dB"
 ffmpeg -hide_banner -loglevel error -y \
   -framerate 25 -i "$FRAMES/f_%05d.png" -i "build/$FILM/soundtrack.wav" \
-  -vf "scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p" \
+  -vf "${SCALE}scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p" \
   -c:v libx264 -preset slower -crf "$CRF" -profile:v high -level "$LEVEL" -g 50 -bf 2 \
   -x264-params "aq-mode=3:aq-strength=0.9:deblock=-1,-1" \
   -colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv \

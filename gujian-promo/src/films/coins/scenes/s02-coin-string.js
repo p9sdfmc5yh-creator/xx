@@ -1,19 +1,21 @@
 // s02 — 一串铜钱. Macro of a string of cash (一贯): square-holed coins threaded on a hemp cord, seen from the side.
 // The roll of coins is a tube lying under the arc and its outer limb IS the arc. Every coin stands on edge across the
-// cord, so along the limb the lens meets one rim (钱缘) after another: narrow, thick slips of brass with worn round
-// corners, rubbed-bright arrises and a dark seam between neighbours — a row of beads. Below the limb the same rims turn
-// toward the lens and drift out of focus; the lights of the studio are mirrored at the same height on every coin, so they
-// line up as honey-coloured bands concentric with the arc, bright and dark by turns, sinking into brown toward the bottom.
+// cord, so along the limb the lens meets one rim (钱缘) after another: narrow, thick slips of cast brass, each a filed
+// band (not a tube) with worn arrises rubbed bright, strokes of the file across it at its own angle, pores, knocks and
+// toning, a dark seam between neighbours, and the shadow of whichever neighbour stands proud. Below the limb the same
+// rims turn toward the lens and drift out of focus; the lights of the studio are mirrored softly at the same height on
+// every coin, so they line up as honey-coloured bands concentric with the arc, sinking into brown toward the bottom.
 // So that the roll reads as COINS at a glance, the string has gone slack right of the crest: both halves lean in toward
 // that spot, and the first coins of the right half have swung round on the cord like a fanned deck. The first of them shows
 // its back (光背: outer rim, plain field, inner rim, square hole — no inscription anywhere) with the hemp cord running
-// through the hole; behind it the rims of the next ones curve away as arcs of an ellipse.
+// through the hole; behind it the rims of the next ones curve away as arcs of an ellipse, each lying in the shadow of
+// the one before.
 //
 // Nothing is drawn with paths: every pixel under the arc is ray-cast in init(). A pixel is mapped into "string space"
 // (s along the arc, d below it), the coins it could meet are intersected analytically (rim cylinders with a rounded edge
 // profile, the turned faces as planes with a relief that is ray-marched, the hole, the cord), the fragments are sorted
 // by depth and composited with analytic coverage, and each visible fragment is shaded: a height field (casting skin,
-// filing marks round the rim, pores, knocks) bends the normal, the mirrored ray looks up a small painted studio, and
+// file strokes and turning marks, pores, knocks) bends the normal, the mirrored ray looks up a small painted studio, and
 // the patina decides how much of that mirror survives. Depth of field, bloom and the travelling glint come afterwards.
 //
 // The ray-casting runs at DEVICE resolution (L.SS samples per logical pixel each way — a 4K master gets four rays per
@@ -124,7 +126,7 @@ function makeEnv() {
   for (let ip = 0; ip < NP; ip++) {
     const pd = ((ip / (NP - 1)) * PMAX * 180) / Math.PI;
     const bk = back(pd), keyP = box(pd, 63, 111, 3.5) * (1 - 0.5 * Math.exp(-(((pd - 91) / 1.7) ** 2))), fillP = box(pd, 135, 160, 5),
-      lowP = box(pd, 205, 246, 9), kickP = box(pd, 40, 125, 14), roomP = box(pd, 98, 256, 20);
+      lowP = box(pd, 205, 246, 9), kickP = box(pd, 40, 168, 16), roomP = box(pd, 98, 256, 20);
     for (let it = 0; it < NT; it++) {
       const rt = (it / (NT - 1)) * 2 - 1, o = (ip * NT + it) * 3;
       let r = 0.075 + 0.16 * roomP, g = 0.05 + 0.118 * roomP, b = 0.028 + 0.07 * roomP;   // the room on the lens's side is dim, not black: no holes in the gold between the lights
@@ -449,7 +451,7 @@ function renderString(arc, ss = 1) {
       + 0.4 * xs * xs * c.dirt + 0.1 * uw4 * c.dirt - 0.5 * c.wear * sstep(0.05, 0.7, m1) * (1 - 0.5 * xs) - ew - flatK + 0.5 * chip + nickP;
     const occ = (1 - 0.85 * xs * xs * xs * tight) * (0.25 + 0.75 * step);
     const ao = (1 - 0.72 * Math.pow(xs, 2.6) * tight) * (1 - 0.8 * (dim > 0.6 ? 0.6 : dim)) * (1 - 0.55 * pore) * (1 - 0.4 * pore2)
-      * (1 - 0.14 * uw4 * tight) * (0.45 + 0.55 * step) * (1 - 0.3 * turned * (right ? 1 : 1 - xs)) * nickA * cast * deep
+      * (1 - 0.14 * uw4 * tight) * (0.45 + 0.55 * step) * (1 - 0.2 * turned * (right ? 1 : 1 - xs)) * nickA * cast * deep
       * (1 - 0.26 * sstep(110, 420, dp));          // lit from above and behind: the edge falls into shade as it comes round toward the lens
     const grime = sstep(0.5, 1, xs) * c.dirt * 0.6 * tight;
     let verd = 0, vn = 0;
@@ -527,7 +529,7 @@ function renderString(arc, ss = 1) {
     if (e >= len) return 1;
     return 1 - S * (e <= 0 ? 1 : (1 - sstep(0, len, e)) * 0.8 + 0.2 * Math.exp(-e / 5));
   };
-  const CAST_S = [0.78, 0.64, 0.52, 0.44], CAST_L = [54, 34, 24, 18];
+  const CAST_S = [0.84, 0.66, 0.52, 0.44], CAST_L = [54, 34, 24, 18];
 
   // ── one ray: the fragments the lens meets through the logical point (xl, yl), composited. px = footprint of the sample in
   // logical pixels (coverage is measured against it), i = the logical column. Results in sR … sH; sA = 0: nothing there ──

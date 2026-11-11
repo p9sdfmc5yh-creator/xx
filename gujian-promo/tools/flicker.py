@@ -10,7 +10,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 a = sys.argv[1:]
 film = a[a.index('--film') + 1] if '--film' in a else 'arch'
 FR = [31, 26, 26, 11, 6, 6, 13, 15, 13, 14, 15, 13, 14, 15, 8, 10, 8, 11, 12, 8, 10, 8, 8, 11, 7, 6, 8, 8, 7, 8, 6, 7, 7, 7, 6, 5, 5, 101]
-fdir = os.path.join(ROOT, 'build', film, 'frames')
+ss = os.environ.get('GJ_SS', '1')
+fdir = os.path.join(ROOT, 'build', film, 'frames' if ss == '1' else f'frames-ss{ss}')   # GJ_SS=2: check the 4K frames
 th = lambda n: np.asarray(Image.open(os.path.join(fdir, 'f_%05d.png' % n)).convert('RGB').resize((240, 135), Image.BOX), dtype=np.float32)
 start = 0
 print(f"{'shot':6} {'frames':>6} {'median':>7} {'max':>7} {'max/med':>8}  note")
