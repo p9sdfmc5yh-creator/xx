@@ -1,0 +1,32 @@
+{
+ "shot": "b10_lianzi",
+ "layout": "wreath",
+ "frame_width_m": 0.28202197242665683,
+ "frame_height_m": 0.15863735948999447,
+ "items": [
+  "m06_lianzi"
+ ],
+ "seed": 25,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.15712652749485168,
+  0.15712652749485168,
+  -0.09543422102652048,
+  0.09543422102652048
+ ],
+ "n_items": 385,
+ "layers_max": 4,
+ "heap_top_mm": 27.46149444580078,
+ "display_gain": 1.0,
+ "render_seconds": 453.9,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

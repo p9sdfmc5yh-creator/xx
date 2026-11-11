@@ -1,0 +1,40 @@
+{
+ "shot": "b18_heizhima",
+ "layout": "glyph",
+ "frame_width_m": 0.42519859771385476,
+ "frame_height_m": 0.2391742112140433,
+ "items": [
+  "k04_heizhima"
+ ],
+ "seed": 43,
+ "empty": false,
+ "text": "药",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.16,
+ "engine": "packed",
+ "px_per_m": 4757.360051747204,
+ "stroke_width_m": 0.016816049054479056,
+ "stroke_items_wide": 9.0,
+ "block_m": [
+  0.17152370035568637,
+  0.17698891629839206
+ ],
+ "char_boxes": [
+  [
+   0.30325,
+   0.09,
+   0.7017,
+   0.82912
+  ]
+ ],
+ "align": 0.4935400411650439,
+ "n_items": 3718,
+ "layers_max": 3,
+ "heap_top_mm": 3.1760711669921875,
+ "display_gain": 1.1435,
+ "render_seconds": 78.4,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

@@ -1759,15 +1759,22 @@ def speed_tweaks(scene, mode, args):
                 except Exception:
                     pass
     c = scene.cycles
-    c.max_bounces = 6
-    c.diffuse_bounces = 2
-    c.glossy_bounces = 3
-    c.transmission_bounces = 6
-    c.transparent_max_bounces = 6
+    # the box gives one render ~1 of its 4 cores (every agent session is its own scheduler group), and the
+    # ingredient shaders are heavy procedural trees: every bounce and every sample is expensive
+    c.max_bounces = 5
+    c.diffuse_bounces = 1 if mode == 'fast' else 2
+    c.glossy_bounces = 2
+    c.transmission_bounces = 5
+    c.transparent_max_bounces = 5
     if args.quality == 'final':
-        c.adaptive_threshold = max(c.adaptive_threshold, 0.07)     # 0.04 measured clean at 1:1; 0.07 saves ~35 %
-        c.adaptive_min_samples = min(c.adaptive_min_samples, 10)
-    print('[speed] %s: %d SSS nodes -> Burley, bounces 6/2/3/6, adaptive %.3f' % (mode, n, c.adaptive_threshold))
+        c.adaptive_threshold = max(c.adaptive_threshold, 0.09)     # 0.04 and 0.07 measured clean at 1:1
+        c.adaptive_min_samples = min(c.adaptive_min_samples, 8)
+        try:
+            c.denoising_prefilter = 'FAST'                         # guides are noise-free here (no DOF / blur)
+        except Exception:
+            pass
+    print('[speed] %s: %d SSS nodes -> Burley, bounces %d/%d/%d/%d, adaptive %.3f' % (
+        mode, n, c.max_bounces, c.diffuse_bounces, c.glossy_bounces, c.transmission_bounces, c.adaptive_threshold))
 
 
 def parse_cli(argv=None):
