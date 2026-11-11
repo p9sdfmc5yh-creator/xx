@@ -774,9 +774,10 @@ def _fill_holes(out, src, D, u, holes, radius, cut, structure=True, min_t=1.5):
             mask = (hole | near).astype(np.uint8)
             base = np.empty((int(use.sum()), C), np.float32)
             src_v = out if C > 1 else out[..., None]
-            for c in range(C):
-                ch = cv2.inpaint(np.ascontiguousarray(src_v[..., c]), mask, 4, cv2.INPAINT_TELEA)
-                base[:, c] = ch.reshape(-1)[idx[use]]
+            for c in range(C):                                # (cv2's TELEA is unreliable on float32)
+                ch = (np.clip(src_v[..., c], 0.0, 1.0) * np.float32(65535.0) + np.float32(0.5)).astype(np.uint16)
+                ch = cv2.inpaint(ch, mask, 4, cv2.INPAINT_TELEA)
+                base[:, c] = ch.reshape(-1)[idx[use]].astype(np.float32) * np.float32(1.0 / 65535.0)
             if not use.all():
                 full = lp_edge.copy()
                 full[use] = base

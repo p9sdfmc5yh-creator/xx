@@ -31,7 +31,7 @@ def build(args):
 
 if __name__ == '__main__':
     args = C.parse_args()
-    C.setup_scene(args)
+    C.setup_scene(args, exposure=0.55)      # dried jujubes are dark; lift them to a rich wine red
     build(args)
     C.render(args)
     print(C.check_framing(args.out))
