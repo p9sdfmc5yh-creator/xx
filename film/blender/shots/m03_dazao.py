@@ -109,7 +109,10 @@ def make_jujube(seed, L=None, Dm=None, nu=440, nv=300, window=None, cell=None, s
     how = 0.52 + 0.48 * C.smoothstep(-0.28, 0.22, C.perlin3(q / 10.0 + 21.0, sd + 4))     # where it shrivelled most
     F1 = np.abs(C.perlin3(qw / 3.7, sd + 10)) ** 0.55                 # broad taut pillows, sharp V creases
     F2 = np.abs(C.perlin3(qw / 1.55 + 5.0, sd + 11)) ** 0.62          # secondary folds
-    F2b = np.abs(C.perlin3(qw / 0.80 + 31.0, sd + 18)) ** 0.60        # tertiary wrinkles (everywhere, like aged skin)
+    qb = q * np.array([0.85, 1.0, 1.0]) + 2.4 * warp                  # tertiary wrinkles: less stretched, patchy
+    F2b = np.abs(C.perlin3(qb / 0.80 + 31.0, sd + 18)) ** 0.60
+    tmask = 0.22 + 0.78 * C.smoothstep(-0.25, 0.25, C.perlin3(q / 2.6 + 40.0, sd + 19))
+    F2b = 0.45 + (F2b - 0.45) * tmask        # tertiary wrinkles (everywhere, like aged skin)
     rg = (1.0 - np.abs(C.perlin3(qw / 5.2 + 9.0, sd + 12))) ** 10     # thin pinched ridges of excess skin
     rmask = C.smoothstep(-0.05, 0.30, C.perlin3(q / 8.0 + 3.0, sd + 13))
     lump = C.fbm3(q / 13.0 + 7.0, 2, seed=sd + 14)
@@ -123,9 +126,9 @@ def make_jujube(seed, L=None, Dm=None, nu=440, nv=300, window=None, cell=None, s
     cav = np.clip(cav, 0.0, 1.0)
     # fine crinkles: live on the flanks / in the creases, the pillow tops stay taut and glossy
     qf = q * np.array([0.42, 1.0, 1.0]) + 2.2 * warp
-    F3 = np.abs(C.perlin3(qf / 0.72 + 13.0, sd + 16)) ** 0.7
+    F3 = np.abs(C.perlin3(qf / 0.72 + 13.0, sd + 16)) ** 0.6
     fmask = np.clip(0.42 + 0.8 * cav, 0.0, 1.0) * how
-    h = h + shrivel * 0.10 * fmask * (F3 - 0.5)
+    h = h + shrivel * 0.14 * fmask * (F3 - 0.5)
     if cell is not None and cell < 0.00007:                           # only the dense hero mesh can carry these
         F4 = C.perlin3(qf / 0.27 + 17.0, sd + 17)
         h = h + 0.020 * F4 * (0.35 + 0.65 * fmask)
@@ -439,7 +442,7 @@ def main():
     g = C.dome_base(0.6, C.simple_material('ground', (0.030, 0.008, 0.006), 0.9), center=(0, 0, -0.625))
 
     # 4. light: big soft key 3/4 back-left, cream-tinted fill from the camera side, low rim back-right
-    C.studio_lights(info, tint=(1.0, 0.955, 0.88), key=1.05, fill=0.55, rim=1.2, world=0.5, key_size=0.5)
+    C.studio_lights(info, tint=(1.0, 0.955, 0.88), key=1.05, fill=0.55, rim=1.6, world=0.5, key_size=0.5)
 
     # 5. render, framing check, judging composite
     C.render(args)

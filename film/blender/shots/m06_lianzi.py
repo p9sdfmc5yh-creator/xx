@@ -118,9 +118,9 @@ def lotus_material():
     # a few shallow cracks (only where a slow mask allows)
     Pw = m.mix(P, m.noise(scale=180, detail=2, vector=P, color=True), 0.004, blend='ADD')
     ce = m.voronoi(scale=230, feature='DISTANCE_TO_EDGE', vector=Pw)
-    cmask = m.map_range(m.noise(scale=95, detail=1, vector=P), 0.60, 0.68)
-    crack = m.math('MULTIPLY', m.map_range(ce, 0.0, 0.030, 1.0, 0.0), cmask)
-    col = m.mix(col, (0.230, 0.140, 0.060), m.math('MULTIPLY', crack, 0.75))
+    cmask = m.map_range(m.noise(scale=95, detail=1, vector=P), 0.63, 0.70)
+    crack = m.math('MULTIPLY', m.map_range(ce, 0.0, 0.022, 1.0, 0.0), cmask)
+    col = m.mix(col, (0.230, 0.140, 0.060), m.math('MULTIPLY', crack, 0.55))
     col = m.mix(col, (0.330, 0.220, 0.110), m.math('MULTIPLY', A('seam'), 0.55))
     # split halves: smooth, slightly yellower inner face, groove floor darker
     col = m.mix(col, m.hsv(body, 0.5, 1.12, 1.02), m.math('MULTIPLY', A('inner'), 0.75))

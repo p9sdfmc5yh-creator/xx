@@ -1,0 +1,1289 @@
+{
+ "_about": "Master shot table of VERSION B (top-down specimen plates / ingredient typography) of 《药食同源》.\nRun this file to (re)generate film/shots_b.json.  Same timeline, audio and cut grid as version A\n(film/shots.json): 1248 frames @ 30 fps; every start/end below is a cut of the original film.\n\nScene keys\n  id, start, end      frame range [start, end)\n  layout              wreath | glyph | landing | taiji | dishes | bespoke   (film/blender/flatlay.py)\n  text                glyph string poured from the ingredient (glyph / landing), else null\n  label               what the 2-D text layer writes over the plate (information for the compositor)\n  source              ingredient module id(s) in film/blender/shots/ (make_items)\n  ground              {type: paper|slate|walnut|linen, colour: DISPLAY sRGB 0-255 of the lit ground,\n                       grid: {type, pitch_m, line_m, colour, opacity, major}, fibres, cloud, ...}\n  frame_width_m       physical width of the frame on the ground, chosen for the ingredient\n  item_mm / item_w_mm assumed length / width of one item the width was chosen for (flatlay rescales the\n                       frame when the real module differs by more than 15 %; lock_width: true disables it)\n  seed                layout + paper seed\n  text_mode           'light' = white overlay text (dark ground), 'dark' = dark-ink overlay text (pale ground)\n  exposure            stops; pale grounds need ~ +0.9 to render as pale paper under AgX Punchy\n  final_res           final render size (b00-b04 are rendered 5 % oversize for the slow push-in)\n  params              layout parameters (see README_B.md)\n",
+ "fps": 30,
+ "width": 3840,
+ "height": 2160,
+ "nframes": 1248,
+ "defaults": {
+  "lens_mm": 135,
+  "look": "AgX - Punchy",
+  "final_res": [
+   3840,
+   2160
+  ]
+ },
+ "scenes": [
+  {
+   "id": "b00_intro",
+   "start": 0,
+   "end": 192,
+   "layout": "wreath",
+   "text": null,
+   "label": "药食同源 / 中医药 (dark ink title cards)",
+   "source": [
+    "m02_gouqi",
+    "m03_dazao",
+    "m08_shanzha",
+    "m09_juhua",
+    "m06_lianzi",
+    "m07_baihe",
+    "m05_jupi",
+    "k03_guiyuan",
+    "k14_rougui",
+    "m04_shengjiang",
+    "k07_chixiaodou",
+    "k15_qianshi"
+   ],
+   "optional_sources": true,
+   "ground": {
+    "type": "paper",
+    "colour": [
+     214,
+     203,
+     178
+    ],
+    "grid": {
+     "type": "square",
+     "pitch_m": 0.0225,
+     "line_m": 0.0006,
+     "colour": [
+      176,
+      44,
+      30
+     ],
+     "opacity": 0.8,
+     "major": 0
+    },
+    "fibres": 1.2,
+    "cloud": 0.05
+   },
+   "frame_width_m": 0.9,
+   "item_mm": null,
+   "lock_width": true,
+   "seed": 11,
+   "text_mode": "dark",
+   "exposure": 0.9,
+   "final_res": [
+    4032,
+    2268
+   ],
+   "params": {
+    "window": [
+     0.5,
+     0.535,
+     0.62,
+     0.5
+    ],
+    "layers": 2.0,
+    "reach": 0.55,
+    "rough": 0.14,
+    "strays": 14,
+    "mix": "patches"
+   },
+   "note": "cream xuan with a cinnabar printed grid; loose wreath of every available ingredient in patches; the centre (title 196 px + three lines, y 0.33-0.75 H, <= 0.50 W wide) stays clear"
+  },
+  {
+   "id": "b01_yinyang",
+   "start": 192,
+   "end": 256,
+   "layout": "taiji",
+   "text": null,
+   "label": "阴阳平衡 (white, above)",
+   "source": [
+    "k04_heizhima",
+    "k02_yiyiren"
+   ],
+   "ground": {
+    "type": "slate",
+    "colour": [
+     38,
+     42,
+     48
+    ]
+   },
+   "frame_width_m": 0.3,
+   "item_mm": [
+    3.0,
+    6.0
+   ],
+   "seed": 12,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "final_res": [
+    4032,
+    2268
+   ],
+   "params": {
+    "centre": [
+     0.5,
+     0.72
+    ],
+    "diameter": 0.5,
+    "dot": 0.17,
+    "layers": 3
+   },
+   "note": "yin = black sesame, yang = white coix seed, two opposite eyes; text zone above y 0.45 H is bare slate"
+  },
+  {
+   "id": "b02_cabinet",
+   "start": 256,
+   "end": 320,
+   "layout": "bespoke",
+   "script": "flatlay_b02_cabinet.py",
+   "text": null,
+   "label": "四气 · 五味 (white, upper 42 %)",
+   "source": [
+    "s02_cabinet"
+   ],
+   "ground": {
+    "type": "none"
+   },
+   "frame_width_m": 1.6,
+   "seed": 13,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "final_res": [
+    4032,
+    2268
+   ],
+   "params": {
+    "dark_above": 0.42
+   },
+   "note": "frontal drawer grid from the assets of s02_cabinet.py; upper 42 % falls into darkness (NOT BUILT YET)"
+  },
+  {
+   "id": "b03_grains",
+   "start": 320,
+   "end": 384,
+   "layout": "dishes",
+   "text": null,
+   "label": "五谷为养 ... (white, above)",
+   "source": [
+    "s03_millet",
+    "k02_yiyiren",
+    "k07_chixiaodou",
+    "k04_heizhima",
+    "m06_lianzi"
+   ],
+   "ground": {
+    "type": "walnut",
+    "colour": [
+     58,
+     36,
+     22
+    ]
+   },
+   "frame_width_m": 0.6,
+   "item_mm": [
+    1.6,
+    6.0,
+    7.0,
+    3.0,
+    14.0
+   ],
+   "seed": 14,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "final_res": [
+    4032,
+    2268
+   ],
+   "params": {
+    "centre_v": 0.72,
+    "dish": 0.15,
+    "pitch": 0.18,
+    "kinds": [
+     "wood",
+     "celadon",
+     "wood",
+     "celadon",
+     "wood"
+    ],
+    "heap": 0.3,
+    "fill": 0.8
+   },
+   "note": "five 90 mm dishes (turned wood / celadon) heaped with millet, coix seed, adzuki bean, black sesame, lotus seed"
+  },
+  {
+   "id": "b04_bowl",
+   "start": 384,
+   "end": 448,
+   "layout": "bespoke",
+   "script": "flatlay_b04_bowl.py",
+   "text": null,
+   "label": "药食同源 / 既是食品，又是中药材 (white, above)",
+   "source": [
+    "s04_bowl"
+   ],
+   "ground": {
+    "type": "linen",
+    "colour": [
+     22,
+     34,
+     66
+    ]
+   },
+   "frame_width_m": 0.62,
+   "seed": 15,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "final_res": [
+    4032,
+    2268
+   ],
+   "params": {
+    "centre": [
+     0.5,
+     0.74
+    ],
+    "diameter": 0.62
+   },
+   "note": "top-down blue-and-white bowl, amber broth, floating goji, on indigo linen (NOT BUILT YET; linen ground exists)"
+  },
+  {
+   "id": "b05_shanyao",
+   "start": 448,
+   "end": 464,
+   "layout": "wreath",
+   "text": null,
+   "label": "山药",
+   "source": [
+    "m01_shanyao"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     18,
+     74,
+     72
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.8,
+   "item_mm": 35,
+   "seed": 20,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b06_gouqi",
+   "start": 464,
+   "end": 480,
+   "layout": "wreath",
+   "text": null,
+   "label": "枸杞子",
+   "source": [
+    "m02_gouqi"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     36,
+     15,
+     11
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.34,
+   "item_mm": 14,
+   "seed": 21,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b07_dazao",
+   "start": 480,
+   "end": 496,
+   "layout": "wreath",
+   "text": null,
+   "label": "大枣",
+   "source": [
+    "m03_dazao"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     214,
+     201,
+     174
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
+   },
+   "frame_width_m": 0.72,
+   "item_mm": 32,
+   "seed": 22,
+   "text_mode": "dark",
+   "exposure": 0.9,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b08_shengjiang",
+   "start": 496,
+   "end": 512,
+   "layout": "wreath",
+   "text": null,
+   "label": "生姜",
+   "source": [
+    "m04_shengjiang"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     30,
+     60,
+     96
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.8,
+   "item_mm": 35,
+   "seed": 23,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b09_jupi",
+   "start": 512,
+   "end": 528,
+   "layout": "wreath",
+   "text": null,
+   "label": "橘皮",
+   "source": [
+    "m05_jupi"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     27,
+     23,
+     20
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 1.0,
+   "item_mm": 45,
+   "seed": 24,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b10_lianzi",
+   "start": 528,
+   "end": 544,
+   "layout": "wreath",
+   "text": null,
+   "label": "莲子",
+   "source": [
+    "m06_lianzi"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     112,
+     50,
+     78
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.34,
+   "item_mm": 14,
+   "seed": 25,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b11_baihe",
+   "start": 544,
+   "end": 560,
+   "layout": "wreath",
+   "text": null,
+   "label": "百合",
+   "source": [
+    "m07_baihe"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     44,
+     27,
+     72
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.66,
+   "item_mm": 30,
+   "seed": 26,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b12_shanzha",
+   "start": 560,
+   "end": 576,
+   "layout": "wreath",
+   "text": null,
+   "label": "山楂",
+   "source": [
+    "m08_shanzha"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     16,
+     46,
+     28
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.46,
+   "item_mm": 20,
+   "seed": 27,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b13_juhua",
+   "start": 576,
+   "end": 592,
+   "layout": "wreath",
+   "text": null,
+   "label": "菊花",
+   "source": [
+    "m09_juhua"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     24,
+     31,
+     70
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.56,
+   "item_mm": 25,
+   "seed": 28,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b14_fengmi",
+   "start": 592,
+   "end": 608,
+   "layout": "wreath",
+   "text": null,
+   "label": "蜂蜜",
+   "source": [
+    "m10_fengmi"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     40,
+     22,
+     8
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.8,
+   "item_mm": 35,
+   "seed": 29,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "window": [
+     0.5,
+     0.42,
+     0.46,
+     0.3
+    ],
+    "layers": 2.4,
+    "reach": 0.55,
+    "rough": 0.16,
+    "strays": 9
+   }
+  },
+  {
+   "id": "b15_fuling",
+   "start": 608,
+   "end": 616,
+   "layout": "glyph",
+   "text": "药",
+   "label": "茯苓",
+   "source": [
+    "k01_fuling"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     36,
+     38,
+     44
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.658,
+   "item_mm": 10,
+   "item_w_mm": 10,
+   "size_by": "width",
+   "seed": 40,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b16_yiyiren",
+   "start": 616,
+   "end": 624,
+   "layout": "glyph",
+   "text": "药",
+   "label": "薏苡仁",
+   "source": [
+    "k02_yiyiren"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     18,
+     76,
+     78
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.548,
+   "item_mm": 6,
+   "item_w_mm": 5,
+   "size_by": "width",
+   "seed": 41,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b17_guiyuan",
+   "start": 624,
+   "end": 632,
+   "layout": "glyph",
+   "text": "药",
+   "label": "桂圆",
+   "source": [
+    "k03_guiyuan"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     52,
+     17,
+     11
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 1.206,
+   "item_mm": 22,
+   "item_w_mm": 22,
+   "size_by": "width",
+   "seed": 42,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b18_heizhima",
+   "start": 632,
+   "end": 640,
+   "layout": "glyph",
+   "text": "药",
+   "label": "黑芝麻",
+   "source": [
+    "k04_heizhima"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     214,
+     203,
+     178
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
+   },
+   "frame_width_m": 0.316,
+   "item_mm": 3,
+   "item_w_mm": 1.8,
+   "size_by": "width",
+   "seed": 43,
+   "text_mode": "dark",
+   "exposure": 0.9,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b19_bohe",
+   "start": 640,
+   "end": 648,
+   "layout": "glyph",
+   "text": "食",
+   "label": "薄荷",
+   "source": [
+    "k05_bohe"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     203,
+     210,
+     190
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
+   },
+   "frame_width_m": 0.987,
+   "item_mm": 35,
+   "item_w_mm": 18,
+   "size_by": "width",
+   "seed": 44,
+   "text_mode": "dark",
+   "exposure": 0.9,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b20_sangshen",
+   "start": 648,
+   "end": 656,
+   "layout": "glyph",
+   "text": "食",
+   "label": "桑椹",
+   "source": [
+    "k06_sangshen"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     212,
+     180,
+     203
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
+   },
+   "frame_width_m": 0.658,
+   "item_mm": 20,
+   "item_w_mm": 10,
+   "size_by": "width",
+   "seed": 45,
+   "text_mode": "dark",
+   "exposure": 0.9,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b21_chixiaodou",
+   "start": 656,
+   "end": 664,
+   "layout": "glyph",
+   "text": "食",
+   "label": "赤小豆",
+   "source": [
+    "k07_chixiaodou"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     36,
+     20,
+     18
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.493,
+   "item_mm": 7,
+   "item_w_mm": 4.5,
+   "size_by": "width",
+   "seed": 46,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b22_heye",
+   "start": 664,
+   "end": 672,
+   "layout": "glyph",
+   "text": "食",
+   "label": "荷叶",
+   "source": [
+    "k08_heye"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     14,
+     40,
+     30
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 1.644,
+   "item_mm": 40,
+   "item_w_mm": 30,
+   "size_by": "width",
+   "seed": 47,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b23_gancao",
+   "start": 672,
+   "end": 680,
+   "layout": "glyph",
+   "text": "同",
+   "label": "甘草",
+   "source": [
+    "k09_gancao"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     100,
+     30,
+     22
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.658,
+   "item_mm": 18,
+   "item_w_mm": 10,
+   "size_by": "width",
+   "seed": 48,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b24_jianghuang",
+   "start": 680,
+   "end": 688,
+   "layout": "glyph",
+   "text": "同",
+   "label": "姜黄",
+   "source": [
+    "k10_jianghuang"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     16,
+     40,
+     86
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.767,
+   "item_mm": 20,
+   "item_w_mm": 14,
+   "size_by": "width",
+   "seed": 49,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b25_shaji",
+   "start": 688,
+   "end": 696,
+   "layout": "glyph",
+   "text": "同",
+   "label": "沙棘",
+   "source": [
+    "k11_shaji"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     48,
+     66,
+     50
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.702,
+   "item_mm": 8,
+   "item_w_mm": 8,
+   "size_by": "width",
+   "seed": 50,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b26_juemingzi",
+   "start": 696,
+   "end": 704,
+   "layout": "glyph",
+   "text": "同",
+   "label": "决明子",
+   "source": [
+    "k12_juemingzi"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     196,
+     204,
+     184
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
+   },
+   "frame_width_m": 0.395,
+   "item_mm": 5,
+   "item_w_mm": 3,
+   "size_by": "width",
+   "seed": 51,
+   "text_mode": "dark",
+   "exposure": 0.9,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b27_luohanguo",
+   "start": 704,
+   "end": 712,
+   "layout": "glyph",
+   "text": "源",
+   "label": "罗汉果",
+   "source": [
+    "k13_luohanguo"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     198,
+     158,
+     60
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
+   },
+   "frame_width_m": 2.741,
+   "item_mm": 50,
+   "item_w_mm": 50,
+   "size_by": "width",
+   "seed": 52,
+   "text_mode": "dark",
+   "exposure": 0.5,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b28_rougui",
+   "start": 712,
+   "end": 720,
+   "layout": "glyph",
+   "text": "源",
+   "label": "肉桂",
+   "source": [
+    "k14_rougui"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     20,
+     25,
+     36
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 1.447,
+   "item_mm": 80,
+   "item_w_mm": 12,
+   "size_by": "length",
+   "seed": 53,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b29_qianshi",
+   "start": 720,
+   "end": 728,
+   "layout": "glyph",
+   "text": "源",
+   "label": "芡实",
+   "source": [
+    "k15_qianshi"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     34,
+     50,
+     80
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.767,
+   "item_mm": 7,
+   "item_w_mm": 7,
+   "size_by": "width",
+   "seed": 54,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b30_lingzhi",
+   "start": 728,
+   "end": 736,
+   "layout": "glyph",
+   "text": "源",
+   "label": "灵芝",
+   "source": [
+    "k16_lingzhi"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     24,
+     19,
+     15
+    ],
+    "fibres": 1.0,
+    "cloud": 0.08
+   },
+   "frame_width_m": 0.888,
+   "item_mm": 45,
+   "item_w_mm": 15,
+   "size_by": "length",
+   "seed": 55,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.47
+    ],
+    "height": 0.72,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "strays": 0.012
+   }
+  },
+  {
+   "id": "b31_landing",
+   "start": 736,
+   "end": 1248,
+   "layout": "landing",
+   "text": "药食同源",
+   "label": "outro cards (white, lower third)",
+   "source": [
+    "k02_yiyiren"
+   ],
+   "ground": {
+    "type": "paper",
+    "colour": [
+     152,
+     36,
+     26
+    ],
+    "grid": {
+     "type": "square",
+     "pitch_m": 0.025,
+     "line_m": 0.0007,
+     "colour": [
+      214,
+      160,
+      84
+     ],
+     "opacity": 0.55,
+     "major": 0
+    },
+    "fibres": 1.0,
+    "cloud": 0.07
+   },
+   "frame_width_m": 1.0,
+   "item_mm": 6.0,
+   "item_w_mm": 5.0,
+   "size_by": "width",
+   "seed": 77,
+   "text_mode": "light",
+   "exposure": 0.0,
+   "params": {
+    "centre": [
+     0.5,
+     0.4
+    ],
+    "width": 0.8,
+    "font": "NotoSansCJKsc-Black.otf",
+    "thin": 0.16,
+    "tracking": 0.1,
+    "strays": 0.006
+   },
+   "reveal": {
+    "per_char_frames": 8,
+    "order": "药食同源",
+    "empty_variant": "--empty"
+   },
+   "note": "title poured from white coix seeds on cinnabar-red paper with a pale gold grid; lower third clear for the white outro lines; render it twice (full + --empty) for the 2-D stop-motion reveal, one character per 8 frames"
+  }
+ ]
+}

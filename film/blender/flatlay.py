@@ -559,13 +559,22 @@ def layout_wreath(frame, sets, P, rng):
     return pl, dict(extent=ext, allowed=None, candidates=4, info=info)
 
 
+def stroke_width_robust(mask):
+    """Width (px) of the regular strokes: 2 x the 30th percentile of the distance transform along the
+    skeleton ridge (glyph_layout.stroke_width_px takes the median, which jumps to the width of a
+    big filled block for glyphs like 同)."""
+    dt = ndi.distance_transform_edt(mask)
+    ridge = (dt == ndi.maximum_filter(dt, size=5)) & (dt > 2)
+    return 2.0 * float(np.percentile(dt[ridge], 30))
+
+
 def _glyph_mask(text, font, tracking, thin):
     """Rasterised text mask as glyph_layout sees it, optionally thinned: `thin` (fraction of the
     typical stroke width) erodes the strokes so that the counters open up - object type needs
     whiter counters than printed type."""
     m = G._ysty_text_mask(text, font_file=font, tracking=tracking)
     if thin > 0:
-        sw = G.stroke_width_px(m)
+        sw = stroke_width_robust(m)
         dt = ndi.distance_transform_edt(m)
         m2 = dt > thin * sw * 0.5
         # never erase a stroke completely: keep the skeleton ridge of thin strokes
@@ -614,9 +623,9 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
     else:
         block_h = float(P.get('height', 0.72)) * frame.H
         px_per_m = mh / block_h
-    sw = G.stroke_width_px(mask)
+    sw = stroke_width_robust(mask)
     item_r = S.r_eff
-    stroke_items = sw / (2.0 * item_r * px_per_m)
+    stroke_items = G.stroke_width_px(mask) / (2.0 * item_r * px_per_m)      # what glyph_layout needs to reproduce px_per_m
     stroke_w_items = sw / px_per_m / S.Wd
     align = P.get('align', 'auto')
     if align == 'auto':
@@ -725,7 +734,7 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
                 align=float(align))
     print('[glyph] %r: block %.0f x %.0f mm, stroke %.1f mm = %.1f item widths (%.1f footprint diameters), '
           'align %.2f' % (text, mw / px_per_m * 1e3, mh / px_per_m * 1e3, sw / px_per_m * 1e3, stroke_w_items,
-                          stroke_items, float(align)))
+                          sw / px_per_m / (2.0 * item_r), float(align)))
     return pl, dict(extent=ext, allowed=allowed, candidates=int(P.get('candidates', 3)), info=info,
                     mask=(mask, px_per_m, cx, cy))
 
@@ -1300,17 +1309,22 @@ def main(argv=None):
             if sid in cache:
                 sets.append(cache[sid])
                 continue
+            if shot.get('optional_sources') and not standin and not os.path.exists(os.path.join(SHOT_DIR, sid + '.py')):
+                print('[items] %s not written yet - skipped (optional source)' % sid)
+                continue
             S = ItemSet(sid, seed=0)
             cache[sid] = S
             sets.append(S)
+        if not sets:
+            raise SystemExit('no ingredient module available for %s' % shot['id'])
         # the table's width was chosen for an assumed item size; follow the real one when it differs
         assumed = shot.get('item_mm')
         if assumed and cli.width is None and not shot.get('lock_width'):
             assumed = assumed if isinstance(assumed, (list, tuple)) else [assumed]
             ratios = [sets[i].L * 1e3 / float(assumed[i % len(assumed)]) for i in range(len(sets))]
             k = float(np.median(ratios)) if layout != 'glyph' and layout != 'landing' else ratios[0]
-            if layout in ('glyph', 'landing'):                     # legibility is governed by the item WIDTH
-                aw = shot.get('item_w_mm')
+            if layout in ('glyph', 'landing') and shot.get('size_by', 'width') == 'width':
+                aw = shot.get('item_w_mm')                         # legibility is governed by the item WIDTH
                 if aw:
                     k = sets[0].Wd * 1e3 / float(aw)
             if abs(k - 1.0) > 0.15:

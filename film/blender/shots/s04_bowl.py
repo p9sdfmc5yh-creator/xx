@@ -364,17 +364,16 @@ def soaked_goji_material():
     rough = m.math('ADD', m.map_range(n_fine, 0.3, 0.7, 0.30, 0.52), m.math('MULTIPLY', fur, 0.22))
     stretch = m.mapping(oc, scale=(0.22, 1.0, 1.0))
     h1 = m.noise(scale=760, detail=3, vector=stretch)
-    nrm = m.bump(h1, strength=0.75, distance=0.00026)
+    nrm = m.bump(h1, strength=0.5, distance=0.00018)
     nrm = m.bump(m.noise(scale=2600, detail=3, vector=stretch), strength=0.7, distance=0.00010, normal=nrm)
     nrm = m.bump(m.noise(scale=9000, detail=2, vector=oc), strength=0.4, distance=0.00002, normal=nrm)
     wn = m.noise(scale=240, detail=2, vector=oc)
-    wet = m.math('MULTIPLY', m.map_range(wn, 0.32, 0.68, 0.05, 0.36, smooth=True),
+    wet = m.math('MULTIPLY', m.map_range(wn, 0.30, 0.66, 0.22, 0.75, smooth=True),
                  m.math('SUBTRACT', 1.0, m.math('MULTIPLY', fur, 0.5)))                     # uneven water film
-    cn = m.bump(h1, strength=0.75, distance=0.00020)                                        # the film follows the skin, softened
-    cn = m.bump(m.noise(scale=2600, detail=3, vector=stretch), strength=0.5, distance=0.00007, normal=cn)
-    m.set(base_color=col, roughness=rough, sss=0.65, sss_radius=(1.0, 0.13, 0.05), sss_scale=0.0014,
+    cn = m.bump(m.noise(scale=420, detail=2, vector=oc), strength=0.30, distance=0.00012)   # the film is smooth, only gently uneven
+    m.set(base_color=col, roughness=rough, sss=0.65, sss_radius=(1.0, 0.13, 0.05), sss_scale=0.0019,
           sss_anisotropy=0.3, ior=1.42, specular=0.30, coat=wet, coat_ior=1.34, normal=nrm,
-          coat_roughness=m.map_range(n_fine, 0.3, 0.7, 0.04, 0.11))
+          coat_roughness=m.map_range(n_fine, 0.3, 0.7, 0.025, 0.06))
     m.bsdf.inputs['Coat Normal'].default_value = (0, 0, 0)
     m.nt.links.new(cn, m.bsdf.inputs['Coat Normal'])
     return m
@@ -690,8 +689,10 @@ def build_scene(args):
         quat.append((q.w, q.x, q.y, q.z))
         scl.append(s_)
         var.append(i)
-    C.instance_on_points('berries', variants, loc=np.array(loc), quat=np.array(quat), scale=np.array(scl),
-                         var=np.array(var))
+    berries_ob = C.instance_on_points('berries', variants, loc=np.array(loc), quat=np.array(quat), scale=np.array(scl),
+                                      var=np.array(var))
+    if not isinstance(berries_ob, bpy.types.Object):
+        berries_ob = bpy.data.objects.get('berries')
     # ---- bubbles: small clusters on the wall meniscus + a few against berries
     bub = []
     hfrac = 1.0 + Z_BROTH / pf['depth']
@@ -745,11 +746,32 @@ def build_scene(args):
     # ---- light: big soft box 3/4 back-left (key), window-like box over the camera (its reflection
     #      is the crisp glaze highlight on the inner wall), low strip back-right, dim warm world
     T = (0.0, 0.085, -0.015)
-    rect_light('key', -38.0, 50.0, 1.05, T, 0.80, 0.60, 70.0, (1.0, 0.955, 0.88))
-    rect_light('top', 0.0, 66.0, 1.00, T, 0.60, 0.45, 17.0, (1.0, 0.975, 0.94))
-    rect_light('front', -150.0, 52.0, 1.25, T, 0.50, 0.42, 16.0, (0.94, 0.97, 1.0))      # gleam on the flared lip
+    big = [rect_light('key', -38.0, 50.0, 1.05, T, 0.80, 0.60, 70.0, (1.0, 0.955, 0.88)),
+           rect_light('top', 0.0, 66.0, 1.00, T, 0.60, 0.45, 17.0, (1.0, 0.975, 0.94)),
+           rect_light('front', -150.0, 52.0, 1.25, T, 0.50, 0.42, 16.0, (0.94, 0.97, 1.0))]     # gleam on the flared lip
     rect_light('sheen', 163.0, 17.5, 1.35, T, 1.50, 0.11, 4.0, (1.0, 0.97, 0.93))        # sheen under the band
     rect_light('strip', 64.0, 36.0, 1.0, T, 0.22, 0.70, 9.0, (1.0, 0.90, 0.78))
+    # The 1 cm berries would mirror those metre-wide boxes as white slabs along their whole length
+    # (= lacquered plastic).  They get the same light from the same directions through SMALL sources
+    # instead: identical shading, but the wet film shows small sharp glints.
+    small = [rect_light('key_b', -38.0, 50.0, 1.05, T, 0.150, 0.110, 70.0, (1.0, 0.955, 0.88)),
+             rect_light('top_b', 0.0, 66.0, 1.00, T, 0.090, 0.070, 17.0, (1.0, 0.975, 0.94)),
+             rect_light('front_b', -150.0, 52.0, 1.25, T, 0.30, 0.25, 16.0, (0.94, 0.97, 1.0))]
+    try:
+        ex = bpy.data.collections.new('ll_not_berries')
+        ex.objects.link(berries_ob)
+        ex.collection_objects[0].light_linking.link_state = 'EXCLUDE'
+        on = bpy.data.collections.new('ll_berries')
+        on.objects.link(berries_ob)
+        for L in big:
+            L.light_linking.receiver_collection = ex
+        for L in small:
+            L.light_linking.receiver_collection = on
+        print('[light linking] berries: small-source copies of key/top/front')
+    except Exception as e_:                                             # pragma: no cover
+        print('[warn] light linking unavailable (%s): berries share the big boxes' % e_)
+        for L in small:
+            bpy.data.objects.remove(L)
     C.world_gradient(horizon=(0.030, 0.021, 0.014), zenith=(0.060, 0.048, 0.038), ground=(0.012, 0.008, 0.005))
     return info
 
