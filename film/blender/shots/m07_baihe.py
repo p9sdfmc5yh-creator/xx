@@ -37,7 +37,7 @@ def make_scale(seed, broken=0, nu=250, nv=208):
     rng = np.random.default_rng(4100 + seed)
     L = rng.uniform(0.024, 0.043)
     Wd = float(np.clip(L * rng.uniform(0.36, 0.52), 0.010, 0.0185))
-    th = rng.uniform(0.0016, 0.0027)
+    th = rng.uniform(0.0013, 0.0023)
     s = np.linspace(0.0, 1.0, nu)[:, None]
     psi = np.linspace(0, 2 * math.pi, nv, endpoint=False)[None, :]
     ph = psi + 0.2 * np.sin(2 * psi)                       # more vertices across the faces, fewer at the rim
@@ -81,11 +81,11 @@ def make_scale(seed, broken=0, nu=250, nv=208):
     u = 2 * se - 1
     dL = rng.uniform(0.07, 0.19) * L
     zl = dL * (u ** 2 + 0.30 * rng.normal() * u ** 3)
-    dW = rng.uniform(0.10, 0.26) * Wd
+    dW = rng.uniform(0.12, 0.30) * Wd
     zc = dW * yw ** 2 * (0.65 + 0.35 * (1 - se))
     wl = rng.uniform(0.005, 0.009)
     rf = _n1(se * L / wl, 2.3, seed + 45) * (1 - side) + _n1(se * L / wl, 6.6, seed + 46) * side
-    zr = rng.uniform(0.0007, 0.0016) * np.abs(yw) ** 2.2 * rf
+    zr = rng.uniform(0.0009, 0.0019) * np.abs(yw) ** 2.2 * rf
     X = (se - 0.5 * (s0 + s1)) * L
     Y = yn * halfw + rng.normal(0, 0.03) * L * (4 * S * (1 - S) - 0.667)
     Z = zl + zc + zr + zh
@@ -118,7 +118,7 @@ def make_scale(seed, broken=0, nu=250, nv=208):
         d = (yn - y0 - wob) * np.maximum(halfw, 1e-5)
         ridge += rng.uniform(0.55, 1.0) * np.exp(-(d / rng.uniform(0.00016, 0.00028)) ** 2)
     env = np.clip(np.sin(math.pi * S), 0, 1) ** 0.5 * cap * np.clip(t_loc / 0.0007, 0, 1)
-    h = (0.00017 * how * (fold - 0.70) + 0.00006 * how * (fold2 - 0.62)
+    h = (0.00020 * how * (fold - 0.70) + 0.00007 * how * (fold2 - 0.62)
          + 0.00011 * ridge * (0.82 - 0.18 * np.tanh(sn * 4.0)) + 0.00018 * dent) * env
     V = (G + nrm * h[..., None]).reshape(-1, 3)
     faces = C.grid_faces(nu, nv, wrap_v=True)
@@ -142,12 +142,12 @@ def baihe_material(sss_method='BURLEY'):
     Ps = m.mapping(P, scale=(0.14, 1.0, 1.0))                       # stretched along the scale
     # ivory body with slow creamy / yellower mottling, horn-yellow where the flesh is thin
     mott = m.noise(scale=150, detail=3, roughness=0.55, vector=P)
-    col = m.mix((0.78, 0.66, 0.43), (0.72, 0.55, 0.28), m.map_range(mott, 0.35, 0.70))
-    col = m.mix(col, (0.68, 0.46, 0.18), m.math('MULTIPLY', m.map_range(thin, 0.45, 1.0, smooth=True), 0.55))
+    col = m.mix((0.80, 0.73, 0.52), (0.76, 0.64, 0.36), m.map_range(mott, 0.35, 0.70))
+    col = m.mix(col, (0.72, 0.55, 0.22), m.math('MULTIPLY', m.map_range(thin, 0.45, 1.0, smooth=True), 0.55))
     streak = m.noise(scale=900, detail=3, roughness=0.6, vector=Ps)
-    col = m.mix(col, (0.62, 0.44, 0.20), m.math('MULTIPLY', m.map_range(streak, 0.50, 0.80), 0.22))
-    col = m.mix(col, (0.50, 0.32, 0.13), m.math('MULTIPLY', m.map_range(cav, 0.10, 0.90, smooth=True), 0.42))
-    col = m.mix(col, (0.55, 0.37, 0.15), m.math('MULTIPLY', vein, 0.30))
+    col = m.mix(col, (0.64, 0.50, 0.24), m.math('MULTIPLY', m.map_range(streak, 0.50, 0.80), 0.25))
+    col = m.mix(col, (0.52, 0.38, 0.16), m.math('MULTIPLY', m.map_range(cav, 0.10, 0.90, smooth=True), 0.45))
+    col = m.mix(col, (0.56, 0.42, 0.18), m.math('MULTIPLY', vein, 0.32))
     # light tan / brown rims and tips on some scales, a few rusty freckles
     patch = m.map_range(m.noise(scale=110, detail=3, roughness=0.6, vector=P), 0.38, 0.66)
     tan = m.math('MULTIPLY', m.math('MULTIPLY', m.map_range(edge, 0.35, 1.0, smooth=True), patch),
@@ -167,7 +167,7 @@ def baihe_material(sss_method='BURLEY'):
     nrm = m.bump(crinkle, strength=0.7, distance=0.00010)
     nrm = m.micro_bump(scale=8000, strength=0.45, distance=0.00004, vector=P, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.50, specular=0.40,
-          sss=0.85, sss_radius=(1.0, 0.60, 0.28), sss_scale=0.0030, sss_anisotropy=0.0, normal=nrm)
+          sss=0.85, sss_radius=(1.0, 0.74, 0.36), sss_scale=0.0032, sss_anisotropy=0.0, normal=nrm)
     return m
 
 
@@ -179,8 +179,8 @@ def sky_tint():
         c = im[: int(im.shape[0] * 0.35)].reshape(-1, 3).mean(0)[::-1] / 255.0
         c = c ** 2.2
         c = c / c.max()
-        t = 0.62 + 0.38 * c
-        t = t * np.array([1.0, 0.97, 0.90])                       # keep the ivory warm
+        t = 0.86 + 0.14 * c
+        t = t * np.array([1.0, 0.985, 0.93])                       # keep the ivory warm
         return tuple(float(x) for x in t / t.max())
     except Exception:
         return (1.0, 0.95, 0.85)
@@ -240,7 +240,7 @@ def main():
     C.dome_base(R_DOME - 0.002, C.simple_material('base', (0.22, 0.14, 0.06), 0.9))
     print('[heap] %d scales' % n)
 
-    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68)
+    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.538, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
     tint = sky_tint()
     print('[tint]', tint)

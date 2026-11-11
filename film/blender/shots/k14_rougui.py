@@ -236,9 +236,9 @@ def bark_material():
     Ps = m.mapping(P, scale=(0.05, 1.0, 1.0))
     # outer bark: grey-brown cork, dark wrinkle creases, tan lenticels, grey-white lichen patches
     n1 = m.noise(scale=240, detail=4, roughness=0.6, vector=P)
-    o = m.mix((0.150, 0.104, 0.072), (0.290, 0.215, 0.152), m.map_range(n1, 0.30, 0.72))
+    o = m.mix((0.122, 0.080, 0.053), (0.245, 0.172, 0.116), m.map_range(n1, 0.30, 0.72))
     n2 = m.noise(scale=1700, detail=3, roughness=0.6, vector=Pl)
-    o = m.mix(o, (0.36, 0.285, 0.210), m.math('MULTIPLY', m.map_range(n2, 0.55, 0.80), 0.40))
+    o = m.mix(o, (0.32, 0.240, 0.170), m.math('MULTIPLY', m.map_range(n2, 0.55, 0.80), 0.40))
     o = m.mix(o, (0.050, 0.030, 0.020), m.map_range(cav, 0.12, 0.85, 0.0, 0.80, smooth=True))
     o = m.mix(o, (0.340, 0.225, 0.130), m.math('MULTIPLY', lent, 0.65))
     ln = m.noise(scale=800, detail=4, roughness=0.7, vector=P)
@@ -247,8 +247,8 @@ def bark_material():
     # inner surface: warm red-brown, fine longitudinal streaks, oily darker bands
     s1 = m.noise(scale=1300, detail=3, roughness=0.6, vector=Ps)
     s2 = m.noise(scale=170, detail=3, roughness=0.5, vector=P)
-    i_ = m.mix((0.105, 0.028, 0.011), (0.265, 0.082, 0.029), m.map_range(s1, 0.30, 0.70))
-    i_ = m.mix(i_, (0.330, 0.128, 0.048), m.math('MULTIPLY', m.map_range(s2, 0.50, 0.80), 0.50))
+    i_ = m.mix((0.092, 0.025, 0.010), (0.225, 0.068, 0.024), m.map_range(s1, 0.30, 0.70))
+    i_ = m.mix(i_, (0.280, 0.105, 0.040), m.math('MULTIPLY', m.map_range(s2, 0.50, 0.80), 0.50))
     # cross-section: cork / brown granular outer layer / pale stone-cell line / red-brown oily inner layer
     g = m.noise(scale=2600, detail=2, roughness=0.5, vector=P)
     cs = m.ramp(inner, [(0.00, (0.100, 0.064, 0.040)), (0.10, (0.215, 0.115, 0.055)), (0.40, (0.240, 0.128, 0.058)),
@@ -267,7 +267,7 @@ def bark_material():
     nrm = m.bump(m.mixf(m.mixf(h_o, h_i, im), h_c, cap), strength=0.9, distance=0.00022)
     nrm = m.micro_bump(scale=8000, strength=0.4, distance=0.00004, vector=P, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.48, specular=0.40,
-          sss=0.10, sss_radius=(1.0, 0.35, 0.15), sss_scale=0.0005, normal=nrm)
+          normal=nrm)                                              # bark is opaque: no SSS (render speed)
     return m
 
 
@@ -318,7 +318,7 @@ def main():
     C.instance_on_points('heap', variants, heap, attrs={'dark': dark})
     C.dome_base(R_DOME - 0.004, C.simple_material('base', (0.030, 0.016, 0.010), 0.9))
 
-    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68)
+    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.54, edge=0.64)      # tuned: lumpy heap of long quills
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
     C.studio_lights(info, tint=(1.0, 0.92, 0.82), key=1.35, fill=1.15, rim=1.2, world=1.2, key_size=1.0)
 

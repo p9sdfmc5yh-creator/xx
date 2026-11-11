@@ -169,7 +169,7 @@ def peel_material():
     pit = m.math('MAXIMUM', m.math('MULTIPLY', pit1, 0.75), pit2)
     # --- outer side (flavedo): orange -> orange-red -> reddish-brown patches
     mott = m.noise(scale=150, detail=3, roughness=0.55, vector=P)
-    col = m.mix((0.560, 0.165, 0.014), (0.420, 0.078, 0.010), m.map_range(mott, 0.34, 0.66))
+    col = m.mix((0.520, 0.132, 0.008), (0.380, 0.060, 0.006), m.map_range(mott, 0.34, 0.66))
     brown = m.noise(scale=55, detail=2, roughness=0.5, vector=m.mapping(P, location=(3.1, 1.7, 0.4)))
     col = m.mix(col, (0.200, 0.042, 0.011), m.map_range(brown, 0.56, 0.80, 0.0, 0.70, smooth=True))
     speck = m.noise(scale=2600, detail=2, roughness=0.6, vector=P)
@@ -205,7 +205,7 @@ def peel_material():
     nrm = m.bump(hh, strength=1.0, distance=0.00013)
     nrm = m.micro_bump(scale=9500, strength=0.35, distance=0.00003, vector=P, normal=nrm)
     m.set(base_color=base, roughness=rough, ior=1.46, specular=0.40,
-          sss=m.mixf(0.30, 0.45, inner), sss_radius=(1.0, 0.36, 0.12), sss_scale=0.0011,
+          sss=m.mixf(0.0, 0.45, inner), sss_radius=(1.0, 0.36, 0.12), sss_scale=0.0011,
           coat=m.mixf(0.07, 0.0, inner), coat_roughness=0.35,
           sheen=m.mixf(0.0, 0.35, inner), sheen_roughness=0.6, normal=nrm)
     return m
@@ -245,7 +245,7 @@ def make_items(seed=0):
 # ----------------------------------------------------------------------------- build + render
 def main():
     args = C.parse_args()
-    C.setup_scene(args, look='AgX - Punchy', exposure=0.25)
+    C.setup_scene(args, look='AgX - Punchy', exposure=0.10)
     rng = np.random.default_rng(args.seed)
     mat = peel_material()
     variants, shapes = [], []
@@ -262,7 +262,7 @@ def main():
     C.instance_on_points('heap', variants, heap, attrs={'dark': dark})
     C.dome_base(R_DOME - 0.002, C.simple_material('base', (0.040, 0.012, 0.005), 0.9))
 
-    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.54, edge=0.68, top_margin=0.03)
+    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.54, edge=0.645, top_margin=0.03)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
     C.studio_lights(info, tint=(1.0, 0.90, 0.80), key=0.90, fill=0.95, rim=1.1, world=1.0, key_size=0.9)
 
