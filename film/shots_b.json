@@ -680,6 +680,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.2,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 3.4,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -730,6 +731,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.16,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 5.0,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -780,12 +782,14 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.2,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 3.3,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
      {
-      "mode": "relax"
+      "mode": "relax",
+      "thick": true
      },
      {
       "mode": "rsa",
@@ -830,6 +834,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.16,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 9.0,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -880,6 +885,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.27999999999999997,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 2.8,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -930,12 +936,14 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.24,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 3.8,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
      {
-      "mode": "relax"
+      "mode": "relax",
+      "thick": true
      },
      {
       "mode": "rsa",
@@ -980,6 +988,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.24,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 5.5,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -1030,6 +1039,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.27999999999999997,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 2.8,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -1081,6 +1091,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.14,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 3.4,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -1131,6 +1142,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.14,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 3.3,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -1181,6 +1193,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.1,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 4.6,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -1231,6 +1244,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.1,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 8.0,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -1281,12 +1295,14 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.27999999999999997,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 3.0,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
      {
-      "mode": "relax"
+      "mode": "relax",
+      "thick": true
      },
      {
       "mode": "rsa",
@@ -1331,12 +1347,14 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.27999999999999997,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 3.0,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
      {
-      "mode": "relax"
+      "mode": "relax",
+      "thick": true
      },
      {
       "mode": "rsa",
@@ -1381,6 +1399,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.24,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 5.0,
     "edge_tol": 0.12,
     "engine": "packed",
@@ -1431,6 +1450,7 @@
     "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.27999999999999997,
     "strays": 0.008,
+    "stray_reach": 2.5,
     "stroke_items": 2.6,
     "edge_tol": 0.12,
     "engine": "packed",

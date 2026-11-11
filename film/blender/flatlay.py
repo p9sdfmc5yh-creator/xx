@@ -1001,7 +1001,7 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
                 area = float(mask.sum()) / px_per_m ** 2
                 # thick items (berries, nuts, whole fruits) cannot shingle: they must end up side by side,
                 # flat ones (slices, leaves, seeds lying flat) may overlap a little
-                thick = S.T / max(S.Wd, 1e-9) > 0.40
+                thick = bool(ps.get('thick', False))               # set per shot (big whole fruits / nuts / quills)
                 # (thrown at a density the relaxation can resolve without overlaps: discs jam at ~0.84)
                 c = throw(int(float(ps.get('pack', 0.76 if thick else 0.90)) * area / foot))
                 c = relax_pack(c, signed, rng, iters=int(ps.get('iters', 220 if thick else 140)), tol=tol_px / px_per_m,

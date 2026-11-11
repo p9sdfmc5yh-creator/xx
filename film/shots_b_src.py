@@ -176,14 +176,14 @@ GLYPHS = [
 # (ONE clean layer + a few on top: a second layer of whole fruits only blurs the strokes), 'flat' = slices / leaves
 PASSES = {
  'seed': [dict(mode='relax'), dict(mode='rsa', inset=0.9, k=0.92, fill=0.55)],
- 'ball': [dict(mode='relax'), dict(mode='rsa', inset=1.0, k=0.92, fill=0.12)],
+ 'ball': [dict(mode='relax', thick=True), dict(mode='rsa', inset=1.0, k=0.92, fill=0.12)],
  'flat': [dict(mode='relax'), dict(mode='rsa', inset=0.8, k=0.92, fill=0.30)],
 }
 for i, (bid, src, label, ch, col, n, isc, kind) in enumerate(GLYPHS):
     wd = SIZE[src][1] * isc
     thin = THIN_CH[ch] + (0.04 if wd > 12 else 0.0)                  # big items: thinner strokes, wider counters
     wm = round(n * wd * 1e-3 / (GLYPH_K * (GLYPH_H / 0.72) * (1.0 - thin) * 0.85), 3)      # nominal only
-    P = dict(centre=[0.50, 0.46], height=GLYPH_H, font=FONT, thin=thin, strays=0.008, stroke_items=n, edge_tol=0.12,
+    P = dict(centre=[0.50, 0.46], height=GLYPH_H, font=FONT, thin=thin, strays=0.008, stray_reach=2.5, stroke_items=n, edge_tol=0.12,
              engine='packed', passes=PASSES[kind])
     sc = dict(
         id='%s_%s' % (bid, src.split('_')[1]), start=608 + 8 * i, end=616 + 8 * i, layout='glyph', text=ch, label=label,

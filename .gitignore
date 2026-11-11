@@ -9,3 +9,5 @@ film/renders/*.exr
 film/out/*.mp4
 film/renders_hd/*.png
 film/renders_hd/*.npy
+film/renders_b/*.png
+film/renders_b/*.npy
