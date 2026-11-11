@@ -27,7 +27,7 @@ N_VARIANTS = 10
 def cassia_arrays(seed, nu=170, nv=168):
     """One cassia seed (long axis X, ridges on +-Z, pale lines on the +-Y faces)."""
     rng = np.random.default_rng(6500 + seed)
-    p_r, p_x = rng.uniform(0.26, 0.36), rng.uniform(0.55, 0.68)
+    p_r, p_x = rng.uniform(0.36, 0.48), rng.uniform(0.66, 0.78)       # rod with convex, rounded ends
     d, T, PH = S.sphere_dirs(nu, nv, t=S.profile_t(nu, lambda t: -1.8 * np.sign(np.cos(t)) * np.abs(np.cos(t)) ** p_x,
                                                    lambda t: np.sin(t) ** p_r))
     dx = d[..., 0]
@@ -105,7 +105,7 @@ def cassia_material():
     nrm = m.micro_bump(scale=11000, strength=0.3, distance=0.000007, vector=P, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.52, specular=0.50,
           sss=0.10, sss_radius=(1.0, 0.5, 0.2), sss_scale=0.0003,
-          coat=m.mixf(0.30, 0.0, ln), coat_roughness=0.13, normal=nrm)
+          coat=m.mixf(0.16, 0.0, ln), coat_roughness=0.20, normal=nrm)
     return m
 
 

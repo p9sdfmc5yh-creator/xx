@@ -54,8 +54,8 @@ def vein_field(r, phi):
     out = None
     for kk in (k0, k0 + side):
         A = kk * w + (_h(kk, 1.0) - 0.5) * 0.22 * w
-        A = A + w * (0.035 * np.sin(r * (2 * math.pi / 0.085) + 6.283 * _h(kk, 5.0))
-                     + 0.016 * np.sin(r * (2 * math.pi / 0.031) + 6.283 * _h(kk, 6.0)))
+        A = A + w * (0.014 * np.sin(r * (2 * math.pi / 0.120) + 6.283 * _h(kk, 5.0))
+                     + 0.005 * np.sin(r * (2 * math.pi / 0.041) + 6.283 * _h(kk, 6.0)))
         a = phi - A
         S1 = _fork(r, R_LEAF * (0.42 + 0.17 * _h(kk, 2.0)), 0.22 * R_LEAF)
         s1 = np.where(a >= 0, 1.0, -1.0)
@@ -67,7 +67,7 @@ def vein_field(r, phi):
         s3 = np.where(a >= 0, 1.0, -1.0)
         a = a - s3 * (w / 16) * S3
         d = r * np.abs(a)
-        hw = 0.00092 * (1 - 0.30 * r / R_LEAF) * (1 - 0.42 * S1) * (1 - 0.36 * S2) * (1 - 0.30 * S3)
+        hw = 0.00074 * (1 - 0.22 * r / R_LEAF) * (1 - 0.30 * S1) * (1 - 0.28 * S2) * (1 - 0.24 * S3)
         if out is None:
             out = [d, hw]
         else:
@@ -79,9 +79,9 @@ def vein_field(r, phi):
 def _rim_radius(phi):
     """Leaf outline: almost a circle, slightly lobed, finely irregular, two small nicks."""
     arc = phi * R_LEAF
-    rr = R_LEAF * (1.0 + 0.0045 * np.sin(arc * (2 * math.pi / 0.071) + 0.7) + 0.0022 * np.sin(arc * (2 * math.pi / 0.023) + 2.1)
+    rr = R_LEAF * (1.0 + 0.0040 * np.sin(arc * (2 * math.pi / 0.090) + 0.7) + 0.0012 * np.sin(arc * (2 * math.pi / 0.031) + 2.1)
                    + 0.0007 * np.sin(arc * (2 * math.pi / 0.0061) + 4.0) + 0.0004 * np.sin(arc * (2 * math.pi / 0.0027) + 1.0))
-    for a0, depth, wid in ((-0.031, 0.0034, 0.0016), (0.058, 0.0022, 0.0011)):
+    for a0, depth, wid in ((-0.047, 0.0026, 0.0020), (0.064, 0.0018, 0.0016)):
         rr = rr - depth * np.exp(-((arc - a0) / wid) ** 2)
     return rr
 
@@ -154,9 +154,9 @@ def leaf_material(tex_path=None, dried=False):
         col = m.mix(col, (0.090, 0.060, 0.020), m.map_range(n_mid, 0.55, 0.80, 0.0, 0.6, smooth=True))
         vcol, acol, bcol = (0.36, 0.30, 0.11), (0.20, 0.18, 0.06), (0.19, 0.17, 0.05)
     else:
-        col = m.mix((0.022, 0.092, 0.058), (0.050, 0.150, 0.058), m.map_range(n_big, 0.28, 0.72, smooth=True))   # blue-green .. mid green
+        col = m.mix((0.014, 0.068, 0.040), (0.034, 0.112, 0.040), m.map_range(n_big, 0.28, 0.72, smooth=True))   # blue-green .. mid green
         col = m.hsv(col, 0.5, 1.0, m.map_range(n_mid, 0.25, 0.75, 0.84, 1.14))
-        vcol, acol, bcol = (0.235, 0.36, 0.125), (0.075, 0.185, 0.075), (0.070, 0.175, 0.068)
+        vcol, acol, bcol = (0.185, 0.30, 0.095), (0.050, 0.135, 0.052), (0.046, 0.128, 0.047)
     col = m.mix(col, bcol, m.math('MULTIPLY', broad, 0.55))
     col = m.mix(col, acol, m.math('ADD', m.math('MULTIPLY', are, 0.40), m.math('MULTIPLY', are2, 0.12)))
     vmask = m.map_range(vein, 0.18, 0.75, 0.0, 1.0, smooth=True)
@@ -168,14 +168,14 @@ def leaf_material(tex_path=None, dried=False):
     col = m.mix(col, m.mix((0.115, 0.215, 0.115), (0.33, 0.43, 0.20), vmask), back)                # paler underside
     rough = m.map_range(n_f, 0.3, 0.7, 0.74, 0.92)
     rough = m.mixf(rough, 0.48, m.math('MULTIPLY', vmask, 0.7))
-    nrm = m.bump(vein, strength=0.9, distance=0.00022)
+    nrm = m.bump(vein, strength=0.55, distance=0.00012)
     nrm = m.bump(are, strength=0.5, distance=0.00005, normal=nrm)
     nrm = m.bump(n_mid, strength=0.25, distance=0.00030, normal=nrm)
     nrm = m.micro_bump(scale=9000, strength=0.55, distance=0.000022, vector=lp, normal=nrm)        # papillae
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.22, sss=0.20, sss_radius=(0.35, 1.0, 0.25),
-          sss_scale=0.0004, sheen=0.0 if dried else 0.55, sheen_roughness=0.45, normal=nrm)
+          sss_scale=0.0004, sheen=0.0 if dried else 0.22, sheen_roughness=0.5, normal=nrm)
     try:
-        m.set(**{'Sheen Tint': (0.72, 0.90, 0.95)})                                                # waxy bloom
+        m.set(**{'Sheen Tint': (0.55, 0.85, 0.80)})                                                # waxy bloom
     except Exception:
         pass
     # thin-leaf translucency: back-lit rim ruffles glow yellow-green
@@ -237,7 +237,7 @@ def add_droplets(pos, nrm, h, X, Y, sol, rng, caustics):
     xmin, xmax, ymin, ymax = sol['patch']
     water = water_material(shadow_transparent=not caustics)
     px, py = pos[:, 0], pos[:, 1]
-    zone = (np.abs(px) < 0.30 * (xmax - xmin)) & (py > ymin + 0.30 * (Y_RIM0 - ymin)) & (py < Y_RIM0 - 0.022)
+    zone = (np.abs(px) < 0.27 * (xmax - xmin)) & (py > ymin + 0.30 * (Y_RIM0 - ymin)) & (py < Y_RIM0 - 0.050)
     idx = np.flatnonzero(zone)
     idx = idx[rng.choice(len(idx), size=min(60000, len(idx)), replace=False)]
     order = idx[np.argsort(h[idx])]
@@ -348,7 +348,7 @@ def main():
     hi = sc.render.resolution_x > 2000
     n_s, n_t = (1500, 1400) if hi else (1000, 900)
     tw, thh = (6144, 4096) if hi else (4096, 2560)
-    tex = os.path.join(TMP, 'veins_v3_%dx%d.png' % (tw, thh))
+    tex = os.path.join(TMP, 'veins_v4_%dx%d.png' % (tw, thh))
     if not os.path.exists(tex):
         make_vein_texture(tex, fan, tw, thh)
     gs, gt = np.meshgrid(np.linspace(-1, 1, n_s), np.linspace(0, 1, n_t))
@@ -360,13 +360,13 @@ def main():
     nrm = np.stack([np.sin(th) * X / rho, np.sin(th) * Y / rho, np.cos(th)], -1)
     d, hw = vein_field(r, phi)
     P3 = np.stack([X, Y, np.zeros_like(X)], -1)
-    und = 0.0020 * C.fbm3(P3 * 8.0 + 1.3, 3, seed=args.seed + 1) + 0.0007 * C.fbm3(P3 * 30.0, 2, seed=args.seed + 2)
+    und = 0.0024 * C.fbm3(P3 * 7.0 + 1.3, 2, seed=args.seed + 1) + 0.0005 * C.fbm3(P3 * 26.0, 2, seed=args.seed + 2)
     edge = C.smoothstep(0.80, 1.0, t)
     arc = phi * R_LEAF
-    ruf = (0.0026 * np.sin(arc * (2 * math.pi / 0.056) + 0.6 + 2.0 * np.sin(arc * (2 * math.pi / 0.21)))
-           + 0.0009 * np.sin(arc * (2 * math.pi / 0.019) + 1.9)) * edge ** 2 - 0.0012 * edge ** 2
+    ruf = (0.0021 * np.sin(arc * (2 * math.pi / 0.082) + 0.6 + 1.3 * np.sin(arc * (2 * math.pi / 0.23)))
+           + 0.0005 * np.sin(arc * (2 * math.pi / 0.033) + 1.9)) * edge ** 2 - 0.0010 * edge ** 2
     broad = np.exp(-(d / (6.0 * hw + 0.0016)) ** 2)
-    h = und + ruf + 0.00075 * (broad - 0.45) + 0.00014 * np.exp(-(d / hw) ** 2)
+    h = und + ruf + 0.00040 * (broad - 0.45) + 0.00007 * np.exp(-(d / hw) ** 2)
     pos = nrm * (R + h)[:, None]
     rim_d = (1.0 - t) * (R_LEAF - fan.r_min)
     attrs = dict(lp=P3, rimk=(1.0 - C.smoothstep(0.0003, 0.0045, rim_d)).astype(np.float32))
@@ -377,7 +377,34 @@ def main():
 
     cam, info = C.planet_camera(R + 0.0008, lens_mm=85, apex=APEX, edge=EDGE)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    L = C.studio_lights(info, tint=(0.86, 1.0, 0.93), key=0.95, fill=0.70, rim=1.1, world=1.2, key_size=0.9)
+    L = C.studio_lights(info, tint=(0.86, 1.0, 0.93), key=0.80, fill=0.55, rim=1.0, world=0.0, key_size=0.9, top=0.25)
+    # Sky for the water only: a bead is a lens - against a black world it turns into a black marble.
+    # Glossy / transmission rays see a soft bright overcast dome, diffuse shading sees a dim one.
+    wd = bpy.data.worlds.new('pond_sky')
+    wd.use_nodes = True
+    wn = wd.node_tree
+    wn.nodes.clear()
+    wo = wn.nodes.new('ShaderNodeOutputWorld')
+    bg = wn.nodes.new('ShaderNodeBackground')
+    tc = wn.nodes.new('ShaderNodeTexCoord')
+    sx = wn.nodes.new('ShaderNodeSeparateXYZ')
+    rmp = wn.nodes.new('ShaderNodeValToRGB')
+    rmp.color_ramp.elements[0].position, rmp.color_ramp.elements[0].color = 0.40, (0.020, 0.040, 0.030, 1)
+    rmp.color_ramp.elements[1].position, rmp.color_ramp.elements[1].color = 0.95, (0.50, 0.66, 0.60, 1)
+    mr = wn.nodes.new('ShaderNodeMapRange')
+    mr.inputs[1].default_value, mr.inputs[2].default_value = -1.0, 1.0
+    lpn = wn.nodes.new('ShaderNodeLightPath')
+    mth = wn.nodes.new('ShaderNodeMath')
+    mth.operation = 'MULTIPLY_ADD'
+    mth.inputs[1].default_value, mth.inputs[2].default_value = -0.85, 1.0      # diffuse rays: 15 %
+    wn.links.new(tc.outputs['Generated'], sx.inputs[0])
+    wn.links.new(sx.outputs[2], mr.inputs[0])
+    wn.links.new(mr.outputs[0], rmp.inputs[0])
+    wn.links.new(rmp.outputs[0], bg.inputs['Color'])
+    wn.links.new(lpn.outputs['Is Diffuse Ray'], mth.inputs[0])
+    wn.links.new(mth.outputs[0], bg.inputs['Strength'])
+    wn.links.new(bg.outputs[0], wo.inputs['Surface'])
+    sc.world = wd
     key = L.get('key') if isinstance(L, dict) else bpy.data.objects.get('key')
     beads = add_droplets(pos, nrm, h, X, Y, sol, rng, caustics=True)
     if not (key is not None and enable_caustics(key, beads, leaf)):

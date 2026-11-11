@@ -72,7 +72,7 @@ def _flow_dn(u, v, path):
     return best
 
 
-def comb_fields(u, v, seed=0, flow=None, cap_at=None, empty_at=None, cap_frac=0.20, empty_frac=0.09):
+def comb_fields(u, v, seed=0, flow=None, cap_at=None, empty_at=None, cap_frac=0.20, empty_frac=0.09, thr=None):
     """Wax and honey height fields over the comb plane.  u, v: (N,) metres.
     flow: None or [(x, y, half_width), ...] poly-line of a honey tongue; cap_at / empty_at: (x, y, r)
     where a patch of capped / emptied cells is wanted.  -> dict(zw, zh, attrs=dict(cap, rim, dep, wet))"""
@@ -93,8 +93,10 @@ def comb_fields(u, v, seed=0, flow=None, cap_at=None, empty_at=None, cap_frac=0.
         capn = capn + 1.5 * np.exp(-((X - cap_at[0]) ** 2 + (Y - cap_at[1]) ** 2) / cap_at[2] ** 2)
     if empty_at is not None:
         emn = emn + 1.5 * np.exp(-((X - empty_at[0]) ** 2 + (Y - empty_at[1]) ** 2) / empty_at[2] ** 2)
-    capped = (capn > np.quantile(capn, 1.0 - cap_frac)) | (h1 > 0.972)
-    empty = (~capped) & ((emn > np.quantile(emn, 1.0 - empty_frac)) | (h1 < 0.028))
+    if thr is None:
+        thr = (float(np.quantile(capn, 1.0 - cap_frac)), float(np.quantile(emn, 1.0 - empty_frac)))
+    capped = (capn > thr[0]) | (h1 > 0.972)
+    empty = (~capped) & ((emn > thr[1]) | (h1 < 0.028))
     partial = (~capped) & (~empty) & (h1 < 0.115)
     lvl = np.where(partial, 0.0012 + 0.0026 * h2, 0.00012 + 0.00070 * h2 ** 2)      # honey level below the rim
 
@@ -141,7 +143,15 @@ def comb_fields(u, v, seed=0, flow=None, cap_at=None, empty_at=None, cap_frac=0.
                  dep=np.clip((zr - zw) / DEPTH, 0, 1).astype(np.float32),
                  wet=np.clip(wet, 0, 1).astype(np.float32),
                  crnd=h3.astype(np.float32))
-    return dict(zw=zw, zh=zh, attrs=attrs)
+    return dict(zw=zw, zh=zh, attrs=attrs, thr=thr)
+
+
+def comb_fields_chunked(u, v, nchunk=8, **kw):
+    """comb_fields over a big grid in slices (the numpy noise temporaries are ~0.5 kB per point)."""
+    thr = comb_fields(u[::11], v[::11], **kw)['thr']
+    parts = [comb_fields(uu, vv, thr=thr, **kw) for uu, vv in zip(np.array_split(u, nchunk), np.array_split(v, nchunk))]
+    return dict(zw=np.concatenate([p_['zw'] for p_ in parts]), zh=np.concatenate([p_['zh'] for p_ in parts]),
+                attrs={k: np.concatenate([p_['attrs'][k] for p_ in parts]) for k in parts[0]['attrs']})
 
 
 # ----------------------------------------------------------------------------- 2. materials
@@ -273,7 +283,7 @@ def main():
     sc.cycles.max_bounces = 8
     R = R_DOME
     sol = C.planet_solve(R, lens_mm=85, apex=0.54, edge=0.68)
-    n_max = 1500 if sc.render.resolution_x > 2000 else 1000
+    n_max = 1300 if sc.render.resolution_x > 2000 else 1000
     v0, f, nrm, (ny, nx) = C.patch_grid(sol['patch'], R=R, n_max=n_max)
     # comb plane coordinates (azimuthal equidistant about the pole): no stretching of the lattice
     th = np.arccos(np.clip(v0[:, 2] / R, -1, 1))
@@ -281,8 +291,8 @@ def main():
     u, v = R * th * np.cos(ph), R * th * np.sin(ph)
     flow = [(R * x_, R * y_, R * w_) for x_, y_, w_ in ((-0.21, 0.34, 0.050), (-0.105, 0.085, 0.056), (-0.005, -0.075, 0.064),
                                                          (0.060, -0.195, 0.072), (0.088, -0.262, 0.070))]
-    fld = comb_fields(u, v, seed=args.seed, flow=flow, cap_at=(0.235 * R, -0.10 * R, 0.10 * R),
-                      empty_at=(-0.22 * R, -0.21 * R, 0.055 * R))
+    fld = comb_fields_chunked(u, v, seed=args.seed, flow=flow, cap_at=(0.235 * R, -0.10 * R, 0.10 * R),
+                              empty_at=(-0.22 * R, -0.21 * R, 0.055 * R))
     print('[comb] patch %s  grid %dx%d  cell %.3f mm' % (np.round(sol['patch'], 3), nx, ny, 1000 * (sol['patch'][1] - sol['patch'][0]) / (nx - 1)))
     C.mesh_from_arrays('comb', nrm * (R + fld['zw'])[:, None], f, attrs=fld['attrs'], material=wax_material())
     used, fh = _honey_faces(f, fld['zw'], fld['zh'])

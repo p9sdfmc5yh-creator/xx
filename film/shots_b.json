@@ -101,7 +101,7 @@
      48
     ]
    },
-   "frame_width_m": 0.3,
+   "frame_width_m": 0.46,
    "item_mm": [
     3.0,
     6.0
@@ -119,7 +119,7 @@
      0.72
     ],
     "diameter": 0.5,
-    "dot": 0.17,
+    "dot": 0.2,
     "layers": 3
    },
    "note": "yin = black sesame, yang = white coix seed, two opposite eyes; text zone above y 0.45 H is bare slate"

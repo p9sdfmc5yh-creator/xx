@@ -10,7 +10,7 @@ Checks (exit code 0 only if all pass)
   2. audio     : md5 of the audio packets (stream copy) identical to the original mp4's audio
   3. cuts      : hard cuts (frame-difference spikes) on exactly the same frame indices as the
                  original; expected 192, 256, 320, 384, 448, every 16 frames to 608, every
-                 8 frames to 736
+                 8 frames to 736 (+ the original's own glow steps at 752-754, see KNOWN_STEPS)
   4. sheet     : original | new side by side, one mid frame per scene (written, not judged)
 """
 import argparse
@@ -29,6 +29,9 @@ _ORIG = glob.glob('/root/.claude/uploads/7e18b1fa-923d-5a7b-99f5-35aa0b46033b/ce
 ORIG = os.environ.get('YAOSHI_ORIG', _ORIG[0] if _ORIG else '')
 NFRAMES, FPS, DUR = 1248, 30, 41.6
 EXPECTED_CUTS = [192, 256, 320, 384, 448] + list(range(464, 609, 16)) + list(range(616, 737, 8))
+# not edits: the horizon glow of the outro card switches on in three steps (frames 752-754) in the
+# ORIGINAL film; the rebuilt backdrop reproduces it, so the detector fires there in both films.
+KNOWN_STEPS = [752, 753, 754]
 
 
 def probe(path):
@@ -139,7 +142,8 @@ def main(argv=None):
                                              extra=sorted(set(co) - set(EXPECTED_CUTS))))
     ok['decoded_1248'] = len(fn) == NFRAMES and len(fo) == NFRAMES
     ok['cuts_match_original'] = cn == co
-    ok['cuts_match_expected'] = cn == EXPECTED_CUTS
+    ok['cuts_match_expected'] = sorted(set(cn) - set(KNOWN_STEPS)) == EXPECTED_CUTS
+    res['cuts']['known_non_cut_steps'] = KNOWN_STEPS
     if a.sheet:
         write_sheet(a.sheet, fo, fn, tw)
         res['sheet'] = a.sheet

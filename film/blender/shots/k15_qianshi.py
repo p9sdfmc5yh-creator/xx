@@ -49,7 +49,7 @@ def qian_arrays(seed, kind='whole', nu=190, nv=260):
     Tb = rng.uniform(1.00, 1.30)
     en = 0.20 * C.fbm3(d * 2.6 + off + 11.0, 3, seed=seed + 5) + 0.05 * C.fbm3(d * 9.0 + off, 2, seed=seed + 6)
     coat = C.smoothstep(Tb - 0.025, Tb + 0.025, T + en)
-    chip = C.smoothstep(0.955, 0.985, S.norm01(C.fbm3(d * 5.0 + off + 40.0, 3, seed=seed + 7)))
+    chip = C.smoothstep(0.46, 0.54, C.fbm3(d * 3.2 + off + 40.0, 3, seed=seed + 7))      # a few abraded patches
     coat = coat * (1.0 - chip)
     r = r + 0.016 * coat
     # white end: slightly flattened, small dimple (hilum) at the pole
@@ -87,10 +87,11 @@ def qian_material():
     cc = m.ramp(t1, [(0.00, (0.250, 0.078, 0.042)), (0.35, (0.165, 0.044, 0.029)),
                      (0.80, (0.095, 0.025, 0.022)), (1.00, (0.056, 0.016, 0.018))])
     cc = m.hsv(cc, 0.5, 1.0, m.map_range(A('mott'), 0, 1, 0.72, 1.22))
-    Pw = m.mix(P, m.noise(scale=450, detail=2, vector=P, color=True), 0.0007, blend='ADD')
-    ve = m.voronoi(scale=950, feature='DISTANCE_TO_EDGE', vector=Pw)
-    vein = m.map_range(ve, 0.0, 0.075, 1.0, 0.0, smooth=True)
-    cc = m.mix(cc, (0.034, 0.010, 0.012), m.math('MULTIPLY', vein, 0.50))
+    Pw = m.mix(P, m.noise(scale=380, detail=3, vector=P, color=True), 0.0016, blend='ADD')
+    ve = m.voronoi(scale=820, feature='DISTANCE_TO_EDGE', vector=Pw)
+    vein = m.math('MULTIPLY', m.map_range(ve, 0.0, 0.050, 1.0, 0.0, smooth=True),
+                  m.map_range(m.noise(scale=260, detail=2, vector=P), 0.35, 0.65))        # the net fades in and out
+    cc = m.mix(cc, (0.040, 0.012, 0.013), m.math('MULTIPLY', vein, 0.30))
     dn = m.noise(scale=1100, detail=4, roughness=0.60, vector=P)
     dust = m.math('MULTIPLY', m.map_range(dn, 0.46, 0.80), m.map_range(t2, 0, 1, 0.10, 0.90))
     cc = m.mix(cc, (0.360, 0.220, 0.170), m.math('MULTIPLY', dust, 0.40))
@@ -107,7 +108,7 @@ def qian_material():
     rough = m.mixf(0.72, m.map_range(A('rvar'), 0, 1, 0.50, 0.72), coat)
     rough = m.mixf(rough, 0.86, m.math('MULTIPLY', dust, coat))
     rough = m.mixf(rough, 0.93, frac)
-    nrm = m.bump(vein, strength=m.math('MULTIPLY', coat, 0.5), distance=0.00004)
+    nrm = m.bump(vein, strength=m.math('MULTIPLY', coat, 0.25), distance=0.00003)
     mic = m.noise(scale=4200, detail=4, roughness=0.68, vector=P)
     nrm = m.bump(mic, strength=m.mixf(0.6, 1.0, frac), distance=m.mixf(0.000025, 0.00010, frac), normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.50, specular=m.mixf(0.25, 0.38, coat),
