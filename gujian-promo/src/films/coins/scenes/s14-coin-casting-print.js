@@ -478,17 +478,16 @@ function platform(P, a) {
   const row = (fn, n = 170) => { const out = []; for (let i = 0; i <= n; i++) { const th = lerp(-s, s, i / n), q = a.pt(th, fn(th * a.R)); out.push([q.x, q.y]); } return out; };
   const top = row(() => 0);
   const lowFn = (u) => -88 + 1.4 * NZ.n2(u / 260, 12.1);
-  const end = row((u) => -95.5 + 3 * NZ.n2(u / 150, 5.5) + 1.5 * NZ.n2(u / 43, 9.1));
   const face = [...top, ...row(lowFn).reverse()];
-  // the colour was not laid quite in register with the line: it runs a little past the lower one
-  g.save(); g.filter = 'blur(1.2px)'; P.fill([...row(() => -80), ...end.reverse()], L.mix(C.b2, C.br, 0.3), 0.7, true); g.restore();
+  // the blue stops clean at its lower line, as it does at the upper one
   P.fill(face, C.b3, 1, true);
   // 分染: deepest under the top line, thinning toward the foot
   P.shade(face, C.b4, 13, 0.95, 40, (g2) => a.trace(g2, -8, -s, s));
   P.shade(face, C.b5, 6, 0.4, 10, (g2) => a.trace(g2, -3, -s, s));
   P.shade(face, C.b2, 12, 0.3, 26, (g2) => a.trace(g2, -76, -s, s));
   P.band = face;
-  P.line(row(lowFn, 320), 2.6, { raw: true, head: 0, tail: 0, wob: 0.32, turn: 0 });
+  // the lower line of the coping: the same weight and the same breathing pressure as the upper one
+  P.line(row(lowFn, 440), 4.0, { raw: true, head: 0, tail: 0, wob: 0.26, turn: 0, col: L.mix(C.ink, C.ink2, 0.3) });
   P.line(L.arcPts(a, -2.0, -s, s, 440), 4.0, { raw: true, head: 0, tail: 0, wob: 0.26, turn: 0 });
 }
 

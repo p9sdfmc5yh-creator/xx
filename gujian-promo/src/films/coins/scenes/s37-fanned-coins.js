@@ -28,6 +28,16 @@ function makeCoins(a, nA, nB) {
   const r = L.rng('s37-fan');
   const uMax = a.span(PAD + 300) * a.R;
   const out = [];
+  // a blade's edges are never ruler-straight: it swells and thins a little, wavers, and is nicked where the arris was knocked
+  const tables = (c) => {
+    for (let i = 0; i < ND; i++) {
+      const d = i - 8, sw = 1.1 * nA.n2(d * 0.004 + c.s2, 9.1);
+      c.wL[i] = sw + 0.9 * nA.n2(d * 0.013 + c.s1, 3.7 + c.s2) - 1.8 * sstep(0.7, 0.92, nB.n2(d * 0.045 + c.s2, 3.7 + c.s1));
+      c.wR[i] = sw + 0.9 * nA.n2(d * 0.013 + c.s1, 8.3 + c.s2) - 1.8 * sstep(0.7, 0.92, nB.n2(d * 0.045 + c.s2, 8.3 + c.s1));
+      c.sp[i] = 0.25 + 0.75 * sstep(-0.2, 0.45, nB.n2(d * 0.04 + c.s1, c.s2));     // the arris highlight comes and goes
+    }
+    for (let i = 0; i < 128; i++) c.nk[i] = 0.9 * nB.n2((i - 64) * 0.3 + c.s1, c.s2);   // the tip is not cut clean either
+  };
   let u = -uMax;
   while (u < uMax) {
     const roll = r(), gr = r();
@@ -56,16 +66,37 @@ function makeCoins(a, nA, nB) {
       s1: r.range(0, 500), s2: r.range(0, 500),
       wL: new Float32Array(ND), wR: new Float32Array(ND), sp: new Float32Array(ND), nk: new Float32Array(128),
     };
-    // a blade's edges are never ruler-straight: it swells and thins a little, wavers, and is nicked where the arris was knocked
-    for (let i = 0; i < ND; i++) {
-      const d = i - 8, sw = 1.1 * nA.n2(d * 0.004 + c.s2, 9.1);
-      c.wL[i] = sw + 0.9 * nA.n2(d * 0.013 + c.s1, 3.7 + c.s2) - 1.8 * sstep(0.7, 0.92, nB.n2(d * 0.045 + c.s2, 3.7 + c.s1));
-      c.wR[i] = sw + 0.9 * nA.n2(d * 0.013 + c.s1, 8.3 + c.s2) - 1.8 * sstep(0.7, 0.92, nB.n2(d * 0.045 + c.s2, 8.3 + c.s1));
-      c.sp[i] = 0.25 + 0.75 * sstep(-0.2, 0.45, nB.n2(d * 0.04 + c.s1, c.s2));     // the arris highlight comes and goes
-    }
-    for (let i = 0; i < 128; i++) c.nk[i] = 0.9 * nB.n2((i - 64) * 0.3 + c.s1, c.s2);   // the tip is not cut clean either
+    tables(c);
     out.push(c);
     u += t + gap;
+  }
+  // the widest parted slot just left of the crest had neither neighbour leaning into it: a black crack right under the
+  // tagline. One more coin stands in it, leaving hairline seams like the touching coins elsewhere; nothing else moves.
+  let gi = -1, gw = 18;
+  for (let i = 0; i + 1 < out.length; i++) {
+    const uL = out[i].th * a.R + out[i].half, uR = out[i + 1].th * a.R - out[i + 1].half, um = (uL + uR) / 2;
+    if (um > -115 && um < -30 && uR - uL > gw) { gi = i; gw = uR - uL; }
+  }
+  if (gi >= 0) {
+    const A = out[gi], B = out[gi + 1], r2 = L.rng('s37-fill');
+    const sl = r2.range(2.5, 4), sr = r2.range(2.5, 4), uL = A.th * a.R + A.half + sl, t = gw - sl - sr;
+    const c = {
+      th: (uL + t / 2) / a.R, t, half: t / 2, o: r2.gauss() * 1.2,
+      lean: (A.lean + B.lean) / 2,
+      ra: (t / 2) * r2.range(0.3, 0.5), rt: r2.range(2.5, 4.5),
+      slant: r2.gauss() * 0.04,
+      crown: r2.range(0.15, 0.3), crownPx: r2.range(0.3, 1.2),
+      tilt: -0.06 + r2.gauss() * 0.04, pitch: r2.gauss() * 0.06,
+      tone: r2.range(0.96, 1.08), hue: r2.range(-1, 1),
+      rimW: r2.range(4.5, 7), rimI: r2.range(1.1, 1.4),
+      spec: r2.range(0.5, 1),
+      zh: A.zh,
+      k: r2.sign() * r2.range(0.05, 0.12),
+      s1: r2.range(0, 500), s2: r2.range(0, 500),
+      wL: new Float32Array(ND), wR: new Float32Array(ND), sp: new Float32Array(ND), nk: new Float32Array(128),
+    };
+    tables(c);
+    out.splice(gi + 1, 0, c);
   }
   return out;
 }

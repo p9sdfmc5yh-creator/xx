@@ -112,7 +112,7 @@ function build(env) {
   const colOff = ((Math.round((cx - CELL * Q / 2 + PAD) / Q) % CELL) + CELL) % CELL;
   const rowOff = ((Math.round((a.crestY - 12 + PAD) / Q) % CELL) + CELL) % CELL;
   const CW = Math.ceil(LW / CELL) + 2, CH = Math.ceil(LH / CELL) + 2;
-  const cellV = new Float32Array(CW * CH);
+  const cellV = new Float32Array(CW * CH), cellD = new Float32Array(CW * CH);   // cellD: uncapped, for dimming the lines
   for (let cj = 0; cj < CH; cj++) for (let ci = 0; ci < CW; ci++) {
     const xc = -PAD + ((ci - 1) * CELL + colOff + CELL / 2) * Q, yc = -PAD + ((cj - 1) * CELL + rowOff + CELL / 2) * Q;
     const dOut = a.drAt(xc, yc), ax = Math.abs(xc - cx);
@@ -129,6 +129,11 @@ function build(env) {
       if (v < 0.04) v = 0;
       if (v > 0.318) v = 0.318;                                   // never past the magenta of the rim into its pale core
     }
+    cellD[cj * CW + ci] = v;
+    // the ring of blocks that touches the rim stays violet, well under the rim's magenta: the rim keeps its own
+    // smooth round outline and the blocks read as a quantised glow behind it, not as flat steps cut into its edge
+    const capV = 0.115 + 0.145 * sstep(0, 80, dOut);
+    if (v > capV) v = capV;
     cellV[cj * CW + ci] = v;
   }
 
@@ -170,7 +175,7 @@ function build(env) {
           if (v > best) { best = v; bq = st.n; }
         }
         // the halo blocks stand in front of the lines: a line dims where a block covers it instead of burning out to white
-        ST[k] = best * L.lerp(0.74, 1, sstep(-PAD, 300, y)) * (1 - cov) * (1 - 0.72 * Math.min(1, HV[k] / 0.26)); SID[k] = bq;
+        ST[k] = best * L.lerp(0.74, 1, sstep(-PAD, 300, y)) * (1 - cov) * (1 - 0.72 * Math.min(1, cellD[c] / 0.26)); SID[k] = bq;
       }
     }
   }

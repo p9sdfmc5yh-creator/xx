@@ -458,7 +458,7 @@ function renderString(arc) {
         if (g > 30) al *= 1 - sstep(30, 58, g) * (1 - sstep(70, 250, d));
         if (al > 0.003) {
           const o = nf * 8; FT[nf] = T_SEAM; FK[nf] = ci; FZ[nf] = -1e6; FC[nf] = al; FP[o] = g; FP[o + 1] = dq;
-          const zz = 2 * c.a * dp - dp * dp; FP[o + 2] = g < 30 && zz > 0 ? Math.sqrt(zz) : 0; nf++;
+          const zz = 2 * c.a * dp - dp * dp; FP[o + 2] = zz > 0 ? Math.sqrt(zz) * (1 - sstep(22, 54, g)) : 0; nf++;   // (no hard switch of focus where a gap opens past a fixed width — it drew a level line across the gap)
         }
       }
 
@@ -660,6 +660,10 @@ async function buildString(env) {
   for (let i = 0; i < N; i++) if (ha[i]) { const o = i * 4; hd[o] = 255; hd[o + 1] = 232; hd[o + 2] = 170; hd[o + 3] = ha[i]; }
   const hot0 = fromData(hd), hot = L.blurred(hot0, 5), hg = hot.getContext('2d');
   hg.globalCompositeOperation = 'lighter'; hg.drawImage(hot0, 0, 0);
+  // the glint layer is stamped box by box in draw(): let it die away along the arc well inside every box, so no box edge can show
+  hg.globalCompositeOperation = 'destination-in';
+  hg.fillStyle = L.radial(hg, ax, ay, R - 150, R + 20, [[0, 'rgba(0,0,0,0)'], [0.36, 'rgba(0,0,0,1)'], [0.9, 'rgba(0,0,0,1)'], [1, 'rgba(0,0,0,0)']]);
+  hg.fillRect(0, 0, LW, LH);
   const [layerBmp, hotBmp] = await Promise.all([createImageBitmap(layer), createImageBitmap(hot)]);
   return { layer: layerBmp, hot: hotBmp, boxes: out.boxes, X0, Y0 };
 }
@@ -747,8 +751,8 @@ export default {
     });
     // … and a sheen follows the light over the body
     ctx.save(); a.clipBelow(ctx, 4);
-    const sh = a.pt(sw / a.R, -150);
-    L.glow(ctx, sh.x, sh.y, 420, '#ffb648', 0.08);
+    const sh = a.pt(sw / a.R, -240);                       // kept wholly under the limb: it fades out before the arc, so the clip never cuts a level edge into the notches
+    L.glow(ctx, sh.x, sh.y, 236, '#ffb648', 0.09);
     ctx.restore();
   },
 };

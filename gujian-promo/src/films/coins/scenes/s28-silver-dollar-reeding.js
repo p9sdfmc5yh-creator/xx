@@ -48,7 +48,10 @@ function makeTeeth(seed, pitch, uMin, uMax) {
   for (let i = 0; i < n; i++) { iw[i] = 1 / (b[i + 1] - b[i]); hf[i] = prm[i][0]; ga[i] = prm[i][1]; gb[i] = prm[i][2]; sk[i] = prm[i][3] / (Math.PI * 2); tal[i] = prm[i][4]; }
   const ns = Math.ceil((uMax - uMin) * 2) + 4, idx = new Int16Array(ns);
   for (let s = 0, t = 0; s < ns; s++) { const x = uMin + s * 0.5; while (tb[t + 1] <= x) t++; idx[s] = t; }
-  return { tb, iw, hf, ga, gb, sk, tal, idx, x0: uMin, n };
+  // polished silver: where each reed's mirror streak sits on its crown, how wide and how hot it is, and a glint on the shoulder break
+  const r2 = L.rng(seed + 'spec'), su = new Float32Array(n), sw = new Float32Array(n), si = new Float32Array(n), s2 = new Float32Array(n);
+  for (let i = 0; i < n; i++) { su[i] = r2.range(0.4, 0.57); sw[i] = r2.range(0.03, 0.055); si[i] = r2.range(0.45, 1); s2[i] = r2.chance(0.6) ? r2.range(0.3, 0.7) : 0; }
+  return { tb, iw, hf, ga, gb, sk, tal, idx, x0: uMin, n, su, sw, si, s2 };
 }
 
 function build(env) {
@@ -138,7 +141,7 @@ function build(env) {
 
   _mark('knocks');
   // ── height field + how bright the metal is ──
-  const Hh = new Float32Array(N), Al = new Float32Array(N), Ao = new Float32Array(N);
+  const Hh = new Float32Array(N), Al = new Float32Array(N), Ao = new Float32Array(N), Sp = new Float32Array(N);
   const cLean = COIN.map((c) => c.lean), cVm = COIN.map((c) => c.vm);
   for (let j = 0; j < VH; j++) {
     const V = V0 + j, fy = j / CS, j0c = fy | 0, tyc = fy - j0c;
@@ -171,11 +174,28 @@ function build(env) {
       Hh[k] = C.base + bev + C.th * T.hf[ti] * amp * prof + 1.5 * lump * prof + gr * (0.4 + 0.3 * prof) + 0.35 * streak + kn * (0.35 + 0.65 * prof);
       // black patina lies in the grooves and creeps up the flanks; the crowns are rubbed bright, with grey toning in patches
       const pat = prof * amp + 0.2 * tarn + 0.06 * gr;
-      let al = 0.1 + 0.86 * sstep(0.05, 0.36, pat);
+      let al = 0.1 + 0.86 * sstep(0.05, 0.36 + 0.2 * sstep(0, 0.5, tarn), pat);   // grey-black toning creeps a little further up the flanks in patches
       al *= 1 - 0.3 * sstep(0.08, 0.55, tone + 0.25 * tarn);
       al *= T.tal[ti];
       al *= 0.4 + 0.6 * sstep(0, 10, c === 0 ? dB : Math.min(dT, dB));
       al *= 0.25 + 0.75 * dd[o + 1] / 255;
+      // mirror streaks of polished silver along the crowns: a hot narrow core in a soft skirt, broken along the reed, with the
+      // darker band a mirror shows right beside its highlight; plus a thin glint where the lit shoulder breaks into the crown
+      let sp = 0;
+      if (prof > 0.45) {
+        const q = (u - T.su[ti]) / T.sw[ti];
+        if (q > -3 && q < 5) {
+          const brk = 0.2 + 0.8 * sstep(-0.3, 0.25, nB.n2(U / 400 + ti * 3.7 + c * 50, V / 46 + ti * 1.3));
+          sp = T.si[ti] * (0.3 * Math.exp(-q * q) + 0.7 * Math.exp(-q * q * 3.2)) * brk;
+          const qd = q - 2.2; al *= 1 - 0.3 * T.si[ti] * brk * Math.exp(-qd * qd * 0.8);
+        }
+        if (T.s2[ti] > 0) {
+          const q2 = (u - (T.gb[ti] * 0.5 + 0.015)) / 0.014;
+          if (q2 > -3 && q2 < 3) sp += 0.6 * T.s2[ti] * Math.exp(-q2 * q2) * sstep(-0.2, 0.3, nA.n2(U / 300 + ti * 2.3, V / 30 + 40));
+        }
+        sp *= amp * (dd[o + 1] / 255) * sstep(0.45, 0.75, prof);
+      }
+      Sp[k] = sp;
       Al[k] = al;
       Ao[k] = 0.2 + 0.8 * prof * prof;
     }
@@ -221,7 +241,7 @@ function build(env) {
           if (ndl > 0) {
             let ndh = (-gx * hx - gy * hy + hz) * nl; ndh = ndh > 0 ? ndh : 0;
             const n2 = ndh * ndh, n4 = n2 * n2, n8 = n4 * n4;
-            v += sh * (0.72 * ndl * al + (0.34 * n4 * n2 + 0.9 * n8 * n8 * n8 * n8 * n8) * (0.25 + 0.75 * al));
+            v += sh * (0.72 * ndl * al + (0.34 * n4 * n2 + 0.9 * n8 * n8 * n8 * n8 * n8) * (0.25 + 0.75 * al) + 0.95 * Sp[k] * (ndl < 0.08 ? ndl / 0.08 : 1));
           }
         }
         const nf = (-gx * fT - gy * fB + fN) * nl;

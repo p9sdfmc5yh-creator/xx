@@ -195,8 +195,26 @@ function buildSky(env) {
   const a = env.arc, SH = Math.min(H, Math.ceil(a.yAt(0)) + 44);
   const NL = 2048, lut = new Float32Array(NL * 3), rf = L.makeRamp(SKY.map(([d, c]) => [d / DMAX, c]));
   for (let i = 0; i < NL; i++) { const c = rf(i / (NL - 1)); lut[i * 3] = c[0]; lut[i * 3 + 1] = c[1]; lut[i * 3 + 2] = c[2]; }
+  // the stops are joined by straight segments; far from the glow the iso-distance lines stand almost upright, so every kink in
+  // slope (the 凝夜紫 plateau at 870–960 above all) read as an upright band in the violet sky. Round the far ramp off with a
+  // wide kernel (3 box passes ≈ gaussian, σ ≈ 115 px of distance), faded in beyond the text zone; the hot part stays as it was
+  {
+    const src = lut.slice(), tmp = new Float32Array(NL * 3), RAD = Math.round((NL * 115) / DMAX);
+    const box = (s, dst) => {
+      for (let ch = 0; ch < 3; ch++) {
+        let acc = 0;
+        for (let i = -RAD; i <= RAD; i++) acc += s[Math.min(NL - 1, Math.max(0, i)) * 3 + ch];
+        for (let i = 0; i < NL; i++) { dst[i * 3 + ch] = acc / (2 * RAD + 1); acc += s[Math.min(NL - 1, i + RAD + 1) * 3 + ch] - s[Math.max(0, i - RAD) * 3 + ch]; }
+      }
+    };
+    box(src, tmp); box(tmp, lut); box(lut, tmp);
+    for (let i = 0; i < NL; i++) {
+      const w = sstep(560, 820, (i / (NL - 1)) * DMAX);
+      for (let ch = 0; ch < 3; ch++) lut[i * 3 + ch] = src[i * 3 + ch] + (tmp[i * 3 + ch] - src[i * 3 + ch]) * w;
+    }
+  }
   const gx = GLOW.x, gy = a.yAt(GLOW.x) + GLOW.below;
-  const HX1 = Math.min(W, Math.ceil(gx + 290 * GLOW.stretch)), HY0 = Math.max(0, Math.floor(gy - 320)), HW = HX1, HH = SH - HY0;
+  const HX1 =Math.min(W, Math.ceil(gx + 290 * GLOW.stretch)), HY0 = Math.max(0, Math.floor(gy - 320)), HW = HX1, HH = SH - HY0;
   const img = new ImageData(W, SH), d = img.data, him = new ImageData(HW, HH), hd = him.data;
   let hsh = 0x9e3779b9 | 0;
   for (let y = 0; y < SH; y++) {

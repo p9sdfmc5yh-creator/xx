@@ -238,9 +238,12 @@ function wornPatch(w, h, seed, stretchY = 2.4) {
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const ex = (x - w / 2) / (w / 2), ey = (y - h / 2) / (h / 2);
     const e = 1 - (ex * ex + ey * ey * ey * ey);
-    const n = 0.55 * nz.fbm(x / 46, y / (46 * stretchY), 3) + 0.2 * nz.n2(x / 5, y / 38) + 0.14 * nz.n2(x / 30, y / 4);
-    const m = sstep(0.16, 0.5, e * 0.62 + n);
-    const th = 0.74 + 0.26 * (((x + y) >> 1) % 3 === 0 ? 0.3 : 1) * (0.7 + 0.3 * hash2(x, y));
+    // the outline frays thread by thread: hair-fine streaks (1–2 px = one or two yarns) running far down the warp and
+    // across the weft, so the edge is a fringe of pulled threads rather than a plaid of blocks
+    const warp = nz.n2(x / 1.7, y / 66), weft = nz.n2(x / 60 + 31, y / 1.7 + 17);
+    const n = 0.55 * nz.fbm(x / 46, y / (46 * stretchY), 3) + 0.2 * warp + 0.14 * weft + 0.05 * nz.n2(x / 3.1 + 5, y / 120);
+    const m = sstep(0.13, 0.55, e * 0.62 + n);
+    const th = 0.84 + 0.16 * (0.6 * nz.n2(x / 1.3 + 9, y / 23) + 0.4 * (hash2(x, y) * 2 - 1));
     const o = (y * w + x) * 4;
     d[o] = 254; d[o + 1] = 245; d[o + 2] = 200; d[o + 3] = 255 * m * th;
   }

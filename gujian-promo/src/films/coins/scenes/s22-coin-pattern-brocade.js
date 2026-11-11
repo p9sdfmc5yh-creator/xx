@@ -29,6 +29,7 @@ const PX = 3.0, PY = 4.4;             // warp pitch, weft pitch (px)
 const TILT = -0.05;                   // the brocade was not cut square to its weave
 const EDGE = -13;                     // dr where the woven cloth stops; the fringe above it carries the visual edge onto the arc
 const STITCH = -48;                   // dr of the row of running stitches
+const HEM = STITCH - 9;                // dr of the fold line of the turned hem (just inside the stitches)
 // ── indigo cloth ──
 const QX = 5.0, QY = 4.6;             // warp / weft pitch of the homespun
 const TILT_I = 0.032;
@@ -174,8 +175,12 @@ function buildBrocade(env) {
       // ragged cut: every warp end stops at its own height
       if (dr > EDGE + (hash2(ci, 77) - 0.5) * 7) continue;
       const ia = (cj - J0) * NI + (ci - I0);
-      const cls = CLS[ia];
-      const mu = Fmu[fi] + (Fmu[fi + 1] - Fmu[fi]) * ft, pool = Fpool[fi] + (Fpool[fi + 1] - Fpool[fi]) * ft;
+      const mu = Fmu[fi] + (Fmu[fi + 1] - Fmu[fi]) * ft;
+      // the cut edge is turned under and sewn down: above the fold line the hem shows only the plain ground weave,
+      // so the figure's gold runs in under the fold instead of butting into the fringe
+      const hd = dr - (HEM + 1.6 * mu), hem = hd > 0;
+      const cls = hem ? PETAL : CLS[ia];
+      const pool = Fpool[fi] + (Fpool[fi + 1] - Fpool[fi]) * ft;
       const sW = FsW[fi] + (FsW[fi + 1] - FsW[fi]) * ft, sP = FsP[fi] + (FsP[fi + 1] - FsP[fi]) * ft;
 
       let val, T, sp = 0, sr = 255, sg = 236, sb = 180, wear = 0;
@@ -233,13 +238,16 @@ function buildBrocade(env) {
         }
       }
       // relief: the gold weft lies proud of the ground → lit lip up-left, shadow down-right
-      if (cls !== GOLD) {
+      if (hem) {
+        val *= 0.8 + 0.2 * sm(hd / 5);                 // the fold rolls away at its lip
+      } else if (cls !== GOLD) {
         if (clsAt(u - 1.6, v - 2.2) === GOLD) val *= 0.7;
         if (clsAt(u - 3.4, v - 4.8) === GOLD) val *= 0.84;
       } else {
         if (clsAt(u - 2.0, v - 2.8) !== GOLD) val += 0.1;
         if (clsAt(u + 2.0, v + 2.8) !== GOLD) val *= 0.82;
       }
+      if (!hem && hd > -7) val *= 1 - 0.42 * sm((hd + 7) / 7);   // shadow the fold drops on the figured cloth
       val *= (Fmac[fi] + (Fmac[fi + 1] - Fmac[fi]) * ft) * pool;
       // the stitches press a shallow groove; the weave loosens right at the cut
       const g1 = (dr - STITCH) / 7; val *= 1 - 0.2 * Math.exp(-g1 * g1);
@@ -253,7 +261,7 @@ function buildBrocade(env) {
         cr0 += (BARE[lw * 3] - cr0) * wear; cg0 += (BARE[lw * 3 + 1] - cg0) * wear; cb0 += (BARE[lw * 3 + 2] - cb0) * wear;
       }
       d[o] = cr0; d[o + 1] = cg0; d[o + 2] = cb0; d[o + 3] = 255;
-      sp *= pool * (1 - loose);
+      sp *= pool * (1 - loose) * (hem ? 1 : 1 - sm((hd + 7) / 7));
       if (sp > 0.004) { q[o] = sr; q[o + 1] = sg; q[o + 2] = sb; q[o + 3] = sp > 1 ? 255 : sp * 255; }
     }
   }

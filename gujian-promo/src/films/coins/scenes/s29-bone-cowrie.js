@@ -245,7 +245,7 @@ function buildBone(env) {
       const macro = 1 + 0.07 * Math.exp(-((U + 380) * (U + 380)) / 270000 - ((V - 150) * (V - 150)) / 67600) - 0.1 * sstep(260, 660, V) - 0.07 * sstep(-520, -1150, U);
       const rel = lRel + (1 - lRel) * 0.55 * gs;
       const band = 1 + 0.06 * cg.bil(cDust, i, j) * (1 - soil);          // broad soft bands of the polish
-      let il = (0.3 + 0.7 * rel * (1 - 0.9 * lSh)) * macro * band * (1 - 0.7 * gs) * (1 - 0.1 * gs * sstep(1300, 1950, x)) * (1 - 0.32 * cav);
+      let il = (0.3 + 0.7 * rel * (1 - 0.9 * lSh)) * macro * band * (1 - 0.42 * gs) * (1 - 0.1 * gs * sstep(1300, 1950, x)) * (1 - 0.32 * cav);
       il += lSpec * 0.26 * (1 - gs) * (1 - soil);
       let li = (il / IMAX * (NL - 1)) | 0; li = (li < 0 ? 0 : li > NL - 1 ? NL - 1 : li) * 3;
       let r = BONE[li], g = BONE[li + 1], b = BONE[li + 2];
@@ -377,8 +377,13 @@ function buildSoil(env) {
       const k = j * RW + i;
       // the patch over the crest stays calm for the tagline: fine grain only (its outline wanders a little)
       const adx = ddx < 0 ? -ddx : ddx;
-      let calm = 0;
-      if (adx < 650 && y > 20) { const mac = cg.bil(cMac, i, j); calm = (1 - sstep(360, 600, adx + 80 * mac)) * sstep(60 + 70 * mac, 250 + 70 * mac, y); }
+      let calm = 0, bedK = 1;
+      if (adx < 900) {      // a dome sitting on the crest; its rim follows the clods, and the bed ledges thin out into it
+        const ex = ddx / 620, ey = (y - 570) / 410;
+        const e = Math.sqrt(ex * ex + ey * ey) + 0.13 * cg.bil(cMac, i, j) + 0.004 * cg.bil(cLump, i, j) + 0.03 * nB.n2(x / 27 + 40, y / 27);
+        calm = 1 - sstep(0.93, 1.25, e);
+        bedK = sstep(0.78, 1.1, e + 0.08 * cg.bil(cWx, i, j));
+      }
       const kc = 1 - calm; Calm[k] = calm;
       const hs = hash2(i, j) - 0.5, ti = ((j & 255) << 8) | (i & 255);
       let h = cg.bil(cLump, i, j) * (1 - 0.85 * calm) + 1.5 * nB.n2(x / 19, y / 19) * (1 - 0.75 * calm);
@@ -394,13 +399,13 @@ function buildSoil(env) {
         }
       }
       // 土层: the wall is cut through gently dipping beds; each stands a little proud and breaks off in a small ledge at its base
-      if (kc > 0.02) {
+      if (bedK > 0.02) {
         const sp = (y + 0.05 * x + 17 * cg.bil(cWy, i, j) + 60 * cg.bil(cMac, i, j) + 2.5 * nB.n2(x / 31 + 9, y / 31)) / 128 + 8;
         const sb = Math.floor(sp), sf = sp - sb;
-        h += (7 + 6 * hash2(sb, 91)) * sstep(0, 0.7, sf) * (1 - sstep(0.88, 0.99, sf)) * kc;
-        Ck[k] = 0.45 * sstep(0.86, 0.95, sf) * (1 - sstep(0.95, 1, sf)) * kc;
-        Bed[k] = (L.lerp(hash2(sb, 17) - 0.5, hash2(sb + 1, 17) - 0.5, sstep(0.86, 1, sf)) + 0.2 * nA.n2(x / 210 + 5, sp * 11)) * kc;      // + fine laminae inside each bed
-        Rd[k] = sstep(0.6, 0.8, hash2(sb, 53)) * sstep(0.3, 0.6, sf) * (1 - sstep(0.9, 1, sf)) * kc;
+        h += (7 + 6 * hash2(sb, 91)) * sstep(0, 0.7, sf) * (1 - sstep(0.88, 0.99, sf)) * bedK;
+        Ck[k] = 0.45 * sstep(0.86, 0.95, sf) * (1 - sstep(0.95, 1, sf)) * bedK;
+        Bed[k] = (L.lerp(hash2(sb, 17) - 0.5, hash2(sb + 1, 17) - 0.5, sstep(0.86, 1, sf)) + 0.2 * nA.n2(x / 210 + 5, sp * 11)) * bedK;      // + fine laminae inside each bed
+        Rd[k] = sstep(0.6, 0.8, hash2(sb, 53)) * sstep(0.3, 0.6, sf) * (1 - sstep(0.9, 1, sf)) * bedK;
       }
       Hh[k] = h; Tn[k] = tn;
     }
@@ -433,7 +438,7 @@ function buildSoil(env) {
       light(Hh, RW, RH, i, j, 7);
       // raking light: bright gold at the upper left, sinking to sienna by the middle; the calm patch lies in that half-shade
       let m = L.lerp(1.26, 0.62, sstep(-80, 1020, x + 0.35 * (y - 300))) * (1 + 0.2 * mac * kc) * (x > 1300 ? L.lerp(1, 0.84, sstep(1300, 1950, x)) : 1);
-      m += (0.58 - m) * calm * 0.9;
+      m += (L.lerp(0.58, m, 0.25) - m) * calm * 0.9;
       // the crevice between bone and earth: narrow on the lit side, a broad cast shadow on the right
       let crev = 0.12;
       if (dr > 0) { const wS = L.lerp(13, 62, sstep(-0.42, 0.42, th)); crev = dr < wS * 7 ? 1 - 0.88 * Math.exp(-dr / wS) : 1; }

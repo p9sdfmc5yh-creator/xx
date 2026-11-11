@@ -180,12 +180,20 @@ function drawArcStroke(g, a) {
     (th) => 14.5 + 7 * bump(th, -0.372, 0.04) + 5 * bump(th, -0.07, 0.07) - 3.6 * bump(th, -0.225, 0.06) + 5.5 * bump(th, 0.095, 0.05) - 5.5 * sstep(0.14, 0.3, th) + 1.6 * NZ.n2(th * 16, 2.2),
     (th) => 1.05 - 0.4 * bump(th, -0.23, 0.05) - 0.72 * sstep(0.02, 0.11, th) + 0.1 * sstep(0.2, 0.3, th),
     (th) => 1.1 * NZ.n2(th * 7, 4.4) - 0.4 + 9.6 * sstep(0.12, 0.3, th), 1.7);
-  // second pull (复笔): brush re-charged, set down a little low and carried to the edge; it wanders against the first
-  pull(T2, s,
-    (th) => 12.6 + 9 * bump(th, T2 + 0.012, 0.016) - 2.6 * bump(th, 0.3, 0.05) + 1.6 * NZ.n2(th * 16, 6.2),
+  // second pull (复笔): brush re-charged. Its tip touches down ~38 px back, inside the dry tail of the first pull and on
+  // the same line; the pressure comes on gradually (no step where the two meet), then it settles a little low and
+  // wanders against the first all the way to the edge
+  const lead = 38 / a.R;
+  const dr1 = (th) => 1.1 * NZ.n2(th * 7, 4.4) - 0.4 + 9.6 * sstep(0.12, 0.3, th);
+  const dr2 = (th) => { const e = Math.max(0, th - T2); return -3.2 - 4 * Math.exp(-e / 0.04) + 1.9 * Math.sin(e * 31) + 1.0 * NZ.n2(th * 7, 9.4); };
+  const drB = (th) => L.lerp(dr1(th), dr2(th), sstep(T2 - lead, T2 + 0.03, th));
+  pull(T2 - lead, s,
+    (th) => (12.6 + 6 * bump(th, T2 + 0.016, 0.022) - 2.6 * bump(th, 0.3, 0.05) + 1.6 * NZ.n2(th * 16, 6.2)) * L.lerp(0.2, 1, sstep(T2 - lead, T2 + 0.014, th)),
     (th) => 1.1 - 0.26 * bump(th, 0.365, 0.04),
-    (th) => -3.2 - 4 * Math.exp(-(th - T2) / 0.04) + 1.9 * Math.sin((th - T2) * 31) + 1.0 * NZ.n2(th * 7, 9.4), 5.3);
-  const h = a.pt(T2 + 0.002, -7.6); blot(g, h.x, h.y, 12, 3.1);
+    drB, 5.3);
+  // the wet spot where the pressure came on: kept inside the stroke's own width
+  { const q = a.pt(T2 + 0.013, drB(T2 + 0.013)); blot(g, q.x, q.y, 7.5, 3.1); }
+  const h = a.pt(T2 + 0.002, -7.6);
   // drops shaken off where the brush came down
   spatter(g, r, h.x - 4, h.y + 20, 1.9, 6, 62);
   const d0 = a.pt(-0.376, 0); spatter(g, r, d0.x + 6, d0.y + 20, 1.2, 5, 56);

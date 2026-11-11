@@ -91,7 +91,7 @@ function buildFace(env) {
   const nA = L.makeNoise('s19a'), nB = L.makeNoise('s19b');
   const DEPTH = H - a.crestY;                       // how far below the crest the frame reaches
   const V1 = 0.43 * DEPTH, V2 = V1 + 28;            // inner bevel of the raised outer rim (外郭)
-  const DC = R - 0.77 * DEPTH, THA = 0.2, LW = 58; // square hole: distance of its nearest corner from the coin's centre, its bearing; width of the inner rim (内郭)
+  const DC = R - 2.6 * DEPTH, THA = 0.2, LW = 58; // (pushed well below the frame: at this scale the hole does not reach the picture) // square hole: distance of its nearest corner from the coin's centre, its bearing; width of the inner rim (内郭)
   const U0 = -0.09 * R, SU = 0.42 * R, VS0 = 0.76 * DEPTH, SV = 0.5 * DEPTH; // soft-box reflection on the lacquer-black surface
   const AR = 1.0, AL = 0.5, AU = 0.55, AG1 = 0.011, AG2 = 0.0035, KREL = 28;
 
@@ -138,10 +138,10 @@ function buildFace(env) {
       if (sd < LW + 12) h += AL * sstep(-3, 8, sd) * (1 - sstep(LW - 16, LW + 8, sd));
       const g1 = nA.n2(U / 21, V / 21), g2 = nB.n2(U / 4.1 + 50, V / 4.1);   // faint orange-peel of the casting + micro-grain
       // thin blue-green rust: a few patches, gathering where rim meets field
-      const pt = bil(fPt, i, j) + 0.14 * Math.exp(-Math.abs(V - V2 - 14) / 30) + 0.1 * nA.n2(U / 30 + 9, V / 30 - 4) + 0.045 * nB.n2(U / 10 + 5, V / 10 - 31) + 0.025 * g2;
-      const pm = sstep(0.47, 0.63, pt) * sstep(V1 - 40, V1 + 14, V);
+      const pt = bil(fPt, i, j) + 0.14 * Math.exp(-Math.abs(V - V2 - 14) / 30) + 0.1 * nA.n2(U / 30 + 9, V / 30 - 4) + 0.035 * nB.n2(U / 15 + 5, V / 15 - 31);   // irregular but continuous edge: no pixel-scale term, so no detached specks
+      const pm = sstep(0.53, 0.66, pt) * sstep(V1 - 40, V1 + 14, V);
       Pm[k] = pm; G1[k] = g1;
-      Hh[k] = h + AG1 * g1 + AG2 * g2 + pm * 0.012 * g2;
+      Hh[k] = h + AG1 * g1 + AG2 * g2 * (1 - 0.7 * pm) + pm * 0.005 * g1;   // rust is matte and smooth: it fills the micro-grain instead of amplifying it
       G2[k] = g2;
     }
   }
@@ -202,8 +202,8 @@ function buildFace(env) {
       // thin blue-green rust, matte
       const pm = Pm[k];
       if (pm > 0) {
-        const m = 0.62 * pm;     // a tint of the surface it sits on, never brighter than its surroundings by much
-        cr += (cr * 0.5 + 2 - cr) * m; cg += (cg * 1.42 + 12 - cg) * m; cb += (cb * 1.2 + 9 - cb) * m;
+        const m = 0.46 * pm;     // a tint of the surface it sits on, never brighter than its surroundings by much
+        cr += (cr * 0.7 + 3 - cr) * m; cg += (cg * 1.24 + 9 - cg) * m; cb += (cb * 1.14 + 8 - cb) * m;
       }
       // the rim light rakes across the outer rim: micro-relief facing outward picks up cobalt
       const relR = -hx * Math.sin(th) + hy * Math.cos(th);

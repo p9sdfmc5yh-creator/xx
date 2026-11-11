@@ -72,8 +72,9 @@ function buildDesign(env) {
         const t = (i / n) * L.TAU, c = Math.cos(t), s = Math.sin(t), k = r.range(0.66, 1.16);
         pts.push([u + rx * Math.sign(c) * Math.pow(Math.abs(c), 0.55) * (0.9 + 0.1 * k), d + ry * s * k * (1 + 0.28 * Math.sin(t * 3 + ph))]);
       }
-      poly(pts, '#000');
-      if (r.chance(0.6)) { const q = M(u + r.sign() * rx * r.range(0.3, 0.9), d + r.sign() * (ry + r.range(5, 12))); g.fillStyle = '#000'; g.beginPath(); g.ellipse(q[0], q[1], r.range(2.5, 4.5), r.range(3.5, 7), u / R, 0, L.TAU); g.fill(); }
+      // not printed any more: at near-even spacing the blots read as symbols / rivets, which no coin catalogue has.
+      // The random draws are still taken so that every cut after this point stays exactly where it was.
+      if (r.chance(0.6)) { r.sign(); r.range(0.3, 0.9); r.sign(); r.range(5, 12); r.range(2.5, 4.5); r.range(3.5, 7); }
     };
 
     // outside the coin: solid printed black. inside: paper.
@@ -191,20 +192,22 @@ function buildDesign(env) {
     // nicks in the concentric lines where the block has chipped
     for (const [d0, d1, every] of [[EDGE, HAT0, 260], [HAT1, HAT1 + 6.5, 230], [LN3[0], LN3[1], 210], [LN4[0], LN4[1], 120]]) {
       for (let u = -U + r.range(0, every); u < U; u += r.range(every * 0.5, every * 1.5)) {
-        const w = r.range(4, 11);
-        poly([[u, d0 - 1.5], [u + w, d0 - 1.5], [u + w + r.range(-2, 2), d1 + 1.5], [u + r.range(-2, 2), d1 + 1.5]], '#fff');
+        const edge = d0 === EDGE;   // on the line under the rim's outer edge a nick is only a 1–2 px chip
+        const w = r.range(4, 11) * (edge ? 0.22 : 1), k = edge ? 0.3 : 1;
+        poly([[u, d0 - 1.5], [u + w, d0 - 1.5], [u + w + k * r.range(-2, 2), d1 + 1.5], [u + k * r.range(-2, 2), d1 + 1.5]], '#fff');
       }
     }
     // the white edge line is "略有断续": ink from the black ground creeps into it, and bridges it in a few places (never at the crest)
     for (let u = -U + r.range(0, 80); u < U; u += r.range(70, 190)) {
       if (Math.abs(u) < 150) continue;
-      const q = M(u, -0.5), rx = r.range(6, 18), ry = r.range(2.5, 6.5);
+      const q = M(u, -0.5), rx = r.range(6, 18) * 0.6, ry = r.range(2.5, 6.5) * 0.38;   // bites 0.5–2 px into the white
       g.fillStyle = '#000'; g.beginPath(); g.ellipse(q[0], q[1], rx, ry, u / R, 0, L.TAU); g.fill();
     }
     for (let u = -U + r.range(60, 260); u < U; u += r.range(260, 520)) {
       if (Math.abs(u) < 230) continue;
-      const w = r.range(5, 11);
-      poly([[u - w * 0.7, -2], [u + w * 0.7, -2], [u + w * 0.35 + r.range(-1.5, 1.5), EDGE + 2], [u - w * 0.35 + r.range(-1.5, 1.5), EDGE + 2]], '#000');
+      // a chipped spot on the outer edge: a shallow 1–2 px notch, not a break right through the white line
+      const w = r.range(5, 11), j1 = r.range(-1.5, 1.5), j2 = r.range(-1.5, 1.5);
+      poly([[u - w * 0.32, -2], [u + w * 0.32, -2], [u + j1 * 0.6, 1.5 + Math.abs(j2) * 0.6]], '#000');
     }
   });
 }
