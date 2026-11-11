@@ -7,12 +7,11 @@ push-in.  `common.py` is the shared library, `shots/m02_gouqi.py` is the referen
 ```
 PY=/tmp/claude-0/-home-user-xx/7e18b1fa-923d-5a7b-99f5-35aa0b46033b/scratchpad/bvenv/bin/python
 $PY film/blender/shots/m02_gouqi.py --quality draft   --out $TMP/g.png          # whole frame, ~20 s
-$PY film/blender/shots/m02_gouqi.py --quality draft   --res 2112x1188 --spp 32 \
-        --region 0.36,0.56,0.64,0.86 --out $TMP/gc.png                          # final-density crop, ~25 s
+$PY film/blender/shots/m02_gouqi.py --quality final   --region 0.36,0.56,0.64,0.86 --out $TMP/gc.png   # exact final pixels of a crop
 $PY film/blender/shots/m02_gouqi.py --quality final   --out film/renders/m02_gouqi.png
 ```
 
-Outputs of a final render: `<out>.png` (2112x1188, 16-bit RGBA, straight alpha, AgX display
+Outputs of a final render: `<out>.png` (3840x2160 4K UHD, 16-bit RGBA, straight alpha, AgX display
 referred sRGB) and `<out>_depth.npy` (float32 HxW, metres along the camera axis, **0.0 = no
 geometry**; use the PNG alpha as the mask).  The shot also writes a judging composite
 (`quick_comp`) to `<scratch>/previews/<shot>_comp.jpg`.
@@ -34,8 +33,9 @@ A "planet" is a sphere of radius R centred on the origin: only a cap around the 
 |---------|-----------:|--------:|-------------:|-------------------|------------------|
 | draft   | 960x540    | 16      | 0.10         | fast              | __DRAFT__ |
 | preview | 1280x720   | 40      | 0.05         | fast              | __PREVIEW__ |
-| final   | 2112x1188  | 128     | 0.015        | accurate, high    | __FINAL__ |
-| crop    | 2112x1188, `--spp 32 --region` 28 % x 30 % | | | | __CROP__ |
+| final   | 3840x2160  | 32      | 0.02         | accurate, high    | __FINAL__ |
+| final `--region` 28 % x 30 % crop | 3840x2160 | 32 | 0.02 | accurate, high | __CROP__ |
+| (old) 2112x1188 | | 128 | 0.015 | accurate, high | 805 s wall under load = 37 CPU-min (~9.5 min on 4 free cores) |
 
 Scene build (9 berry meshes + packing 1450 items) costs ~4 s of that.  The plain sphere / disc
 framing tests render in 1 s.  200 000 instances of 3 meshes: 2.8 s render at 480x270, 0.7 GB.
@@ -156,8 +156,8 @@ so the DOF helper matters: keep `auto_dof` defaults.
   its bumps would poke into the text zone.  Always read the `[framing]` line.
 
 **Geometry (this is 70 % of the realism)**
-* Wrinkles, folds, dimples must be REAL vertex displacement at 0.05-0.1 mm vertex spacing
-  (goji: 230 x 132 vertices per berry).  Bump maps only for relief below ~0.15 mm.
+* Wrinkles, folds, dimples must be REAL vertex displacement, vertex spacing <= ~2 px at 4K
+  (goji: 230 x 132 vertices per 14 mm berry = 0.06 mm).  Bump maps only for relief below ~0.15 mm.
 * Height field that reads as "shrivelled": billow noise `abs(perlin3(q)) ** 0.5` (broad taut crests,
   narrow V creases), amplitude 0.30 x radius, second octave 0.13, sampled on a domain-warped
   (0.55) cylinder so folds run lengthwise but branch and die out, modulated by a slow mask
@@ -204,15 +204,19 @@ so the DOF helper matters: keep `auto_dof` defaults.
 * Exposure: judge on the quick_comp, the lit crests should sit around 60-75 % - not white.
 
 **Camera / DOF**
-* 85 mm, `auto_dof(cam, info, near_blur_px=7, far_blur_px=3)` -> f/40-ish.  12/5 px already made
-  the mid-ground look soft at 1080p.  Keep a little foreground blur: it is the lens cue.
+* 85 mm, `auto_dof(cam, info, near_blur_px=7, far_blur_px=3)` -> f/40-ish.  Blur sizes are in
+  pixels of a 2112-px-wide frame (`DOF_REF_W`), independent of the render resolution.  12/5 px
+  already made the mid-ground look soft at 1080p.  Keep a little foreground blur: it is the lens cue.
 
 **Render / denoise**
-* Never judge texture on a 16-spp draft: OIDN smears micro detail below ~32 spp.  Use the
-  final-density crop command (`--res 2112x1188 --spp 32 --region ...`) and
-  `quick_comp(..., crop=region, text=False)` to pixel-peep.
-* Final: 128 spp, adaptive 0.015, OIDN with albedo+normal guides and ACCURATE prefilter keeps the
-  bump-level detail (the normal guide carries it).  Clamp indirect 6 -> no fireflies seen.
+* Never judge texture on a 960x540 draft: one draft pixel = 16 final pixels and OIDN smears what
+  is left.  Pixel-peep with `--quality final --region x0,y0,x1,y1` (same sampling as the final,
+  costs only the crop's share of the time) and `quick_comp(png, shot, jpg, crop=region, text=False)`.
+* Final = 4K, 32 spp, adaptive 0.02, OIDN with albedo+normal guides and ACCURATE prefilter (the
+  normal/albedo guides carry bump- and texture-level detail through the denoiser, so put detail
+  in geometry, bump and albedo - detail that exists only as lighting noise gets smeared).
+  Clamp indirect 6 -> no fireflies seen.  Random-walk SSS costs ~1.8-2.3x BURLEY (measured on
+  the same crop: 65 s vs 28 s) - use it only where translucency is the point.
 * AgX 'Punchy' look.  Base AgX is flat/washed out for food; Standard clips the reds.
 
 **Typical mistakes**

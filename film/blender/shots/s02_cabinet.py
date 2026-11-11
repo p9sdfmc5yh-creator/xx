@@ -40,9 +40,9 @@ ROW_H = 0.118                       # row pitch along the meridian
 RAIL_W, STILE_W, GAP = 0.0170, 0.0150, 0.0013
 T_FRONT, T_FRAME = 0.016, 0.022     # board thicknesses
 BEVEL = 0.0011
-PULL_Y, LABEL_Y = -0.0185, 0.0262   # pull / label centre on the drawer front (local y, metres)
+PULL_Y, LABEL_Y = -0.0120, 0.0268   # pull / label centre on the drawer front (local y, metres)
 LABEL_W, LABEL_H = 0.0700, 0.0350   # label quad (visible paper is ~5 % smaller: irregular hand-cut edge)
-RING_R, RING_WIRE = 0.0105, 0.0015
+RING_R, RING_WIRE = 0.0130, 0.0016
 EYE_Z = 0.0040                      # height of the ring's pivot above the drawer front
 
 # 食药物质 (food-medicine homologous substances).  HERO = the ingredients that have their own shot in
@@ -285,7 +285,7 @@ def _font_path():
 def make_label_image(name, rng, W=512, H=256, ss=2):
     """One hand-written label: aged fibrous paper (RGB) + irregular hand-cut outline (A).  uint8 HxWx4."""
     from PIL import Image, ImageDraw, ImageFont, ImageChops
-    from scipy.ndimage import gaussian_filter
+    from scipy.ndimage import gaussian_filter, grey_dilation
     w, h = W * ss, H * ss
 
     def f(sig):
@@ -362,15 +362,15 @@ def make_label_image(name, rng, W=512, H=256, ss=2):
         layer = Image.new('L', (w, h), 0)
         layer.paste(g, (int(cx - fs), int(cy - fs)))
         txt = ImageChops.lighter(txt, layer)
-    ink = np.asarray(txt, np.float32) / 255.0
+    ink = grey_dilation(np.asarray(txt, np.float32) / 255.0, size=(5, 5))          # a well-loaded brush
     soft = gaussian_filter(ink, 2.2 * ss)
     edgez = np.clip(ink * (1.0 - soft) * 3.2, 0, 1)                             # stroke rims / thin strokes
     dry = np.clip((0.6 * f(0.5) + 0.7 * f(2.2)) - 0.75, 0, 1)                   # dry-brush skips
-    load = np.clip(0.86 + 0.14 * f(7.0), 0.55, 1.0)                             # ink load varies along a stroke
-    inkd = ink * load * (1.0 - 0.55 * np.clip(dry * 2.0, 0, 1) * edgez) * rng.uniform(0.86, 0.97)
+    load = np.clip(0.92 + 0.10 * f(7.0), 0.62, 1.0)                             # ink load varies along a stroke
+    inkd = ink * load * (1.0 - 0.55 * np.clip(dry * 2.0, 0, 1) * edgez) * rng.uniform(0.93, 1.0)
     inkd = np.maximum(inkd, gaussian_filter(inkd, 0.9 * ss) * 0.92)             # slight feathering into fibres
     inkd *= 1.0 - 0.25 * np.clip(fibn / 40.0, 0, 1)                             # pale fibres lie over the ink
-    ink_col = np.array([24, 21, 20.0]) * (1 - age) + np.array([50, 41, 34.0]) * age
+    ink_col = np.array([15, 13, 13.0]) * (1 - age) + np.array([36, 29, 25.0]) * age
     img = img * (1 - inkd[..., None]) + ink_col[None, None, :] * inkd[..., None]
     rgba = np.dstack([np.clip(img, 0, 255), alpha * 255.0]).astype(np.uint8)
     return np.asarray(Image.fromarray(rgba, 'RGBA').resize((W, H), Image.LANCZOS))
@@ -381,7 +381,7 @@ def make_label_atlas(names, seed=1, cols=8, cell=(512, 256)):
     from PIL import Image
     import hashlib
     rows = int(math.ceil(len(names) / float(cols)))
-    key = hashlib.md5(('|'.join(names) + str(seed) + str(cell) + _font_path() + 'v4').encode('utf-8')).hexdigest()[:10]
+    key = hashlib.md5(('|'.join(names) + str(seed) + str(cell) + _font_path() + 'v6').encode('utf-8')).hexdigest()[:10]
     os.makedirs(TMP_DIR, exist_ok=True)
     path = os.path.join(TMP_DIR, 'label_atlas_%s.png' % key)
     if not os.path.exists(path):
@@ -403,7 +403,7 @@ def label_mesh_arrays(frames, cells, cols, rows, rng, nx=14, ny=7):
     base_f = C.grid_faces(ny + 1, nx + 1, wrap_v=False)
     V, F, UV = [], [], []
     for k, ((O, R), cell) in enumerate(zip(frames, cells)):
-        x, y = gx * LABEL_W, gy * LABEL_H
+        x, y = gx * LABEL_W * rng.uniform(0.90, 1.03), gy * LABEL_H * rng.uniform(0.90, 1.05)
         z = np.full_like(x, 0.00016)
         z += 0.00010 * (np.sin(x * rng.uniform(150, 420) + rng.uniform(0, 6)) * np.sin(y * rng.uniform(200, 500) + rng.uniform(0, 6)) + 1)
         for _ in range(rng.choice([0, 1, 1, 2, 3])):                             # lifted corners (old paste gives up)
@@ -415,7 +415,7 @@ def label_mesh_arrays(frames, cells, cols, rows, rng, nx=14, ny=7):
         if rng.random() < 0.35:                                                  # a long edge bulging off the wood
             sgn = rng.choice([-1, 1])
             z += rng.uniform(0.0002, 0.0007) * np.clip(sgn * gy * 2, 0, 1) ** 3 * (0.5 + 0.5 * np.cos(gx * rng.uniform(4, 9)))
-        a = rng.normal(0, math.radians(1.6))
+        a = rng.normal(0, math.radians(2.0))
         ox, oy = rng.normal(0, 0.0022), LABEL_Y + rng.normal(0, 0.0016)
         loc = np.stack([x * math.cos(a) - y * math.sin(a) + ox, x * math.sin(a) + y * math.cos(a) + oy, z], 1)
         V.append(loc @ R.T + O)
@@ -437,7 +437,7 @@ def make_backplate(seed):
     Returns (verts, faces, attrs) with a per-vertex 'wear' mask (1 = rubbed bright, 0 = oxidised recess)."""
     rng = np.random.default_rng(700 + seed)
     npet = int(rng.choice([12, 16, 16]))
-    Rp = rng.uniform(0.0138, 0.0152)
+    Rp = rng.uniform(0.0100, 0.0112)
     rho_k = np.array([0.0, 0.10, 0.22, 0.29, 0.335, 0.38, 0.52, 0.72, 0.88, 0.955, 0.99, 1.0]) * Rp
     z_k = np.array([2.05, 2.0, 1.75, 1.25, 0.90, 0.78, 0.98, 0.95, 0.74, 0.50, 0.22, 0.0]) * 1e-3
     rr = np.unique(np.concatenate([np.linspace(0.0002, Rp, 26), rho_k[1:]]))
@@ -542,12 +542,12 @@ def wood_material():
                    m.math('ADD', 0.30, m.math('MULTIPLY', early, 0.70)))
     fn = m.noise(scale=1.0, detail=3.0, roughness=0.6, vector=m.mapping(q, scale=(5.0, 420.0, 420.0)))
     bn = m.noise(scale=9.0, detail=3.0, roughness=0.55, vector=q)
-    c_late, c_early = (0.200, 0.072, 0.024), (0.045, 0.016, 0.007)
+    c_late, c_early = (0.170, 0.055, 0.019), (0.036, 0.012, 0.006)
     col = m.mix(c_early, c_late, m.math('MULTIPLY', tone, m.map_range(fn, 0.25, 0.75, 0.62, 1.0)))
     col = m.mix(col, (0.018, 0.009, 0.005), m.math('MULTIPLY', pores, 0.80))
     col = m.hsv(col, m.map_range(bn, 0.3, 0.7, 0.492, 0.510), m.map_range(bn, 0.3, 0.7, 1.08, 0.90),
                 m.map_range(bn, 0.25, 0.75, 0.62, 1.30))
-    col = m.jitter(col, hue=0.014, saturation=0.14, value=0.26, source=rnd)                       # board to board
+    col = m.jitter(col, hue=0.020, saturation=0.16, value=0.32, source=rnd)                       # board to board
     col = m.hsv(col, 0.5, 1.0, m.mixf(1.0, 0.78, kind))                                           # frame a shade darker
     # --- distance to the nearest arris of the board (second smallest of the three face distances)
     sd = m.node('ShaderNodeSeparateXYZ', {0: VM('SUBTRACT', bh, VM('ABSOLUTE', bl))})
@@ -557,13 +557,20 @@ def wood_material():
     edge_d = m.math('SUBTRACT', m.math('SUBTRACT', m.math('ADD', m.math('ADD', dx, dy), dz), mn), mx)
     blr = VM('ADD', bl, XYZ(m.math('MULTIPLY', rnd, 7.3), m.math('MULTIPLY', rnd, 3.1), 0.0))
     wn2 = m.noise(scale=170.0, detail=3.0, roughness=0.65, vector=blr)
-    wthr = m.math('ADD', 0.0005, m.math('MULTIPLY', m.math('POWER', wn2, 2.2), 0.0085))
+    wl = m.map_range(m.noise(scale=16.0, detail=2.0, vector=blr), 0.44, 0.70, 0.0, 1.0, smooth=True)   # where it is worn at all
+    corner = m.map_range(mx, 0.0, 0.014, 1.0, 0.0, smooth=True)
+    wthr = m.math('ADD', 0.00025, m.math('MULTIPLY', m.math('POWER', wn2, 2.0),
+                                         m.math('ADD', m.math('MULTIPLY', wl, 0.0060), m.math('MULTIPLY', corner, 0.0050))))
     wear = m.map_range(edge_d, 0.0, wthr, 1.0, 0.0, smooth=True)
     gn = m.noise(scale=60.0, detail=2.0, vector=blr)
-    grime = m.math('MULTIPLY', m.map_range(edge_d, 0.0012, 0.012, 1.0, 0.0, smooth=True), m.map_range(gn, 0.3, 0.7, 0.25, 0.85))
+    grime = m.math('MULTIPLY', m.map_range(edge_d, 0.0010, 0.017, 1.0, 0.0, smooth=True), m.map_range(gn, 0.3, 0.7, 0.30, 0.90))
     col = m.mix(col, (0.016, 0.010, 0.007), grime)
     raw = m.mix((0.34, 0.185, 0.080), (0.46, 0.285, 0.130), fn)
-    col = m.mix(col, raw, m.math('MULTIPLY', wear, 0.80))
+    col = m.mix(col, raw, m.math('MULTIPLY', wear, 0.70))
+    # --- old red-brown lacquer film: mutes the figure where it survives, worn thin in patches and on the arrises
+    ln = m.noise(scale=7.0, detail=3.0, roughness=0.6, vector=blr)
+    lacq = m.math('MULTIPLY', m.map_range(ln, 0.34, 0.66, 0.20, 0.74, smooth=True), m.math('SUBTRACT', 1.0, wear))
+    col = m.mix(col, (0.040, 0.012, 0.0065), lacq)
     # --- round the pull: decades of fingers (darker, glossier) and the arc the hanging ring has rubbed pale
     sb = m.node('ShaderNodeSeparateXYZ', {0: bl})
     py = m.math('SUBTRACT', sb.outputs[1], PULL_Y)
@@ -571,10 +578,37 @@ def wood_material():
     pat = m.math('MULTIPLY', drawer, m.math('MULTIPLY', m.map_range(dp, 0.012, 0.050, 1.0, 0.0, smooth=True),
                                             m.map_range(gn, 0.2, 0.8, 0.45, 1.0)))
     col = m.mix(col, (0.030, 0.014, 0.008), m.math('MULTIPLY', pat, 0.55))
-    band = m.math('MULTIPLY', m.map_range(dp, 0.0172, 0.0200, 0.0, 1.0, smooth=True), m.map_range(dp, 0.0222, 0.0252, 1.0, 0.0, smooth=True))
+    band = m.math('MULTIPLY', m.map_range(dp, 0.0225, 0.0250, 0.0, 1.0, smooth=True), m.map_range(dp, 0.0275, 0.0300, 1.0, 0.0, smooth=True))
+    band = m.math('MULTIPLY', band, m.map_range(m.math('ABSOLUTE', sb.outputs[0]), 0.004, 0.012, 1.0, 0.0, smooth=True))
     rub = m.math('MULTIPLY', m.math('MULTIPLY', drawer, band),
                  m.math('MULTIPLY', m.map_range(py, -0.004, -0.014, 0.0, 1.0, smooth=True), m.map_range(wn2, 0.30, 0.62, 0.0, 1.0)))
-    col = m.mix(col, raw, m.math('MULTIPLY', rub, 0.55))
+    col = m.mix(col, m.mix(col, raw, 0.5), m.math('MULTIPLY', rub, 0.55))
+    # --- a shrinkage split along the grain on some fronts; knocks and fine scratches everywhere
+    r1 = m.math('FRACT', m.math('MULTIPLY', rnd, 17.31))
+    r2 = m.math('FRACT', m.math('MULTIPLY', rnd, 41.77))
+    r3 = m.math('FRACT', m.math('MULTIPLY', rnd, 7.77))
+    shh = m.node('ShaderNodeSeparateXYZ', {0: bh})
+    yc = m.math('MULTIPLY', m.math('MULTIPLY', m.math('SUBTRACT', m.math('MULTIPLY', r1, 2.0), 1.0), 0.62), shh.outputs[1])
+    cwn = m.noise(scale=1.0, detail=2.0, vector=XYZ(m.math('MULTIPLY', sb.outputs[0], 28.0), m.math('MULTIPLY', rnd, 9.0), 0.0))
+    dyc = m.math('ABSOLUTE', m.math('SUBTRACT', m.math('SUBTRACT', sb.outputs[1], yc),
+                                    m.math('MULTIPLY', m.math('SUBTRACT', cwn, 0.5), 0.005)))
+    xn = m.math('DIVIDE', sb.outputs[0], shh.outputs[0])
+    e0 = m.math('SUBTRACT', m.math('MULTIPLY', r2, 1.7), 0.95)
+    ext = m.map_range(xn, e0, m.math('ADD', e0, 0.35), 1.0, 0.0, smooth=True)
+    has = m.math('MULTIPLY', drawer, m.math('GREATER_THAN', r3, 0.50))
+    crack = m.math('MULTIPLY', m.math('MULTIPLY', m.map_range(dyc, 0.00010, 0.00045, 1.0, 0.0, smooth=True), ext), has)
+    col = m.mix(col, (0.008, 0.005, 0.004), m.math('MULTIPLY', crack, 0.92))
+    dv = m.voronoi(scale=70.0, feature='F1', vector=blr)
+    dmask = m.map_range(m.noise(scale=26.0, detail=1.0, vector=blr), 0.55, 0.66, 0.0, 1.0)
+    dent = m.math('MULTIPLY', m.map_range(dv, 0.02, 0.17, 1.0, 0.0, smooth=True), dmask)
+    col = m.mix(col, (0.014, 0.008, 0.005), m.math('MULTIPLY', dent, 0.40))
+
+    def streak(angle, shift):
+        v = m.mapping(m.mapping(blr, rotation=(0.0, 0.0, angle), location=(shift, 0.0, 0.0)), scale=(16.0, 2400.0, 2400.0))
+        return m.map_range(m.noise(scale=1.0, detail=0.0, vector=v), 0.71, 0.76, 0.0, 1.0)
+    smask = m.map_range(m.noise(scale=38.0, detail=1.0, vector=blr), 0.50, 0.64, 0.0, 1.0)
+    scr = m.math('MULTIPLY', m.math('MAXIMUM', streak(0.45, 0.0), streak(-1.05, 3.3)), smask)
+    col = m.mix(col, raw, m.math('MULTIPLY', scr, 0.35))
     # --- dust settles on whatever faces the sky
     nz = m.node('ShaderNodeSeparateXYZ', {0: m.node('ShaderNodeNewGeometry').outputs['Normal']}).outputs[2]
     dn = m.noise(scale=420.0, detail=3.0, roughness=0.7, vector=blr)
@@ -583,20 +617,24 @@ def wood_material():
     # --- roughness: worn satin shellac, open pores are dull, hand patina is glossy
     rn = m.noise(scale=1.0, detail=3.0, roughness=0.6, vector=m.mapping(q, scale=(26.0, 300.0, 300.0)))
     rough = m.map_range(rn, 0.28, 0.72, 0.27, 0.50)
-    rough = m.math('ADD', rough, m.math('MULTIPLY', pores, 0.22))
+    rough = m.math('ADD', rough, m.math('MULTIPLY', pores, 0.36))
     rough = m.mixf(rough, 0.21, m.math('MULTIPLY', pat, 0.75))
     rough = m.mixf(rough, 0.40, wear)
     rough = m.mixf(rough, 0.58, rub)
+    rough = m.mixf(rough, 0.30, m.math('MULTIPLY', lacq, 0.5))
+    rough = m.math('ADD', rough, m.math('MULTIPLY', scr, 0.20))
     rough = m.math('ADD', rough, m.math('MULTIPLY', dust, 0.9), clamp=True)
     cn = m.noise(scale=22.0, detail=2.0, vector=blr)
     coat = m.math('MULTIPLY', m.map_range(cn, 0.42, 0.62, 0.0, 0.40, smooth=True), m.math('SUBTRACT', 1.0, wear))
     # --- relief: pores, raised latewood, fine fibre, slow cupping of the old board
-    nrm = m.bump(pores, strength=1.0, distance=0.00016, invert=True)
+    nrm = m.bump(pores, strength=1.0, distance=0.00006, invert=True)
     nrm = m.bump(tone, strength=0.6, distance=0.00007, normal=nrm)
     gr = m.noise(scale=1.0, detail=2.0, roughness=0.6, vector=m.mapping(q, scale=(260.0, 5200.0, 5200.0)))
     nrm = m.bump(gr, strength=0.55, distance=0.00005, normal=nrm)
     cup = m.noise(scale=14.0, detail=1.0, vector=blr)
     nrm = m.bump(cup, strength=0.35, distance=0.0010, normal=nrm)
+    nrm = m.bump(dent, strength=0.8, distance=0.00035, normal=nrm, invert=True)
+    nrm = m.bump(m.math('ADD', crack, m.math('MULTIPLY', scr, 0.25)), strength=1.0, distance=0.00025, normal=nrm, invert=True)
     m.set(base_color=col, roughness=rough, ior=1.50, specular=0.5, coat=coat, coat_roughness=0.16, normal=nrm)
     return m
 
@@ -613,7 +651,7 @@ def brass_material():
     t = m.math('ADD', m.math('MULTIPLY', wear, 1.25),
                m.math('ADD', m.math('MULTIPLY', m.math('SUBTRACT', n1, 0.5), 0.85),
                       m.math('ADD', m.math('MULTIPLY', m.math('SUBTRACT', n2, 0.5), 0.60),
-                             m.math('SUBTRACT', m.math('MULTIPLY', r, 0.34), 0.30))), clamp=True)
+                             m.math('SUBTRACT', m.math('MULTIPLY', r, 0.34), 0.42))), clamp=True)
     col = m.ramp(t, [(0.0, (0.040, 0.024, 0.012)), (0.30, (0.20, 0.105, 0.036)), (0.62, (0.52, 0.32, 0.095)),
                      (1.0, (0.86, 0.60, 0.22))])
     vn = m.noise(scale=520.0, detail=3.0, roughness=0.6, vector=P)
@@ -836,9 +874,9 @@ def lights(cam):
     def at(d, dist):
         d = np.array(d, float)
         return T + d / np.linalg.norm(d) * dist
-    area_light('key', at((-0.66, 0.02, 0.75), 5.2), T, 2.2, 1100.0, (1.0, 0.80, 0.56))
-    area_light('kick', at((0.48, 0.80, 0.36), 5.5), T + [0.0, 0.2, 0.25], 2.6, 1100.0, (1.0, 0.66, 0.36), size_y=0.9)
-    area_light('fill', at((0.55, -0.80, 0.25), 5.0), T, 4.0, 90.0, (0.80, 0.74, 0.70))
+    area_light('key', at((-0.78, 0.02, 0.62), 5.2), T, 1.5, 1300.0, (1.0, 0.80, 0.56))
+    area_light('kick', at((0.48, 0.80, 0.36), 5.5), T + [0.0, 0.2, 0.25], 2.6, 1300.0, (1.0, 0.66, 0.36), size_y=0.9)
+    area_light('fill', at((0.55, -0.80, 0.25), 5.0), T, 4.0, 75.0, (0.80, 0.74, 0.70))
     C.world_gradient(horizon=(0.030, 0.017, 0.007), zenith=(0.020, 0.013, 0.008), ground=(0.004, 0.003, 0.002))
 
 

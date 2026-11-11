@@ -336,7 +336,7 @@ def make_soaked_goji(seed, nu=150, nv=92):
     # stem end: small dimple with the scar; tip: tiny nipple
     Xo = X + 0.00035 * np.exp(-(S / 0.022) ** 2) + 0.00030 * np.exp(-((1 - S) / 0.030) ** 2)
     v = np.stack([Xo, Y, Z], -1).reshape(-1, 3)
-    scar = np.exp(-(S / rng.uniform(0.020, 0.032)) ** 2)
+    scar = np.exp(-(R0 / rng.uniform(0.00045, 0.00070)) ** 2) * (S < 0.5)
     attrs = dict(scar=scar.ravel(), furrow=np.clip((crease * 0.8 + crease2 * 0.4) * env / 0.6, 0, 1).ravel(),
                  ax=S.ravel().copy())
     return v, C.grid_faces(nu, nv, wrap_v=True), attrs, (L, Dm)
@@ -546,13 +546,16 @@ def build_broth(material, pf, e_fn, floaters_world, y_split, bubbles=None):
         i0, i1 = np.searchsorted(xs, [lo[0], hi[0]])
         j0, j1 = np.searchsorted(ys_f, [lo[1], hi[1]])
         zc = Z_BROTH + rise
-        dn = Vector((0, 0, -1))
+        dn, up_ = Vector((0, 0, -1)), Vector((0, 0, 1))
         for j in range(max(j0 - 1, 0), min(j1 + 1, len(ys_f))):
             for i in range(max(i0 - 1, 0), min(i1 + 1, len(xs))):
                 hit = bvh.ray_cast(Vector((xs[i], ys_f[j], hi[2] + 0.001)), dn)
                 if hit[0] is not None and hit[0].z >= zc:
-                    fixed[j, i] = True
-                    val[j, i] = rise
+                    # the berry must really cross the contact height here (not an overhanging end)
+                    hb = bvh.ray_cast(Vector((xs[i], ys_f[j], lo[2] - 0.001)), up_)
+                    if hb[0] is not None and hb[0].z <= zc:
+                        fixed[j, i] = True
+                        val[j, i] = rise
     for (bx, by, br) in (bubbles or []):                      # tiny rise around bubbles
         i, j = int(round((bx + Xh) / DX)), int(round((by - y_split) / DX))
         k = max(1, int(br * 0.8 / DX))
@@ -715,8 +718,8 @@ def build_scene(args):
     #      is the crisp glaze highlight on the inner wall), low strip back-right, dim warm world
     T = (0.0, 0.085, -0.015)
     rect_light('key', -38.0, 50.0, 1.05, T, 0.80, 0.60, 70.0, (1.0, 0.955, 0.88))
-    rect_light('top', 10.0, 80.0, 1.00, T, 0.60, 0.45, 17.0, (1.0, 0.975, 0.94))
-    rect_light('front', -150.0, 52.0, 1.25, T, 0.50, 0.42, 10.0, (0.94, 0.97, 1.0))      # gleam on the flared lip
+    rect_light('top', 0.0, 66.0, 1.00, T, 0.60, 0.45, 17.0, (1.0, 0.975, 0.94))
+    rect_light('front', -150.0, 52.0, 1.25, T, 0.50, 0.42, 16.0, (0.94, 0.97, 1.0))      # gleam on the flared lip
     rect_light('sheen', 163.0, 17.5, 1.35, T, 1.50, 0.11, 4.0, (1.0, 0.97, 0.93))        # sheen under the band
     rect_light('strip', 64.0, 36.0, 1.0, T, 0.22, 0.70, 9.0, (1.0, 0.90, 0.78))
     C.world_gradient(horizon=(0.030, 0.021, 0.014), zenith=(0.060, 0.048, 0.038), ground=(0.012, 0.008, 0.005))

@@ -2,7 +2,7 @@
 """m02_gouqi - dried goji berries (枸杞子).  REFERENCE SHOT / template for every 'pile' shot.
 
     python m02_gouqi.py --quality draft   --out /tmp/x.png                       # ~20 s
-    python m02_gouqi.py --quality draft   --res 2112x1188 --region 0.3,0.5,0.6,0.8   # final-density crop
+    python m02_gouqi.py --quality final   --region 0.36,0.56,0.64,0.86  --out /tmp/c.png  # exact final pixels of a crop
     python m02_gouqi.py --quality final   --out film/renders/m02_gouqi.png        # still + _depth.npy
 
 Structure (copy it):  1 variants (numpy geometry with REAL wrinkles + per-vertex masks)
@@ -25,9 +25,11 @@ R_DOME = 0.26             # bare dome radius -> berries ~150-220 px long in the 
 # ----------------------------------------------------------------------------- 1. geometry
 def make_berry(seed, with_stem=False, nu=230, nv=132):
     """One dried goji berry as numpy arrays.  Long axis = X (stem end at -X), flat side = Z.
-    Returns (verts, faces, attrs, half_sizes, stem_parts)."""
+    Returns (parts, attrs, half_sizes): parts = [(verts, faces, material_slot), ...] for
+    C.merge_meshes (slot 0 skin, slot 1 stem), attrs = per-vertex shader masks, half_sizes =
+    tight (a, b, c) half extents in metres = the collision proxy for C.pack_heap."""
     rng = np.random.default_rng(1000 + seed)
-    L = rng.uniform(0.0115, 0.0170)                 # length
+    L = rng.uniform(0.0105, 0.0172)                 # length
     Wd = rng.uniform(0.0056, 0.0074)                # width
     Th = Wd * rng.uniform(0.58, 0.80)               # thickness: dried berries are flattened
     s = np.linspace(0.0, 1.0, nu)[:, None]          # 0 = stem end, 1 = tip
@@ -128,7 +130,7 @@ def goji_material(sss_method='RANDOM_WALK'):
     P = m.per_instance_coords()                                     # object coords, unique per berry
     # colour: orange-red crests, deep crimson creases, slow mottling, per-berry jitter
     mott = m.noise(scale=420, detail=3, roughness=0.55, vector=P)
-    crest = m.mix((0.400, 0.011, 0.009), (0.520, 0.034, 0.010), m.map_range(mott, 0.35, 0.70))
+    crest = m.mix((0.400, 0.010, 0.009), (0.510, 0.026, 0.010), m.map_range(mott, 0.35, 0.70))
     col = m.mix(crest, (0.120, 0.003, 0.005), m.map_range(cav, 0.08, 0.85, 0.0, 0.92, smooth=True))
     col = m.jitter(col, hue=0.012, saturation=0.08, value=0.22)
     # some berries are older / darker / browner (per-instance attribute written by the shot)
@@ -151,7 +153,7 @@ def goji_material(sss_method='RANDOM_WALK'):
     nrm = m.bump(crinkle, strength=0.8, distance=0.00013)
     nrm = m.micro_bump(scale=9000, strength=0.5, distance=0.00004, vector=P, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.47, specular=0.42,
-          sss=0.60, sss_radius=(1.0, 0.18, 0.08), sss_scale=0.0011, sss_anisotropy=0.0,
+          sss=0.60, sss_radius=(1.0, 0.14, 0.07), sss_scale=0.0011, sss_anisotropy=0.0,
           normal=nrm)
     return m
 

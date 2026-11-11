@@ -75,8 +75,8 @@ def parse_args(argv=None, **defaults):
                                     (image convention).  The PNG keeps the full frame size.
     --threads N                     CPU threads (default 4)
     --seed N                        random seed for the shot (default 1)
-    --spp N / --res WxH             override preset samples / resolution (e.g. look at a final-density
-                                    crop cheaply: --quality draft --res 2112x1188 --region ...)
+    --spp N / --res WxH             override preset samples / resolution.  To pixel-peep cheaply use
+                                    --quality final --region ... (exact final sampling, crop only)
     --depth                         also write <out>_depth.npy (always on at final quality, full frame)
     --comp PATH                     the shot may write its quick_comp preview here
     --no-denoise                    skip OIDN (to judge raw noise)
@@ -806,7 +806,7 @@ def pack_heap(R, extent, shapes, layers=3.0, coverage=0.72, seed=0, weights=None
     oriented to the least-squares plane of the heightfield under its footprint (clamped to
     max_slope_deg) plus random tilt/roll; then stamped into the heightfield (exact upper surface
     of the rotated ellipsoid).  Items therefore never interpenetrate by more than `sink`.
-    Returns a Heap.  Speed: ~25 us x candidates per item (300k grains x 2 candidates = ~1 min).
+    Returns a Heap.  Speed: ~0.1 ms x candidates per item (1450 items x 6 = 0.9 s; 100k grains x 2 = ~20 s).
     """
     rng = np.random.default_rng(seed)
     shapes = np.atleast_2d(np.asarray(shapes, float))
