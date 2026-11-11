@@ -1,0 +1,1362 @@
+{
+  "group": "antiques-b",
+  "searchesUsed": 17,
+  "method": "全部依据 WebSearch（standard）返回的综合摘要与链接列表判断，未打开任何原页面（本任务禁用 WebFetch）。搜索工具只给出“链接列表 + 一段综合摘要”，摘要有时不逐条标明出处：凡摘要明确点名来源、或同一事实在摘要中以两段不同措辞／两次检索出现的，才记为 verified-2plus-independent；摘要只给出一句而未说明几处支持的，一律按保守原则记 single-source。sources 中的 url 均为检索结果里真实出现的链接；title 为检索结果显示的标题，检索结果未显示标题的写明“未显示标题”并附主题说明。depiction / pitfalls 结合了资料与通行常识，其中纯属常识、未经本次检索支持的条目已标“（常识，未检索）”。",
+  "coverageGaps": [
+    "17 次额度用尽，以下题材没有分到任何一次检索，captionFacts 全部为 unverified：文玩核桃（s04）、缠丝玛瑙（s25）、泥金折扇（s37）。成片说明如要写这三项的任何年代、产地、品种名，须另行核实。",
+    "以下要点检索过但摘要未覆盖，仍为 unverified：翡翠传入清宫的具体年代；白玉透雕（镂雕）的流行年代；缂丝“通经断纬”“一寸缂丝一寸金”；“累丝”“炸珠”两个术语本身；金丝翼善冠出土于定陵；线装书书衣用磁青纸与书签位置；《宣和博古图》著录“839 件”的确数；椅圈古称“栲栳样”。"
+  ],
+  "subjects": [
+    {
+      "shots": ["s02"],
+      "name_zh": "蜜蜡朝珠（清代朝珠；典制用字为“蜜珀”）",
+      "depiction": [
+        "一圈 108 颗大小一致的圆珠，蜜黄至琥珀色；蜜蜡偏不透明、蜡状柔光，琥珀偏透明，可在同一串里略有深浅差异。",
+        "圆周被四颗明显更大、颜色对比强的大珠（佛头／分珠）等分成四段，每段 27 颗；画面只取一段弧时，弧上最好出现一颗大珠（清宫实物的分珠常用翠、青金石、碧玺等异色料——常识，未检索）。",
+        "顶端那颗佛头连着葫芦形的“佛头塔”，其下一条绦带垂在背后，绦带中段缀扁圆的“背云”，末端是水滴形“大坠”。",
+        "两侧共三串小珠“纪念”，每串 10 颗，末端各有小“坠角”；一侧两串、另一侧一串，垂在胸前。",
+        "绦带颜色随身份：典制记皇帝用明黄绦，皇子、亲王以下用金黄绦。"
+      ],
+      "pitfalls": [
+        "画成普通佛珠手串或大小渐变的项链：朝珠珠粒等大，且必有分珠、佛头塔、背云、纪念这些部件。",
+        "纪念不是左右对称的两串或四串，而是共三串、一边二一边一。",
+        "用字：清代典制写的是“蜜珀”，对应皇帝祭地所佩；“蜜蜡朝珠”是通俗说法，成片说明不要写成“皇帝日常佩戴蜜蜡朝珠”。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "清代朝珠一串有 108 颗主珠，另有佛头（分珠）、佛头塔、背云、纪念、大坠、坠角等部件。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "（检索结果未显示标题；内容为清代朝珠形制与典制介绍）", "url": "https://www.sohu.com/a/899849296_99967797", "date": "未标注"},
+            {"publisher": "Skyjems（加拿大宝石商的百科页）", "title": "Encyclopedia: Mandarin Court Necklace", "url": "https://skyjems.ca/pages/encyclopedia-mandarin-court-necklace", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "title": "Chaozhu", "url": "https://www.Wikipedia.com/wiki/Chaozhu", "date": "未标注"}
+          ],
+          "note": "两次检索的摘要都给出 108 颗；第二次检索的摘要还引《皇朝礼器图式》“皇帝朝珠用一百零八颗东珠”。搜狐该页在两次检索中都出现。摘要未逐条标明出处。"
+        },
+        {
+          "claim": "108 颗主珠被大珠（佛头／分珠）等分为四段，每段 27 颗。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "（检索结果未显示标题；内容为朝珠结构介绍）", "url": "https://www.sohu.com/a/464940455_209689", "date": "未标注"},
+            {"publisher": "Skyjems（加拿大宝石商的百科页）", "title": "Encyclopedia: Mandarin Court Necklace", "url": "https://skyjems.ca/pages/encyclopedia-mandarin-court-necklace", "date": "未标注"}
+          ],
+          "note": "摘要原话是“佛头（亦称分珠）由三颗大珠组成……将 108 颗珠分为四份，每份 27 颗”，未说明几处来源支持，按保守原则记 single-source。“三颗”应是不含顶端连佛头塔那一颗的数法；画面按“圆周四等分、共四个大珠位”处理即可。"
+        },
+        {
+          "claim": "纪念是三串小珠，每串 10 颗；佩戴时佛头塔与背云垂在背后，三串纪念列于胸前。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "（检索结果未显示标题；内容为朝珠结构介绍）", "url": "https://www.sohu.com/a/464940455_209689", "date": "未标注"},
+            {"publisher": "Skyjems（加拿大宝石商的百科页）", "title": "Encyclopedia: Mandarin Court Necklace", "url": "https://skyjems.ca/pages/encyclopedia-mandarin-court-necklace", "date": "未标注"}
+          ],
+          "note": "摘要未标明这两句分别出自哪一页，保守记 single-source。"
+        },
+        {
+          "claim": "纪念的排法：一侧两串、另一侧一串；有资料称男性两串在左、一串在右，女性相反。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "（检索结果未显示标题；内容为清代朝珠形制与典制介绍）", "url": "https://www.sohu.com/a/899849296_99967797", "date": "未标注"}
+          ],
+          "note": "“一边二、一边一”两份资料一致；左右与性别的对应只有一份资料提到，见 conflicts。画面不要靠左右排法表达性别。"
+        },
+        {
+          "claim": "清代典制：皇帝朝珠用东珠 108 颗、绦用明黄；祭天佩青金石、祭地佩蜜珀、朝日佩珊瑚、夕月佩绿松石朝珠。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "（检索结果未显示标题；内容为清代朝珠形制与典制介绍）", "url": "https://www.sohu.com/a/899849296_99967797", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "title": "Chaozhu", "url": "https://www.Wikipedia.com/wiki/Chaozhu", "date": "未标注"},
+            {"publisher": "看中国（secretchina.com）", "title": "（检索结果未显示标题；文中引《皇朝文献通考》卷一百四十一“皇帝朝珠”条）", "url": "https://www.secretchina.com/news/gb/2022/10/16/1018001.html", "date": "2022-10-16（据 URL）"}
+          ],
+          "note": "摘要称“各来源基本一致”，并指出原文出自《皇朝文献通考》卷一百四十一与《皇朝礼器图式》；本人未核对原典。看中国一站立场与可信度存疑，只因摘要点名它引有原典文字才列出，成片说明请直接写典籍名，不要引该站。"
+        },
+        {
+          "claim": "典制里的“蜜珀”，通俗解说多释为蜜蜡朝珠或琥珀朝珠。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "（检索结果未显示标题；内容为清代朝珠形制与典制介绍）", "url": "https://www.sohu.com/a/899849296_99967797", "date": "未标注"}
+          ],
+          "note": "摘要原话“一篇解说文章把祭地用的蜜珀解释为蜜腊朝珠或琥珀朝珠”，未点名是哪一页。蜜蜡是否即不透明的琥珀，本次未检索。"
+        },
+        {
+          "claim": "皇子、亲王及以下不得用东珠，朝珠材质限于珊瑚、青金石、绿松石、蜜珀等，绦用金黄色。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "（检索结果未显示标题；内容为清代朝珠形制与典制介绍）", "url": "https://www.sohu.com/a/899849296_99967797", "date": "未标注"}
+          ],
+          "note": "摘要写“据一篇文章介绍”，未点名来源。"
+        },
+        {
+          "claim": "朝珠的材质与绦带颜色按佩戴者的身份品级有别；宾夕法尼亚大学博物馆藏有一串玻璃与玉质朝珠，馆方记为二品官员朝服配饰。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "Penn Museum（宾夕法尼亚大学博物馆）", "title": "藏品页 230142（朝珠；检索结果未显示标题）", "url": "https://collections.penn.museum/collections/object/230142", "date": "未标注"},
+            {"publisher": "Skyjems（加拿大宝石商的百科页）", "title": "Encyclopedia: Mandarin Court Necklace", "url": "https://skyjems.ca/pages/encyclopedia-mandarin-court-necklace", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "title": "Chaozhu", "url": "https://www.Wikipedia.com/wiki/Chaozhu", "date": "未标注"}
+          ],
+          "note": "“按品级区别材质”两次检索的摘要都提到；二品官员这一条只来自宾大博物馆藏品页。"
+        }
+      ],
+      "conflicts": [
+        "纪念的左右排法：一份资料说男性两串在左、一串在右，女性相反；另一份只说一侧一串、另一侧两串，不分性别。采信两者的共同点（一边二、一边一）；左右与性别的对应仅单一来源，不上字幕。",
+        "分隔大珠的数目：摘要写“佛头（分珠）由三颗大珠组成”，同时又说把 108 颗分成四份。闭合的一圈要四等分需四个分隔位，推断“三颗”未计入顶端连佛头塔的那一颗；画面按四个大珠位处理。",
+        "用字：典制作“蜜珀”，分镜写“蜜蜡朝珠”。二者通俗上被视为同类材质，但只有单一来源支持，成片说明建议写“蜜珀（蜜蜡）朝珠”或只写“朝珠”。"
+      ]
+    },
+    {
+      "shots": ["s03"],
+      "name_zh": "田黄石印钮（萝卜丝纹）",
+      "depiction": [
+        "颜色：橙黄、枇杷黄到金黄，外层色浓、向内渐淡；微透明至半透明，油润的蜡状光泽，不是玻璃光。",
+        "萝卜纹（俗称萝卜丝纹）：肌理内部细密、若隐若现的浅色细丝，近于平行或网状，像切开的萝卜丝；要细、密、隐。",
+        "红筋（红格）：一两道细的红色格纹；石皮：局部可留薄薄一层黄色或灰黑色外皮。",
+        "田黄是无根的卵石状独石，外形浑圆无棱角；分镜里的“发光的橙黄圆顶”与此相符。",
+        "若表现印钮，钮部雕刻浅而随形；印面不要出现文字。"
+      ],
+      "pitfalls": [
+        "画成全透明的琥珀／黄水晶，或不透明的蜡黄塑料。",
+        "萝卜纹画成粗大的大理石脉、木纹或放射线。",
+        "出现未经核实的印文、边款或“某某款”字样。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "田黄是寿山石中的田坑石品种，产于福建福州寿山村溪流两岸的水田及河床底部的砂砾层中。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "人民政协网", "title": "（检索结果未显示标题；收藏鉴宝栏目的田黄文章）", "url": "https://www.rmzxw.com.cn/scjb/zsjt/wwzx/2014/02/13/273697.shtml", "date": "2014-02-13（据 URL）"},
+            {"publisher": "雅昌艺术网", "title": "（检索结果未显示标题；田黄石相关资讯）", "url": "https://m-news.artron.net/news/20260827/n1265502.html", "date": "未标注"},
+            {"publisher": "中国科协科技期刊平台（期刊论文 PDF）", "title": "（检索结果未显示标题；论文指出田黄主要矿物为地开石）", "url": "https://castjournals.cast.org.cn/joweb/sysjc/CN/PDF/1156668073517110052", "date": "未标注"}
+          ],
+          "note": "摘要写的溪名是“坑头溪”；溪名未另行核对，字幕建议只写“福建福州寿山”。雅昌该文同一编号以多个日期 URL 出现，日期不可靠。"
+        },
+        {
+          "claim": "鉴别田黄的常用特征是萝卜纹（俗称萝卜丝纹）、红筋（红格）和石皮，但仅凭这三项不足以定论。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "人民政协网", "title": "（检索结果未显示标题；收藏鉴宝栏目的田黄文章）", "url": "https://www.rmzxw.com.cn/scjb/zsjt/wwzx/2014/02/13/273697.shtml", "date": "2014-02-13（据 URL）"},
+            {"publisher": "全国团体标准信息平台", "title": "（检索结果未显示标题；寿山石团体标准 PDF）", "url": "https://www.ttbz.org.cn/Home/PdfFileStreamGet/c3QsMjIwMzM(eq)", "date": "未标注"}
+          ],
+          "note": "收藏文章用“萝卜丝纹、红筋、石皮”；团体标准的写法是条纹构造俗称“萝卜纹”、红筋构造俗称“红筋格”。两种叫法都可用。"
+        },
+        {
+          "claim": "田黄外观：肌理隐约可见萝卜纹状细纹，颜色外浓内淡，表面时有黄色或灰黑色石皮，间有红色格纹。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "雅昌艺术网", "title": "（检索结果未显示标题；田黄石相关资讯）", "url": "https://m-news.artron.net/news/20260827/n1265502.html", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处，按主题相符列雅昌一页。"
+        },
+        {
+          "claim": "田黄的主要矿物是地开石，而不是过去认为的叶蜡石。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国科协科技期刊平台（期刊论文 PDF）", "title": "（检索结果未显示标题；论文指出田黄主要矿物为地开石）", "url": "https://castjournals.cast.org.cn/joweb/sysjc/CN/PDF/1156668073517110052", "date": "未标注"}
+          ],
+          "note": "寿山石团体标准把地开石列为寿山石主要矿物（高岭石族）之一，但那是就寿山石整体而言，不单指田黄。"
+        },
+        {
+          "claim": "广义的田黄石指田坑石，狭义的田黄石指田坑石中呈黄色者。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "全国团体标准信息平台", "title": "（检索结果未显示标题；寿山石团体标准 PDF）", "url": "https://www.ttbz.org.cn/Home/PdfFileStreamGet/c3QsMjIwMzM(eq)", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处，按行文推断出自标准或论文。"
+        },
+        {
+          "claim": "田黄仅产于寿山一片不到 1 平方公里的田地。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "人民政协网", "title": "（检索结果未显示标题；收藏鉴宝栏目的田黄文章）", "url": "https://www.rmzxw.com.cn/scjb/zsjt/wwzx/2014/02/13/273697.shtml", "date": "2014-02-13（据 URL）"}
+          ],
+          "note": "收藏类文章的说法，面积数字没有第二个来源，不建议上字幕。"
+        }
+      ],
+      "conflicts": [
+        "矿物成分：旧说田黄为叶蜡石，论文认为主要是地开石。采信论文，但成片不必写矿物名。"
+      ]
+    },
+    {
+      "shots": ["s33"],
+      "name_zh": "鸡血石",
+      "depiction": [
+        "“血”是朱砂红（正红略偏橙），呈团块、条带、云絮或星点状不规则分布。",
+        "“地”为灰白、灰黑、黑、黄或粉白等色，微透明至不透明，蜡状光泽；分镜的“黑灰地子”成立。",
+        "昌化一路的血色与地子界线分明；巴林一路多为渐变过渡。",
+        "质地细腻，抛光面柔亮；血斑边缘常带细碎的红色微粒（分镜里的“微粒”合理）。"
+      ],
+      "pitfalls": [
+        "把血画成均匀喷点、规则花纹或红色大理石脉。",
+        "血色画成荧光洋红或暗紫；辰砂是朱红。",
+        "整块画成全红；一般是红与地相间。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "鸡血石因含有鲜红如鸡血的辰砂而得名。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "汉典（zdic.net）", "title": "鸡血石（词条）", "url": "https://www.zdic.net/hant/鸡血石", "date": "未标注"},
+            {"publisher": "《宝石和宝石学杂志》（中国地质大学）", "title": "（检索结果未显示标题；鸡血石矿物学论文 PDF）", "url": "https://jogg.cug.edu.cn/cn/article/pdf/preview/640f0fc2-11a1-4833-b746-a931f5813b3e.pdf", "date": "未标注"},
+            {"publisher": "雅昌艺术网", "title": "（检索结果未显示标题；鸡血石资讯）", "url": "https://m-news.artron.net/news/20210505/n1899908.html", "date": "未标注"}
+          ],
+          "note": "摘要中以两段不同措辞出现（“因含有鲜红似鸡血的辰砂而得名”“因含辰砂，红如鸡血而得名”）。"
+        },
+        {
+          "claim": "鸡血石主要有两处产地：浙江临安昌化（上溪玉岩山）和内蒙古赤峰巴林右旗；昌化发现在先。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "《宝石和宝石学杂志》（中国地质大学）", "title": "（检索结果未显示标题；鸡血石矿物学论文 PDF）", "url": "https://jogg.cug.edu.cn/cn/article/pdf/preview/640f0fc2-11a1-4833-b746-a931f5813b3e.pdf", "date": "未标注"},
+            {"publisher": "SciEngine（期刊论文 PDF）", "title": "（检索结果未显示标题；巴林鸡血石成因与矿物学论文）", "url": "https://www.sciengine.com/doi/pdfView/C0E2C43BBEB14A8F96712F164FC7736C", "date": "未标注"},
+            {"publisher": "雅昌艺术网", "title": "（检索结果未显示标题；鸡血石资讯）", "url": "https://m-news.artron.net/news/20210505/n1899908.html", "date": "未标注"}
+          ],
+          "note": "摘要未逐条标明出处；昌化、巴林两处产地在摘要里以多段不同引文出现。"
+        },
+        {
+          "claim": "昌化鸡血石的“地”主要由地开石组成（过去长期认为是叶蜡石，经分析后修正）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "《宝石和宝石学杂志》（中国地质大学）", "title": "（检索结果未显示标题；鸡血石矿物学论文 PDF）", "url": "https://jogg.cug.edu.cn/cn/article/pdf/preview/640f0fc2-11a1-4833-b746-a931f5813b3e.pdf", "date": "未标注"}
+          ],
+          "note": "摘要称“黑冻、芙蓉冻鸡血玉的主要矿物成分为地开石和辰砂”。"
+        },
+        {
+          "claim": "巴林鸡血石的基质以高岭石族矿物为主。",
+          "status": "conflicting",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "SciEngine（期刊论文 PDF）", "title": "（检索结果未显示标题；巴林鸡血石成因与矿物学论文）", "url": "https://www.sciengine.com/doi/pdfView/C0E2C43BBEB14A8F96712F164FC7736C", "date": "未标注"},
+            {"publisher": "SciEngine（期刊论文 PDF）", "title": "（检索结果未显示标题；巴林石矿物学论文）", "url": "https://www.sciengine.com/doi/pdfView/E238588EC04A489A8E499E953379C188", "date": "未标注"}
+          ],
+          "note": "具体矿物各文说法不一，见 conflicts。成片不要写矿物名。"
+        },
+        {
+          "claim": "民间有“南血北地”之说：昌化鸡血石以血色见长，巴林鸡血石以地子细腻见长。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "个人博客（hsilingtaipei.blogspot.com）", "title": "2015年11月6日 星期五", "url": "https://hsilingtaipei.blogspot.com/2015/11", "date": "2015-11（据 URL）"}
+          ],
+          "note": "摘要自注“民间收藏资料，可靠性较弱”。"
+        },
+        {
+          "claim": "昌化鸡血石的血色与地子往往截然分开，巴林鸡血石多渐变过渡，且见光后易转暗红。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "个人博客（hsilingtaipei.blogspot.com）", "title": "2015年11月6日 星期五", "url": "https://hsilingtaipei.blogspot.com/2015/11", "date": "2015-11（据 URL）"}
+          ],
+          "note": "摘要未点名出处，同属收藏类说法。"
+        }
+      ],
+      "conflicts": [
+        "巴林鸡血石基质矿物：一文称主要是高岭石和硬水铝石，一文称实为高岭石（含辰砂高岭石），另一文称由高岭石化、地开石化和汞矿化作用形成。摘要自己也指出“两个产地的矿物归属在文献中仍有不同表述”。采信最宽的说法“高岭石族矿物为主”，成片不写。"
+      ]
+    },
+    {
+      "shots": ["s04"],
+      "name_zh": "文玩核桃",
+      "depiction": [
+        "（常识，未检索）近球形略扁，底部较平、中央有脐，顶端有小尖。",
+        "（常识，未检索）表面纹路深而粗，沟壑纵横，纹脊圆钝，不是规则网格。",
+        "（常识，未检索）中间一道纵向凸起的缝合线（“边”），把壳分成两半，边较宽厚。",
+        "（常识，未检索）把玩日久呈枣红到深棕红，凸处光亮、沟内发暗；通常成对，大小与纹路相近。"
+      ],
+      "pitfalls": [
+        "画成食用核桃：壳薄、纹浅、淡黄褐色。",
+        "纹路画成规则的蜂窝或网格。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "文玩核桃多取麻核桃，成对在掌中揉转把玩，日久形成红润包浆。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "17 次检索额度已全部用于其他题材，本题材没有检索。属通行说法，成片说明如需引用请另行核实。"
+        },
+        {
+          "claim": "常见品种名有狮子头、官帽、公子帽、鸡心等。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "同上，未检索；品种名不要上字幕。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s06"],
+      "name_zh": "螺钿漆器",
+      "depiction": [
+        "黑漆地，贝片嵌入后与漆面齐平、整体打磨光亮。",
+        "纹样由许多切割好的小贝片拼成：花瓣、叶、枝梗各是一片或数片，片与片之间有细细的漆缝；薄螺钿（点螺）更是细碎的小点、细条。",
+        "薄螺钿虹彩明显，蓝绿、粉紫、金黄随角度变化；厚螺钿偏白，带珍珠光。",
+        "缠枝花纹连续回转，主花之间以卷曲枝蔓相连。",
+        "（常识，未检索）贝片上常再刻细线表现叶脉与花蕊。"
+      ],
+      "pitfalls": [
+        "画成整片连续的彩虹渐变贴膜，没有拼片的缝。",
+        "虹彩过饱和成霓虹色，或贝片凸出漆面像浮雕。",
+        "底色画成蓝黑或木色；应是黑漆。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "螺钿是把贝壳薄片嵌贴在漆地上作纹饰的工艺，也用于铜镜背面和家具。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "谈漆论画 | 解密漆画表现技法之螺钿镶嵌", "url": "https://www.sohu.com/a/159019807_285656", "date": "未标注"},
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；螺钿漆器相关报道）", "url": "https://m.thepaper.cn/newsDetail_forward_2635970", "date": "未标注"},
+            {"publisher": "日本国土交通省观光厅多语言解说数据库", "title": "（检索结果未显示标题；螺钿解说文 PDF）", "url": "https://www.mlit.go.jp/tagengo-db/common/001777553.pdf", "date": "未标注"}
+          ],
+          "note": "摘要未逐条标明出处；三类来源都在讲螺钿镶嵌。"
+        },
+        {
+          "claim": "中国螺钿工艺起源于商周时期，唐代成熟，明清达到鼎盛。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "谈漆论画 | 解密漆画表现技法之螺钿镶嵌", "url": "https://www.sohu.com/a/159019807_285656", "date": "未标注"},
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；螺钿相关科普）", "url": "https://m.thepaper.cn/detail/31625660", "date": "未标注"}
+          ],
+          "note": "摘要引了两篇文章：一篇说“相传起源于商代的漆器”并举西周出土实物，一篇说“起源于商周时期，成熟于唐代，鼎盛于明清”。“商代起源”只是相传，稳妥写法是“商周已有”。"
+        },
+        {
+          "claim": "20 世纪 80 年代，北京琉璃河西周燕国墓地出土过嵌螺钿漆器。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "谈漆论画 | 解密漆画表现技法之螺钿镶嵌", "url": "https://www.sohu.com/a/159019807_285656", "date": "未标注"}
+          ],
+          "note": "摘要引文里地名误作“玻璃河”，应是原页面的错字；摘要未点名是哪一页。"
+        },
+        {
+          "claim": "唐代螺钿已相当成熟，代表品类是铜镜的漆背螺钿。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "谈漆论画 | 解密漆画表现技法之螺钿镶嵌", "url": "https://www.sohu.com/a/159019807_285656", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处。"
+        },
+        {
+          "claim": "螺钿按贝片厚薄分两类：厚螺钿（硬螺钿，扬州称“平磨螺钿”）与薄螺钿（软螺钿，因贝片细小需一点点粘贴，又称“点螺”）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "谈漆论画 | 解密漆画表现技法之螺钿镶嵌", "url": "https://www.sohu.com/a/159019807_285656", "date": "未标注"},
+            {"publisher": "日本国土交通省观光厅多语言解说数据库", "title": "（检索结果未显示标题；螺钿解说文 PDF）", "url": "https://www.mlit.go.jp/tagengo-db/common/001777552.pdf", "date": "未标注"}
+          ],
+          "note": "“厚、薄两类”有中文文章与日本官方解说两处支持；“平磨螺钿”“点螺”两个名称只见于中文文章；日本资料给的厚度界线（厚贝 0.1—2 毫米，薄贝 0.1 毫米以下）是日本的分法，不要当作中国标准上字幕。"
+        },
+        {
+          "claim": "宋元时期的螺钿漆器传世极少，实物大多保存在日本（上海博物馆研究员语）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；螺钿漆器相关报道）", "url": "https://m.thepaper.cn/newsDetail_forward_2635970", "date": "未标注"}
+          ],
+          "note": "摘要未点名是澎湃两页中的哪一页。"
+        },
+        {
+          "claim": "乾隆三十六年（1771），两淮盐政李质颖的贡单上列有十余件扬州螺钿家具。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "谈漆论画 | 解密漆画表现技法之螺钿镶嵌", "url": "https://www.sohu.com/a/159019807_285656", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处；细节不建议上字幕。"
+        }
+      ],
+      "conflicts": [
+        "起源：一说“相传起源于商代”，一说“起源于商周”。有实物依据的是西周（琉璃河），采信“商周已有、西周有出土实物”。"
+      ]
+    },
+    {
+      "shots": ["s09"],
+      "name_zh": "翡翠（雕叶）",
+      "depiction": [
+        "翠绿（阳绿）为主，颜色不完全均匀，可见深浅过渡与色根。",
+        "半透明，玻璃光泽，比和田玉更亮更冷。",
+        "叶形薄片，叶脉用阴刻线或浅浮雕表现，边缘打磨圆润。",
+        "衬底为米色绫，斜纹地上隐约的暗花即可。"
+      ],
+      "pitfalls": [
+        "画成祖母绿刻面宝石那样全透，或塑料般均匀的绿。",
+        "与碧玉（深绿、油脂光泽的和田玉）混淆。",
+        "成片说明写“自古”“千年翡翠”之类：翡翠传入中国宫廷的年代本次未能核实，不要写年代。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "翡翠的主要矿物是硬玉（辉石类），与以透闪石为主的和田玉（软玉）是两种不同的玉。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "Wikipedia（英文）", "title": "Jade", "url": "https://www.Wikipedia.com/wiki/Jade", "date": "未标注"},
+            {"publisher": "买购网（maigoo）", "title": "（检索结果未显示标题；翡翠与和田玉对比，引 GB/T 16553）", "url": "https://www.maigoo.com/goomai/742016.html", "date": "未标注"},
+            {"publisher": "美国宝石研究院（GIA）中文站", "title": "（检索结果未显示标题；大型翡翠雕件研究报道）", "url": "https://www.gia.edu/CN/gia-news-research-largest-jadeite-carving-lucas", "date": "未标注"}
+          ],
+          "note": "摘要未逐条标明出处。"
+        },
+        {
+          "claim": "翡翠主要产于缅甸。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "环球网", "title": "（检索结果未显示标题；缅甸翡翠产地与成因）", "url": "https://www.huanqiu.com/article/4HEjMlVabvr", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "title": "Jade", "url": "https://www.Wikipedia.com/wiki/Jade", "date": "未标注"},
+            {"publisher": "美国宝石研究院（GIA）中文站", "title": "（检索结果未显示标题；大型翡翠雕件研究报道）", "url": "https://www.gia.edu/CN/gia-news-research-largest-jadeite-carving-lucas", "date": "未标注"}
+          ],
+          "note": "摘要直接引用的是环球网一段（印度洋板块与亚欧板块交会、高压低温环境）；其余两页为同次检索返回的主题相符页面，摘要未逐条对应。"
+        },
+        {
+          "claim": "翡翠硬度高于和田玉、更耐划，但较脆；和田玉韧性更强。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "买购网（maigoo）", "title": "（检索结果未显示标题；翡翠与和田玉对比）", "url": "https://www.maigoo.com/goomai/742016.html", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处，按行文推断。"
+        },
+        {
+          "claim": "清宫喜用翡翠，慈禧太后偏爱翡翠手镯与珠串。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "uptogo（台湾网站）", "title": "（检索结果未显示标题；翡翠与和田玉介绍）", "url": "https://uptogo.com.tw/?p=67291", "date": "未标注"}
+          ],
+          "note": "摘要引的是一段繁体文字，未点名出处，按繁体推断为该页。属通俗说法。"
+        },
+        {
+          "claim": "翡翠在清代才大量输入中国并进入宫廷。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索过，摘要明确说“没有找到翡翠何时传入宫廷的可靠记载”。不要上字幕。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s24"],
+      "name_zh": "白玉透雕（和田玉镂空花鸟）",
+      "depiction": [
+        "羊脂白：不是纯白，而是微带暖黄的凝脂之白；半透明，油脂光泽，高光柔和。",
+        "镂空处的孔壁有厚度（可见内壁的明暗），边缘圆润，不是刀切的锐边。",
+        "花枝穿插叠压、禽鸟居中，羽毛和叶脉用细阴刻线表现。",
+        "（常识，未检索）整体多为片状牌饰或带饰，外廓圆形、椭圆或随形，可带边框。"
+      ],
+      "pitfalls": [
+        "画成纸一样薄的白色蕾丝或剪纸，没有玉的厚度与圆润。",
+        "冷白、纯白，或瓷器、塑料质感。",
+        "高光像玻璃那样尖锐。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "和田玉学名软玉，主要矿物是透闪石。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "买购网（maigoo）", "title": "（检索结果未显示标题；引国家标准 GB/T 16553）", "url": "https://www.maigoo.com/goomai/742016.html", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "title": "Jade", "url": "https://www.Wikipedia.com/wiki/Jade", "date": "未标注"}
+          ],
+          "note": "摘要未逐条标明出处。摘要里“透闪石含量需达 95% 以上”一句只有单一出处且未核对标准原文，不要引用。"
+        },
+        {
+          "claim": "按国家标准 GB/T 16553，“和田玉”是玉种名称，不代表产地。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "买购网（maigoo）", "title": "（检索结果未显示标题；引国家标准 GB/T 16553）", "url": "https://www.maigoo.com/goomai/742016.html", "date": "未标注"}
+          ],
+          "note": "二手转述，未核对标准原文。成片说明如写“和田白玉”，不等于宣称产自新疆和田。"
+        },
+        {
+          "claim": "羊脂白玉的白不是纯白，而是微带暖黄色调的凝脂之白。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "uptogo（台湾网站）", "title": "（检索结果未显示标题；翡翠与和田玉介绍）", "url": "https://uptogo.com.tw/?p=67291", "date": "未标注"}
+          ],
+          "note": "摘要引的是繁体文字，按此推断出处。"
+        },
+        {
+          "claim": "和田玉韧性极强，适合精细雕刻。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "买购网（maigoo）", "title": "（检索结果未显示标题；翡翠与和田玉对比）", "url": "https://www.maigoo.com/goomai/742016.html", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处。"
+        },
+        {
+          "claim": "透雕（镂雕）花鸟白玉饰件的流行年代与工艺特点。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索过，摘要明确说“没有关于镂雕、透雕工艺的内容”。成片说明只写“白玉透雕”即可，不要写朝代。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s08"],
+      "name_zh": "青铜鼎的 X 光片与铸造垫片",
+      "depiction": [
+        "灰阶影像，全片统一一种极性：按分镜的“负片质感”，金属越厚越亮，空处为黑。",
+        "鼎：圆腹、口沿上一对立耳、三足；口沿加厚处是一圈更亮的弧，立耳与足的实心部分最亮。",
+        "垫片：器壁上零散分布的小方块或不规则四边形，相对器身很小，灰度与周围器壁略有差别（一项鼎的研究里是“较暗的方形”）。",
+        "（常识，未检索）可带一两条合范留下的细范线和几粒气孔小点，增加真实感。",
+        "纹饰在 X 光下只是细密的明暗纹理，不必画清。"
+      ],
+      "pitfalls": [
+        "把垫片画成铆钉、圆点阵列，或排得像网格一样整齐。",
+        "画成医学 X 光那种蓝色调，或玻璃般通透的器壁。",
+        "鼎耳画到腹侧；分镜写的是口沿上的立耳。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "垫片（英文 spacer / chaplet）是范铸青铜器时放在内范（芯）与外范之间、用来固定间距的小片；浇铸后往往没有与铜液完全熔合，在成品表面或 X 光片上常能看到。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "Canadian Association for Conservation（J.IIC-CG 期刊）", "title": "X-radiography study of a Chinese kuei vessel in the Krannert Art Museum collection（J.IIC-CG Volume 10 & 11, 1985/1986）", "url": "https://www.cac-accr.ca/publications/x-radiography-study-of-a-chinese-kuei-vessel-in-the-krannert-art-museum-collection", "date": "1985/1986（卷期）"},
+            {"publisher": "Smithsonian Museum Conservation Institute", "title": "（检索结果未显示标题；青铜器铸造技术说明）", "url": "https://mci.si.edu/node/1318618", "date": "未标注"},
+            {"publisher": "ISIJ International（J-STAGE）", "title": "（检索结果未显示标题；Vol.54 No.5 第 1131 页起的论文）", "url": "https://www.jstage.jst.go.jp/article/isijinternational/54/5/54_1131/_html/-char/en", "date": "未标注"}
+          ],
+          "note": "摘要分别引了：一件西周器的 X 光研究（见范线与垫片，判断为块范铸造）；一段弗利尔相关说明（垫片未完全熔合，成品上或 X 光下可见）；以及“垫片用于固定芯与外范位置”。中文“垫片”与英文 spacer / chaplet 的对应来自检索用词，未见专门出处。"
+        },
+        {
+          "claim": "X 光照相（及 CT）已用于研究中国青铜器的铸造工艺，例如克兰纳特美术馆藏的一件西周簋，以及大英博物馆藏的东周鼎。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "Canadian Association for Conservation（J.IIC-CG 期刊）", "title": "X-radiography study of a Chinese kuei vessel in the Krannert Art Museum collection（J.IIC-CG Volume 10 & 11, 1985/1986）", "url": "https://www.cac-accr.ca/publications/x-radiography-study-of-a-chinese-kuei-vessel-in-the-krannert-art-museum-collection", "date": "1985/1986（卷期）"},
+            {"publisher": "Historical Metallurgy（hmsjournal.org）", "title": "（检索结果未显示标题；东周鼎的数字 X 光与 CT 研究）", "url": "https://hmsjournal.org/index.php/home/article/download/20/19/19", "date": "未标注"}
+          ],
+          "note": "大英博物馆东周鼎研究对应哪条链接，摘要未点名，按主题推断为 hmsjournal 一页。"
+        },
+        {
+          "claim": "在一件鼎的 X 光片上，垫片表现为较暗的方形小块。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "ISIJ International（J-STAGE）", "title": "（检索结果未显示标题；Vol.54 No.5 第 1131 页起的论文）", "url": "https://www.jstage.jst.go.jp/article/isijinternational/54/5/54_1131/_html/-char/en", "date": "未标注"}
+          ],
+          "note": "摘要原文“the darker square shapes (indicated by arrows) are interpreted as casting spacers”，未点名出自哪篇，按主题推断。明暗取决于底片极性，画面只需保证垫片与周围有灰度差、形状为小方块。"
+        },
+        {
+          "claim": "东周以前，中原地区的青铜器以块范法（piece-mold casting）铸造为主。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "Freer Gallery of Art / Smithsonian（Forbes Lecture 讲稿 PDF）", "title": "Forbes Lecture: lost wax ancient China", "url": "https://asia-archive.si.edu/wp-content/uploads/2017/10/Forbes-Lecture-lost-wax-ancient-china.pdf", "date": "2017-10（据 URL）"}
+          ],
+          "note": "摘要称该讲稿引 Chase（1991）。"
+        },
+        {
+          "claim": "纹饰是在模、范上做好后随器一同铸出，不是铸后再刻。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "vectree.io（资料聚合页）", "title": "Shang bronze metallurgy", "url": "https://vectree.io/pdf/c/shang-bronze-metallurgy", "date": "未标注"}
+          ],
+          "note": "来源质量一般；同次检索返回的剑桥《Early China》论文题为“Decorated models, replication and assembly lines…”，题意相近，但摘要未引其内容。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s12"],
+      "name_zh": "青铜器云雷纹",
+      "depiction": [
+        "单元是连续向内回旋的细线：方折的是雷纹，圆转的是云纹；线条等宽、间距匀。",
+        "在口沿下作一圈窄带，随器形弯曲，上下以弦纹为界（西周中期以后云雷纹多见于口沿、圈足，正合分镜的“口沿残片”）。",
+        "铸出来的纹：转角略圆钝，线条有细微不匀，不是机械般的直角。",
+        "铜绿（孔雀绿、蓝绿）覆在青铜褐上，纹槽里积锈更厚。"
+      ],
+      "pitfalls": [
+        "画成明清瓷器、家具边饰那种规整的“回”字纹或希腊回纹；回纹是后世由雷纹演变来的，商周语境应称云雷纹。",
+        "把云雷纹当主纹画得很大；它在礼器上多是衬底的地纹或窄带。",
+        "线条完美无锈蚀。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "商周青铜礼器上的云雷纹多作地纹，衬在兽面纹、夔龙纹等主纹之间。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "人民日报海外版", "title": "（检索结果未显示标题；云雷纹专题文章）", "url": "https://paper.people.com.cn/rmrbhwb/pc/content/202609/11/content_30180502.html", "date": "2026-09-11（据 URL）"}
+          ],
+          "note": "摘要逐条标明出自 paper.people.com.cn。摘要另说澎湃的青铜纹饰科普“基本印证”，但没有就这一句点名澎湃，故记 single-source。"
+        },
+        {
+          "claim": "云雷纹由云纹和雷纹组成：圆转的称云纹，方折的称雷纹，二者都作回旋状（田自秉《中国纹样史》的说法）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "人民日报海外版", "title": "（检索结果未显示标题；云雷纹专题文章）", "url": "https://paper.people.com.cn/rmrbhwb/pc/content/202609/11/content_30180502.html", "date": "2026-09-11（据 URL）"}
+          ],
+          "note": "摘要提醒：这是田自秉的观点，并非学界统一标准。上字幕时写“云雷纹”即可，不必区分云、雷。"
+        },
+        {
+          "claim": "西周中期以后云雷纹逐渐简化，多见于口沿、圈足等部位。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "人民日报海外版", "title": "（检索结果未显示标题；云雷纹专题文章）", "url": "https://paper.people.com.cn/rmrbhwb/pc/content/202609/11/content_30180502.html", "date": "2026-09-11（据 URL）"}
+          ],
+          "note": "同上。"
+        },
+        {
+          "claim": "方折的雷纹与后世的回纹关系密切，回纹可视为云雷纹的后裔或同源纹样。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "人民日报海外版", "title": "（检索结果未显示标题；云雷纹专题文章）", "url": "https://paper.people.com.cn/rmrbhwb/pc/content/202609/11/content_30180502.html", "date": "2026-09-11（据 URL）"}
+          ],
+          "note": "分镜原文写“回纹带”，建议统一改称“云雷纹带”。"
+        },
+        {
+          "claim": "兽面纹以鼻梁为中线左右对称，常作器腹或颈下的主纹，盛行于商代晚期至西周早期。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；青铜纹饰科普）", "url": "https://www.thepaper.cn/newsDetail_forward_22461813", "date": "未标注"}
+          ],
+          "note": "摘要标明出自 thepaper.cn。"
+        },
+        {
+          "claim": "云雷纹的起源尚无定论；考古学者杨建芳提出可能源于江南的蛇崇拜。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "扬子晚报（电子版 PDF）", "title": "（检索结果未显示标题）", "url": "https://doss.xhby.net/zpaper/yzwb/pc/att/202512/18/d627856f-9a67-498e-a595-88db3316b3a1.pdf", "date": "2025-12-18（据 URL）"}
+          ],
+          "note": "一家之言，不上字幕。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s13"],
+      "name_zh": "线装书（四眼装订）",
+      "depiction": [
+        "（常识，未检索）装订的一边在书的右侧，封面向右翻开；线眼和丝线都在右侧，分镜的“一排线眼”应沿右缘纵向排列。",
+        "（常识，未检索）四个线眼；丝线在每个眼位横向绕过书脊，上下两端还各绕过书角一道，封面上呈“一条竖线加几道通到书脊的横线”。",
+        "（常识，未检索）书衣是软质的纸或绢面，磁青（深蓝近黑）或秋香、栗壳色；丝线多为白或米黄。",
+        "（常识，未检索）书签是贴在封面左上角的长条纸签；如出现书名须繁体竖写，建议留空或虚化。",
+        "纸页米黄柔软，书口在左侧，是折页的折缝，不裁开。"
+      ],
+      "pitfalls": [
+        "把装订线画在左侧（现代横排书的方向）。",
+        "线眼数画成五个或很多个；中国线装常规为四眼（此点只有单一来源，但属通行常识）。",
+        "画成硬壳精装或书脊上有字；线装书书脊外露、无硬壳。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "中国古籍的装帧由卷轴装发展为册页形式，其后依次出现旋风装、经折装、包背装和线装。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "Wikipedia（中文）", "title": "线装", "url": "https://zh.wikipedia.com/wiki/%E7%BA%BF%E8%A3%85", "date": "未标注"},
+            {"publisher": "Wikiwand（维基镜像）", "title": "中式装帧", "url": "https://wikiwand.com/zh-cn/articles/中式装帧", "date": "未标注"}
+          ],
+          "note": "两页同属维基内容，不算相互独立。"
+        },
+        {
+          "claim": "线装由包背装发展而来，出现并流行于 16 世纪（明代中叶）以后。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "Wikipedia（英文）", "title": "Traditional Chinese bookbinding", "url": "https://www.Wikipedia.org/wiki/Japanese_stab_binding", "date": "未标注"},
+            {"publisher": "Wikipedia（中文）", "title": "线装", "url": "https://zh.wikipedia.com/wiki/%E7%BA%BF%E8%A3%85", "date": "未标注"}
+          ],
+          "note": "摘要引了两句英文（“developed from wrapped back binding in the sixteenth century”“During the 16th and 17th centuries…”），都可能出自维基及其镜像，无法确认有独立的第二来源。"
+        },
+        {
+          "claim": "线装常见的订法是四针眼（四目）装。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "网易号", "title": "（检索结果未显示标题；提到“四针眼法”“四目式”）", "url": "https://www.163.com/dy/article/EU9SHMLS0516D6SB.html", "date": "未标注"}
+          ],
+          "note": "来源较弱（讲的是手工课上的线装做法与寓意）；“四眼为常规”是版本学常识，但本次未取得权威出处。"
+        },
+        {
+          "claim": "线装书的书衣常用磁青纸，书签贴在封面左上角。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索过，摘要说“没有关于磁青纸、书签的内容”。画面可按常识处理，但不要写进字幕。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s18"],
+      "name_zh": "博古图录：《宣和博古图》与《西清古鉴》",
+      "depiction": [
+        "（常识，未检索）木刻线描：白地墨线，器物以正侧面立面表现，口沿可略带俯视的椭圆；没有灰调渲染。",
+        "（常识，未检索）线条是刻版的阳线，粗细较匀；纹饰用细密的回旋线、平行线表示，分镜的“密集排线”宜理解为这种纹饰细线。",
+        "（常识，未检索）版面可带边栏；器图旁有竖排的器名与尺寸说明，凡出现文字必须繁体竖排，建议虚化到不可读。",
+        "鼎：口沿、立耳、圆腹、三足，腹部一圈纹带。",
+        "纸色米白微黄，墨线带木版特有的轻微断线与墨色不匀。"
+      ],
+      "pitfalls": [
+        "画成西式铜版画的交叉排线明暗和透视投影。",
+        "书名、器名用简体或横排；写出未经核实的具体器名或铭文。",
+        "把两部书的朝代写反：《宣和博古图》是北宋，《西清古鉴》是清乾隆朝。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "《宣和博古图》三十卷，题（宋）王黼等撰，是北宋的青铜器图录。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "USC Libraries（Chinese Rare Books in the USC Libraries）", "title": "The Yizheng House Revised Illustrated Catalogue of Antique Objects from the Xuanhe Hall 亦政堂重修宣和博古圖錄三十卷 (1752)", "url": "https://scalar.usc.edu/works/chinese-rare-books/media/bogutu", "date": "未标注"},
+            {"publisher": "中研院历史语言研究所", "title": "List of Digitized Collections", "url": "https://dap.ihp.sinica.edu.tw/en/digitization/44", "date": "未标注"}
+          ],
+          "note": "史语所目录著录为“至大重修宣和博古圖錄 三十卷 /（宋）王黼等撰”。繁体书名：《宣和博古圖》。"
+        },
+        {
+          "claim": "《宣和博古图》成于北宋宣和年间（1119—1125）末，著录青铜器 800 余件。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "USC Libraries（Chinese Rare Books in the USC Libraries）", "title": "The Yizheng House Revised Illustrated Catalogue of Antique Objects from the Xuanhe Hall 亦政堂重修宣和博古圖錄三十卷 (1752)", "url": "https://scalar.usc.edu/works/chinese-rare-books/media/bogutu", "date": "未标注"}
+          ],
+          "note": "摘要引文“Completed towards the end of the Xuanhe era (1119-1125)… includes over 800 bronze objects”。通行的“839 件”确数本次没有查到出处，字幕只写“八百余件”。"
+        },
+        {
+          "claim": "该书传世的刻本多题《重修宣和博古图录》，如元至大重修本、清乾隆十七年（1752）亦政堂重修本。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "USC Libraries（Chinese Rare Books in the USC Libraries）", "title": "The Yizheng House Revised Illustrated Catalogue of Antique Objects from the Xuanhe Hall 亦政堂重修宣和博古圖錄三十卷 (1752)", "url": "https://scalar.usc.edu/works/chinese-rare-books/media/bogutu", "date": "未标注"},
+            {"publisher": "中研院历史语言研究所", "title": "List of Digitized Collections", "url": "https://dap.ihp.sinica.edu.tw/en/digitization/44", "date": "未标注"}
+          ],
+          "note": "两个版本各有一处来源；“书名带‘重修’二字、三十卷”这一点两处一致。“至大”为元代年号系本人补充的常识，未检索。"
+        },
+        {
+          "claim": "《西清古鉴》四十卷，乾隆十四年（1749）奉敕编纂，梁诗正等主持，乾隆十六年（1751）编成，收录清宫所藏古铜器 1529 件，另附钱币类十六卷。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "台北故宫博物院", "title": "（检索结果未显示标题；下载文档 bid=3922）", "url": "https://www.npm.edu.tw/NewChineseArtDownload.ashx?bid=3922", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "title": "Xiqing Gujian", "url": "https://EN.wikipedia.com/wiki/Xiqing_Gujian", "date": "未标注"},
+            {"publisher": "USC Libraries（Chinese Rare Books in the USC Libraries）", "title": "（检索结果未显示标题；《西清古鉴》图页）", "url": "https://scalar.usc.edu/works/chinese-rare-books/media/xiqinggujian.12", "date": "未标注"}
+          ],
+          "note": "摘要引的繁体文字（“於十六年（1751）集古銅器 1529 件編成 40 卷本”）推断出自台北故宫页面；英文维基称由乾隆下令、梁诗正主持、1751 年完成。附录名称摘要引文作〈錢譜〉，通行书名为《钱录》，未及核对，成片不要写附录名。繁体书名：《西清古鑑》。"
+        },
+        {
+          "claim": "《西清古鉴》的武英殿刻本于乾隆二十年（1755）完成。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "台北故宫博物院", "title": "（检索结果未显示标题；下载文档 bid=3922）", "url": "https://www.npm.edu.tw/NewChineseArtDownload.ashx?bid=3922", "date": "未标注"}
+          ],
+          "note": "同上，出处为推断。"
+        },
+        {
+          "claim": "《西清古鉴》的体例仿照《宣和博古图》。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "USC Libraries（Chinese Rare Books in the USC Libraries）", "title": "Eastern Culture Nucleus: Chinese Rare Books in the USC Libraries", "url": "https://scalar.usc.edu/works/chinese-rare-books/copper-plate.25", "date": "未标注"}
+          ],
+          "note": "摘要引文“The structure of the book follows Xuanhe Bo gu tu of the Northern Song dynasty”，未点名出自 USC 还是维基。"
+        }
+      ],
+      "conflicts": [
+        "《西清古鉴》的年份有三个，容易写混：1749 年下令编纂，1751 年编成，1755 年刻本完成。字幕若只写一个年份，建议写“乾隆十四年（1749）敕编”。",
+        "《宣和博古图》著录件数：检索只得到“800 余件”，通行的“839 件”未获出处。采信“八百余件”。"
+      ]
+    },
+    {
+      "shots": ["s19"],
+      "name_zh": "端砚",
+      "depiction": [
+        "石色以紫为主调（紫灰、猪肝紫、紫中带青），沾水后更深，近紫黑；分镜的“深紫黑砚面”成立。",
+        "砚面是细腻的哑光石面；只有墨池里积的墨液像镜面一样发亮，可带油膜般的虹彩。",
+        "砚堂（磨墨的平面）向墨池（低洼处）缓坡过渡。",
+        "可点缀一两处石品：石眼（圆形、带瞳的翠绿或黄绿晕）、鱼脑冻（白色云团）、蕉叶白、火捺、金银线；少量即可。",
+        "（常识，未检索）砚边素边或浅刻纹饰，外形长方或随形。"
+      ],
+      "pitfalls": [
+        "整块画成黑色抛光大理石或黑曜石的镜面。",
+        "石眼画得又多又大，像豹纹。",
+        "画成青黑带金星的石面；那是歙砚的特征（常识，未检索）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "端砚产于广东肇庆（古称端州），砚石最早采自西江羚羊峡烂柯山的端溪一带（今肇庆市东郊），故名端溪砚，简称端砚。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "当代中国（Our China Story）", "title": "中国文化通识｜四大名砚是什么？", "url": "https://www.ourchinastory.com/cn/11988", "date": "未标注"},
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；端砚相关报道）", "url": "https://m.thepaper.cn/newsDetail_forward_14359324", "date": "未标注"},
+            {"publisher": "新华网", "title": "（检索结果未显示标题；肇庆端砚相关报道）", "url": "https://www.news.cn/politics/2022-08/26/c_1128949994.htm", "date": "2022-08-26（据 URL）"}
+          ],
+          "note": "摘要以两段不同引文给出产地（“端溪水一带（今肇庆市东郊）”“广东端州（今肇庆）的端砚”），未逐条点名出处。"
+        },
+        {
+          "claim": "端砚在唐代已见于诗文并负盛名：李贺有“端州石工巧如神，踏天磨刀割紫云”之句；唐以前未见端砚的记载。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "凤凰网", "title": "端州石工巧如神 踏天磨刀割紫云(2)", "url": "https://news.ifeng.com/c/7fdDg1SFM0Z", "date": "未标注"},
+            {"publisher": "当代中国（Our China Story）", "title": "中国文化通识｜四大名砚是什么？", "url": "https://www.ourchinastory.com/cn/11988", "date": "未标注"},
+            {"publisher": "《环球人物》（人民网报刊）", "title": "（检索结果未显示标题；端砚相关文章）", "url": "https://paper.people.com.cn/hqrw/html/2016-04/06/content_1672986.htm", "date": "2016-04-06（据 URL）"}
+          ],
+          "note": "诗句文字取自凤凰网检索结果标题。摘要提醒“始于唐代”的说法有出入（见 conflicts），字幕宜写“唐代已负盛名”，不要写确切创始年。"
+        },
+        {
+          "claim": "四大名砚为端砚、歙砚、洮砚、澄泥砚，端砚被列为四大名砚之首。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "当代中国（Our China Story）", "title": "中国文化通识｜四大名砚是什么？", "url": "https://www.ourchinastory.com/cn/11988", "date": "未标注"},
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；端砚相关报道）", "url": "https://www.thepaper.cn/newsDetail_forward_1378225", "date": "未标注"}
+          ],
+          "note": "摘要称“端砚居首是共识”，但四大名砚的具体构成各资料略有差异。摘要里把洮砚产地写作“甘肃岷县”，未核对，不要引用。"
+        },
+        {
+          "claim": "端石的石品花纹有石眼、蕉叶白、鱼脑冻、青花、冰纹、金银线、火捺等。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；端砚相关报道）", "url": "https://m.thepaper.cn/newsDetail_forward_14359324", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处，保守记 single-source。"
+        },
+        {
+          "claim": "老坑是端砚最负盛名的坑口，所出砚石最佳，开采历史逾千年。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "SciEngine（期刊论文 PDF）", "title": "（检索结果未显示标题；端砚石地质与岩性论文）", "url": "https://www.sciengine.com/doi/pdf/50F99FB0EB3D4191B6A01A7AA98BDCAC", "date": "未标注"},
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；端砚相关报道）", "url": "https://www.thepaper.cn/newsDetail_forward_1378225", "date": "未标注"}
+          ],
+          "note": "摘要引了两段：论文称“第三层俗称老坑……是历代以来主要开采层”，另一资料称“老坑出的砚石最佳，至今已有一千多年的历史”。后一段出处为推断。"
+        },
+        {
+          "claim": "端石以紫色著称：李贺诗称“紫云”，宋代《文房四谱》亦记紫色石料。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "凤凰网", "title": "端州石工巧如神 踏天磨刀割紫云(2)", "url": "https://news.ifeng.com/c/7fdDg1SFM0Z", "date": "未标注"}
+          ],
+          "note": "摘要另有一句“端砚的颜色以白、青、紫为主”，未点名出处。"
+        },
+        {
+          "claim": "“文房四宝”通行说法是湖笔、徽墨、宣纸和端砚。",
+          "status": "conflicting",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网", "title": "（检索结果未显示标题；湖笔相关页面）", "url": "https://www.ihchina.cn/project_details/11411.html", "date": "未标注"},
+            {"publisher": "中国社会科学网", "title": "（检索结果未显示标题；湖州相关专题文章）", "url": "https://www.cssn.cn/ztzl/fztd/hpzgfztddfz/202311/t20231113_5696398.shtml", "date": "2023-11-13（据 URL）"}
+          ],
+          "note": "见 conflicts。两条链接是同次检索返回的湖笔页面，哪一页用“端砚”、哪一页用“歙砚”，摘要未点名。"
+        }
+      ],
+      "conflicts": [
+        "文房四宝里的砚：一种说法是“湖笔、徽墨、宣纸、歙砚”，另一种是“湖笔、徽墨、端砚、宣纸”。两说并存，成片不要写“文房四宝之一的端砚”这类排他表述，写“四大名砚之首”更稳。",
+        "“端砚始于唐代”：有资料把唐代当作起点，有资料只说唐代已广为认可、唐以前无记载。采信“唐代已负盛名”。"
+      ]
+    },
+    {
+      "shots": ["s20"],
+      "name_zh": "宣德炉",
+      "depiction": [
+        "（常识，未检索）小型铜香炉，素面无纹：圆口、鼓腹、三矮足，口沿上一对立耳或腹侧双耳；器壁厚，口沿圆润。",
+        "（常识，未检索）皮色温润：栗壳色、藏经纸色、枣红一类的包浆，哑光到柔光，不是亮闪闪的新黄铜。",
+        "分镜是“柔焦的暖色辉光与炉口弧线”：炉口一道圆弧、炉内一点红炭或香头、细烟直上即可。",
+        "款识在外底，为“大明宣德年製”六字（繁体“製”，楷书——字体与排列为常识，未检索）；本镜头不必出现。"
+      ],
+      "pitfalls": [
+        "画成纹饰繁缛的青铜鼎或掐丝珐琅炉；宣德炉以素面和皮色取胜。",
+        "把款写在炉身，或写成简体“制”。",
+        "成片说明写“宣德三年所铸真品”“共铸三千件”等确数；铸造记载属传统说法，数量各说不一，后仿极多。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "传统说法：明宣德三年（1428），宣宗朱瞻基命以暹罗（今泰国）所贡风磨铜铸造香炉，由工部吴邦佐主持。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "雅昌艺术网", "title": "（检索结果未显示标题；宣德炉相关文章）", "url": "https://m-news.artron.net/news/20260901/n1379045.html", "date": "未标注"},
+            {"publisher": "人民政协网", "title": "（检索结果未显示标题；宣德炉相关文章）", "url": "https://www.rmzxw.com.cn/c/2016-12-07/1197603.shtml", "date": "2016-12-07（据 URL）"}
+          ],
+          "note": "摘要引了两篇文章，都讲暹罗风磨铜；“吴邦佐”只见于其中一篇。摘要特别提示“这些属于传统记载，需谨慎看待”，且没有查到故宫等机构的权威说明。字幕务必加“相传”。公元 1428 为本人换算。"
+        },
+        {
+          "claim": "这批香炉的数量，一说约 3000 件，一说 5000 件。",
+          "status": "conflicting",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "人民政协网", "title": "（检索结果未显示标题；宣德炉相关文章）", "url": "https://www.rmzxw.com.cn/c/2016-12-07/1197603.shtml", "date": "2016-12-07（据 URL）"}
+          ],
+          "note": "见 conflicts。不要上数字。"
+        },
+        {
+          "claim": "宣德炉常见的底款是“大明宣德年制”六字款。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "苏富比", "title": "（检索结果未显示标题；香港 2014 年中国瓷器及工艺品拍卖 拍品 3097）", "url": "https://www.sothebys.com/zh/auctions/ecatalogue/2014/fine-chinese-ceramics-works-of-art-hk0517/lot.3097.html", "date": "2014（据 URL）"},
+            {"publisher": "Drouot（法国拍卖平台）", "title": "INCENSE BURNER WITH TWO LIONS 香炉", "url": "https://drouot.com/en/l/16256678-incense-burner-with-two-lions", "date": "未标注"},
+            {"publisher": "雅昌艺术网", "title": "（检索结果未显示标题；宣德炉相关文章）", "url": "https://m-news.artron.net/news/20251004/n1816794.html", "date": "未标注"}
+          ],
+          "note": "摘要称“多件拍卖品的炉底有‘大明宣德年制’六字款”。器物上的实际写法应为繁体“製”，这一点为常识，检索摘要用的是简体转写，画面如要出现款识须另行对照实物图。"
+        },
+        {
+          "claim": "后世仿制宣德炉并仿刻宣德款的情况极为普遍，带款不能作为真器的依据。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "雅昌艺术网", "title": "（检索结果未显示标题；宣德炉相关文章）", "url": "https://m-news.artron.net/news/20251004/n1816794.html", "date": "未标注"},
+            {"publisher": "SciEngine（期刊论文 PDF）", "title": "（检索结果未显示标题；论及明清仿宣德现象）", "url": "https://www.sciengine.com/doi/pdf/C36628D7EAC741DEB278136734DD51FE", "date": "未标注"}
+          ],
+          "note": "论文一条提到“成化官窑等也沿用宣德款式”，语境可能是瓷器而非铜炉，故不把它算作独立的第二来源。"
+        },
+        {
+          "claim": "传说宣德炉的铜料要炼十二次，普通炉料只炼四次。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "雅昌艺术网", "title": "（检索结果未显示标题；宣德炉相关文章）", "url": "https://m-news.artron.net/news/20260901/n1379045.html", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处；传说性质，不上字幕。"
+        }
+      ],
+      "conflicts": [
+        "铸造数量：同一批资料里既有“约 3000 件”也有“5000 件”，且都属传统记载。两个数字都不采用，成片只说“相传宣德三年以风磨铜铸炉”。"
+      ]
+    },
+    {
+      "shots": ["s21"],
+      "name_zh": "供石（灵璧石等）",
+      "depiction": [
+        "剪影轮廓：竖向取势，瘦峭、多凹凸与孔洞（对应“瘦、皱、漏、透”），不对称。",
+        "（常识，未检索）下面必有随形的木座，剪影里是一条带矮足的横托。",
+        "（常识，未检索）灵璧石色黑或青黑，质地坚密，表面有沟壑和白色筋脉；本镜头是剪影，只需轮廓。",
+        "（常识，未检索）盆景：浅盆加矮几，枝干斜出；与供石一高一低放在案上，按分镜置于画面左侧。"
+      ],
+      "pitfalls": [
+        "画成光滑的鹅卵石，或写实的庭园假山堆。",
+        "没有木座，或轮廓左右对称。",
+        "把体量画得像庭园太湖石；案头供石是可置于几案的小石。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "中国赏石的“四大名石”是灵璧石、太湖石、英石、昆石，宋代《云林石谱》、明代《素园石谱》均有著录。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；古代赏石相关报道）", "url": "https://www.thepaper.cn/newsDetail_forward_7161948", "date": "未标注"},
+            {"publisher": "中国地质调查局期刊网（《国土资源科普与文化》2016 年第 2 期 PDF）", "title": "（检索结果未显示标题；观赏石科普文章）", "url": "https://www.cgsjournals.com/zgdzdcqkw-data/gtzykpywh/2016/02/PDF/GTKW201602008.pdf", "date": "2016（据 URL）"},
+            {"publisher": "新民晚报（电子版 PDF）", "title": "（检索结果未显示标题）", "url": "https://xmwb.xinmin.cn/lab/resfile/2018-09-30/A30/A30.pdf", "date": "2018-09-30（据 URL）"}
+          ],
+          "note": "摘要以三段不同措辞给出同一组四种石头，未逐条点名出处。"
+        },
+        {
+          "claim": "相石四字“瘦、皱、漏、透”相传为北宋米芾所立；郑板桥题画引作“米元章论石，曰瘦、曰绉、曰漏、曰透”。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；古代赏石相关报道）", "url": "https://www.thepaper.cn/newsDetail_forward_25935502", "date": "未标注"},
+            {"publisher": "凤凰网", "title": "（检索结果未显示标题；赏石相关文章）", "url": "https://news.ifeng.com/c/7fbqWtYHZoW", "date": "未标注"},
+            {"publisher": "新民晚报（电子版 PDF）", "title": "（检索结果未显示标题）", "url": "https://xmwb.xinmin.cn/lab/resfile/2018-09-30/A30/A30.pdf", "date": "2018-09-30（据 URL）"}
+          ],
+          "note": "四字的次序各处不同（瘦漏透皱、瘦皱漏透等），郑板桥引文用“绉”字。上字幕时任选通行次序即可，但不要标成米芾原话的直接引语。"
+        },
+        {
+          "claim": "灵璧石产于安徽灵璧县；《尚书·禹贡》所记徐州贡“泗滨浮磬”被认为与之相关。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国地质调查局期刊网（《国土资源科普与文化》2016 年第 2 期 PDF）", "title": "（检索结果未显示标题；观赏石科普文章）", "url": "https://www.cgsjournals.com/zgdzdcqkw-data/gtzykpywh/2016/02/PDF/GTKW201602008.pdf", "date": "2016（据 URL）"}
+          ],
+          "note": "摘要未点名出处，按主题推断。"
+        },
+        {
+          "claim": "至少从宋代开始，赏石进入文人的案头；“研山”被认为是最早的文人供石。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；古代赏石相关报道）", "url": "https://www.thepaper.cn/newsDetail_forward_7161964", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处。"
+        },
+        {
+          "claim": "英石是“瘦”“皱”的典型；昆石是洁白玲珑的网状石英晶簇。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国地质调查局期刊网（《国土资源科普与文化》2016 年第 2 期 PDF）", "title": "（检索结果未显示标题；观赏石科普文章）", "url": "https://www.cgsjournals.com/zgdzdcqkw-data/gtzykpywh/2016/02/PDF/GTKW201602008.pdf", "date": "2016（据 URL）"}
+          ],
+          "note": "摘要未点名出处。"
+        },
+        {
+          "claim": "米芾有“米颠拜石”的典故。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "（检索结果未显示标题；赏石相关文章）", "url": "https://www.sohu.com/a/278937119_284433", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处。"
+        }
+      ],
+      "conflicts": [
+        "苏轼原话是“石丑而文”（《文与可梅竹石赞》），后世常误作“石文而丑”，误读出自郑板桥的引用。若成片引用，用“石丑而文”。"
+      ]
+    },
+    {
+      "shots": ["s22"],
+      "name_zh": "织金锦（书函锦面；兼及缂丝）",
+      "depiction": [
+        "红地、金线显花的缠枝莲：莲花图案化，枝蔓作 S 形连续缠绕，四方连续铺满。",
+        "金线有片金、捻金两类：片金是扁平的金箔条，成片反光；花纹边缘带织物特有的细小阶梯感。",
+        "地子能看出细密的织纹；金色偏赤金、略显旧，可有局部磨损。",
+        "（常识，未检索）书函：硬板裱靛蓝布的函套，侧面有布襻和小别子，函面左上贴空白题签；别子用骨、竹或木，不要画成象牙。"
+      ],
+      "pitfalls": [
+        "画成刺绣（线迹凸起、有针脚方向）或印金（平涂、没有织纹）。",
+        "缠枝莲画成写实的荷花荷叶。",
+        "成片说明把这个镜头叫作“缂丝”：画面是织金锦；缂丝的工艺术语本次未能核实，不要上字幕。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "以金线显花的织金锦是元代最具特色的丝织物；其中“纳石失”（nasij）由西域传入，以金线作纬在丝地上织花，技法受中亚影响。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "《丝绸》2024 年第 61 卷第 7 期（国家科技图书文献中心检索页）", "title": "丝绸2024,Vol.61Issue(7) :133-140.DOI:10.3969/j.issn.1001-7003.2024.07.015", "url": "https://search.napstic.cn/literature/periodical/010sichou202407015", "date": "2024（卷期）"},
+            {"publisher": "大都会艺术博物馆", "title": "Dragons chasing flaming pearls（藏品页）", "url": "https://www.metmuseum.org/art/collection/search/837895?pkgids=901", "date": "未标注"}
+          ],
+          "note": "论文称元代织金锦包括西来的纳石失和中国传统的“金段子”，即纳石失只是织金锦的一种；大都会藏品页把纳石失解释为“织金之布”，是蒙元统治者袍服常用料。"
+        },
+        {
+          "claim": "纳石失传入后，其特结锦结构与中国传统的插金组织相融合，改变了传统金段子的织造技术。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "《丝绸》2024 年第 61 卷第 7 期（国家科技图书文献中心检索页）", "title": "丝绸2024,Vol.61Issue(7) :133-140.DOI:10.3969/j.issn.1001-7003.2024.07.015", "url": "https://search.napstic.cn/literature/periodical/010sichou202407015", "date": "2024（卷期）"}
+          ],
+          "note": "专业细节，不上字幕。"
+        },
+        {
+          "claim": "织金所用金线分片金和捻金两类；锡林浩特博物馆藏一件元代鹦鹉纹织金锦辫线袍以双根捻金线显花。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "搜狐（自媒体平台）", "title": "（检索结果未显示标题；元代织金锦相关文章）", "url": "https://www.sohu.com/a/198785147_657027", "date": "未标注"}
+          ],
+          "note": "摘要标明出自 sohu.com 文章。"
+        },
+        {
+          "claim": "南京云锦有“寸锦寸金”之称。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网", "title": "（检索结果未显示标题；云锦相关项目页）", "url": "https://www.ihchina.cn/project_details/9455.html", "date": "未标注"}
+          ],
+          "note": "注意这句说的是云锦，不是缂丝。"
+        },
+        {
+          "claim": "缂丝以“通经断纬”法织成，有“一寸缂丝一寸金”之说。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索过，摘要明确说两个说法都没有出现在结果里。不要上字幕。"
+        }
+      ],
+      "conflicts": [
+        "“寸×寸金”的归属：检索到的是云锦“寸锦寸金”（官方非遗网），没有检索到缂丝“一寸缂丝一寸金”。不要把两句混用。"
+      ]
+    },
+    {
+      "shots": ["s25"],
+      "name_zh": "缠丝玛瑙",
+      "depiction": [
+        "（常识，未检索）层层平行或同心的细条带，宽窄不一，细的如丝；条带随形弯转，不是规则的同心圆。",
+        "（常识，未检索）红（橙红到胭脂红）、白、半透明灰白相间，可夹蜜黄、褐色层。",
+        "（常识，未检索）半透明，蜡状到玻璃光泽，抛光面能看到条带向内延伸的层次。",
+        "（常识，未检索）外层的皮壳呈蜜色或褐黄，较粗、不透明，对应分镜的“蜜色皮壳”。"
+      ],
+      "pitfalls": [
+        "条带画成靶心一样规则的同心圆，或像木头年轮。",
+        "颜色艳得像染色玛瑙（荧光玫红、亮蓝）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "缠丝玛瑙指带有细密条带、红白等色相间的玛瑙。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "17 次检索额度已全部用于其他题材，本题材没有检索。属通行说法，成片说明只用“缠丝玛瑙”这个名称即可，不要加年代、产地。"
+        },
+        {
+          "claim": "玛瑙是具有条带构造的玉髓（隐晶质石英）。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "同上，未检索。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s27"],
+      "name_zh": "累丝（花丝）金器与金珠粒",
+      "depiction": [
+        "极细的金丝（发丝粗细）盘曲成卷草、网格等镂空花纹，层层堆垒成立体；可见丝与丝之间的空隙和后面的黑底。",
+        "金珠粒：细小的金珠成排、成簇，或沿丝线镶边，每粒一个高光点；这是分镜“金珠粒与闪点”的来源。",
+        "金色为暖的赤黄，柔光为主，不是镜面。",
+        "（常识，未检索）细丝常先搓成麻花状再使用，近看丝上有细密的螺旋纹。"
+      ],
+      "pitfalls": [
+        "金丝画得粗如铁丝，或画成实心金板上的浮雕。",
+        "珠粒大小不一、随意洒落，像金粉闪片；应成列、成簇。",
+        "把“金珠粒”直接说成“累丝”：一个是珠、一个是丝，是两种技法，常同器并用；“累丝”“炸珠”两个术语本次未获出处，成片说明建议写“花丝金器”。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "花丝镶嵌又称“细金工艺”，由花丝和镶嵌两部分组成；花丝是把金银抽成细丝，再用掐、填、攒、焊、堆垒、编织等手法成型。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "美国宝石研究院（GIA）中文站", "title": "（检索结果未显示标题；花丝大师白静宜相关报道）", "url": "https://www.gia.edu/cn/gia-news-research-filigree-master-bai-china", "date": "未标注"},
+            {"publisher": "New Hanfu", "title": "History of Chinese Traditional Filigree Inlay Art", "url": "https://www.newhanfu.com/25343.html", "date": "未标注"},
+            {"publisher": "新京报", "title": "（检索结果未显示标题；金冠与花丝工艺相关报道）", "url": "https://www.bjnews.com.cn/detail/1785990956129811.html", "date": "未标注"}
+          ],
+          "note": "摘要未逐条点名出处；三页均以花丝镶嵌为主题。技法名单各处字数略有出入（常见为八字“掐、填、攒、焊、堆、垒、织、编”），不建议把八字上字幕。"
+        },
+        {
+          "claim": "金珠粒（造粒）是把细小的金珠附着在器表作装饰的技法，不留明显焊痕。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "美国宝石研究院（GIA）中文站", "title": "（检索结果未显示标题；金属工艺与宝石首饰）", "url": "https://www.gia.edu/CN/gia-news-research/metalwork-takes-bow-techniques-enhance-gemstone-jewelry", "date": "未标注"}
+          ],
+          "note": "摘要说明结果里没有出现“炸珠”一词。"
+        },
+        {
+          "claim": "明万历金丝翼善冠的前屋由 518 根直径约 0.2 毫米的金丝，以“编灯笼空儿”的方法手工编成；龙的各部件分别制成后再焊接，仅龙鳞就用了 8400 片。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "新京报", "title": "（检索结果未显示标题；金冠与花丝工艺相关报道）", "url": "https://www.bjnews.com.cn/detail/1785990956129811.html", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处，按“同一篇报道”的行文推断。数字只有单一来源。"
+        },
+        {
+          "claim": "金丝翼善冠出土于明定陵。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索摘要明确写“结果中未明确写出金翼善冠的出土信息，我无法在此确认它的定陵出处”，只提到同一报道里另一顶十二龙九凤冠出自定陵。通行说法是定陵出土，但本次未获出处，上字幕前须再核。"
+        },
+        {
+          "claim": "明代被视为花丝镶嵌的黄金时期。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "New Hanfu", "title": "History of Chinese Traditional Filigree Inlay Art", "url": "https://www.newhanfu.com/25343.html", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处；来源质量一般。"
+        },
+        {
+          "claim": "“累丝”是花丝工艺中把细丝层层堆垒的做法（或其旧称），金珠粒旧称“炸珠”。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索过，摘要说“没有对累丝的单独说明”“没有提到炸珠这一术语”。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s34"],
+      "name_zh": "明式圈椅的椅圈",
+      "depiction": [
+        "椅圈：俯视是马蹄形的大半个圆弧；侧视从后背最高处向两侧前方顺势下滑成扶手，是一条连续的曲线。",
+        "椅圈由几段弧形弯材接成：三接有 2 道接缝，五接有 4 道接缝；接口用楔钉榫，外观是一道搭接缝，中间横穿一枚小方钉（榫的内部构造为常识，未检索）。",
+        "扶手前端下接弯曲的“鹅脖”；扶手两端可出头并向外回转收尾。",
+        "（常识，未检索）靠背板侧视呈 S 形；座面方形；腿间有牙子与枨，整体上圆下方。",
+        "线图风格：白纸墨线，红、蓝细线标出圆弧的圆心、半径与接缝位置。"
+      ],
+      "pitfalls": [
+        "把椅圈画成一整根弯木、没有接缝，或把楔钉榫画成燕尾榫、金属合页。",
+        "画成方正繁雕的清式太师椅，或搭脑平直的官帽椅。",
+        "接缝数与标注的“几接”对不上（三接 2 缝、五接 4 缝）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "圈椅的椅圈（圆弧扶手）由数段弧形木料以楔钉榫接合而成，常见三接或五接。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "苏富比", "title": "（检索结果未显示标题；香港 2015 年叶承耀医生藏明式家具专场 拍品 104，黄花梨攒靠背圈椅）", "url": "https://sothebys.com/zh/auctions/ecatalogue/2015/ming-furniture-the-dr-s-y-yip-collection-hk0593/lot.104.html", "date": "2015（据 URL）"},
+            {"publisher": "苏富比", "title": "（检索结果未显示标题；香港 2016 年明式家具专场 拍品 117，黄花梨大素圈椅）", "url": "https://www.sothebys.com/zh/auctions/ecatalogue/2016/ming-furniture-asian-private-collection-hk0640/lot.117.html", "date": "2016（据 URL）"},
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；黄花梨圆后背交椅相关报道）", "url": "https://thepaper.cn/newsDetail_forward_32822853", "date": "未标注"}
+          ],
+          "note": "苏富比两件拍品分别写“圓弧扶手以楔釘榫三接”“扶手以楔釘榫五接”；澎湃报道的是一把圆后背交椅（不是圈椅），其椅圈同样是五段木料以楔钉榫拼接。"
+        },
+        {
+          "claim": "椅圈的接合不用钉子，也不用胶。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "克利夫兰艺术博物馆", "title": "Artwork Page for Roundback Armchair: Lohan Type", "url": "https://www.clevelandart.org/art/1955.40.1", "date": "未标注"},
+            {"publisher": "澎湃新闻", "title": "（检索结果未显示标题；黄花梨圆后背交椅相关报道）", "url": "https://thepaper.cn/newsDetail_forward_32822853", "date": "未标注"}
+          ],
+          "note": "克利夫兰馆藏说明称其马蹄形靠背的接合无胶无钉；澎湃称“严丝合缝不用一钉一胶”（说的是交椅的椅圈）。"
+        },
+        {
+          "claim": "存世的晚明圈椅实例多为黄花梨制（苏富比拍品两例、克利夫兰艺术博物馆藏一例）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "苏富比", "title": "（检索结果未显示标题；香港 2016 年明式家具专场 拍品 117，黄花梨大素圈椅）", "url": "https://www.sothebys.com/zh/auctions/ecatalogue/2016/ming-furniture-asian-private-collection-hk0640/lot.117.html", "date": "2016（据 URL）"},
+            {"publisher": "克利夫兰艺术博物馆", "title": "Artwork Page for Roundback Armchair: Lohan Type", "url": "https://www.clevelandart.org/art/1955.40.1", "date": "未标注"}
+          ],
+          "note": "这是从三件实例归纳的，只能说明“有黄花梨圈椅的可靠实例”，不能推出比例；字幕如写材质，写“黄花梨圈椅”即可。"
+        },
+        {
+          "claim": "圈椅扶手两端以榫卯与“鹅脖”相接；有的扶手两端出头并回转收尾。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "苏富比", "title": "（检索结果未显示标题；香港 2015 年叶承耀医生藏明式家具专场 拍品 104）", "url": "https://sothebys.com/zh/auctions/ecatalogue/2015/ming-furniture-the-dr-s-y-yip-collection-hk0593/lot.104.html", "date": "2015（据 URL）"},
+            {"publisher": "苏富比", "title": "（检索结果未显示标题；香港 2016 年明式家具专场 拍品 117）", "url": "https://www.sothebys.com/zh/auctions/ecatalogue/2016/ming-furniture-asian-private-collection-hk0640/lot.117.html", "date": "2016（据 URL）"}
+          ],
+          "note": "两条都出自苏富比，同一发布方，记 single-source。"
+        },
+        {
+          "claim": "1985 年王世襄《明式家具珍赏》出版，带动了明式家具的研究与收藏热。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "第一财经", "title": "首页 > 新闻 > 商业人文（检索结果显示的栏目名）", "url": "https://www.yicai.com/news/102372670.html", "date": "未标注"}
+          ],
+          "note": "摘要写“另有报道提到”，未点名出处，按主题推断。"
+        },
+        {
+          "claim": "椅圈古称“栲栳样”。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索过，摘要说“没有找到栲栳样的定义或相关描述”。不要上字幕。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s36"],
+      "name_zh": "羊毫笔（湖笔）",
+      "depiction": [
+        "毫色白到象牙白，毫端有一段半透明、尖挺发亮的“锋颖”。",
+        "笔头圆锥形，腹部饱满，向尖端收拢；铺开时毫端平齐（对应“尖、齐、圆、健”）。",
+        "毫丝极细、丝丝分明，带一点自然的弧度，不是笔直的放射线。",
+        "（常识，未检索）笔杆为竹管；干笔蓬松，湿笔收拢成锥。"
+      ],
+      "pitfalls": [
+        "画成棕黄的狼毫或深色的紫毫；分镜的白色笔毫只对应羊毫。",
+        "毫丝画成等长、硬直的刷毛。",
+        "在笔杆上写未经核实的刻字（店号、笔名）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "湖笔以浙江湖州善琏为代表产地，兴起于元代，以长锋羊毫闻名。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国社会科学网", "title": "（检索结果未显示标题；湖州相关专题文章）", "url": "https://www.cssn.cn/ztzl/fztd/hpzgfztddfz/202311/t20231113_5696398.shtml", "date": "2023-11-13（据 URL）"},
+            {"publisher": "中国非物质文化遗产网", "title": "（检索结果未显示标题；湖笔相关项目页）", "url": "https://www.ihchina.cn/project_details/17236.html", "date": "未标注"},
+            {"publisher": "贵阳日报（电子版 PDF）", "title": "（检索结果未显示标题）", "url": "https://rb.gywb.cn/epaper/gyrb/res/2025-07/28/A08/gyrbgyrb20250728A08.pdf", "date": "2025-07-28（据 URL）"}
+          ],
+          "note": "摘要引文“湖笔兴起于元代，以湖州善琏为代表，以长锋羊毫闻名天下”，并另引非遗网关于善琏制笔的说明；未逐条点名出处。"
+        },
+        {
+          "claim": "制笔讲究“尖、齐、圆、健”四德。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网", "title": "（检索结果未显示标题；湖笔相关项目页）", "url": "https://www.ihchina.cn/project_details/17236.html", "date": "未标注"}
+          ],
+          "note": "摘要只引了一段（“在业内，制笔之法以尖、齐、圆、健为四德”），出处按主题推断为非遗网。"
+        },
+        {
+          "claim": "湖州的山羊毫细而色白、富有弹性，毫端有一段透明尖挺的锋颖，因此湖笔又称“湖颖”。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网", "title": "（检索结果未显示标题；湖笔相关项目页）", "url": "https://www.ihchina.cn/project_details/11411.html", "date": "未标注"}
+          ],
+          "note": "摘要未点名出处。"
+        },
+        {
+          "claim": "善琏制笔业约始于晋代。",
+          "status": "conflicting",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网", "title": "（检索结果未显示标题；湖笔相关项目页）", "url": "https://www.ihchina.cn/project_details/17236.html", "date": "未标注"},
+            {"publisher": "中国非物质文化遗产网", "title": "（检索结果未显示标题；湖笔相关资讯）", "url": "https://www.ihchina.cn/zx_detail/19665.html", "date": "未标注"}
+          ],
+          "note": "见 conflicts。不要上字幕。"
+        }
+      ],
+      "conflicts": [
+        "善琏制笔的起始：非遗资料称约始于晋代，另一篇报道说起于秦将蒙恬（传说）。采信“湖笔兴起于元代”这一有两处支持的说法，起源不写。"
+      ]
+    },
+    {
+      "shots": ["s37"],
+      "name_zh": "泥金折扇",
+      "depiction": [
+        "（常识，未检索）扇面为半环形，所有褶痕汇聚到下方同一个扇钉；褶的峰、谷交替。",
+        "（常识，未检索）泥金是满涂金粉的扇面：哑光的金，能看到细微的颗粒和刷痕，褶峰处金色略有磨损。",
+        "（常识，未检索）朱红可作扇面的色地与金相间，或用在两侧大骨的髹漆上。",
+        "（常识，未检索）扇骨为竹制，中间十余档小骨、两侧大骨较宽。"
+      ],
+      "pitfalls": [
+        "画成团扇、日式舞扇或蕾丝扇。",
+        "金面画成镜面金属反光。",
+        "扇褶没有汇聚到同一点。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "折扇一般认为在宋代由日本、高丽传入，明代以后在中国流行。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "17 次检索额度已全部用于其他题材，本题材没有检索。成片说明不要写折扇的起源与年代。"
+        },
+        {
+          "claim": "泥金扇面是以金粉调胶涂布的扇面，是明清书画折扇常用的扇面之一。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "同上，未检索。只用“泥金折扇”这个名称，不加朝代。"
+        }
+      ],
+      "conflicts": []
+    }
+  ]
+}

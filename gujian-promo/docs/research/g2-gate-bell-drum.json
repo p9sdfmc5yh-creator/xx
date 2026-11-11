@@ -1,0 +1,493 @@
+{
+  "group": "g2-gate-bell-drum",
+  "filePath": "/tmp/claude-0/-home-user-kashing/82b55bb9-0385-5108-b6bb-ac0899659655/scratchpad/research/g2-gate-bell-drum.json",
+  "subjects": [
+    {
+      "name_zh": "故宫宫门门钉与铺首",
+      "depiction": [
+        "宫门为双扇对开的大门，门扇通体朱红油饰（朱漆），其上安行列整齐的铜质鎏金门钉——红底金钉是最核心的识别特征（故宫博物院王玉顺《故宫门钉》原话：各门都使用双扇宫门，朱红油饰，上面安有行列整齐的铜质鎏金门钉）。",
+        "最高等级“九路”：每扇门 9 行 × 9 列 = 81 颗；一个门洞左右两扇合计 162 颗。画面中每一扇都应能数出横 9、竖 9 的规整网格，行距列距均匀。",
+        "门钉钉帽为圆形隆起的圆头（百度百科称“圆形水泡形状”），通体鎏金呈金黄色；可用上亮下暗的球面明暗和落在红门上的小投影表现凸起。门钉的具体直径、凸起高度本次未检索到官方数据，勿在字幕中写尺寸。",
+        "东华门是紫禁城四座城门中的例外：每扇 8 行 × 9 列 = 72 颗（故宫博物院：“八路九颗”“比其它三门少一行”）。只有明确画东华门时才用 8×9，其余城门一律 9×9。",
+        "铺首：衔门环的金属底座，以兽面衔环最常见。可在左右门扇靠近门缝处各画一枚鎏金兽面衔环、左右对称。注意：故宫各宫门铺首的确切位置与纹样，本次未取得官方文字描述，此条属通行做法，建议最终对照实拍照片。",
+        "午门共开五个门洞（俗称“明三暗五”：正面三个，两侧掖门各一），神武门、东华门、西华门各开三个门洞。",
+        "配色环境：朱红门扇 + 金色门钉，建筑上覆黄琉璃瓦（《大清会典》：宫殿门庑皆崇基，上覆黄琉璃，门设金钉）。",
+        "门钉最初出于构造需要（把门板与背后的穿带钉牢，防止门板松散），后来才演变为等级标志，所以它是整齐成排的，而不是随意点缀。"
+      ],
+      "palette": [
+        "朱红门扇 #9E2A22（估计）",
+        "门扇暗部/旧漆 #7A1F1B（估计）",
+        "鎏金门钉 #D4A537（估计）",
+        "鎏金高光 #F3D98B（估计）",
+        "金钉暗部 #8A6420（估计）",
+        "黄琉璃瓦 #E0A526（估计）"
+      ],
+      "pitfalls": [
+        "把“81 颗”画成左右两扇合计 81 颗，或行列数画错（如 8×10、10×10）；正确是每扇 9×9。",
+        "把东华门也画成 9×9，或反过来给午门、神武门、西华门画 72 颗；也不要把“每路九颗”误解成“一共九颗”。",
+        "把门钉画成尖锥、平头铆钉或银灰色铁钉；故宫宫门是圆头、鎏金的铜钉。",
+        "把铺首画成民居常见的小型门钹（圆形/六角形底座加小环），或漏画；宫门应为兽面衔环。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "故宫宫门门钉的最高等级为“九路”：每扇门九行九列，共 81 颗（午门、神武门、西华门等均如此）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月（现存实物状况）",
+          "note": "用户线索“九路九颗共81颗”正确，但必须说明是“每扇门”。王玉顺文同时指出：故宫现有宫门的门钉“绝大多数为九路，极少数为七路、五路”，所以不宜写“故宫所有的门都是81颗”。",
+          "sources": [
+            {"publisher": "故宫博物院（王玉顺《故宫门钉》PDF）", "title": "故宫门钉", "url": "https://www.dpm.org.cn/Uploads/pdf/1927/T00094_00.pdf", "date": "未标注"},
+            {"publisher": "上海市绿化和市容管理局", "title": "古代的大门上为什么有密密麻麻的圆钉？有什么用？", "url": "https://lhsr.sh.gov.cn/jnylwh/20220913/c2a4d72aecca4b97b8370e405da13116.html", "date": "2022-09-13（据URL）"},
+            {"publisher": "百度百科", "title": "门钉", "url": "https://baike.baidu.com/item/%E9%97%A8%E9%92%89/6489109", "date": "未标注"},
+            {"publisher": "故宫博物院", "title": "顺贞门", "url": "https://www.dpm.org.cn/explore/building/236543.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "东华门是例外：每扇门八行九列（故宫博物院称“八路九颗”），共 72 颗，比其他三座城门少一行。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月（现存实物状况）",
+          "note": "用户线索“东华门72颗”正确。72 这个数字各来源一致；但“八”指横排还是竖列，通俗文章写法互相矛盾（见 conflicts），此处采信故宫博物院“八行九列、少一行”。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "东华门", "url": "https://www.dpm.org.cn/explore/building/236502.html", "date": "未标注"},
+            {"publisher": "故宫博物院（王玉顺《故宫门钉》PDF）", "title": "故宫门钉", "url": "https://www.dpm.org.cn/Uploads/pdf/1927/T00094_00.pdf", "date": "未标注"},
+            {"publisher": "北京日报客户端", "title": "故宫东华门的各种谜团至今难解，本来门钉就少，还被撞掉一个……", "url": "https://xinwen.bjd.com.cn/content/s5e7434bce4b0f99f4df4564a.html", "date": "未标注（内容涉及2020年3月撞门事件）"},
+            {"publisher": "China Daily (E-ZINE)", "title": "E-ZINE / Editors Picks", "url": "https://covid-19.chinadaily.com.cn/ezine/2007-07/19/content_5439150_2.htm", "date": "2007-07-19（据URL）"}
+          ]
+        },
+        {
+          "claim": "东华门为何只有 72 颗并无定论：民间流传“鬼门”说（清代帝、后梓宫由东华门出，故用阴数），故宫学者王玉顺认为这类阴阳之说属后人附会。",
+          "status": "verified-2plus-independent",
+          "asOf": "资料自身日期（见来源）",
+          "note": "“原因无定论、流传多种传说”这一点有两个以上独立来源；但任何一种具体原因都未被证实，字幕只能写“相传”，不能写成定论。其他说法还有：崇祯出逃说、五行（木克土）说、大臣出入等级较低说。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "东华门", "url": "https://www.dpm.org.cn/explore/building/236502.html", "date": "未标注"},
+            {"publisher": "故宫博物院（王玉顺《故宫门钉》PDF）", "title": "故宫门钉", "url": "https://www.dpm.org.cn/Uploads/pdf/1927/T00094_00.pdf", "date": "未标注"},
+            {"publisher": "北京日报客户端", "title": "故宫东华门的各种谜团至今难解，本来门钉就少，还被撞掉一个……", "url": "https://xinwen.bjd.com.cn/content/s5e7434bce4b0f99f4df4564a.html", "date": "未标注"},
+            {"publisher": "知乎专栏", "title": "漫谈故宫：东华门是皇帝出殡的鬼门？", "url": "https://zhuanlan.zhihu.com/p/396617489", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "故宫宫门为朱红色（朱漆/朱红油饰）双扇门，门钉为铜质鎏金。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "用户线索“鎏金铜钉、朱漆门”正确。故宫官网的用词是“朱红油饰”“朱漆宫门”“铜质鎏金门钉/鎏金铜钉”。",
+          "sources": [
+            {"publisher": "故宫博物院（王玉顺《故宫门钉》PDF）", "title": "故宫门钉", "url": "https://www.dpm.org.cn/Uploads/pdf/1927/T00094_00.pdf", "date": "未标注"},
+            {"publisher": "故宫博物院", "title": "天一门", "url": "https://www.dpm.org.cn/explore/building/236541.html", "date": "未标注"},
+            {"publisher": "故宫博物院", "title": "协和门", "url": "https://www.dpm.org.cn/explore/building/236540.html", "date": "未标注"},
+            {"publisher": "百度百科", "title": "门钉", "url": "https://baike.baidu.com/item/%E9%97%A8%E9%92%89/6489109", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "清代以门钉数量区分等级：清《工部工程做法》规定宫门门钉有九路、七路、五路三种（均为阳数）；《大清会典》载宫殿门“门设金钉”“纵横各九”，亲王府为“纵九横七”。",
+          "status": "verified-2plus-independent",
+          "asOf": "历史制度",
+          "note": "九/七/五路出自故宫博物院文章；亲王府以下各级的具体数字来自通俗文章转引《大清会典》，各文表述略有出入，本次未能直接核对会典原文，字幕如需引用建议只写“九路为最高等级”。",
+          "sources": [
+            {"publisher": "故宫博物院（王玉顺《故宫门钉》PDF）", "title": "故宫门钉", "url": "https://www.dpm.org.cn/Uploads/pdf/1927/T00094_00.pdf", "date": "未标注"},
+            {"publisher": "上海市绿化和市容管理局", "title": "古代的大门上为什么有密密麻麻的圆钉？有什么用？", "url": "https://lhsr.sh.gov.cn/jnylwh/20220913/c2a4d72aecca4b97b8370e405da13116.html", "date": "2022-09-13（据URL）"},
+            {"publisher": "搜狐", "title": "门钉上还有规矩呢？", "url": "https://www.sohu.com/a/562355833_121124778", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "铺首是衔门环的底座式构件，多为金属制，以兽面衔环最为常见，自汉代流行并沿用至清代。",
+          "status": "verified-2plus-independent",
+          "asOf": "通用知识",
+          "note": "这是对“铺首”这一构件的通用定义（故宫博物院名词条目 + 中国日报关于河北博物院藏战国兽面衔环铺首的报道）。起始年代两处略有出入：故宫条目称“始于汉代”，而中国日报报道的实物属战国时期，故字幕不宜写“始于汉代”。故宫具体宫门上铺首的形制、数量，本次没有找到官方文字描述，属未核实；“椒图”之名仅见于百度知道等通俗来源。",
+          "sources": [
+            {"publisher": "故宫博物院（名词条目）", "title": "铺首", "url": "https://www.dpm.org.cn/lemmas/245425.html", "date": "未标注"},
+            {"publisher": "China Daily（政务频道）", "title": "Ancient large door knocker a masterpiece of bronze casting", "url": "https://govt.chinadaily.com.cn/s/202504/15/WS67fe0666498eec7e1f73492c/ancient-large-door-knocker-a-masterpiece-of-bronze-casting.html", "date": "2025-04-15（据URL）"}
+          ]
+        },
+        {
+          "claim": "紫禁城四座城门中，午门开五个门洞（“明三暗五”），其余三门各开三个门洞。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "note": "两条来源均出自故宫博物院，不算相互独立。",
+          "sources": [
+            {"publisher": "故宫博物院（王玉顺《故宫门钉》PDF）", "title": "故宫门钉", "url": "https://www.dpm.org.cn/Uploads/pdf/1927/T00094_00.pdf", "date": "未标注"},
+            {"publisher": "故宫博物院", "title": "午门", "url": "https://www.dpm.org.cn/explore/building/236454.html", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "【方法说明】本会话的 WebFetch 被网络白名单拦截（zh.wikipedia.org、paper.people.com.cn 均无法解析），因此本文件全部事实只通过 WebSearch 的检索结果核对，未能逐页通读原文；sources 中的 URL 均为检索结果中真实出现的链接，date 多数只能据 URL 推断或标“未标注”。",
+        "东华门门钉的方向表述互相矛盾：故宫博物院写“八路九颗”“八行九列……比其它三门少一行”；通俗文章则有“纵九横八”“横九竖八”“八纵九横”“九排八列”等写法。采信故宫博物院：8 个横排、每排 9 颗（少的是一横排）。理由：官方机构且两处表述一致；“横九竖八”也与之相容。因无法取图核对，建议画师最终对照东华门实拍照片确认。",
+        "东华门少一行的原因各说不一：鬼门/帝后梓宫出入说、崇祯出逃说、五行木克土说、大臣出入等级较低说。均为传说或推测，不采信任何一种为定论；故宫学者王玉顺明确称阴阳之说属附会。",
+        "用户线索核对：“九路九颗共81颗”“东华门72颗”“鎏金铜钉、朱漆门”“铺首衔环”均与查到的资料一致；需补充的是 81/72 都是“每扇门”的数量，且并非故宫所有宫门都是九路（极少数为七路、五路）。",
+        "故宫博物院官网另有一篇《午门掖门门钉为何每路八颗》（https://www.dpm.org.cn/building/talk/223549.html，标题见于检索结果），提示午门掖门的门钉排列可能也不是标准的九九之数；但正文未能取得，属未核实线索。若镜头画的是午门掖门，请另行核对。"
+      ]
+    },
+    {
+      "name_zh": "抱鼓石（门墩）",
+      "depiction": [
+        "成对出现，立在宅门入口门槛两端、门框外侧，左右对称。它是“门枕石”露在门外的那一段；门内一段凿有“海窝”承托门轴。",
+        "圆鼓形门墩（圆鼓子/抱鼓石）自下而上三段：方形须弥座 → 由荷叶向两侧翻卷形成的两个小鼓（过渡层）→ 竖立的大圆鼓；大鼓顶部常雕兽面（兽吻，多为狮面）或趴狮/卧狮/蹲狮。",
+        "比例：上部鼓子部分约占全高 2/3，下部须弥座约占 1/3。",
+        "大圆鼓像一面“立起来”的扁鼓：两个圆形鼓面朝向左右两侧，鼓的窄边（鼓帮）朝向街面与门内。（朝向为通行实物形态，本次检索的文字资料未逐字说明，建议对照照片。）",
+        "鼓钉：大鼓两侧沿鼓边各有一圈圆形小凸起，模仿真鼓蒙皮的鼓钉；鼓面有一圈边线，中心为浮雕花饰（鼓子心）。",
+        "鼓面（鼓子心）浮雕题材以转角莲最常见，另有麒麟卧松、松鹤延年、狮子滚绣球等吉祥图案；小鼓正面常刻如意祥云。",
+        "须弥座自上而下为：上枋、上枭、束腰、下枭、下枋、圭脚，呈上下宽、中间收腰的台座；座上常覆一块方形锦铺（锦巾）垂在座面上。",
+        "材质为石质，整体是不上色的石材本色（灰白到青灰），靠阴影表现浮雕；具体石种本次未专门核实。",
+        "另一大类是箱形门墩（方鼓子/幞头鼓子）：须弥座上是方箱体，顶上趴狮。若镜头主题是“抱鼓石”，应画圆鼓形而不是箱形。"
+      ],
+      "palette": [
+        "青白石本色 #C2BFB4（估计）",
+        "石面阴影 #8B887E（估计）",
+        "深凹刻线 #5B5952（估计）",
+        "风化旧色/包浆 #A39E8A（估计）",
+        "灰砖墙 #7C7F82（估计）",
+        "宅门朱红 #9B2D23（估计）"
+      ],
+      "pitfalls": [
+        "把抱鼓石画成横放的鼓、圆球或干脆画成一对石狮；正确是竖立的扁圆鼓坐在须弥座上。",
+        "漏掉须弥座和小鼓/荷叶过渡，让圆鼓直接落地；或比例颠倒（鼓子应约占全高 2/3）。",
+        "把圆鼓面像车轮一样正对街面摆放；实物通常是鼓的窄边朝外、圆面朝两侧（建议对照照片确认）。",
+        "在字幕里把“圆鼓=武官、方箱=文官”当作定论；该说法缺乏可靠依据（北京日报客户端有专文辟谣）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "抱鼓石（又称门鼓石、圆鼓子，俗称门墩的一种）是门枕石的一种，位于传统宅门（如北京四合院大门）入口两侧，因形似圆鼓而得名。",
+          "status": "verified-2plus-independent",
+          "asOf": "通用知识",
+          "note": "",
+          "sources": [
+            {"publisher": "百度百科", "title": "抱鼓石", "url": "https://baike.baidu.com/item/%E6%8A%B1%E9%BC%93%E7%9F%B3/10615795", "date": "未标注"},
+            {"publisher": "维基百科（中文）", "title": "门墩", "url": "https://zh.wikipedia.org/zh/%E9%97%A8%E5%A2%A9", "date": "未标注"},
+            {"publisher": "人民日报", "title": "门墩构件", "url": "http://paper.people.com.cn/rmrb/html/2023-01/27/nw.D110000renmrb_20230127_3-06.htm", "date": "2023-01-27"},
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "胡同文化 门墩儿艺术", "url": "https://www.beijing.gov.cn/tsbj/sxym/202203/t20220303_2621154.html", "date": "2022-03-03（据URL）"}
+          ]
+        },
+        {
+          "claim": "圆鼓形门墩由下部须弥座、上部鼓子（一个大圆鼓加两个小圆鼓）和顶部的兽面或狮子组成，鼓子部分约占全高的三分之二；大鼓两边有鼓钉，鼓面中心有花饰。",
+          "status": "verified-2plus-independent",
+          "asOf": "通用知识",
+          "note": "用户线索“鼓面、鼓钉、须弥座、兽吻”基本正确，但漏了“两个小鼓/荷叶”这一过渡层。“约占2/3”“鼓钉、金边”出自科普类文章，属经验比例，非官式硬性规定。“包袱角”这一俗称本次检索未见出处，查到的用词是“锦铺”“方形锦巾”。",
+          "sources": [
+            {"publisher": "人民日报", "title": "门墩构件", "url": "http://paper.people.com.cn/rmrb/html/2023-01/27/nw.D110000renmrb_20230127_3-06.htm", "date": "2023-01-27"},
+            {"publisher": "北京中医药大学博物馆", "title": "门墩文化及赏析", "url": "https://bowuguan.bucm.edu.cn/kpzl/ysmt/38779.htm", "date": "未标注"},
+            {"publisher": "搜狐", "title": "宅门前的抱鼓石", "url": "https://m.sohu.com/a/813791616_121124407", "date": "未标注"},
+            {"publisher": "知乎专栏", "title": "门墩儿的大学问", "url": "https://zhuanlan.zhihu.com/p/678293408", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "抱鼓石下部的须弥座由上枋、上枭、束腰、下枭、下枋、圭脚组成。",
+          "status": "verified-2plus-independent",
+          "asOf": "通用知识",
+          "note": "多篇科普文章措辞相同，可能同源转引；百度百科“下部须弥座”的三段式描述可作旁证。",
+          "sources": [
+            {"publisher": "搜狐", "title": "宅门前的抱鼓石", "url": "https://m.sohu.com/a/813791616_121124407", "date": "未标注"},
+            {"publisher": "知乎专栏", "title": "门墩儿的大学问", "url": "https://zhuanlan.zhihu.com/p/678293408", "date": "未标注"},
+            {"publisher": "百度百科", "title": "抱鼓石", "url": "https://baike.baidu.com/item/%E6%8A%B1%E9%BC%93%E7%9F%B3/10615795", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "常见雕刻题材为吉祥图案：转角莲、麒麟卧松、松鹤延年、狮子滚绣球、鹿鹤同春等；鼓顶多雕狮子（站狮、蹲狮或卧狮）或兽面。",
+          "status": "verified-2plus-independent",
+          "asOf": "通用知识",
+          "note": "",
+          "sources": [
+            {"publisher": "百度百科", "title": "抱鼓石", "url": "https://baike.baidu.com/item/%E6%8A%B1%E9%BC%93%E7%9F%B3/10615795", "date": "未标注"},
+            {"publisher": "知乎专栏", "title": "门墩儿的大学问", "url": "https://zhuanlan.zhihu.com/p/678293408", "date": "未标注"},
+            {"publisher": "中国日报网", "title": "（门墩“鹿鹤同春”图案相关文章）", "url": "https://cn.chinadaily.com.cn/a/202201/18/WS61e61a61a3107be497a02a67.html", "date": "2022-01-18（据URL）"}
+          ]
+        },
+        {
+          "claim": "北京的门墩主要分抱鼓形（圆）和箱形（方）两大类；门枕石在门内一侧有海窝承托门轴，门外露出的部分即门墩。",
+          "status": "verified-2plus-independent",
+          "asOf": "通用知识",
+          "note": "",
+          "sources": [
+            {"publisher": "维基百科（中文）", "title": "门墩", "url": "https://zh.wikipedia.org/zh/%E9%97%A8%E5%A2%A9", "date": "未标注"},
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "胡同文化 门墩儿艺术", "url": "https://www.beijing.gov.cn/tsbj/sxym/202203/t20220303_2621154.html", "date": "2022-03-03（据URL）"},
+            {"publisher": "人民日报", "title": "门墩构件", "url": "http://paper.people.com.cn/rmrb/html/2023-01/27/nw.D110000renmrb_20230127_3-06.htm", "date": "2023-01-27"}
+          ]
+        },
+        {
+          "claim": "“圆鼓形门墩代表武官、箱形门墩代表文官”的说法。",
+          "status": "conflicting",
+          "asOf": "资料自身日期（见来源）",
+          "note": "北京日报客户端“胡同冷知识”专文将其列为需辟谣的说法；腾讯新闻文章也指出它多出自胡同游导游之口。但部分博物馆科普页仍列出“抱鼓带狮=高级武官、箱形带狮=高级文官”等等级表。建议字幕不采用。",
+          "sources": [
+            {"publisher": "北京日报客户端", "title": "门墩是方是圆跟文官武官有关？这个六棱形门墩要辟谣！【胡同里的北京·胡同冷知识36】", "url": "https://xinwen.bjd.com.cn/content/s6372d067e4b018021745f933.html", "date": "未标注"},
+            {"publisher": "腾讯新闻", "title": "老北京四合院的门墩儿，一看就知道这家是文官还是武官", "url": "https://news.qq.com/rain/a/20210515A022SF00", "date": "2021-05-15（据URL）"},
+            {"publisher": "北京中医药大学博物馆", "title": "门墩文化及赏析", "url": "https://bowuguan.bucm.edu.cn/kpzl/ysmt/38779.htm", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "在北京四合院中，圆鼓形门墩多用于广亮大门、金柱大门等等级较高的宅门，箱形门墩多见于如意门或小门楼。",
+          "status": "single-source",
+          "asOf": "资料自身日期",
+          "note": "仅见于腾讯新闻等通俗文章，未找到官方或学术来源佐证；可作画面参考，不建议写进字幕。",
+          "sources": [
+            {"publisher": "腾讯新闻", "title": "老北京四合院的“门当”“户对”是什么意思？", "url": "https://news.qq.com/rain/a/20230516A06FZ900?no-redirect=1", "date": "2023-05-16（据URL）"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "“文方武圆”：通俗资料和部分博物馆科普页给出圆鼓=武官、方箱=文官（甚至细分到有无狮子）的等级表；北京日报客户端专文辟谣，腾讯新闻文章亦指其缺乏依据。采信“缺乏可靠依据”，理由：等级表各家不一致、且无史料出处。",
+        "鼓顶瑞兽的叫法不一：兽吻/兽面/兽首、狮子、椒图、狻猊等说法并存。画面按“狮面或小狮子”处理即可，字幕避免使用“椒图”等有争议的名称。",
+        "百度百科把抱鼓石分为“螺蚌”“如意”两种形态，称北京四合院样式为“如意抱鼓石”（须弥座＋方形锦巾与小鼓组成的如意形＋竖立圆鼓）；其他科普文章则按“大鼓＋两小鼓＋须弥座”描述。两者指同一种构造，只是术语体系不同。",
+        "用户线索中的“兽吻”：查到的资料更多写作“兽面/狮面”或直接是“趴狮”；“包袱角”一词本次未检索到，查到的是“锦铺/锦巾”。"
+      ]
+    },
+    {
+      "name_zh": "永乐大钟（大钟寺）与北京钟楼报时大钟",
+      "depiction": [
+        "永乐大钟是一口巨型青铜钟：通高 6.75 米、口径 3.3 米（高约为口径的 2 倍），重 46.5 吨；以一名成年人作比例尺，人高只到钟身的四分之一左右。",
+        "由钟身和顶部的钟钮（蒲牢）两部分组成；悬挂结构靠一根与钟体相比显得很细的铜穿钉连接，钟悬在粗大的木梁架下。",
+        "最关键的特征是“满身是字”：钟体外壁、内壁、口沿、钟钮乃至悬挂结构上遍铸汉文和梵文佛教经咒，共 23 万多字；应画成细密整齐、成行成列的小字纹理，而不是几个大字或花纹。",
+        "颜色为深沉的古铜/青黑色，局部可带铜绿，不是亮金色（颜色为估计，未检索到官方色彩描述）。",
+        "钟口的具体形状（平口还是波曲口）、钟肩纹饰本次未能核实，建议对照大钟寺古钟博物馆照片后再定稿。",
+        "北京钟楼的报时大钟是另一口钟：通高 7.02 米、最大（下口）直径 3.4 米、钟壁厚 12—24.5 厘米、重约 63 吨，比永乐大钟更高更重；悬挂在钟楼二层正中的八角形木框钟架下。",
+        "钟楼大钟的钟身铸有“大明永乐年月吉日制”款识，没有永乐大钟那样满布的经文——两口钟的画法要明显区分。",
+        "钟楼建筑：通高 47.9 米，全砖石结构，重檐歇山顶，黑琉璃瓦绿琉璃剪边；位于鼓楼以北约 100 米。"
+      ],
+      "palette": [
+        "古铜深褐 #4A3F33（估计）",
+        "钟体暗部 #2B2621（估计）",
+        "受光古铜 #8C7350（估计）",
+        "铜绿 #5E7468（估计）",
+        "铭文受光点 #A08A62（估计）",
+        "木钟架 #6B3F2A（估计）"
+      ],
+      "pitfalls": [
+        "混淆两口钟的数据：46.5 吨、6.75 米、23 万多字是大钟寺的永乐大钟；约 63 吨、7.02 米是钟楼的报时大钟。",
+        "把钟画成西式教堂钟（大敞口、内部有钟舌）；中国大钟是从外面用撞木撞击（此条为通行常识，本次未专门检索）。",
+        "把铭文画成稀疏的大字、只画在外壁，或画成龙纹花饰；永乐大钟内外壁都是密布的经文。",
+        "把钟画成亮闪闪的金色；应为沉稳的青铜色。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "永乐大钟铸于明永乐年间（1403—1424 年），现悬于北京大钟寺古钟博物馆（原觉生寺，寺因钟而俗称“大钟寺”）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月（收藏地）",
+          "note": "各权威来源只写“永乐年间”，未给出公认的具体铸造年份；网上的“永乐十六年—二十年”等精确年份本次未找到可靠出处，不建议使用。",
+          "sources": [
+            {"publisher": "北京市文物局", "title": "大钟寺古钟博物馆", "url": "https://wwj.beijing.gov.cn/bjww/362771/362772/545781/index.html", "date": "未标注"},
+            {"publisher": "北京旅游网", "title": "一条胡同传出的永乐钟声", "url": "https://www.visitbeijing.com.cn/article/4RXDcOfEoFX", "date": "未标注"},
+            {"publisher": "澎湃新闻（澎湃号）", "title": "看见文物 | 全身铸23万字——中国现存最大的青铜钟", "url": "https://m.thepaper.cn/baijiahao_11711687", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "永乐大钟通高 6.75 米，口径 3.3 米，重 46.5 吨。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "北京市文物局、北京市政府中英文门户和 2026 年 8 月北京日报系报道一致。另有 6.94 米、5.5 米、约 46 吨等不同说法，见 conflicts。",
+          "sources": [
+            {"publisher": "北京市文物局", "title": "大钟寺古钟博物馆", "url": "https://wwj.beijing.gov.cn/bjww/362771/362772/545781/index.html", "date": "未标注"},
+            {"publisher": "Beijing Municipal Government (english.beijing.gov.cn)", "title": "Dazhong Temple Ancient Bell Museum", "url": "https://english.beijing.gov.cn/beijinginfo/culture/culturaltreasures/cityofmuseums/list/202604/t20260424_4608875.html", "date": "2026-04-24（据URL）"},
+            {"publisher": "京报网（北京日报社）", "title": "（永乐大钟相关报道）", "url": "https://news.bjd.com.cn/2026/08/01/11895607.shtml", "date": "2026-08-01（据URL）"},
+            {"publisher": "百度百科", "title": "永乐大钟", "url": "https://baike.baidu.com/item/%E6%B0%B8%E4%B9%90%E5%A4%A7%E9%92%9F", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "永乐大钟钟身内外遍铸汉文、梵文佛教经咒，共 23 万多字（一说精确为 230,184 字）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "“23万多字”为官方口径，建议字幕采用。精确数 230,184 见于科普时报和中文维基（汉字约22.6万、梵文约5400）；另有“22.7万多字”“近23万字”的旧说，统计口径不同。",
+          "sources": [
+            {"publisher": "北京市文物局", "title": "大钟寺古钟博物馆", "url": "https://wwj.beijing.gov.cn/bjww/362771/362772/545781/index.html", "date": "未标注"},
+            {"publisher": "科普时报（科技日报社数字报）", "title": "北京城内的永乐钟", "url": "https://digitalpaper.stdaily.com/http_www.kjrb.com/kjwzb/html/2023-03/31/content_551459.htm?div=-1", "date": "2023-03-31"},
+            {"publisher": "中国新闻网", "title": "大钟寺博物馆用3D技术呈现23万字永乐大钟铭文", "url": "https://www.chinanews.com.cn/cul/2014/10-17/6688560.shtml", "date": "2014-10-17"},
+            {"publisher": "维基百科（中文）", "title": "永乐大钟", "url": "https://zh.wikipedia.org/zh-hans/%E6%B0%B8%E6%A8%82%E5%A4%A7%E9%90%98", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "永乐大钟铸成后曾先后置于汉经厂、万寿寺，清代移入觉生寺；移入觉生寺的时间有清雍正十一年（1733年）与乾隆八年（1743年）两种说法。",
+          "status": "conflicting",
+          "asOf": "资料自身日期",
+          "note": "北京市政府门户页称“根据目前发现的文字记载，是在清乾隆八年从万寿寺移到觉生寺”；另有资料写雍正十一年（1733年，实为觉生寺建寺之年）前后。倾向采信乾隆八年（1743年），但建议字幕不写具体年份。",
+          "sources": [
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "大钟寺古钟博物馆", "url": "https://www.beijing.gov.cn/renwen/rwzyd/bwg/dzsgzbwg/202301/t20230112_2897450.html", "date": "2023-01-12（据URL）"},
+            {"publisher": "北京旅游网", "title": "一条胡同传出的永乐钟声", "url": "https://www.visitbeijing.com.cn/article/4RXDcOfEoFX", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "北京钟楼的报时铜钟铸于明永乐年间，通高 7.02 米，最大（下口）直径 3.4 米，重约 63 吨，被称为“古钟之王”，是我国现存体量最大、分量最重的古代铜钟。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "63 吨为“约”数。用户线索要的“年代、重量”= 明永乐年间、约 63 吨。",
+          "sources": [
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "北京钟鼓楼（中轴线）", "url": "https://www.beijing.gov.cn/renwen/rwzyd/gdwh/zgl/202107/t20210708_2431999.html", "date": "2021-07-08（据URL）"},
+            {"publisher": "北京旅游网", "title": "北京钟楼", "url": "https://s.visitbeijing.com.cn/attraction/101465", "date": "未标注"},
+            {"publisher": "科技日报", "title": "（钟鼓楼报道，2024年08月17日）", "url": "https://digitalpaper.stdaily.com/http_www.kjrb.com/ywtk/html/2024-08/17/content_576340.htm?div=0", "date": "2024-08-17"},
+            {"publisher": "Science and Technology Daily (English)", "title": "Bell and Drum Towers: Echoing the Sound of History", "url": "https://stdaily.com/web/English/2024-08/19/content_215946.html", "date": "2024-08-19（据URL）"}
+          ]
+        },
+        {
+          "claim": "钟楼大钟悬挂在钟楼二层的八角形木框钟架下，钟身铸有“大明永乐年月吉日制”，钟壁厚 12—24.5 厘米。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "钟身（不含钟钮）高度有 5.5 米、5.55 米、5.4 米几种写法，差别很小，字幕建议只用通高 7.02 米。",
+          "sources": [
+            {"publisher": "北京市文物局", "title": "历史空间中的永乐大钟", "url": "https://wwj.beijing.gov.cn/bjww/wwjzzcslm/1737418/1738090/wwgs/325966413/index.html", "date": "未标注"},
+            {"publisher": "北京旅游网", "title": "北京钟楼", "url": "https://s.visitbeijing.com.cn/attraction/101465", "date": "未标注"},
+            {"publisher": "光明日报（光明网）", "title": "略谈北京钟楼的声学价值", "url": "https://news.gmw.cn/2017-07/10/content_25023381.htm", "date": "2017-07-10"}
+          ]
+        },
+        {
+          "claim": "钟楼最初悬挂的是一口铁钟，因音质不佳改铸铜钟，原铁钟现藏大钟寺古钟博物馆；钟鼓楼于 1924 年结束报时。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "",
+          "sources": [
+            {"publisher": "京报网（北京日报社）", "title": "（永乐大钟/钟楼相关报道）", "url": "https://news.bjd.com.cn/2026/08/01/11895607.shtml", "date": "2026-08-01（据URL）"},
+            {"publisher": "网易号", "title": "李荫心：元明清的“北京时间”在哪里？", "url": "https://m.163.com/dy/article/IVQ9VVQG0514DTKM.html", "date": "未标注"},
+            {"publisher": "北京旅游网", "title": "一条胡同传出的永乐钟声", "url": "https://www.visitbeijing.com.cn/article/4RXDcOfEoFX", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "钟楼通高 47.9 米，全砖石结构，重檐歇山顶，黑琉璃瓦绿琉璃剪边，位于鼓楼以北约 100 米。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "另有来源写 47.95 米；现存钟楼为清乾隆十年（1745年）重建、十二年（1747年）建成。",
+          "sources": [
+            {"publisher": "北京旅游网", "title": "古都文化之中轴线之三：鼓楼及钟楼", "url": "https://www.visitbeijing.com.cn/article/47QkX50mMao", "date": "未标注"},
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "北京钟鼓楼（中轴线）", "url": "https://www.beijing.gov.cn/renwen/rwzyd/gdwh/zgl/202107/t20210708_2431999.html", "date": "2021-07-08（据URL）"},
+            {"publisher": "人民日报", "title": "北京中轴线上的鼓楼和钟楼", "url": "https://paper.people.com.cn/rmrb/html/2023-01/14/nw.D110000renmrb_20230114_1-06.htm", "date": "2023-01-14"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "永乐大钟通高：北京市文物局/北京市政府门户/百度百科为 6.75 米；部分旧文章和旅游网站写 6.94 米；英文维基 Big Bell Temple 条目写高 5.5 米（疑为不含钟钮的钟身高或旧引文）。采信 6.75 米，理由：文物主管部门与博物馆官方口径，且 2026 年最新报道沿用。",
+        "永乐大钟重量：官方 46.5 吨；英文维基等写约 46 吨；英文维基“最重的钟列表”类页面有约 42 吨的数字。采信 46.5 吨。",
+        "铭文字数：官方“23万多字”；科普时报/中文维基给精确数 230,184 字；旧文章有“22.7万多字”“近23万字”。字幕建议写“23万多字”。",
+        "移入觉生寺年代：雍正十一年（1733年）说 vs 乾隆八年（1743年）说。北京市政府门户页依据新发现的文字记载取乾隆八年；倾向采信后者，但建议不写年份。",
+        "“最大”之争：澎湃号标题称永乐大钟是“中国现存最大的青铜钟”，而北京市官方资料称钟楼大钟（7.02 米、约 63 吨）是“我国现存体量最大、分量最重的古代铜钟”。按数据钟楼大钟更高更重；字幕里永乐大钟宜强调“铭文最多/钟王”，不要写“最大最重”。",
+        "用户线索未给出具体数字，无需纠正；仅提醒两口钟都铸于永乐年间，极易混淆。"
+      ]
+    },
+    {
+      "name_zh": "北京鼓楼更鼓",
+      "depiction": [
+        "鼓楼二层大厅陈列 25 面更鼓：1 面主鼓居中、体量最大，24 面群鼓较小、分列其旁（现陈列的均为复制品）。",
+        "鼓是横卧安放的大鼓：鼓身为桶形，架在木质鼓座上，圆形鼓面竖直朝前，鼓手站立用双槌击打（朝向为通行实物形态，建议对照现场照片）。",
+        "鼓面用整张牛皮蒙制，呈米黄/浅褐的皮革本色，中心因敲击略深。",
+        "鼓座为木质，红油漆，雕云纹；原主鼓的鼓座据导游资料约高 1.8 米、长 2 米、宽 1.9 米（单一来源）。",
+        "鼓身朱红色、两端沿鼓边各有成排鼓钉固定鼓皮——这是任务线索与常见照片中的形象，本次检索到的文字资料只明确了“红漆、云纹的鼓座”和“整张牛皮”，鼓身颜色与鼓钉排数未被文字来源逐项证实，建议对照照片。",
+        "尺寸感：主鼓鼓面直径约 1.4—1.6 米（原鼓说法不一，仿制主鼓一说 1.6 米），连鼓座在内明显高过一人；群鼓明显小于主鼓。",
+        "仅存的一面原鼓是残破的清末主鼓：牛皮鼓面上有多道刀划的破口（1900 年八国联军入侵时刺刀所留），单独陈列，不参与表演。",
+        "鼓楼建筑：通高 46.7 米，砖砌城台上的木构楼阁，三重檐歇山顶，灰筒瓦绿琉璃剪边，红墙。"
+      ],
+      "palette": [
+        "朱红鼓身 #A32A22（估计）",
+        "鼓座暗红 #7A1F1B（估计）",
+        "鼓钉金色 #C9A24A（估计）",
+        "牛皮鼓面 #D9C39A（估计）",
+        "鼓面旧色/击打处 #B89B6E（估计）",
+        "室内木构暗色 #3B2A22（估计）"
+      ],
+      "pitfalls": [
+        "数量画错：应为 1 大 + 24 小共 25 面，不要画成 24 面，也不要把 25 面画成同样大小。",
+        "把鼓画成鼓面朝上平放的堂鼓或挂在腰间的腰鼓；鼓楼更鼓是横卧在鼓座上、鼓面竖直朝前的大鼓。",
+        "把现陈列的 25 面鼓说成“原物”；原物只剩 1 面残破主鼓，其余为复制品。",
+        "把鼓楼和钟楼的外观混淆：鼓楼是红墙木构、灰瓦绿剪边；钟楼是灰色砖石结构、黑琉璃瓦绿剪边。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "北京鼓楼二层原有 25 面更鼓：1 面主鼓、24 面群鼓。",
+          "status": "verified-2plus-independent",
+          "asOf": "历史事实",
+          "note": "用户线索“1面主鼓+24面群鼓”正确。部分英文资料写成“共24面鼓”，见 conflicts。",
+          "sources": [
+            {"publisher": "人民日报", "title": "北京中轴线上的鼓楼和钟楼", "url": "https://paper.people.com.cn/rmrb/html/2023-01/14/nw.D110000renmrb_20230114_1-06.htm", "date": "2023-01-14"},
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "北京钟鼓楼（中轴线）", "url": "https://www.beijing.gov.cn/renwen/rwzyd/gdwh/zgl/202107/t20210708_2431999.html", "date": "2021-07-08（据URL）"},
+            {"publisher": "北京市文物局", "title": "龙尾之曜——浅记北京鼓楼", "url": "https://wwj.beijing.gov.cn/bjww/362760/362770/1757494/index.html", "date": "未标注"},
+            {"publisher": "Wikipedia (English)", "title": "Drum Tower and Bell Tower of Beijing", "url": "https://en.wikipedia.org/wiki/Drum_Tower_and_Bell_Tower_of_Beijing", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "主鼓象征一年，24 面群鼓象征二十四节气。",
+          "status": "verified-2plus-independent",
+          "asOf": "资料自身日期",
+          "note": "",
+          "sources": [
+            {"publisher": "人民日报", "title": "北京中轴线上的鼓楼和钟楼", "url": "https://paper.people.com.cn/rmrb/html/2023-01/14/nw.D110000renmrb_20230114_1-06.htm", "date": "2023-01-14"},
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "钟鼓和鸣迎新春", "url": "https://www.beijing.gov.cn/ywdt/yaowen/202501/t20250129_4001927.html", "date": "2025-01-29（据URL）"}
+          ]
+        },
+        {
+          "claim": "25 面原鼓如今仅存 1 面残破的主鼓（清末使用），鼓面上的刀痕是 1900 年八国联军入侵北京时刺刀所留。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "中国华文教育网等资料把刀痕具体归于八国联军中的日本军队；官方介绍只笼统写“八国联军”。字幕建议用笼统表述。",
+          "sources": [
+            {"publisher": "北京旅游网（北京市钟鼓楼文物保管所介绍页）", "title": "北京市钟鼓楼文物保管所", "url": "https://s.visitbeijing.com.cn/attraction/118156", "date": "未标注"},
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "北京钟鼓楼（中轴线）", "url": "https://www.beijing.gov.cn/renwen/rwzyd/gdwh/zgl/202107/t20210708_2431999.html", "date": "2021-07-08（据URL）"},
+            {"publisher": "Wikipedia (English)", "title": "Drum Tower and Bell Tower of Beijing", "url": "https://en.wikipedia.org/wiki/Drum_Tower_and_Bell_Tower_of_Beijing", "date": "未标注"},
+            {"publisher": "中国华文教育网", "title": "北京鼓楼", "url": "http://old.hwjyw.com/zhwh/regional_culture/htwh/pweg/200709/t20070905_6070.shtml", "date": "2007-09-05（据URL）"}
+          ]
+        },
+        {
+          "claim": "鼓楼二层现陈列 25 面复制更鼓，依据清代嘉庆年间的尺寸仿制。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "",
+          "sources": [
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "北京钟鼓楼（中轴线）", "url": "https://www.beijing.gov.cn/renwen/rwzyd/gdwh/zgl/202107/t20210708_2431999.html", "date": "2021-07-08（据URL）"},
+            {"publisher": "北京旅游网（北京市钟鼓楼文物保管所介绍页）", "title": "北京市钟鼓楼文物保管所", "url": "https://s.visitbeijing.com.cn/attraction/118156", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "现存原主鼓的尺寸：鼓高 2.22 米、长 2.25 米、腰径 1.71 米、鼓面直径 1.40 米。",
+          "status": "conflicting",
+          "asOf": "资料自身日期",
+          "note": "另有“鼓面直径约 1.5 米”（中国华文教育网）和“长 2.25 米、直径 1.34 米”（中文维基/旧文献）两种说法；未找到文物部门的正式测量数据。建议字幕不写具体尺寸，或只写“鼓面直径约 1.4—1.5 米”。",
+          "sources": [
+            {"publisher": "搜狐", "title": "北京鼓楼、钟楼", "url": "https://www.sohu.com/a/672012832_121687416", "date": "未标注"},
+            {"publisher": "中国华文教育网", "title": "北京鼓楼", "url": "http://old.hwjyw.com/zhwh/regional_culture/htwh/pweg/200709/t20070905_6070.shtml", "date": "2007-09-05（据URL）"},
+            {"publisher": "维基百科（中文）", "title": "北京鼓楼和钟楼", "url": "https://zh.wikipedia.org/zh-hans/%E5%8C%97%E4%BA%AC%E9%BC%93%E6%A5%BC%E5%92%8C%E9%92%9F%E6%A5%BC", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "依清嘉庆年间史料仿制的主鼓：鼓高 2.40 米，鼓面直径 1.60 米。",
+          "status": "single-source",
+          "asOf": "资料自身日期",
+          "note": "仅见于导游词类文本及其转载，未见官方数据，两条来源很可能同源，按单一来源处理。",
+          "sources": [
+            {"publisher": "第一范文网（导游词）", "title": "北京钟鼓楼导游词（精选3篇）", "url": "https://m.diyifanwen.com/fanwen/daoyouci/beijingdaoyouci/18749486.html", "date": "未标注"},
+            {"publisher": "搜狐", "title": "北京鼓楼、钟楼", "url": "https://www.sohu.com/a/672012832_121687416", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "更鼓以整张牛皮蒙制，鼓座为木质、红油漆、雕云纹。",
+          "status": "verified-2plus-independent",
+          "asOf": "资料自身日期",
+          "note": "来源为百科与旧资料；“朱漆鼓身、鼓钉”这一任务线索未被文字来源逐项证实（见 depiction 说明）。",
+          "sources": [
+            {"publisher": "维基百科（中文）", "title": "北京鼓楼和钟楼", "url": "https://zh.wikipedia.org/zh-hans/%E5%8C%97%E4%BA%AC%E9%BC%93%E6%A5%BC%E5%92%8C%E9%92%9F%E6%A5%BC", "date": "未标注"},
+            {"publisher": "中国华文教育网", "title": "北京鼓楼", "url": "http://old.hwjyw.com/zhwh/regional_culture/htwh/pweg/200709/t20070905_6070.shtml", "date": "2007-09-05（据URL）"},
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "北京的鼓楼和钟楼", "url": "https://www.beijing.gov.cn/renwen/jrbj/sjc/201701/t20170104_1874489.html", "date": "2017-01-04（据URL）"}
+          ]
+        },
+        {
+          "claim": "2001 年依据史料复制了全套更鼓，并于当年岁末由 25 位鼓手敲响。",
+          "status": "single-source",
+          "asOf": "资料自身日期",
+          "note": "仅在一次检索结果中出现，未能确认第二个独立来源；另有导游词称 1988 年曾依旧主鼓复制过两面新鼓。不建议写入字幕。",
+          "sources": [
+            {"publisher": "中国质量新闻网", "title": "走进古老的钟鼓楼感受老北京文化", "url": "https://m.cqn.com.cn/wl/content/2022-02/28/content_8789309.htm", "date": "2022-02-28（据URL）"}
+          ]
+        },
+        {
+          "claim": "鼓楼通高 46.7 米，三重檐歇山顶，灰筒瓦绿琉璃剪边；现存鼓楼为明代建筑（明永乐十八年，1420 年重建）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "",
+          "sources": [
+            {"publisher": "北京旅游网", "title": "古都文化之中轴线之三：鼓楼及钟楼", "url": "https://www.visitbeijing.com.cn/article/47QkX50mMao", "date": "未标注"},
+            {"publisher": "新浪新闻", "title": "北京钟鼓楼", "url": "https://www.sina.cn/news/detail/4747037398010929.html", "date": "未标注"},
+            {"publisher": "人民日报", "title": "北京中轴线上的鼓楼和钟楼", "url": "https://paper.people.com.cn/rmrb/html/2023-01/14/nw.D110000renmrb_20230114_1-06.htm", "date": "2023-01-14"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "更鼓总数：中文官方与权威媒体（人民日报、北京市政府门户、北京市文物局）一致为 25 面（1 主鼓 + 24 群鼓）；部分英文资料（英文维基的某些版本/镜像）写“上层原有 24 面鼓，仅存 1 面”。采信 25 面，理由：官方来源一致且与“主鼓象征一年、群鼓象征二十四节气”的说法自洽。",
+        "现存原主鼓尺寸三说并存：① 高 2.22 米、长 2.25 米、腰径 1.71 米、鼓面直径 1.40 米；② 鼓面直径约 1.5 米；③ 长 2.25 米、直径 1.34 米。均无文物部门正式数据，不采信任何一个为定数。",
+        "刀痕归属：官方介绍写“八国联军入侵时的刺刀所留”；有资料具体指为八国联军中的日本军队，个别导游词甚至写“侵华日军”（时间上易被误解）。采信“1900 年八国联军侵入北京时所留”。",
+        "复制时间：一说 1988 年依旧主鼓复制两面新鼓，一说 2001 年复制全套 25 面；两者可能是先后两批，未能核实，字幕不写年份。",
+        "用户线索核对：“1面主鼓+24面群鼓”正确；“现存原鼓”= 仅 1 面残破主鼓；“朱漆鼓身、鼓钉”未被文字来源逐项证实，仅证实了红漆云纹鼓座与整张牛皮鼓面。"
+      ]
+    }
+  ]
+}

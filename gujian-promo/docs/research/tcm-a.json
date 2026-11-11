@@ -1,0 +1,997 @@
+{
+  "group": "tcm-a",
+  "film": "tcm",
+  "searchesUsed": 17,
+  "notes": [
+    "本组 17 次检索额度已全部用完。检索工具只返回摘要与链接，未使用 WebFetch；凡摘要没有逐句标明出处的，已在各条 note 里写明。",
+    "大枣、红花两味，以及松花粉、青黛的来源与外观，本轮没有取得任何可引用的检索依据，一律标为 unverified；对应 depiction 中凡写（常识，未核实）的内容都不是检索所得，开画前或写入成片说明前需要补查。",
+    "最后一次检索的摘要里，检索工具自己声明有一段内容来自其已有知识、未经检索核实（青黛、红花、大枣、松花粉），这一段没有作为来源采用。",
+    "神农Alpha（ShennongAlpha）条目自称依据《中国药典》2020 年版一部；是否有更新版本药典的表述变化，本轮未核对。",
+    "全组不含任何功效、主治、用法用量内容；朱砂只描述外观。"
+  ],
+  "subjects": [
+    {
+      "shots": ["s04"],
+      "name_zh": "灵芝（赤芝）",
+      "depiction": [
+        "整体是侧柄的肾形伞：菌盖肾形、半圆形或近圆形（团体标准），菌柄侧生或顶生、偶有偏生（港标），典型画法是柄接在菌盖一侧的缺口处，而不是正中。",
+        "盖面（皮壳）黄褐色至红褐色、有光泽，像上过一层漆；自柄端向外有一圈圈同心环沟和环带（环纹），另有明显或不明显的放射状皱纹。",
+        "菌盖下表面是平整的管孔面：密布极细小的菌管口（港标：黄棕色，每毫米 4—7 个），远看是一片匀净的浅黄棕哑光面，近看才是针尖大的细孔。",
+        "切口断面：赤芝菌肉白色至淡棕色（团体标准），菌肉之下是一层菌管层（港标）。分镜写的“切口露出浅色菌肉”与此相符，可在浅色菌肉下方再画一条颜色略深、带竖向细纹的菌管层。",
+        "若改画紫芝：菌盖紫黑色、有漆样光泽，菌肉锈褐色（北京市药监局材料）。本镜头主色“赤褐”对应赤芝。"
+      ],
+      "pitfalls": [
+        "把菌盖底面画成普通蘑菇那样的放射状菌褶。灵芝底面是细密的管孔面，没有菌褶。",
+        "把菌柄画在菌盖正中、成左右对称的小伞。典型灵芝是侧生柄、肾形盖。",
+        "环纹画成从正中心出发的正圆靶环。实际是以柄端为起点的偏心弧带，并叠有放射状皱纹。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "《中国药典》收载的灵芝有赤芝和紫芝两种。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "《菌物学报》", "title": "期刊论文（2023 年第 42 卷第 1 期第 170 页起；检索结果未显示标题）", "url": "https://manu40.magtech.com.cn/Jwxb/article/2023/1672-6472/1672-6472-42-1-170.shtml", "date": "2023" },
+            { "publisher": "北京市药品监督管理局", "title": "科普材料 PDF（赤芝与紫芝的区分及易混品；检索结果未显示标题）", "url": "https://yjj.beijing.gov.cn/yjj/resource/cms/article/435858/435989/2017110815405326212.pdf", "date": "未标注（文件名含 20171108）" }
+          ],
+          "note": "《菌物学报》论文明确说药典收载赤芝、紫芝两种；北京市药监局材料分别描述赤芝与紫芝。另有《中草药》2023 年论文提到 15 批赤芝符合《中国药典》2020 年版标准。未核对更新版本药典。"
+        },
+        {
+          "claim": "赤芝菌盖（皮壳）为黄褐色至红褐色，有光泽。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "全国团体标准信息平台（ttbz.org.cn）", "title": "团体标准文本 PDF（含赤芝感官要求表；检索结果未显示标准名称）", "url": "https://www.ttbz.org.cn/upload/file/20220930/6380014675541570682452758.pdf", "date": "未标注（网址路径含 20220930）" },
+            { "publisher": "北京市药品监督管理局", "title": "科普材料 PDF（赤芝与紫芝的区分及易混品；检索结果未显示标题）", "url": "https://yjj.beijing.gov.cn/yjj/resource/cms/article/435858/435989/2017110815405326212.pdf", "date": "未标注（文件名含 20171108）" }
+          ],
+          "note": "团体标准：皮壳黄褐至红褐色并带光泽；北京市药监局：赤芝菌盖黄褐色至红褐色。"
+        },
+        {
+          "claim": "灵芝菌盖上表面有同心的环纹（港标称“同心环沟和环带”）。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署中医药规管办公室", "title": "《香港中药材标准》第九册·灵芝（Ganoderma_v9_c.pdf）", "url": "https://www.cmro.gov.hk/hkcmms/vol9/pdf_c/Ganoderma_v9_c.pdf", "date": "未标注" },
+            { "publisher": "全国团体标准信息平台（ttbz.org.cn）", "title": "团体标准文本 PDF（含赤芝感官要求表；检索结果未显示标准名称）", "url": "https://www.ttbz.org.cn/upload/file/20220930/6380014675541570682452758.pdf", "date": "未标注（网址路径含 20220930）" }
+          ],
+          "note": "港标原文（繁体）：具有光泽，具同心环沟和环带，并有明显或不明显的放射状皱纹。团体标准：带有明显的环纹。"
+        },
+        {
+          "claim": "赤芝菌盖呈肾形、半圆形或近圆形。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "全国团体标准信息平台（ttbz.org.cn）", "title": "团体标准文本 PDF（含赤芝感官要求表；检索结果未显示标准名称）", "url": "https://www.ttbz.org.cn/upload/file/20220930/6380014675541570682452758.pdf", "date": "未标注（网址路径含 20220930）" }
+          ],
+          "note": "只在团体标准的感官要求表里见到这一形状表述。"
+        },
+        {
+          "claim": "菌盖上表面除环纹外还有明显或不明显的放射状皱纹；菌柄侧生或顶生，偶有偏生。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署中医药规管办公室", "title": "《香港中药材标准》第九册·灵芝（Ganoderma_v9_c.pdf）", "url": "https://www.cmro.gov.hk/hkcmms/vol9/pdf_c/Ganoderma_v9_c.pdf", "date": "未标注" }
+          ],
+          "note": "只有港标一处来源。"
+        },
+        {
+          "claim": "灵芝菌盖下面是菌管层：菌管层位于菌肉之下，下表面可见密集细小的菌管口（黄棕色，每毫米 4—7 个），不是菌褶。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署中医药规管办公室", "title": "《香港中药材标准》第九册·灵芝（Ganoderma_v9_c.pdf）", "url": "https://www.cmro.gov.hk/hkcmms/vol9/pdf_c/Ganoderma_v9_c.pdf", "date": "未标注" }
+          ],
+          "note": "港标把菌管层和菌管口列为子实体的主要结构，没有菌褶一说；“不是菌褶”是据此作出的归纳。旁证：萌娘百科条目把灵芝归入多孔菌科灵芝属（百科类、可靠性有限，未计为独立来源）。《中国药典》灵芝性状原文本轮未检索到。"
+        },
+        {
+          "claim": "赤芝菌肉白色至淡棕色；紫芝菌盖紫黑色、有漆样光泽，菌肉锈褐色。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "全国团体标准信息平台（ttbz.org.cn）", "title": "团体标准文本 PDF（含赤芝感官要求表；检索结果未显示标准名称）", "url": "https://www.ttbz.org.cn/upload/file/20220930/6380014675541570682452758.pdf", "date": "未标注（网址路径含 20220930）" },
+            { "publisher": "北京市药品监督管理局", "title": "科普材料 PDF（赤芝与紫芝的区分及易混品；检索结果未显示标题）", "url": "https://yjj.beijing.gov.cn/yjj/resource/cms/article/435858/435989/2017110815405326212.pdf", "date": "未标注（文件名含 20171108）" }
+          ],
+          "note": "两句各只有一个来源：赤芝菌肉色见团体标准，紫芝的颜色与菌肉色见北京市药监局材料。"
+        }
+      ],
+      "conflicts": [
+        "科的归属：萌娘百科条目写“多孔菌科灵芝属”，同时注明多孔菌科的归属尚有争议。本组只采信形态事实（底面为菌管孔），建议成片说明里不写科名。"
+      ]
+    },
+    {
+      "shots": ["s03"],
+      "name_zh": "橘皮／陈皮",
+      "depiction": [
+        "题材是橘的成熟果皮（来源已核实）。外表面橙红至红棕色，有细皱纹（常识，未核实：药典性状原文本轮未检索到）。",
+        "分镜里的“油胞”即果皮外表面的油室：密布的、略凹下的小圆点，大小不一，侧逆光下凹点边缘起亮（常识，未核实）。",
+        "内表面浅黄白色、粗糙，附着黄白色筋络状的维管束，即橘络（常识，未核实）。",
+        "本镜头是“橙色行星”的局部弧面：橙红底色、细皱、凹点油室、一侧高光即可，不需要画出整张果皮。",
+        "若画整张干皮：常剥成数瓣、基部相连，边缘向内卷（常识，未核实）。"
+      ],
+      "pitfalls": [
+        "把油室画成凸起的疙瘩或整齐的网格。应是凹下的、疏密不匀的小点。",
+        "名实不符：有资料称贮藏陈化三年以上才叫陈皮，鲜亮的橙色果皮更适合叫“橘皮”。分镜用“橘皮”作题名较稳妥。",
+        "用柚皮、橙皮那种粗大颗粒的质感代替橘皮。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "陈皮为芸香科植物橘（Citrus reticulata Blanco）及其栽培变种的干燥成熟果皮，药材分“陈皮”和“广陈皮”。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-00jg（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-00jg", "date": "未标注" },
+            { "publisher": "宜昌市人民政府网站（img.yichang.gov.cn）", "title": "公开文件 PDF（检索结果未显示标题）", "url": "https://img.yichang.gov.cn/upload2022/2023/1102/20231102112639781.pdf", "date": "未标注（网址路径含 2023-11-02）" },
+            { "publisher": "《中草药》", "title": "期刊论文（检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20231027", "date": "2023" }
+          ],
+          "note": "检索摘要引《中国药典》2020 年版一部给出基原，并另有一句“陈皮一般指大红袍、温州蜜柑、福橘等的干燥成熟果皮”与之相合；摘要没有逐句标明出自哪一个链接，以上为该次检索返回的相关链接。未核对更新版本药典。"
+        },
+        {
+          "claim": "有资料称：贮藏三年以下的称橘皮，经三年以上贮藏陈化的才称陈皮。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "宜昌市人民政府网站（img.yichang.gov.cn）", "title": "公开文件 PDF（检索结果未显示标题）", "url": "https://img.yichang.gov.cn/upload2022/2023/1102/20231102112639781.pdf", "date": "未标注（网址路径含 2023-11-02）" }
+          ],
+          "note": "摘要未标明这句话的具体出处，最可能来自该次检索返回的宜昌市文件；检索到的药典基原表述里没有出现年限要求。不建议把“三年”写进成片说明。"
+        },
+        {
+          "claim": "陈皮一般指大红袍、温州蜜柑、福橘等的干燥成熟果皮；广陈皮一般指茶枝柑的干燥成熟果皮，产地为广东。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《中草药》", "title": "期刊论文（检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20231027", "date": "2023" }
+          ],
+          "note": "摘要未标明具体出处，所列链接为该次检索返回的相关论文之一。"
+        },
+        {
+          "claim": "陈皮外表面橙红色或红棕色，有细皱纹和凹下的点状油室；内表面浅黄白色，附筋络状维管束。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索明确回报“未找到性状描述”；额度用尽未能补查。画面中的油室点只能按常识处理。"
+        }
+      ],
+      "conflicts": [
+        "名称：一处资料以“三年”为界区分橘皮与陈皮，而检索到的药典基原表述只说“干燥成熟果皮”、不设年限。采信药典定义作为来源依据；分镜题名用“橘皮”可回避这一分歧。"
+      ]
+    },
+    {
+      "shots": ["s06"],
+      "name_zh": "石决明（鲍的贝壳）",
+      "depiction": [
+        "石决明是鲍的贝壳：单片、低平的耳形壳（杂色鲍长卵圆形，皱纹盘鲍长椭圆形），不是双壳贝。",
+        "外面：杂色鲍暗红色，有不规则螺肋；螺旋部小、体螺部大；自螺旋部顶端向右排列二十余个疣状突起，末端 6—9 个开孔，孔口与壳面齐平。皱纹盘鲍外面灰棕色、布满粗糙皱纹，末端 4—5 个开孔，孔口突出壳面。",
+        "内面光滑，具珍珠样彩色光泽，即 s06 的主体：蓝、绿、粉的虹彩随弧面流动。",
+        "从内面看，壳的一侧边缘有一排由开孔透出的小圆洞（由“末端开孔”推出），这是鲍壳区别于普通贝壳的标志。",
+        "虹彩宜画成沿生长方向的平滑条带状渐变，而不是碎钻式的闪点（常识）。"
+      ],
+      "pitfalls": [
+        "画成扇贝或河蚌那样的对称双壳、带放射肋的扇形壳。",
+        "漏画壳缘那一列开孔，或把所有疣突都画成通孔。开孔只在末端几个（杂色鲍 6—9 个，皱纹盘鲍 4—5 个）。",
+        "把虹彩画在外壳面。珍珠层在内面，外面是暗红或灰棕的粗糙壳。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "石决明为鲍科动物杂色鲍、皱纹盘鲍、耳鲍、羊鲍等的贝壳。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-00nm（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-00nm", "date": "未标注" }
+          ],
+          "note": "旁证：同次检索返回的一家香港药材商页面标题把 Shi Jue Ming 对应为 sea ear shell（鲍壳），属商业页面且只见标题，未计为独立来源。"
+        },
+        {
+          "claim": "石决明（鲍壳）内面光滑，具珍珠样彩色光泽。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-02gm（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-02gm", "date": "未标注" },
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-00nm（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-00nm", "date": "未标注" }
+          ],
+          "note": "两个条目属同一网站，算一个来源。"
+        },
+        {
+          "claim": "杂色鲍壳长卵圆形，表面暗红色，有不规则螺肋；螺旋部小、体螺部大；自螺旋部顶端向右排列二十余个疣状突起，末端 6—9 个开孔，孔口与壳面平；壳厚质硬。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-02gm（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-02gm", "date": "未标注" }
+          ],
+          "note": "摘要未区分两个条目各自的内容，条目归属以网站为准。"
+        },
+        {
+          "claim": "皱纹盘鲍壳长椭圆形，表面灰棕色，有粗糙不规则皱纹，生长线明显，常附苔藓类或石灰虫；末端通常 4—5 个开孔，开孔突出壳面；壳较薄。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-00nm（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-00nm", "date": "未标注" }
+          ],
+          "note": "同上。"
+        }
+      ],
+      "conflicts": [
+        "尺寸：神农Alpha 一处写杂色鲍壳长 7—9 厘米，另一处写 80—93 毫米，量级一致但数值不完全相同。画面不涉及尺寸标注，未采用具体数值。"
+      ]
+    },
+    {
+      "shots": ["s08"],
+      "name_zh": "人参",
+      "depiction": [
+        "自上而下三段：顶端细的根茎“芦头”（长 1—4 厘米），其上有稀疏的凹窝状茎痕“芦碗”，并可带不定根“艼”；中部主根纺锤形或圆柱形（长 3—15 厘米、直径 1—2 厘米）；下部分出 2—3 条支根。",
+        "支根上着生多数细长须根，须根上有不明显的细小疣状突起，俗称“珍珠点”，可在须上点几粒极小的结节。",
+        "须的画法：研究文献称园参须根极多、常拧在一起形似扫帚，山参类则以“皮条须”为特征。要画得舒展，取疏朗、不交缠、长而柔韧的须。",
+        "主根上部有横向环纹与纵皱（常识，未核实）。",
+        "本镜头为负片效果：黑底上只取幽白的轮廓，芦头、主根、支根、须根四级粗细要分明。"
+      ],
+      "pitfalls": [
+        "漏掉芦头与芦碗，让主根顶端直接平切收口。",
+        "把须根画成少数几根粗根，或一团毛絮乱线。应是从支根延伸出的细长须，其上有小疣点。",
+        "过度拟人，画成四肢齐全的对称小人。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "人参主根呈纺锤形或圆柱形，长 3—15 厘米，直径 1—2 厘米；下部有支根 2—3 条，并着生多数细长的须根。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-001k（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-001k", "date": "未标注" },
+            { "publisher": "福建省药品监督管理局", "title": "通知公告附件 PDF（检索结果未显示标题）", "url": "https://yjj.scjgj.fujian.gov.cn/zwgk/gstg/tzgg/202405/P020240507336951106107.pdf", "date": "未标注（网址路径含 202405）" }
+          ],
+          "note": "摘要称这是“药典式的性状描述”，但没有标明出自上述哪一个链接；两者即使都载有，也是同一药典文本，按一个来源计。"
+        },
+        {
+          "claim": "人参的根茎俗称“芦头”，长 1—4 厘米，上有稀疏的凹窝状茎痕（“芦碗”）和不定根（“艼”）。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-001k（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-001k", "date": "未标注" },
+            { "publisher": "《中草药》", "title": "期刊论文：野山参、林下山参、趴货与园参的性状比较研究（检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/201316022", "date": "2013" }
+          ],
+          "note": "药典式描述给出芦头、芦碗、艼三个名称及尺寸；《中草药》论文把“圆芦、下垂艼”列为野山参和林下山参的鉴别性状，印证这些部位名称。芦碗的具体数量没有权威依据，不要写。"
+        },
+        {
+          "claim": "人参须根上常有不明显的细小疣状突起，行内称“珍珠点”。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-001k（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-001k", "date": "未标注" },
+            { "publisher": "《中草药》", "title": "期刊论文：野山参、林下山参、趴货与园参的性状比较研究（检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/201316022", "date": "2013" }
+          ],
+          "note": "药典式描述写“须根上常有不明显的细小疣状突出”；论文把“皮条须和珍珠点”列为鉴别性状。把二者对应为同一特征是通行说法，摘要本身没有逐字写明这一对应。"
+        },
+        {
+          "claim": "园参须根极多，常拧在一起、杂乱不清，形似扫帚；“趴货”须根较多，排列呈扇面形。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《中草药》", "title": "期刊论文：野山参、林下山参、趴货与园参的性状比较研究（检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/201316022", "date": "2013" }
+          ],
+          "note": "单篇研究的观察结论。"
+        },
+        {
+          "claim": "人参为五加科植物人参（Panax ginseng C. A. Mey.）的干燥根和根茎。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索词里带了这一表述，但返回的摘要没有确认科名和拉丁学名；额度用尽未能补查。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s05"],
+      "name_zh": "枸杞（枸杞子）",
+      "depiction": [
+        "干果粒，纺锤形至类球形都有（文献：不同产地果形不同），一端略尖，粒与粒大小不一。",
+        "颜色红至暗红；科普来源称晒干的颜色相对暗红。",
+        "果皮皱缩，有细密纵皱，略带光泽（常识，未核实）。",
+        "果粒基部有一个白色小点，即果梗痕（常识，未核实：药典性状原文本轮未检索到）。",
+        "分镜里的“一线绿梗”：商品干枸杞一般已去掉果梗（常识，未核实），绿梗更像鲜果带柄的画法，属画面处理，不宜当作药材特征来写。"
+      ],
+      "pitfalls": [
+        "画成光滑饱满的圆珠，像红豆或蔓越莓。干枸杞是皱缩的。",
+        "颜色画成荧光洋红或正大红，且所有果粒同色同大。",
+        "果粒画成两头一样圆的椭球，没有尖端与果梗痕的区别。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "枸杞子为茄科植物宁夏枸杞（Lycium barbarum L.）的干燥成熟果实。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "新疆维吾尔自治区药品监督管理局", "title": "附件14 新疆维吾尔自治区中药配方颗粒标准——枸杞子配方颗粒（试行）", "url": "https://mpa.xinjiang.gov.cn/xjyjj/tzgg/202309/556d90d11f744c2a95805316cae08479/files/附件14新疆维吾尔自治区中药配方颗粒标准——枸杞子配方颗粒（试行）.pdf", "date": "未标注（网址路径含 202309）" },
+            { "publisher": "《药学学报》", "title": "期刊论文（DOI 10.16438/j.0513-4870.2020-0572；检索结果未显示标题）", "url": "https://castjournals.cast.org.cn/joweb/yxxb/CN/PDF/10.16438/j.0513-4870.2020-0572", "date": "未标注" },
+            { "publisher": "《中草药》", "title": "期刊论文（检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20250501", "date": "2025" }
+          ],
+          "note": "摘要称“多份资料确认”，并引新疆配方颗粒标准的来源项原文；期刊论文链接为该次检索返回的相关文献，摘要未逐篇标注。"
+        },
+        {
+          "claim": "不同产地枸杞子果形有差异：有的呈纺锤形，新疆和甘肃酒泉产的呈类球形。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《中草药》", "title": "期刊论文（检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20250501", "date": "2025" }
+          ],
+          "note": "摘要只说“一篇研究提到”，没有标明是哪一个链接，所列为该次检索返回的相关论文之一；这是产地差异的描述，不等同于药典标准性状。"
+        },
+        {
+          "claim": "晒干的枸杞颜色相对暗红，颜色与加工方式和储存条件有关。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "人民日报客户端", "title": "面向消费者的枸杞科普文章（检索结果未显示标题）", "url": "https://www.peopleapp.com/rmharticle/30018059048", "date": "未标注" }
+          ],
+          "note": "科普文章，非药典来源。"
+        },
+        {
+          "claim": "枸杞子呈类纺锤形或椭圆形，表面红色或暗红色，基部有白色的果梗痕。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索明确回报没有找到药典性状原文；额度用尽未能补查。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s09"],
+      "name_zh": "银杏叶",
+      "depiction": [
+        "扇形叶片，基部楔形，下接一根较长的叶柄。",
+        "上缘是不规则的波状缺刻；常见叶片中央有一道较深的裂口把扇面分成两半（中央裂口为常识，未核实）。",
+        "叶脉细密，从叶柄端出发向外多次二分叉，形成近乎平行的放射脉直达上缘，没有贯穿的主脉。",
+        "质地纸质，容易顺着叶脉纵向撕裂，叶缘可以画一两处顺脉的小裂口。",
+        "颜色按分镜取黄绿；干叶偏黄绿至浅棕黄（常识，未核实）。"
+      ],
+      "pitfalls": [
+        "画出一条中脉再加羽状侧脉。银杏叶是从柄端发散的二叉平行脉。",
+        "把上缘画成光滑的正圆弧。应有不规则的波状缺刻。",
+        "叶柄画得过短或省略。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "银杏叶叶片呈扇形，上缘有不规则的波状缺刻，基部楔形；叶脉细密，由基部向外多次二分叉形成平行脉；叶柄较长；纸质，易纵向撕裂。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "中国医药大学（台湾，cmuscmr.cmu.edu.tw）", "title": "中药材资料 PDF（006.pdf；检索结果未显示标题）", "url": "https://cmuscmr.cmu.edu.tw/sites/cmuscmr.cmu.edu.tw/files/imce/u40/006.pdf", "date": "未标注" }
+          ],
+          "note": "检索只取得这一处形态描述；《中国药典》与《中国植物志》的表述未检索到。"
+        },
+        {
+          "claim": "银杏叶为银杏科植物银杏（Ginkgo biloba L.）的干燥叶。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索摘要没有确认科名与拉丁学名；额度用尽未能补查。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s11"],
+      "name_zh": "山楂片",
+      "depiction": [
+        "药材山楂是成熟果实采收后切片、干燥而成（已有药典来源），所以是横切或斜切的圆片。",
+        "干片外观（常识，未核实：药典性状原文本轮未检索到）：圆片皱缩不平；边缘一圈外皮红色，带皱纹和灰白色小斑点；果肉深黄色至浅棕色，并非通体红色。",
+        "中部的横切片可见 5 粒浅黄色果核，果核多脱落而留下孔洞，呈五角梅花状排布（常识，未核实）。",
+        "片径约 1—2.5 厘米，厚 2—4 毫米（常识，未核实）。",
+        "分镜写的“半透明红色圆片”更接近鲜切山楂或糖渍制品；若保留这一视觉，建议在文字上只称“山楂”，不要称药材“山楂片”，或者把果肉改成黄棕色、只留一圈红皮。"
+      ],
+      "pitfalls": [
+        "整片画成均匀的半透明红色，像山楂糕或果丹皮。干山楂片只有外皮是红的，果肉偏黄棕（未经本轮检索核实，开画前请再核）。",
+        "籽孔画成 1 个或随意多个。山楂横切为 5 室（常识，未核实）。",
+        "片形过于正圆平整。干片是皱缩翘曲的。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "山楂为蔷薇科植物山里红（Crataegus pinnatifida Bge. var. major N. E. Br.）或山楂（Crataegus pinnatifida Bge.）的干燥成熟果实。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-009x（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-009x", "date": "未标注" },
+            { "publisher": "《药学学报》", "title": "药学学报 2021, Vol. 56 Issue (12): 3313-3324（DOI 10.16438/j.0513-4870.2021-0665）", "url": "https://html.rhhz.net/YXXB/html/20211212.htm", "date": "2021" },
+            { "publisher": "《药学学报》", "title": "期刊论文（DOI 10.16438/j.0513-4870.2021-0884；检索结果未显示标题）", "url": "https://castjournals.cast.org.cn/joweb/yxxb/CN/PDF/10.16438/j.0513-4870.2021-0884", "date": "2021" }
+          ],
+          "note": "神农Alpha 条目据药典 2020 年版写山楂（C. pinnatifida）；另有文献写明“山里红或山楂”两个来源。摘要没有标明该文献是两篇《药学学报》论文中的哪一篇。"
+        },
+        {
+          "claim": "山楂药材的加工方法是：秋季果实成熟时采收，切片，干燥。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-009x（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-009x", "date": "未标注" }
+          ],
+          "note": "条目自称依据《中国药典》2020 年版。"
+        },
+        {
+          "claim": "山里红是山楂的栽培变种，主要栽培于华北和东北；山楂为野生，主要分布于东北和华北。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《药学学报》", "title": "药学学报 2021, Vol. 56 Issue (12): 3313-3324（DOI 10.16438/j.0513-4870.2021-0665）", "url": "https://html.rhhz.net/YXXB/html/20211212.htm", "date": "2021" }
+          ],
+          "note": "摘要只说“有文献认为”，未标明具体篇目，所列为该次检索返回的相关论文之一。"
+        },
+        {
+          "claim": "山楂片为圆形片，皱缩不平；外皮红色，有灰白色小斑点；果肉深黄色至浅棕色；中部横切片具 5 粒浅黄色果核，核多脱落而中空。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索明确回报没有找到性状描述；额度用尽未能补查。这一条直接关系到 s11 的配色，开画前必须补核。"
+        }
+      ],
+      "conflicts": [
+        "分镜与通行认识不一致（未经检索裁决）：分镜写“半透明红色圆片”，而干山楂片通常被描述为红皮、黄棕色果肉。暂按后者提示风险，待补核后定稿。"
+      ]
+    },
+    {
+      "shots": ["s16"],
+      "name_zh": "大枣",
+      "depiction": [
+        "以下均为常识，未经本轮检索核实：椭圆形或近球形的干果，长约 2—3.5 厘米。",
+        "表面暗红色，略带光泽，布满不规则的皱纹。",
+        "基部凹陷，有短果梗或果梗痕；顶端有一个小突点。",
+        "分镜“湿亮的枣红、褶皱高光”：高光落在皱褶的棱脊上，谷底压暗，整体仍是暗红而非鲜红。"
+      ],
+      "pitfalls": [
+        "画成光滑无皱的鲜枣，或皱得像葡萄干那样干瘪。",
+        "颜色偏紫黑（成了黑枣）或偏鲜红橙（成了鲜枣）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "大枣为鼠李科植物枣（Ziziphus jujuba Mill.）的干燥成熟果实；椭圆形或球形，表面暗红色，略带光泽，有不规则皱纹。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "与枸杞合并检索时结果全部偏向枸杞，没有返回任何大枣资料；最后一次检索的摘要里关于大枣的内容是检索工具自述的已有知识，不能作为来源。额度用尽未能补查。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s24"],
+      "name_zh": "银耳",
+      "depiction": [
+        "一朵由许多薄而直立的瓣片聚成的花团，瓣片像海藻一样分枝，边缘常卷曲起皱。",
+        "质感是胶质的、水润的白色，带半透明感；野生个体直径可达约 7.5 厘米，人工栽培的更大。",
+        "英文俗名之一是“菊花菇”，整体轮廓像一朵重瓣菊花或绣球。",
+        "干品颜色偏米黄、收缩变硬（常识，未核实）；本镜头“蕾丝般的白色褶片”宜按泡发或新鲜状态来画。",
+        "底部有一小块较密实的蒂头，瓣片由此向外展开（常识，未核实）。"
+      ],
+      "pitfalls": [
+        "画成有菌盖和菌柄的伞菌，或像木耳那样的单片耳状。",
+        "瓣片画成厚实不透明的白纸片。应是薄、半透明、边缘波皱的胶质片。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "银耳的学名是 Tremella fuciformis。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "Wikipedia（英文，镜像域名 wikipedia.com）", "title": "Tremella fuciformis", "url": "https://wikipedia.com/wiki/Snow_ear", "date": "未标注" },
+            { "publisher": "《菌物学报》", "title": "期刊论文（DOI 10.13346/j.mycosystema.240254；检索结果未显示标题）", "url": "https://manu40.magtech.com.cn/Jwxb/CN/10.13346/j.mycosystema.240254", "date": "未标注" }
+          ],
+          "note": "英文维基条目以 Tremella fuciformis 为题并列出 silver ear、snow fungus 等俗名；《菌物学报》等中文论文以银耳（Tremella fuciformis）为研究对象。摘要未引中文论文原句，中文名与学名的对应以检索命中关系为据。"
+        },
+        {
+          "claim": "银耳子实体胶质、水润白色，直径可达约 7.5 厘米（栽培的更大），由薄而直立、海藻状分枝的瓣片组成，边缘常卷曲。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "Wikipedia（英文，镜像域名 wikipedia.com）", "title": "Tremella fuciformis", "url": "https://wikipedia.com/wiki/Snow_ear", "date": "未标注" }
+          ],
+          "note": "同次检索返回的其他英文页面是维基内容的镜像或转载，不算独立来源。"
+        },
+        {
+          "claim": "银耳的英文俗名包括 snow fungus、silver ear、chrysanthemum mushroom（菊花菇）等。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "Wikipedia（英文，镜像域名 wikipedia.com）", "title": "Tremella fuciformis", "url": "https://wikipedia.com/wiki/Snow_ear", "date": "未标注" }
+          ],
+          "note": "维基条目转引 Paul Stamets 著作中的俗名列表。"
+        },
+        {
+          "claim": "银耳干品呈白色至米黄色，收缩、硬而脆；中文常以菊花状、鸡冠状形容其形。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索明确回报没有找到干品形态以及“鸡冠状”的说明。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s25"],
+      "name_zh": "茯苓片",
+      "depiction": [
+        "茯苓是一种真菌的菌核（块状体），不是植物的根或块茎。",
+        "规范的茯苓片、茯苓块是去皮以后切制的：厚薄不一的不规则厚片或方块，白色、淡红色或淡棕色。",
+        "断面是哑光的、颗粒性的粉质感，不反光，可带细小裂隙（福建标准草案对茯神片的描述：白色或稍呈淡棕色，颗粒性）。",
+        "外皮单独作为一味药材，称“茯苓皮”。外皮的颜色（通行说法为棕褐色至黑褐色、薄而粗糙、有皱缩纹理）本轮未检索到原文（常识，未核实）。",
+        "要让“白色切面”和“深褐外皮”同框，有两种合乎资料的画法：一是画剖开的整个茯苓，外缘一圈薄薄的深褐皮，向内过渡到淡棕、再到白色；二是白色去皮片与卷曲的褐色茯苓皮并置。"
+      ],
+      "pitfalls": [
+        "把商品茯苓片的每一片都画成带褐色外皮的切片。资料显示茯苓片是去皮后切制的。",
+        "断面画成带年轮或纤维纹理的木质，或山药那样光滑黏润。应是颗粒性的粉质白。",
+        "外皮画得很厚。外皮只是薄薄一层。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "茯苓为多孔菌科真菌茯苓（Poria cocos (Schw.) Wolf）的干燥菌核。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-01ef（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-01ef", "date": "未标注" },
+            { "publisher": "新疆维吾尔自治区药品监督管理局", "title": "附件24 茯苓皮配方颗粒 新疆中药配方颗粒标准制定草案公示稿", "url": "https://mpa.xinjiang.gov.cn/xjyjj/tzgg/202309/3ea75066a6ee4d7f963797f8ffcaaa11/files/附件24茯苓皮配方颗粒新疆中药配方颗粒标准制定草案公示稿.pdf", "date": "未标注（网址路径含 202309）" },
+            { "publisher": "福建省药品监督管理局", "title": "通知公告附件（茯神标准草案；检索结果未显示标题）", "url": "https://yjj.scjgj.fujian.gov.cn/zwgk/gstg/tzgg/202412/P020241205559025212877.doc", "date": "未标注（网址路径含 202412）" }
+          ],
+          "note": "神农Alpha 引《中国药典》2020 年版一部给出科名、学名与“干燥菌核”；新疆与福建的标准草案分别以“菌核的外皮”“带松根的菌核”印证茯苓是菌核。拉丁学名只见于神农Alpha 一处；未核对更新版本药典是否调整学名。"
+        },
+        {
+          "claim": "茯苓片（块）是去皮后切制的，为厚薄不一的不规则厚片，白色、淡红色或淡棕色。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-01ed（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-01ed", "date": "未标注" },
+            { "publisher": "福建省药品监督管理局", "title": "通知公告附件（茯神标准草案；检索结果未显示标题）", "url": "https://yjj.scjgj.fujian.gov.cn/zwgk/gstg/tzgg/202412/P020241205559025212877.doc", "date": "未标注（网址路径含 202412）" },
+            { "publisher": "福建省药品监督管理局", "title": "通知公告附件（同一公告的另一份草案；检索结果未显示标题）", "url": "https://yjj.scjgj.fujian.gov.cn/zwgk/gstg/tzgg/202412/P020241205559024235144.doc", "date": "未标注（网址路径含 202412）" }
+          ],
+          "note": "神农Alpha 据药典 2020 年版：去皮切制成厚薄不一的不规则厚片，白色、淡红色或淡棕色。福建草案说的是茯神（抱有松根的茯苓）：削去外皮，切片或块，白色或稍呈淡棕色，颗粒性，可作为“去皮切制、色白”的独立印证。摘要未标明茯神草案是两个福建链接中的哪一个，故一并列出，算一个来源。"
+        },
+        {
+          "claim": "茯苓皮是茯苓菌核的外皮，单独作为饮片使用。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "新疆维吾尔自治区药品监督管理局", "title": "附件24 茯苓皮配方颗粒 新疆中药配方颗粒标准制定草案公示稿", "url": "https://mpa.xinjiang.gov.cn/xjyjj/tzgg/202309/3ea75066a6ee4d7f963797f8ffcaaa11/files/附件24茯苓皮配方颗粒新疆中药配方颗粒标准制定草案公示稿.pdf", "date": "未标注（网址路径含 202309）" }
+          ],
+          "note": "该文件描述的成品是配方颗粒，颗粒的颜色不能用来描述茯苓皮本身。"
+        },
+        {
+          "claim": "整个的茯苓称“茯苓个”：多于 7—9 月采挖，经反复堆置“发汗”、晾至表面出现皱纹后阴干而成。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-01ef（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-01ef", "date": "未标注" }
+          ],
+          "note": "条目自称依据《中国药典》2020 年版。"
+        },
+        {
+          "claim": "茯苓个外皮薄而粗糙，棕褐色至黑褐色，有明显的皱缩纹理；断面外层淡棕色、内部白色。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索明确回报没有逐字找到这段性状；只间接得到“表面出现皱纹”“断面白色或稍淡棕色、颗粒性”。外皮的颜色没有检索依据。"
+        }
+      ],
+      "conflicts": [
+        "分镜与资料：分镜写“白色切片带深褐外皮”，而两处资料都说茯苓片是削去外皮后切制的。采信资料；建议改为“剖开的整个茯苓的断面”或“白片与茯苓皮并置”。"
+      ]
+    },
+    {
+      "shots": ["s27"],
+      "name_zh": "松花粉／蒲黄",
+      "depiction": [
+        "蒲黄是黄色的粉末（已有港府检测中心来源）。混有花药、花丝的称“草蒲黄”，黄色或棕黄色，手捻有纤维状物；画纯净的粉丘即可。",
+        "松花粉是淡黄色的细粉，比蒲黄更浅，偏柠檬淡黄（常识，未核实：本轮没有检索到松花粉的任何资料）。",
+        "两者都极细、体轻、易流动：粉丘坡面平滑，像细沙堆，丘脚有一圈飘散的粉尘晕（常识）。",
+        "分镜里的“闪点”应处理成逆光下飞扬的粉尘光点；花粉本身是哑光的，不是金属闪粉。"
+      ],
+      "pitfalls": [
+        "画成金属质感的金粉或亮片。",
+        "颜色过橙过深，成了姜黄粉。s27 与 s30 的两种黄要拉开：花粉淡黄，姜黄橙黄。",
+        "粉粒画得粗如砂糖。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "蒲黄为黄色粉末；它是香港《中医药条例》附表 2 及《中国药典》（2015 年版）收载的药材。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署政府中药检测中心", "title": "概述：蒲黃為《中醫藥條例》附表2及《中國藥典》(2015版)收載的藥材，而草蒲黃則只被收載於《中國藥典》(2015版)中蒲黃的產地加工部份（040_PT_vs_TFeP_tc.pdf）", "url": "https://www.cmro.gov.hk/files/gcmti/research/mmi/ech_search/040_PT_vs_TFeP_tc.pdf", "date": "未标注" }
+          ],
+          "note": "来源植物（香蒲属）与药用部位（花粉）本轮没有检索依据。"
+        },
+        {
+          "claim": "草蒲黄是黄色或棕黄色粉末，为花药及花丝的混合品，手捻有纤维状物。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署政府中药检测中心", "title": "概述：蒲黃為《中醫藥條例》附表2及《中國藥典》(2015版)收載的藥材，而草蒲黃則只被收載於《中國藥典》(2015版)中蒲黃的產地加工部份（040_PT_vs_TFeP_tc.pdf）", "url": "https://www.cmro.gov.hk/files/gcmti/research/mmi/ech_search/040_PT_vs_TFeP_tc.pdf", "date": "未标注" }
+          ],
+          "note": "用来说明画面应取纯净细粉而非带丝絮的粗粉。"
+        },
+        {
+          "claim": "松花粉为松科植物马尾松、油松等的干燥花粉，是淡黄色的细粉，体轻、易流动。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "限定站点的合并检索没有返回松花粉条目；摘要里关于松花粉的内容是检索工具自述的已有知识，不能作为来源。额度用尽未能补查。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s28"],
+      "name_zh": "生石膏",
+      "depiction": [
+        "矿物石膏，成分是带两个结晶水的硫酸钙；纯净者白色，含杂质时可带其他颜色。",
+        "研究文献观察到石膏晶体主要呈长柱状和纤维状。药材层面的通行说法是“纤维状集合体，纵断面具绢丝样光泽”，但这句原文本轮未检索到（未核实）。",
+        "画法：一块长条或板状的白色块体，纵断面是成束、平行排列的细长纤维状晶体，凸棱顺着纤维方向延伸。",
+        "光泽是顺纤维方向的条状柔光，像一束蚕丝，局部可带半透明感（常识，未核实）。",
+        "两端的横断面较钝、参差不齐，不显丝光；块体边缘可散落几根纤维状碎条和白粉（常识）。"
+      ],
+      "pitfalls": [
+        "画成水晶、冰糖那样棱角分明的透明多面体晶簇，或粉笔那样没有结构的白块。",
+        "纤维方向杂乱交叉。应成束平行。",
+        "高光画成玻璃般的镜面反光。应是丝绢样的柔和条光。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "生石膏是含结晶水的硫酸钙矿物（含两个结晶水，即二水硫酸钙）。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《药学学报》（经国家科技期刊开放平台 napstic.cn 检索页）", "title": "期刊论文（2024 年；检索结果未显示标题）", "url": "https://search.napstic.cn/literature/periodical/010yxxb202406035", "date": "2024" },
+            { "publisher": "国家科技期刊开放平台（napstic.cn）", "title": "期刊论文（编号 010zyyjyxx202404014；检索结果未显示标题）", "url": "https://search.napstic.cn/literature/periodical/010zyyjyxx202404014", "date": "2024" },
+            { "publisher": "PubMed Central（美国国立医学图书馆）", "title": "Changes of Mineralogical Properties and Biological Activities of Gypsum and Its Calcined Products with Different Phase Structures", "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7969087/", "date": "未标注" }
+          ],
+          "note": "《药学学报》2024 年文章提到生石膏“所含的两个结晶水”；摘要称另有文献提到石膏的“含水硫酸钙成分”，但未标明是哪一个链接，第二条为最可能的出处。化学式 CaSO4·2H2O 的写法摘要未逐字出现。上述文献的药理内容一概不采用。"
+        },
+        {
+          "claim": "显微观察下，石膏晶体主要呈长柱状和纤维状，形态与产地有关。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "researching.cn 收录的期刊论文", "title": "期刊论文（2020 年第 40 卷第 6 期，文件名 2020-06-1716.pdf；检索结果未显示标题）", "url": "https://www.researching.cn/ArticlePdf/m00026/2020/40/6/2020-06-1716.pdf", "date": "2020" }
+          ],
+          "note": "摘要注明该 PDF 文字有乱码，只采用了可读部分。这是显微晶形，不等同于药典对药材宏观形态的表述。"
+        },
+        {
+          "claim": "纯石膏为白色，含杂质时可呈多种颜色。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "维基百科（镜像站 wiki.kfd.me）", "title": "石膏", "url": "https://wiki.kfd.me/zh-sg/%E7%9F%B3%E8%86%8F", "date": "未标注" }
+          ],
+          "note": "百科镜像，非药典来源。"
+        },
+        {
+          "claim": "药材石膏为纤维状的集合体，呈长块状、板块状，白色、灰白色或淡黄色，有的半透明，纵断面具绢丝样光泽。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "专门检索了一次，回报没有找到这段药典式性状原文；港标站内检索也只查到石膏列在名单里。纤维状这一点只有上一条显微研究作间接支持。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s30"],
+      "name_zh": "姜黄",
+      "depiction": [
+        "药材是根茎：不规则卵圆形、圆柱形或纺锤形；表面深黄色，有皱缩纹理和明显的环节。",
+        "断面棕黄色至金黄色，角质样，有蜡样光泽；断面上有一圈明显的内皮层环纹，维管束呈小点状散布。",
+        "分镜上半幅的“姜黄粉墙”：粉色取断面的金黄到棕黄，是偏暖、偏橙的深黄（粉末颜色为常识）。",
+        "粉是哑光细粉，可留下刮抹、堆积、指痕一类的肌理。"
+      ],
+      "pitfalls": [
+        "把姜黄粉画成柠檬黄，或与 s27 的花粉同色。姜黄应更深、更橙。",
+        "把姜黄根茎画成生姜那样浅黄、扁平分叉的大块。姜黄较小，环节明显，断面是金黄色。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "姜黄药材呈不规则卵圆形、圆柱形或纺锤形，表面深黄色，有皱缩纹理和明显环节；断面棕黄色至金黄色，角质样，有蜡样光泽，内皮层环纹明显，维管束呈点状散在。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-0017（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-0017", "date": "未标注" },
+            { "publisher": "南通市图书馆数字资源页（ntlib.org.cn）", "title": "Quality Analysis and in Vitro Antibacterial Study of Turmeric Slices（作者机构：西安医学院药学院）", "url": "https://ntlib.org.cn/asset/detail/0/2031570339183", "date": "未标注" }
+          ],
+          "note": "摘要称检索结果中有“《中国药典》式性状描述”并引了原句，但没有标明出自哪一个链接；以上两个是该次检索返回的最相关页面，按同一药典文本、一个来源计。ntlib.org.cn 的机构名称是按域名推断的。"
+        },
+        {
+          "claim": "姜黄为姜科植物姜黄（Curcuma longa L.）的干燥根茎。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索词里带了这一表述，摘要笼统说“姜黄部分已核实”，但引出的证据只有性状，没有逐字确认科名和学名。旁证：返回的论文标题把姜黄饮片译作 Turmeric Slices。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s30"],
+      "name_zh": "槟榔（切面）",
+      "depiction": [
+        "药材来自棕榈科的槟榔树；果皮是另一味药材“大腹皮”，本镜头画的是种子的切面（“药材槟榔是干燥成熟种子”为通行说法，本轮未核实）。",
+        "切面花纹（常识，未核实：专门检索一次仍未取得原文）：红棕色的种皮组织呈不规则的细条向内伸入乳白色的胚乳，棕白相间、迂曲分叉，即所谓“大理石样花纹”。",
+        "纹理走向大致从外缘向中心放射，越靠边越密，中心可留一小块较白的区域或细小空隙（常识，未核实）。",
+        "饮片是类圆形的薄片，直径约 1.5—3 厘米，周边一圈淡黄棕至淡红棕色（常识，未核实）。",
+        "本镜头只取下半幅的局部纹理，可放大成“棕色脉纹在乳白底上蜿蜒”的石纹质感。"
+      ],
+      "pitfalls": [
+        "把花纹画成规则的同心环（年轮）或均匀网格。应是从边缘向内迂曲伸入的不规则脉纹。",
+        "画成带纤维外壳的整颗槟榔果。药材切面是种子。",
+        "棕白关系画反。底是乳白色胚乳，纹是棕色。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "槟榔来自棕榈科植物槟榔（Areca catechu L.）；其干燥果皮是另一味药材（大腹皮）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-0089（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-0089", "date": "未标注" },
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材条目 nmm-0088（检索结果标题仅显示编号）", "url": "https://shennongalpha.westlake.edu.cn/term/nmm-0088", "date": "未标注" }
+          ],
+          "note": "条目据《中国药典》2020 年版写“棕榈科植物槟榔 Areca catechu L. 的干燥果皮”。“大腹皮”这一药名是摘要的归纳。旁证：《现代食品科技》综述称槟榔是槟榔树的果实。种子入药的表述摘要未引出。"
+        },
+        {
+          "claim": "槟榔于 1953 年被列入《中华人民共和国药典》。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《现代食品科技》", "title": "刘书伟等：槟榔化学成分及其生物活性研究进展（DOI 10.13982/j.mfst.1673-9078.2024.6.0570）", "url": "https://xdspkj.ijournals.cn/xdspkj/article/pdf/20240638", "date": "2024" }
+          ],
+          "note": "单篇综述的说法；本片不需要用到，列此备查。"
+        },
+        {
+          "claim": "槟榔收载于《香港中药材标准》第六册。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署中医药规管办公室", "title": "香港中藥材標準所包括的藥材清單", "url": "https://www.cmro.gov.hk/html/b5/useful_information/hkcmms/cmmlist.html", "date": "未标注" }
+          ],
+          "note": "只查到清单，没有取得该专论的性状原文。"
+        },
+        {
+          "claim": "槟榔种子的断面可见棕色种皮与白色胚乳相间的大理石样花纹。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "两次检索（一次与姜黄合并、一次单独）都回报没有找到这段性状；返回的多是大腹皮条目和成分综述。额度用尽未能再查。这是 s30 下半幅的核心特征，开画前必须补核。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s36", "s10"],
+      "name_zh": "蒲公英（冠毛与叶）",
+      "depiction": [
+        "果实是长椭圆形的瘦果，带白色冠毛；一个头状花序结出的许多瘦果聚成一个绒球。",
+        "单枚的结构：褐色小瘦果，上接一根细长的柄（喙），顶端一圈放射张开的白色冠毛，像一把小伞（喙与伞形为常识，未核实）。",
+        "s36“向上放射的白色冠毛”：线条极细、笔直，自一点放射，每根都是不分叉的单毛（常识，未核实）。",
+        "s10 的叶剪影：完整叶片倒披针形，边缘浅裂或羽状分裂；裂片的尖端常斜向叶基一侧，叶基渐狭成柄，贴地排成莲座状（裂片朝向与莲座状为常识，未核实）。",
+        "头状花序生在花茎顶端；药材干品的花冠为黄褐色或淡黄白色，鲜花是黄色（鲜花颜色为常识）。"
+      ],
+      "pitfalls": [
+        "把冠毛画成羽毛状或粗白条。",
+        "把蒲公英叶画成卵形、带细锯齿的普通叶。应是倒披针形、羽状缺刻、基部渐狭的长叶。",
+        "在花茎上画叶或分枝。花茎顶端只生一个头状花序（花茎无叶为常识，未核实）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "蒲公英为菊科植物蒲公英（Taraxacum mongolicum Hand.-Mazz.）、碱地蒲公英（Taraxacum borealisinense Kitam.）或同属数种植物的干燥全草。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材 - 蒲公英属未定种全草", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-01yf", "date": "未标注" }
+          ],
+          "note": "条目自称依据《中国药典》2020 年版一部。"
+        },
+        {
+          "claim": "蒲公英的瘦果长椭圆形，带白色冠毛。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材 - 蒲公英属未定种全草", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-01yf", "date": "未标注" },
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材 - 段制蒲公英全草", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-01yg", "date": "未标注" }
+          ],
+          "note": "两个条目属同一网站，算一个来源；摘要没有区分二者内容。"
+        },
+        {
+          "claim": "蒲公英完整叶片呈倒披针形，边缘浅裂或羽状分裂；花茎顶端为头状花序，药材的花冠黄褐色或淡黄白色；根圆锥状、多弯曲，表面棕褐色。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "神农Alpha（ShennongAlpha，westlake.edu.cn）", "title": "天然药材 - 蒲公英属未定种全草", "url": "https://shennongalpha.westlake.edu.cn/knowledge/nmm-01yf", "date": "未标注" }
+          ],
+          "note": "描述的是干燥药材（皱缩卷曲的团块）的状态。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s37"],
+      "name_zh": "红花",
+      "depiction": [
+        "以下均为常识，未经本轮检索核实：药材是菊科红花的管状小花，每朵是一根细长的花冠筒，顶端裂成 5 条狭长的裂片。",
+        "颜色红黄色至红色，整体是橙红；干后质地柔软。",
+        "花冠口伸出一小段黄白色的花药筒和细柱头。",
+        "成把时是蓬松交错的细丝团。s37“从弧缘向下放射的橙红花丝”可以画成一丛细管状花，每根末端分出几条细裂片，比单纯的直线更像红花。"
+      ],
+      "pitfalls": [
+        "与藏红花（西红花）混淆。藏红花是另一种植物的暗红色线状柱头，形态完全不同（常识，未核实）。",
+        "画成有宽大花瓣的整朵花。",
+        "颜色画成正红或紫红。应偏橙红，带黄。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "红花为菊科植物红花（Carthamus tinctorius L.）的干燥花，是不带子房的管状花，表面红黄色或红色，花冠筒细长，先端 5 裂。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "限定站点的合并检索没有返回红花条目；摘要里关于红花的内容是检索工具自述的已有知识，不能作为来源。额度用尽未能补查。s37 是全片最后一个题材镜头，开画前建议优先补核。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s26", "s17"],
+      "name_zh": "青黛",
+      "depiction": [
+        "名称写作“青黛”，拉丁药名 Indigo Naturalis（香港《中医药条例》附表 2 名单），即天然靛蓝一类的制品。",
+        "外观（常识，未核实）：深蓝色的极细粉末，体轻、易飞扬；也可呈不规则的多孔团块或颗粒，用手一捻即成细末。",
+        "颜色是偏暗的靛蓝，略带紫灰，哑光无闪。",
+        "s26“浅蓝纸上的靛蓝粉末抹痕”：一道由浓到淡的拖痕，起笔处堆粉，收笔处飞白，痕边有散落的浮粉。"
+      ],
+      "pitfalls": [
+        "s17 把青黛列进“矿物药色谱”。通行说法是青黛由马蓝、蓼蓝、菘蓝等植物的茎叶加工制得，不是矿物（本轮未能核实）；文字上若要称“矿物药”，须先核实，或把 s17 改称“药色谱”。",
+        "画成群青、钴蓝那样鲜亮的矿物颜料蓝，或带晶体闪光。",
+        "与青金石、石青等蓝色矿物混为一谈。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "青黛列于香港《中医药条例》附表 2 中药材名单，对应的拉丁药名为 Indigo Naturalis。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署中医药规管办公室", "title": "附錄C：《中醫藥條例》附表2中藥材名單", "url": "https://www.cmro.gov.hk/html/b5/useful_information/public_health/publication/AdverseEvents34.html", "date": "未标注" }
+          ],
+          "note": "只是名单层面的信息，没有性状文字。"
+        },
+        {
+          "claim": "青黛为爵床科马蓝、蓼科蓼蓝或十字花科菘蓝的叶或茎叶经加工制得的干燥粉末、团块或颗粒，呈深蓝色。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "港标站内检索与限定站点的合并检索都没有取得青黛的来源和性状；摘要里关于青黛的内容是检索工具自述的已有知识，不能作为来源。额度用尽未能补查。这一条决定 s17 能否把青黛称作矿物药，必须补核。"
+        }
+      ],
+      "conflicts": [
+        "分镜与通行认识不一致（未经检索裁决）：s17 题为“矿物药色谱”并列入青黛，而青黛通常被认为是植物加工品。暂按“非矿物”提示风险。"
+      ]
+    },
+    {
+      "shots": ["s33", "s17"],
+      "name_zh": "朱砂（只描述外观）",
+      "depiction": [
+        "天然矿物辰砂，呈颗粒或块片状；港标区分粉状集合体（质脆、易破碎）和粒状者（较坚硬）。",
+        "颜色鲜红色或暗红色，有的表面带一层铅灰青色，具光泽。",
+        "条痕红色至褐红色，手触不染色。s33 的“一道细红弧”可以理解为朱砂划出的条痕。",
+        "天然朱砂常伴生石英、黄铁矿、方解石、辉锑矿等，晶粒旁可点少量白色或透明的脉石碎粒。",
+        "s17 的朱砂粉：饱和的红，略偏冷，与雄黄的橙色拉开（粉末色调为常识）。"
+      ],
+      "pitfalls": [
+        "画成橙红色，与雄黄相混。朱砂是鲜红至暗红。",
+        "画成没有光泽的颜料块，或相反画成切了刻面的红宝石。",
+        "画面不要出现研磨入口、冲服一类的暗示；本片只呈现矿物外观。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "朱砂是天然矿物药，矿物名为辰砂（辰砂族辰砂）。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署中医药规管办公室", "title": "《香港中药材标准》第四册·朱砂（Cinnabaris_v4_c.pdf）", "url": "https://cmro.gov.hk/hkcmms/vol4/pdf_c/Cinnabaris_v4_c.pdf", "date": "未标注" },
+            { "publisher": "《中草药》", "title": "期刊论文（天然朱砂与合成朱砂的比较；检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20210527", "date": "2021" }
+          ],
+          "note": "港标原文（繁体）：本品为矿物辰砂族辰砂。《中草药》论文把天然朱砂作为含伴生矿物杂质的矿物来研究。摘要没有标明该论文的具体链接，所列为该次检索返回的《中草药》论文。"
+        },
+        {
+          "claim": "朱砂主含硫化汞（HgS），采挖后除去杂质。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署中医药规管办公室", "title": "《香港中药材标准》第四册·朱砂（Cinnabaris_v4_c.pdf）", "url": "https://cmro.gov.hk/hkcmms/vol4/pdf_c/Cinnabaris_v4_c.pdf", "date": "未标注" }
+          ],
+          "note": "只用于说明矿物成分，不涉及用途。"
+        },
+        {
+          "claim": "朱砂鲜红色或暗红色，有的表面带铅灰青色，具光泽；条痕红色至褐红色，手触之不染色。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署中医药规管办公室", "title": "《香港中药材标准》第四册·朱砂（Cinnabaris_v4_c.pdf）", "url": "https://cmro.gov.hk/hkcmms/vol4/pdf_c/Cinnabaris_v4_c.pdf", "date": "未标注" }
+          ],
+          "note": "摘要称这与检索词里的药典式表述（鲜红色或暗红色，条痕红色至褐红色，具光泽）一致，但《中国药典》原文本身没有检索到。"
+        },
+        {
+          "claim": "朱砂的粉状集合体质脆、易破碎，粒状者较坚硬。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "香港特别行政区政府卫生署中医药规管办公室", "title": "《香港中药材标准》第四册·朱砂（Cinnabaris_v4_c.pdf）", "url": "https://cmro.gov.hk/hkcmms/vol4/pdf_c/Cinnabaris_v4_c.pdf", "date": "未标注" }
+          ],
+          "note": ""
+        },
+        {
+          "claim": "天然朱砂中常见的伴生杂质有石英、黄铁矿、方解石、辉锑矿等；合成朱砂与天然朱砂晶型相同。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《中草药》", "title": "期刊论文（天然朱砂与合成朱砂的比较；检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20210527", "date": "2021" }
+          ],
+          "note": "摘要没有标明具体链接，所列为该次检索返回的《中草药》论文。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s32"],
+      "name_zh": "药材显微鉴别（横切面染色观察）",
+      "depiction": [
+        "做法：把根、茎等药材切成横切片，在显微镜下看组织构造。文献里的制片手段有石蜡切片、徒手切片和解离制片；港府中药检测中心也用“性状与显微鉴定双轨”来鉴别饮片。",
+        "染色：文献实例用番红／固绿染色剂，另有间苯三酚与盐酸试剂（用于看细胞壁木化）。",
+        "构图：整幅或圆形视野里的茎横切面，由外向内依次是表皮、皮层的大薄壁细胞、成环或散布的维管束（导管是较大的圆孔，周围细胞小而壁厚）、中央的髓（组织层次为常识，未核实）。",
+        "颜色：番红固绿双染时，通常木化的厚壁细胞和导管呈红色，薄壁细胞呈绿至蓝绿色（常识，未核实）。分镜的“青绿、白、浅底”可以保留，若想更贴近真实切片，可在维管束处加少量品红。",
+        "细胞是紧密镶嵌的多边形蜂窝，细胞壁有厚薄变化，大小由外到内渐变，不要画成等大的圆泡。"
+      ],
+      "pitfalls": [
+        "画成动物细胞（没有细胞壁、中央一个大核的圆细胞），或教科书里洋葱表皮那种长方格。",
+        "用免疫荧光那样的黑底霓虹多色。常规药材切片是明场下的红、绿或近无色。",
+        "在画面里标注具体药名或鉴定结论。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "显微鉴别是中药材、饮片鉴定的常规做法：制作横切片等，在显微镜下观察组织构造。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            { "publisher": "《中草药》", "title": "期刊论文（2020 年，蕤仁的显微鉴别研究；检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20200329", "date": "2020" },
+            { "publisher": "香港特别行政区政府卫生署（政府中药检测中心）", "title": "香港常見皮類中藥飲片的性狀及顯微鑒定·凡例（00_GN_tc.pdf）", "url": "https://www.cmro.gov.hk/files/gcmti/research/mmi/feature/00_GN_tc.pdf", "date": "未标注" },
+            { "publisher": "香港特别行政区政府卫生署政府中药检测中心", "title": "香港常見皮類中藥飲片的性狀及顯微鑒定（CortexType_Decoction_20251101.pdf）", "url": "https://www.cmro.gov.hk/files/gcmti/sharing/2025/CortexType_Decoction_20251101.pdf", "date": "未标注（文件名含 20251101）" }
+          ],
+          "note": "《中草药》论文讲到横切片观察完整组织构造、定位取材徒手切片和解离制片；港府文件写明“以性状与显微鉴定双轨技术”鉴别饮片。两类来源相互独立。"
+        },
+        {
+          "claim": "药材横切面的显微研究中有采用石蜡切片并以番红／固绿染色的做法。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《中草药》", "title": "期刊论文（2022 年，麦冬类药材的研究；检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20222428", "date": "2022" }
+          ],
+          "note": "依据是该文材料与试剂部分列出石蜡、无水乙醇、二甲苯、番红／固绿染色剂。"
+        },
+        {
+          "claim": "显微鉴别中有使用间苯三酚与盐酸试剂的做法。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《中草药》", "title": "期刊论文（2015 年，金线莲不同基原的生药学鉴别研究；检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20152321", "date": "2015" }
+          ],
+          "note": "依据是该文仪器与材料部分列出盐酸和间苯三酚试剂；试剂显色的颜色摘要未给出。"
+        },
+        {
+          "claim": "对质地坚硬、不适合做横切片的药材，可采用定位取材的徒手切片；对木化组织群束较大的药材，可用解离制片观察单个细胞。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            { "publisher": "《中草药》", "title": "期刊论文（2020 年，蕤仁的显微鉴别研究；检索结果未显示标题）", "url": "https://www.tiprpress.com/zcy/article/pdf/20200329", "date": "2020" }
+          ],
+          "note": ""
+        },
+        {
+          "claim": "番红固绿染色后木质化细胞壁呈红色、纤维素细胞壁呈绿色；间苯三酚—盐酸使木化细胞壁显红色。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索明确回报没有找到写出染色结果颜色的段落。s32 的配色若要以“真实切片颜色”为依据，需要补核。"
+        }
+      ],
+      "conflicts": []
+    }
+  ]
+}

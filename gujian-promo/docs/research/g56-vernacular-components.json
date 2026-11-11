@@ -1,0 +1,452 @@
+{
+  "group": "g56-vernacular-components",
+  "filePath": "/tmp/claude-0/-home-user-kashing/82b55bb9-0385-5108-b6bb-ac0899659655/scratchpad/research/g56-vernacular-components.json",
+  "searchesUsed": 16,
+  "subjects": [
+    {
+      "name_zh": "福建土楼",
+      "captionFacts": [
+        {
+          "claim": "“福建土楼”于 2008 年列入联合国教科文组织《世界遗产名录》（第 32 届世界遗产大会，加拿大魁北克城）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "年份 2008 各来源一致，可直接上字幕。具体日期有 7 月 6 日与 7 月 7 日两种说法（见 conflicts），字幕建议只写“2008 年”。本条及以下各条均依据搜索结果摘要判断，未逐页打开原文（本任务禁用 WebFetch）。",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre", "url": "https://whc.unesco.org/es/list/1113/", "title": "世界遗产名录第 1113 号“福建土楼”条目（西班牙语页）", "date": "未标注"},
+            {"publisher": "当代中国（Our China Story）", "url": "https://www.ourchinastory.com/cn/15123", "title": "2008 年 7 月 6 日 福建土楼列入世界遗产名录", "date": "未标注"},
+            {"publisher": "中国新闻网", "url": "https://www.chinanews.com/cul/news/2008/07-11/1309764.shtml", "title": "福建土楼申遗成功相关报道", "date": "2008-07-11（据 URL）"},
+            {"publisher": "Wikipedia（英文）", "url": "https://en.wikipedia.org/wiki/Fujian_tulou", "title": "Fujian tulou", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "列入世界遗产的福建土楼共 46 座，由永定、南靖、华安三地的“六群四楼”组成。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "46 座是“列入世界遗产”的数量，不是福建土楼的总数。UNESCO 表述为 46 座建筑、分布于福建西南部 120 多公里范围内。",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre", "url": "https://whc.unesco.org/es/list/1113/", "title": "世界遗产名录第 1113 号“福建土楼”条目（西班牙语页）", "date": "未标注"},
+            {"publisher": "当代中国（Our China Story）", "url": "https://www.ourchinastory.com/cn/15123", "title": "2008 年 7 月 6 日 福建土楼列入世界遗产名录", "date": "未标注"},
+            {"publisher": "China Daily（政务频道）", "url": "https://govt.chinadaily.com.cn/a/201807/10/WS5bfe37bd498eefb3fe46d53e.html", "title": "Fujian Tulou", "date": "2018-07-10（据 URL）"}
+          ]
+        },
+        {
+          "claim": "“六群四楼”为：永定的初溪土楼群、洪坑土楼群、高北土楼群及衍香楼、振福楼；南靖的田螺坑土楼群、河坑土楼群及和贵楼、怀远楼；华安的大地土楼群。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "两轮独立检索给出的清单一致。第二轮摘要给出的数量核对：洪坑 7、初溪 10、高北 4，加衍香楼、振福楼，永定共 23 座；田螺坑 5、河坑 13，加怀远楼、和贵楼，南靖共 20 座；华安大地 3 座；合计 46 座（分项数字仅见于一轮摘要，如要上字幕请再核）。",
+          "sources": [
+            {"publisher": "当代中国（Our China Story）", "url": "https://www.ourchinastory.com/cn/15123", "title": "2008 年 7 月 6 日 福建土楼列入世界遗产名录", "date": "未标注"},
+            {"publisher": "中国文化研究院（灿烂的中国文明）", "url": "https://chiculture.org.hk/sites/mainsite/files/2019-04/30025_fujiantulou_pdf_cn.pdf", "title": "福建土楼（PDF）", "date": "2019-04（据 URL）"},
+            {"publisher": "澎湃新闻（澎湃号）", "url": "https://m.thepaper.cn/baijiahao_8174772", "title": "福建土楼相关文章", "date": "未标注"},
+            {"publisher": "UNESCO World Heritage Centre", "url": "https://whc.unesco.org/es/list/1113/", "title": "世界遗产名录第 1113 号“福建土楼”条目（西班牙语页）", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "振成楼是永定洪坑土楼群中的圆形土楼（相关报道称其按八卦格局建造）。",
+          "status": "verified-2plus-independent",
+          "note": "两轮检索摘要均把振成楼归入洪坑土楼群。“按八卦构建”只在一轮摘要里以“相关报道称”出现，如上字幕建议保留“相传/据称”。",
+          "sources": [
+            {"publisher": "携程旅行（游记）", "url": "https://you.ctrip.com/travels/longyan366/4021092.html", "title": "龙岩永定土楼游记", "date": "未标注"},
+            {"publisher": "中国文化研究院（灿烂的中国文明）", "url": "https://chiculture.org.hk/sites/mainsite/files/2019-04/30025_fujiantulou_pdf_cn.pdf", "title": "福建土楼（PDF）", "date": "2019-04（据 URL）"}
+          ]
+        },
+        {
+          "claim": "承启楼属永定高北土楼群；二宜楼属华安大地土楼群（大地土楼群含二宜楼、南阳楼、东阳楼三座）。",
+          "status": "single-source",
+          "note": "仅在一轮检索摘要（称“依据 UNESCO 名录整理”）中出现，摘要没有标明出自哪一页，按单一来源处理。与通行说法一致，但上字幕前建议再核一次。",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre", "url": "https://whc.unesco.org/es/list/1113/", "title": "世界遗产名录第 1113 号“福建土楼”条目（西班牙语页）", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "土楼为土木结构的多层建筑：外墙高而厚实、以土筑成，屋顶覆瓦并有宽阔出檐，整体向内围合中央庭院，单座可容纳多达约 800 人；内部按家庭竖向划分，每户每层两到三间。",
+          "status": "verified-2plus-independent",
+          "note": "UNESCO 描述与国家地理、China Daily 的转述一致。注意：检索摘要中没有出现“夯土”二字的直接表述，只有“土墙/厚土墙”；“夯土外墙”见下一条。",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre", "url": "https://whc.unesco.org/es/list/1113/", "title": "世界遗产名录第 1113 号“福建土楼”条目（西班牙语页）", "date": "未标注"},
+            {"publisher": "National Geographic", "url": "https://www.nationalgeographic.com/travel/destinations/asia/china/fujian-tulou-unesco-world-heritage-site/", "title": "China's Massive Earthen Fortresses Once Housed Up to 800 People", "date": "未标注"},
+            {"publisher": "China Daily（政务频道）", "url": "https://govt.chinadaily.com.cn/a/201807/10/WS5bfe37bd498eefb3fe46d53e.html", "title": "Fujian Tulou", "date": "2018-07-10（据 URL）"}
+          ]
+        },
+        {
+          "claim": "圆楼外墙为夯土墙，内部为木构架，各层沿内圈设环形通廊。",
+          "status": "unverified",
+          "note": "三轮检索的摘要都没有给出“夯土”工艺和“环形通廊”的直接表述（只有一篇旅游攻略提到裕昌楼回廊木柱倾斜）。这是通行的建筑学常识，画面可以照此绘制，但字幕若要写“夯土”“环形通廊”等术语，需另行核实。",
+          "sources": []
+        }
+      ],
+      "conflicts": [
+        "列入日期：中文资料（当代中国等）写 2008 年 7 月 6 日；检索摘要称 UNESCO 自己的页面写 7 月 7 日。两者可能是时区或会议日程记法差异，本次无法打开原页确认。采信：字幕只写“2008 年”，不写具体日期。",
+        "建造年代：UNESCO 条目写这 46 座建筑建于 15 至 20 世纪；英文维基等写 12 至 20 世纪。采信 UNESCO（官方机构、且针对的正是列入名录的 46 座）；若字幕不必写年代，建议回避。",
+        "第一轮检索的摘要猜测“振福楼”是“振成楼”的笔误，这个猜测不成立：第二轮清单显示两者都存在，振福楼是“四楼”之一（单体楼），振成楼属于洪坑土楼群。采信第二轮清单。"
+      ],
+      "depiction": [
+        "圆楼为巨大的圆环形平面，外墙是厚实的土黄色生土墙（通行说法为夯土），墙脚用卵石或块石砌筑；底层基本不开窗，上层只开小窗，通常只有一个主入口大门。",
+        "屋顶是沿圆环一圈的两坡青灰瓦顶，出檐很深（UNESCO 原文强调宽阔出檐），从空中看是一圈深灰色的环。",
+        "内部为木构：各层房间沿圆周均分、开间朝向中央庭院，内圈逐层设环形走廊（通廊），木柱木栏为深棕色。",
+        "中央庭院常设祖堂；大型圆楼为多圈同心环（承启楼即以多环著称，此点为常识，未经本次检索证实）。",
+        "群体镜头可用田螺坑土楼群（共 5 座，数量已查证）的俯瞰构图，周围是青山、梯田、溪流。",
+        "色调：土黄墙面、深灰瓦顶、深棕木构，点缀红灯笼与对联。"
+      ],
+      "pitfalls": [
+        "不要把外墙画成砖墙或石墙，也不要在底层开大窗；土楼的防御性正体现在高厚土墙和极少的外窗上。",
+        "楼名不要混：“四楼”里是振福楼而不是振成楼；振成楼在洪坑土楼群，承启楼在高北土楼群，二宜楼在华安大地土楼群。",
+        "“46 座”是列入世界遗产的数量，不能写成“福建共有 46 座土楼”；土楼也不都是圆的，另有方楼等形制。"
+      ]
+    },
+    {
+      "name_zh": "徽派马头墙",
+      "captionFacts": [
+        {
+          "claim": "马头墙是徽派建筑的标志性构件，本是防火设施，又称“封火墙”：村落聚族而居、民居密集，高出屋面的山墙能在邻屋失火时阻断火势蔓延。",
+          "status": "verified-2plus-independent",
+          "note": "多篇互不转载的文章表述一致。人民论坛网的防火综述另称：封火墙是中国古建筑防火技术的一项重要发明，样式主要有“马头墙”“马鞍墙”“镬耳墙”等。摘要没有标明每句话出自哪个链接，下列为该轮检索返回的相关页面。",
+          "sources": [
+            {"publisher": "人民论坛网", "url": "https://www.rmlt.com.cn/2025/0725/736211.shtml", "title": "古建筑防火相关文章", "date": "2025-07-25（据 URL）"},
+            {"publisher": "界面新闻", "url": "https://www.jiemian.com/article/288527.html", "title": "徽派建筑相关文章", "date": "未标注"},
+            {"publisher": "搜狐", "url": "https://www.sohu.com/a/130832195_488342", "title": "中国古典建筑的“八大”元素", "date": "未标注"},
+            {"publisher": "人民日报客户端", "url": "https://www.peopleapp.com/column/30052448941-500007556876", "title": "徽派建筑相关专栏文章", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "马头墙随屋面坡度呈阶梯状层层跌落，一般为两叠式或三叠式；较大的民居因有前后厅，可多至五叠，俗称“五岳朝天”。",
+          "status": "single-source",
+          "note": "“阶梯状、高低错落”有多处来源；但“两叠/三叠/五叠、五岳朝天”的具体说法，摘要指明主要来自一个图片页面的文字介绍，可信度一般。属通行说法，字幕使用“五岳朝天”前建议再找一处权威来源。",
+          "sources": [
+            {"publisher": "360Cities（全景图片页的文字介绍）", "url": "https://www.360cities.net/cs/image/the-cha-chi-ancient-buildings157-anhui-province", "title": "the cha chi ancient buildings157 anhui province", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "徽州民居外墙大多抹白色石灰，屋面铺深灰色小瓦，即所谓“白墙黛瓦”（亦作“粉墙黛瓦”）。",
+          "status": "single-source",
+          "note": "摘要中“外墙大多抹白色石灰”“冷摊瓦屋顶是徽州常见屋顶形式”有来源支持，但“白墙黛瓦”四字是摘要的概括，没有直接引文。属广为人知的通行说法，风险低。",
+          "sources": [
+            {"publisher": "界面新闻", "url": "https://www.jiemian.com/article/288527.html", "title": "徽派建筑相关文章", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "“马头”造型常被解释为寄托读书做官、“万马奔腾”的美好寓意。",
+          "status": "single-source",
+          "note": "属民间寓意解释，仅见于通俗文章，不建议作为硬事实上字幕。",
+          "sources": [
+            {"publisher": "搜狐", "url": "https://www.sohu.com/a/115363415_500192", "title": "徽派建筑马头墙相关文章", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [],
+      "depiction": [
+        "山墙高出两坡屋面，墙顶做成水平的台阶，顺着屋面坡度由屋脊向檐口一级一级跌落，常见两级或三级，大宅可到五级。",
+        "每一级墙顶都盖一道窄窄的双坡小青瓦墙檐，端头有向上翘起的“马头”座头（鹊尾式、印斗式等样式为常识，未经本次检索证实）。",
+        "墙面是白石灰粉墙，可带雨水冲刷留下的灰黑水痕；瓦是青灰到黛黑色。",
+        "聚落密集、巷道狭窄，高墙封闭，外墙开窗很少且很小，多座马头墙前后错落形成天际线。",
+        "色调：白、灰、黑为主，配远山、水田、油菜花或水面倒影。"
+      ],
+      "pitfalls": [
+        "马头墙是直线的阶梯形跌落，不是弧线；弧形山墙是岭南的镬耳墙或马鞍墙，属于另外的封火墙样式。",
+        "墙必须明显高出屋面和屋脊端部才说得通“封火”，不要画得比屋面还低。",
+        "瓦色是青灰或黛色，不是黄琉璃瓦或红瓦；墙是白粉墙，不是红墙。"
+      ]
+    },
+    {
+      "name_zh": "陕北窑洞",
+      "captionFacts": [
+        {
+          "claim": "窑洞按建筑布局与结构形式主要分为靠崖式、下沉式和独立式三类。",
+          "status": "verified-2plus-independent",
+          "note": "高校科普页、2024 年《建筑节能（中英文）》期刊论文（选取独立式、靠崖式、下沉式三类做夏季热环境测试）和 China Daily 的说法一致。",
+          "sources": [
+            {"publisher": "西北农林科技大学（中国农业历史博物馆等站点）", "url": "https://ch.nwsuaf.edu.cn/gnxw/xsyjgnx/nyycgnx/334916.htm", "title": "窑洞相关介绍", "date": "未标注"},
+            {"publisher": "《建筑节能（中英文）》期刊（NAPSTIC 收录）", "url": "https://search.napstic.cn/literature/periodical/010fcyyy202402012", "title": "建筑节能(中英文) 2024, Vol.52 Issue(2): 73-82", "date": "2024"},
+            {"publisher": "China Daily", "url": "https://enapp.chinadaily.com.cn/a/202011/26/AP5fbf6076a310b0a661bf5f5b.html", "title": "Five types of traditional Chinese dwellings", "date": "2020-11-26（据 URL）"}
+          ]
+        },
+        {
+          "claim": "陕北窑洞以靠山窑（即靠崖式，在天然土壁内开凿横洞）最为典型；按材料大致有土窑、接口窑、石窑、砖窑四种。",
+          "status": "single-source",
+          "note": "两轮检索摘要都出现同一段表述，应出自同一页面（中国非物质文化遗产网“窑洞营造技艺”条目），按单一来源处理；来源为官方机构，可信度较高。",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（文化和旅游部）", "url": "https://www.ihchina.cn/project_details/14685/", "title": "窑洞营造技艺 项目详情", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "“窑洞营造技艺”已列入国家级非物质文化遗产代表性项目名录（传统技艺类）；陕西延安宝塔区为其扩展项目的申报地区之一。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "note": "官方网站单一来源。摘要未给出列入年份和批次，字幕不要写年份。",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（文化和旅游部）", "url": "https://www.ihchina.cn/project_details/14688.html", "title": "窑洞营造技艺（扩展项目）项目详情", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "陕北窑洞的窗格图案极富表现力：门窗的结构方式是模式化的，窗格图案却变化多样，多为几何纹、汉字纹和花卉纹，寓意多与繁衍、长寿有关。",
+          "status": "verified-2plus-independent",
+          "note": "人民论坛网的研究文章与 2024 年《丝网印刷》期刊论文（称窗格图案造型古朴、样式多变、形象抽象）相互印证。",
+          "sources": [
+            {"publisher": "人民论坛网", "url": "https://www.rmlt.com.cn/2016/0415/423477.shtml", "title": "陕北窑洞门窗图案及其生命观念", "date": "2016-04-15（据 URL）"},
+            {"publisher": "《丝网印刷》期刊（NAPSTIC 收录）", "url": "https://search.napstic.cn/literature/periodical/010swys202411019", "title": "丝网印刷 2024, Issue(11): 61-63", "date": "2024"}
+          ]
+        },
+        {
+          "claim": "下沉式窑洞是从平地向下挖出方形院落、再在四壁横向开窑，又称地坑院，典型分布在河南三门峡一带，陕西关中也有类似的地窑。",
+          "status": "verified-2plus-independent",
+          "note": "注意它并非陕北最典型的类型，字幕里不要把地坑院标成“陕北窑洞”。",
+          "sources": [
+            {"publisher": "China Daily", "url": "https://enapp.chinadaily.com.cn/a/202011/26/AP5fbf6076a310b0a661bf5f5b.html", "title": "Five types of traditional Chinese dwellings", "date": "2020-11-26（据 URL）"},
+            {"publisher": "ISPRS Archives（国际摄影测量与遥感学会会议论文）", "url": "https://isprs-archives.copernicus.org/articles/XLVI-M-1-2021/241/2021/isprs-archives-XLVI-M-1-2021-241-2021.pdf", "title": "地坑院（sunken cave houses）相关论文", "date": "2021"},
+            {"publisher": "Architecture on the Road", "url": "https://architectureontheroad.com/dikengyuan-courtyard-cave-houses-china/", "title": "DIKENGYUAN: SUNKEN COURTYARD HOUSES FROM THE LOESS PLATEAU", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "独立式窑洞不挖入土中，而是在地面上用砖或石砌出拱券，内部为拱形空间。",
+          "status": "single-source",
+          "note": "来源描述的是河南三门峡一带的案例，不是专门讲陕北。",
+          "sources": [
+            {"publisher": "China Daily", "url": "https://enapp.chinadaily.com.cn/a/202011/26/AP5fbf6076a310b0a661bf5f5b.html", "title": "Five types of traditional Chinese dwellings", "date": "2020-11-26（据 URL）"}
+          ]
+        },
+        {
+          "claim": "窑洞正立面（窑脸）为拱形门窗，装木格窗棂，糊窗纸、贴窗花。",
+          "status": "unverified",
+          "note": "两轮检索的摘要都没有给出“窑脸拱形门窗”“糊窗纸”的直接表述；只查到一篇散文写到春节家家户户挂红灯笼、贴对联和窗花（中国作家网）。这是通行常识，画面可以照此绘制，字幕若写具体做法需另核。",
+          "sources": [
+            {"publisher": "中国作家网", "url": "https://www.chinawriter.com.cn/n1/2018/0515/c404011-29991293.html", "title": "写陕北窑洞的散文", "date": "2018-05-15（据 URL）"}
+          ]
+        }
+      ],
+      "conflicts": [],
+      "depiction": [
+        "靠崖式（靠山窑）：在黄土崖面上横向开挖，一排数孔并列，窑口是半圆到尖圆的拱形；崖顶是黄土坡和稀疏草木。",
+        "窑脸：整个拱形洞口装满木门窗，下部是门和窗台墙，上部是拱形的大窗，木棂条拼出方格、几何、汉字或花卉纹样，窗后糊白纸，贴红色剪纸窗花。",
+        "独立式：在地面上用砖或石砌拱、上面覆土，立面同样是一排连续拱券，窑脸多为石砌或砖砌。",
+        "下沉式（地坑院）：平地下挖的方形天井院，四壁开窑；只在讲“窑洞类型”时出现，并标明典型在豫西、关中。",
+        "色调：黄土的暖黄与赭色，石砌窑脸的灰黄色，点缀红灯笼、红对联、玉米和辣椒串。"
+      ],
+      "pitfalls": [
+        "窑洞口是拱形，不要画成矩形门洞；门窗是木格窗糊纸，不要画成现代整块玻璃窗。",
+        "陕北段落应以靠山窑和砖石窑为主，不要把地坑院当作陕北的典型画面或字幕。",
+        "窗格图案多样但门窗分格是模式化的，别把每孔窑的门窗结构画得毫无规律。"
+      ]
+    },
+    {
+      "name_zh": "苏州园林：月洞门、漏窗与花街铺地",
+      "captionFacts": [
+        {
+          "claim": "漏窗又称花窗，多见于园林的隔墙或游廊侧墙上，既分隔空间又透出景色；明末造园专著《园冶》称之为“漏砖墙”或“漏明墙”，并已列出许多式样。",
+          "status": "single-source",
+          "note": "出自《人民日报》2024 年 10 月 5 日第 6 版顾凯《菱花为巧 柳叶生奇》，权威媒体署名学者文章，但只有这一处来源。",
+          "sources": [
+            {"publisher": "人民日报", "url": "https://paper.people.com.cn/rmrbwap/html/2024-10/05/nw.D110000renmrb_20241005_1-06.htm", "title": "传统园林中的花窗艺术，焕发出勃勃生机——菱花为巧 柳叶生奇（华夏博物之旅·传统建筑）顾凯", "date": "2024-10-05"}
+          ]
+        },
+        {
+          "claim": "花窗边框多为方形或长方形，也有多边形、圆形、扇形以及海棠形等；传统几何形图案主要用砖、瓦、木制作，自由几何形与自然形图案常以木片、竹筋为骨架，也用铁片、铁条。",
+          "status": "single-source",
+          "note": "同上，人民日报单一来源。",
+          "sources": [
+            {"publisher": "人民日报", "url": "https://paper.people.com.cn/rmrbwap/html/2024-10/05/nw.D110000renmrb_20241005_1-06.htm", "title": "传统园林中的花窗艺术，焕发出勃勃生机——菱花为巧 柳叶生奇（华夏博物之旅·传统建筑）顾凯", "date": "2024-10-05"}
+          ]
+        },
+        {
+          "claim": "实例：沧浪亭有石榴花窗、桃形花窗；狮子林有花卉与棋盘图案花窗，以及以冰裂纹为底的琴图案花窗。",
+          "status": "single-source",
+          "note": "同上，人民日报单一来源。",
+          "sources": [
+            {"publisher": "人民日报", "url": "https://paper.people.com.cn/rmrbwap/html/2024-10/05/nw.D110000renmrb_20241005_1-06.htm", "title": "传统园林中的花窗艺术，焕发出勃勃生机——菱花为巧 柳叶生奇（华夏博物之旅·传统建筑）顾凯", "date": "2024-10-05"}
+          ]
+        },
+        {
+          "claim": "月洞门是园林粉墙上开出的圆形门洞，不装门扇，用来通行并框景。",
+          "status": "unverified",
+          "note": "两轮检索都没有返回讲月洞门的页面，本条没有任何检索来源。属通行常识，画面可照此绘制；字幕如需写具体园名或尺寸，必须另行核实。",
+          "sources": []
+        },
+        {
+          "claim": "花街铺地是用砖、瓦、卵石、碎石、碎瓷片等材料在地面拼出图案的做法，常见图案有海棠、万字、冰裂等。",
+          "status": "unverified",
+          "note": "两轮检索（共用掉 2 次额度）都没有返回专讲花街铺地材料和图案的页面，本条没有任何检索来源，材料清单和图案名均为常识性说法，未经证实。字幕建议只写“花街铺地”四字及笼统描述，不列材料清单；或由主线程再补一次检索。",
+          "sources": []
+        }
+      ],
+      "conflicts": [],
+      "depiction": [
+        "月洞门：白粉墙上的正圆门洞，没有门扇，洞口用青灰色磨砖镶一圈边，上方可有砖额；透过圆洞看到竹石、芭蕉或另一重院落，形成框景（常识，未经本次检索证实）。",
+        "漏窗：开在隔墙或游廊侧墙上，窗框以方形、长方形为主，也可用多边形、圆形、扇形、海棠形；窗芯透空，由砖瓦木拼出几何纹，或以木片竹筋为骨做出花卉、器物等自然形。",
+        "可直接引用的实例图样：沧浪亭的石榴、桃形花窗；狮子林冰裂纹底上的琴形花窗。",
+        "花街铺地：以立砌的砖条、瓦条勾出图案骨线，格内嵌卵石或碎料，形成连续的海棠、万字、冰裂等纹样，颜色是灰、白、赭的细碎组合（常识，未经本次检索证实）。",
+        "色调：白墙、黛瓦、栗色木作、青灰砖细，配竹、芭蕉、湖石和水面。"
+      ],
+      "pitfalls": [
+        "月洞门没有门扇，也不是红漆大门；洞口应为正圆，墙是白粉墙而非红墙。",
+        "漏窗是透空的、不装玻璃，要能看到墙后的景物和光影；不要画成实心浮雕。",
+        "苏州园林是江南做法：屋角轻巧上翘、灰瓦白墙，不要套用北方官式的黄琉璃瓦、红墙和厚重屋顶。"
+      ]
+    },
+    {
+      "name_zh": "斗拱与清式彩画",
+      "captionFacts": [
+        {
+          "claim": "斗拱是中国传统木构建筑中位于柱与梁之间（檐下、柱头上）的榫卯木构件组合，把屋面和上部构架的荷载传给柱子；构件之间靠榫卯咬合，不用胶和钉。",
+          "status": "verified-2plus-independent",
+          "note": "Wikipedia 与 Architectura Sinica（中国建筑术语学术词库）表述一致。",
+          "sources": [
+            {"publisher": "Wikipedia（英文）", "url": "https://www.wikipedia.org/wiki/Dougong", "title": "Dougong", "date": "未标注"},
+            {"publisher": "Architectura Sinica（学术术语库）", "url": "https://www.architecturasinica.org/keyword/k000019", "title": "dǒugǒng 枓栱", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "斗拱由斗形构件（斗）、弓形构件（拱）以及昂、枋木等组成：方斗形的“斗”作承托垫块，弓形的“拱”插入斗口向外或向两侧伸出，再承托上一层的斗和拱。",
+          "status": "verified-2plus-independent",
+          "note": "“斗、拱、昂”三项有两处以上来源。任务清单里的“升”见下一条。",
+          "sources": [
+            {"publisher": "Architectura Sinica（学术术语库）", "url": "https://www.architecturasinica.org/keyword/k000019", "title": "dǒugǒng 枓栱", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "url": "https://www.wikipedia.org/wiki/Dougong", "title": "Dougong", "date": "未标注"},
+            {"publisher": "The Buddhist Garden", "url": "https://thebuddhistgarden.com/?p=2810", "title": "Dougong 斗拱", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "“升”是斗拱中的小斗；柱头斗拱不出跳的常见形式有“一斗二升”“一斗三升”。",
+          "status": "single-source",
+          "note": "检索只在“一斗二升、一斗三升”这两个形制名称中见到“升”字（土木在线资料），没有查到“升”的独立定义。“升即小斗、承托上层拱或枋”是常识性解释，未经证实。字幕写“斗、拱、升、昂”四字并列风险不大，但不要展开解释“升”。",
+          "sources": [
+            {"publisher": "土木在线（co188）", "url": "https://m.co188.com/mip/jh/t181688.html", "title": "斗拱相关资料", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "栌斗（清式称坐斗、大斗）是一组斗拱最下层、最大的斗，直接坐在柱头之上，承托其上全部构件。",
+          "status": "unverified",
+          "note": "三次检索都没有返回直接表述。间接证据只有两条：一篇少林寺初祖庵大殿勘查论文写到“柱头斗拱的栌斗为圆形，昂为插昂”，说明栌斗属于柱头斗拱；JAANUS 对日本建筑“大斗”的解释是通常直接放在柱顶、为整组斗拱的基础，但那是日本体系的类比。“栌斗在最下层”“清式称坐斗”是建筑史教材的通行说法，本次未能用检索证实，字幕使用前建议再核。",
+          "sources": [
+            {"publisher": "期刊论文（NAPSTIC 收录，少林寺初祖庵大殿勘查）", "url": "https://search.napstic.cn/literature/periodical/010jzjg202402019", "title": "少林寺初祖庵大殿相关勘查论文", "date": "2024"},
+            {"publisher": "JAANUS（日本建筑与艺术术语库，哥伦比亚大学镜像）", "url": "https://projects.mcah.columbia.edu/jaanus/node/4801", "title": "daito 大斗", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "清式建筑彩画通常分为和玺彩画、旋子彩画、苏式彩画三大类；和玺与旋子属图样形制固定的“规矩活”，以青绿为基调，苏式彩画属“白活”，多用于园林等建筑。",
+          "status": "verified-2plus-independent",
+          "note": "三大类的划分多处一致。“规矩活/白活”的说法出自其中一篇，属行业用语，字幕不必使用。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_2201516", "title": "古建彩画相关报道", "date": "未标注"},
+            {"publisher": "中国日报中文网", "url": "https://cn.chinadaily.com.cn/a/201901/28/WS5c4fb849a31010568bdc725c.html", "title": "建筑彩画相关报道", "date": "2019-01-28（据 URL）"},
+            {"publisher": "Wikipedia（英文，离线镜像）", "url": "https://kaweah.freedombox.rocks/kiwix/wikipedia_en_all_maxi_2023-10/Caihua", "title": "Caihua", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "和玺彩画是等级最高的彩画，只用于宫殿中最重要的建筑，图案以大量金色龙纹为主，底色为蓝、绿。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "Wikipedia（英文，离线镜像）", "url": "https://kwx.liehendr.com/content/wikipedia_en_all_maxi_2024-01/A/Hexi_Caihua", "title": "Hexi Caihua in the Forbidden City", "date": "未标注"},
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_2201516", "title": "古建彩画相关报道", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "旋子彩画等级仅次于和玺，因梁枋藻头（找头）上的旋涡状花纹“旋花”得名；旋花以中心的“旋眼”为核心，外绕层层旋涡状花瓣，常见“一整二破”构图，即一个整旋花加两个半旋花。",
+          "status": "verified-2plus-independent",
+          "note": "中文资料写作“一整两破”，英文资料译自“一整二破”，是同一构图的两种写法，字幕任选其一即可（“一整二破”更常见）。梁枋画面分枋心、藻头、箍头三段。",
+          "sources": [
+            {"publisher": "人民日报客户端（北京园林相关展览资料）", "url": "https://www.peopleapp.com/Pc/ArtInfoApi/article?id=30228801", "title": "建筑彩画展览相关文章", "date": "未标注"},
+            {"publisher": "Chinese Showcase", "url": "https://www.chinese-showcase.com/blogs/chinese-symbols/xuanzi-caihua", "title": "Xuanzi Caihua", "date": "未标注"},
+            {"publisher": "《建筑与文化》期刊（NAPSTIC 收录）", "url": "https://search.napstic.cn/literature/periodical/010jzywh202402090", "title": "建筑与文化 2024, Issue(2): 288-290", "date": "2024"}
+          ]
+        },
+        {
+          "claim": "明代找头的旋花花瓣呈椭圆形，清代旋花进一步规范为正圆形，并由“一整两破”发展出“喜相逢”“勾丝咬”等组合；清代旋子彩画主要用于皇宫配殿、皇家坛庙、陵寝及敕建庙宇。",
+          "status": "single-source",
+          "note": "这段明清对比与适用范围的表述出自同一篇展览资料，按单一来源处理。",
+          "sources": [
+            {"publisher": "人民日报客户端（北京园林相关展览资料）", "url": "https://www.peopleapp.com/Pc/ArtInfoApi/article?id=30228801", "title": "建筑彩画展览相关文章", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "苏式彩画主要用于园林建筑，用色比和玺、旋子更丰富，清代晚期还出现香色、紫色、粉色等间色，风格清新淡雅。",
+          "status": "single-source",
+          "note": "苏式彩画的“包袱”构图本次没有查到来源，不要据此写字幕。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_2201516", "title": "古建彩画相关报道", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "“一整二破”与“一整两破”：中英文来源写法不同，指同一种找头构图，不构成事实冲突；统一用“一整二破”。"
+      ],
+      "depiction": [
+        "斗拱自下而上：柱头上先坐一个最大的方斗（栌斗/坐斗），其上十字交叠弓形的拱，拱的两端和中间各托小斗（升），再承上一层更长的拱，层层向外挑出，托住挑檐。",
+        "斗的外形是上大下小的方斗，上部开口，下部向内收分；拱是两端向上弯、端头做出折线卷杀的短木；昂是自内向外斜向下伸出的长木，外端削成尖嘴露在檐下。",
+        "彩画构图：梁枋横向分三段，中间是枋心，两侧是藻头（找头），最外是箍头。",
+        "旋子彩画：找头里画旋花，清式为正圆，中心是旋眼，外面绕二到三层旋涡状花瓣；标准构图是一个整圆旋花居中、上下或左右各一个半圆旋花（一整二破）；青绿两色相间，局部贴金或墨线。",
+        "和玺彩画：枋心、找头、箍头都画金龙，大面积贴金，蓝绿底色，用于最高等级的大殿。",
+        "苏式彩画：用在园林亭廊，题材自由、用色更多（含香色、紫、粉等），气质淡雅。"
+      ],
+      "pitfalls": [
+        "最大的斗在最下面，越往上构件越多、出挑越远；不要把大斗画在上层，也不要把斗拱画成一整块雕花托座。",
+        "旋花是图案化的同心旋涡，不是写实花朵；找头里画龙的是和玺，不是旋子，别混用。",
+        "梁枋彩画以青绿冷色为主，柱子和门窗才是红色；不要把梁枋通体画成红色。"
+      ]
+    },
+    {
+      "name_zh": "窗棂纹样与海水江崖纹",
+      "captionFacts": [
+        {
+          "claim": "冰裂纹是窗棂、园林花窗的纹样之一：广义上指各种类似冰面开裂的线条图案，应用于园林、服饰等领域（狭义专指瓷器釉面的开片）；苏州狮子林就有以冰裂纹为底的花窗。",
+          "status": "verified-2plus-independent",
+          "note": "三处来源分别从概念、窗棂样式名称、园林实例印证了“冰裂纹用于窗”。但“不规则多边形”这类几何特征的具体表述没有直接引文，见 depiction。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_32384304", "title": "冰裂纹相关文章", "date": "未标注"},
+            {"publisher": "人民日报", "url": "https://paper.people.com.cn/rmrbwap/html/2024-10/05/nw.D110000renmrb_20241005_1-06.htm", "title": "菱花为巧 柳叶生奇（华夏博物之旅·传统建筑）顾凯", "date": "2024-10-05"},
+            {"publisher": "环球网", "url": "https://art.huanqiu.com/article/4PgR5vG3DDw", "title": "一窗一世界", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "步步锦由横、竖直棂条按规律组合，由外向内逐层收进，构成层层相套的长方格。",
+          "status": "unverified",
+          "note": "两轮检索都没有返回任何讲步步锦的页面。检索工具在摘要里附了一段“凭已有知识”的描述，那不是来源，不能当作核实。本条为常识性说法，字幕只写名称“步步锦”风险较低，不要写具体构成。",
+          "sources": []
+        },
+        {
+          "claim": "灯笼锦（灯笼框）是棂条在窗心围出较大空框、形似灯笼的窗格样式。",
+          "status": "unverified",
+          "note": "两轮检索都没有返回任何讲灯笼锦的页面。检索工具摘要里凭记忆写的“菱形轮廓、棂条沿对角方向排列”没有来源，且与通行的灯笼框形制不符，不可采用。字幕只写名称，或换用下一条已查到来源的纹样。",
+          "sources": []
+        },
+        {
+          "claim": "可替代的已查证窗棂样式：直棂窗最常见、最简洁，线条笔直排列整齐；在竖向直棂条的上、中、下部加横向棂条即“一码三箭”，常见于明清宫殿；“三交六椀”由直棂与斜棂相交成等边三角形，内嵌六瓣菱花。",
+          "status": "single-source",
+          "note": "出自环球网艺术频道一篇文章，单一来源。",
+          "sources": [
+            {"publisher": "环球网", "url": "https://art.huanqiu.com/article/4PgR5vG3DDw", "title": "一窗一世界", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "海水江崖纹主要由立水纹、平水纹和山崖纹组合而成：立水又称水脚，是位于下方的一组平行斜向线条（可直可波浪，多色相间）；其上压平水，又称卧水，是横向排列的同心半圆形浪纹；山石立于海水之中。",
+          "status": "verified-2plus-independent",
+          "note": "英文维基条目与 2024 年《毛纺科技》期刊论文相互印证。两处来源讲的都是服饰（袍服下摆）上的海水江崖纹，用在建筑构件上的情况本次没有查到。",
+          "sources": [
+            {"publisher": "Wikipedia（英文）", "url": "https://en.wikipedia.org/wiki/Lishui_(sea-waves)", "title": "Lishui (sea-waves)", "date": "未标注"},
+            {"publisher": "《毛纺科技》期刊（NAPSTIC 收录）", "url": "https://search.napstic.cn/literature/periodical/010mfkj202409001", "title": "毛纺科技 2024, Vol.52 Issue(9): 1-8", "date": "2024"}
+          ]
+        },
+        {
+          "claim": "海水江崖纹以山崖与海水组合，寓意一统天下（“一统江山”）；浪纹的“潮”与“朝”谐音，又有朝拜之意。",
+          "status": "verified-2plus-independent",
+          "note": "“一统”寓意出自《毛纺科技》论文，“潮/朝”谐音出自英文维基。“福山寿海”的说法本次没有查到来源，不要上字幕。",
+          "sources": [
+            {"publisher": "《毛纺科技》期刊（NAPSTIC 收录）", "url": "https://search.napstic.cn/literature/periodical/010mfkj202409001", "title": "毛纺科技 2024, Vol.52 Issue(9): 1-8", "date": "2024"},
+            {"publisher": "Wikipedia（英文）", "url": "https://en.wikipedia.org/wiki/Lishui_(sea-waves)", "title": "Lishui (sea-waves)", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [],
+      "depiction": [
+        "冰裂纹：长短不一的直棂条不规则相交，分出大小不等的三角形、四边形、五边形，没有重复单元，像冰面或瓷釉开裂（几何描述为常识，未经本次检索证实）。",
+        "步步锦：只用横、竖直棂条，长短棂条成组、由外圈向窗心一层层收进，上下左右对称，棂条之间用短棂连接（常识，未经本次检索证实）。",
+        "灯笼锦：棂条在窗心围出一个较大的长方形或方形空框，像一盏灯笼，四周用短棂与边框相连，中心留白大、透光好（常识，未经本次检索证实）。",
+        "已查到来源、可放心使用的样式：直棂窗；一码三箭（竖直棂加上、中、下三组横棂）；三交六椀菱花（直棂斜棂交成等边三角形，内嵌六瓣菱花）。",
+        "海水江崖：最下是斜向平行的多色线条（立水/水脚），其上是横向层叠的同心半圆浪纹（平水/卧水），浪中立起一座或三座山石，周围可配浪花、祥云。"
+      ],
+      "pitfalls": [
+        "冰裂纹的棂条是直线段、单元不重复，不要画成规则的蜂窝六边形，也不要画成曲线裂纹。",
+        "步步锦、灯笼锦只有横竖棂条，没有斜棂；斜向交叉的是菱花类（如三交六椀），不要混。",
+        "海水江崖的上下次序是立水在下、平水在上、山石出水，不可颠倒；它最典型的载体是明清袍服下摆，若要说它用在建筑上需另行核实。"
+      ]
+    }
+  ]
+}

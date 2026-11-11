@@ -1,0 +1,465 @@
+{
+  "group": "g1-palace-roof",
+  "filePath": "/tmp/claude-0/-home-user-kashing/82b55bb9-0385-5108-b6bb-ac0899659655/scratchpad/research/g1-palace-roof.json",
+  "subjects": [
+    {
+      "name_zh": "故宫黄琉璃瓦檐口构件（勾头/瓦当、滴水、筒瓦、板瓦、钉帽）",
+      "depiction": [
+        "檐口是“一勾一滴”交替排列：每一垄筒瓦（凸起的盖瓦垄）最下端收在一块带圆形瓦当的“勾头”上，每一垄板瓦（凹下的底瓦垄）最下端收在一块带下垂舌片的“滴水”上；正面看是一排圆饼与一排尖舌片左右交错，圆饼在上、尖舌在下，形成连续的锯齿状花边。",
+        "勾头＝半圆筒形瓦身＋前端一块正圆形瓦当（故宫角楼研究中俗称“烧饼盖”，用来遮挡飞椽头），圆面垂直于瓦身，内为模印浅浮雕龙纹，外缘一圈凸边。比例参考：大都会博物馆藏明代黄釉龙纹勾头，馆方著录尺寸 19.7 厘米、径 13.7 厘米。",
+        "滴水＝凹面朝上的板瓦，前端向下垂出一片“如意形”滴唇：上缘宽、两侧为连弧曲线、向下收成一个尖（像倒置的如意云头），面上同样模印龙纹；作用是让雨水从尖端滴落、防止回流。滴水尖端的位置低于勾头圆饼。",
+        "龙纹：故宫研究指出清代勾头上的龙身形细长、张嘴、龙鳞层叠似鱼鳞；明代龙身较肥硕、嘴闭合、四腿肘部有毛发。插画尺度下表现为“圆框/如意框内一条 S 形侧身龙”的浮雕感即可，不必刻画鳞片（龙的具体姿态与衬纹本次未取得权威文字描述，按简化处理）。",
+        "钉帽：勾头瓦背上有一个钉孔，用瓦钉把勾头固定在屋面上防止整垄瓦下滑，钉上再扣一枚琉璃钉帽（半球形小圆帽）遮盖防雨防锈。画面上＝檐口每一垄筒瓦背上、紧靠瓦当后方各有一颗黄色小圆钮，整条檐口形成一排等距的“珠点”；重要大殿较陡的屋面中段还会有带钉孔的“星星瓦”再加钉帽。",
+        "筒瓦：横截面为半圆的长筒形瓦，凸面朝上俯扣，前端有略细的“熊头”（榫头）与上一块搭接，每节接缝处形成一道细横线；板瓦：弧度较浅的宽片瓦，凹面朝上仰铺、上下层层叠压。",
+        "釉色：整体为明黄至金黄的玻璃质釉面，受光面有明显高光，背光面偏赭黄/褐黄；勾头、滴水属易损件，历代添配频繁，同一条檐口上新旧瓦件色泽、纹样略有差异更接近真实。",
+        "檐口以下的层次：黄色瓦当/滴水之下是木构的连檐、椽头，再往下是以青绿为主的檐下彩画与斗栱；黄瓦与红墙红柱同属暖色，中间靠青绿彩画过渡（连檐、椽子的具体配色本次未取得权威出处，按常见官式做法处理：连檐偏红、椽头带青绿彩画）。"
+      ],
+      "palette": [
+        "琉璃黄（主色）#E3A81C（估计）",
+        "釉面高光 浅金黄 #FFE27A（估计）",
+        "釉面暗部 赭黄 #A9741B（估计）",
+        "连檐/椽头 朱红 #A3312A（估计）",
+        "檐下彩画 石青 #2B5C8A（估计）",
+        "檐下彩画 石绿 #2F7D5B（估计）"
+      ],
+      "pitfalls": [
+        "位置画反：圆形的勾头（瓦当）在凸起的筒瓦垄端头，尖舌形的滴水在凹下的板瓦沟端头，二者交错而不是上下对齐成一列。",
+        "把滴水画成规整的等边三角形或半圆：清代官式滴水是如意形（连弧边、下端出尖）；英文维基称其为“三角形”且该句标注缺少出处，不宜照搬。",
+        "把瓦当画成汉代文字瓦当、兽面或莲花纹：故宫黄琉璃勾头、滴水以龙纹为主。",
+        "漏画钉帽，或反过来把钉帽铺满整个屋面：钉帽主要在檐口一排（陡峻大屋面中段另有少量）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "勾头是瓦垄檐头的特殊筒瓦，比普通筒瓦多一个圆形瓦当；元代以前称“瓦当”，明清改称“勾头”。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "“檐头带圆形端头的筒瓦”这一定义有故宫论文、Architectura Sinica 术语库、大都会博物馆三方印证；“元代以前称瓦当、明清改称勾头”的沿革表述仅见于故宫论文一处。",
+          "sources": [
+            {"publisher": "故宫博物院（《故宫学刊》论文）", "title": "故宫西南角楼明、清瓦件对比", "url": "https://www.dpm.org.cn/Uploads/File/2020/02/19/u5e4d00111f849.pdf", "date": "未标注（URL 路径为 2020/02/19）"},
+            {"publisher": "Architectura Sinica（中国建筑术语库）", "title": "勾头 goutou 词条（barrel tile ends）", "url": "https://architecturasinica.org/keyword/k000108", "date": "未标注"},
+            {"publisher": "The Metropolitan Museum of Art", "title": "Roof-tile end with dragon（明代黄釉龙纹勾头）", "url": "https://www.metmuseum.org/art/collection/search/49228", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "滴水是筒瓦屋面檐头的底瓦（板瓦），前端带一片下垂的如意形滴唇，用来导水、防止雨水回流。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "Architectura Sinica 指出“滴水”一词最早见于明代文献，狭义即指带如意形舌片的板瓦，以区别于宋《营造法式》的“重唇瓪瓦”。",
+          "sources": [
+            {"publisher": "故宫博物院（《故宫学刊》论文）", "title": "故宫西南角楼明、清瓦件对比", "url": "https://www.dpm.org.cn/Uploads/File/2020/02/19/u5e4d00111f849.pdf", "date": "未标注（URL 路径为 2020/02/19）"},
+            {"publisher": "Architectura Sinica（中国建筑术语库）", "title": "滴水 dishui 词条", "url": "https://www.architecturasinica.org/keyword/k000241", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "故宫的勾头、滴水上模印龙纹；明清龙纹有别：清代龙身细长、张嘴，明代龙身较肥硕、嘴闭合。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "“有龙纹”多方一致；“明清龙纹差异”的细节出自故宫博物院两篇研究（同一机构），成片若只写“龙纹瓦当、滴水”即可。",
+          "sources": [
+            {"publisher": "故宫博物院（《故宫学刊》论文）", "title": "故宫西南角楼明、清瓦件对比", "url": "https://www.dpm.org.cn/Uploads/File/2020/02/19/u5e4d00111f849.pdf", "date": "未标注（URL 路径为 2020/02/19）"},
+            {"publisher": "故宫博物院（研究论文）", "title": "故宫神武门琉璃瓦年代和产地的初步研究", "url": "https://www.dpm.org.cn/Uploads/File/2020/02/16/u5e4924dc1e433.pdf", "date": "未标注（URL 路径为 2020/02/16）"},
+            {"publisher": "Wikipedia（英文）", "title": "Chinese glazed roof tile", "url": "https://en.wikipedia.org/wiki/Chinese_glazed_roof_tile", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "明清两代，黄色（琉璃瓦）与五爪龙纹为皇家专用。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "“黄色琉璃为皇家建筑所用”三家博物馆一致；“五爪龙专供皇家”的表述出自大都会博物馆。",
+          "sources": [
+            {"publisher": "The Metropolitan Museum of Art", "title": "Roof-tile end with dragon", "url": "https://www.metmuseum.org/art/collection/search/49228", "date": "未标注"},
+            {"publisher": "Victoria and Albert Museum", "title": "Water dragon ridge ends (roof tile pair)", "url": "https://collections.vam.ac.uk/item/O34818/water-dragon-ridge-ends-roof-tile-pair-unknown", "date": "未标注"},
+            {"publisher": "Penn Museum", "title": "Cover Tile（明代龙纹黄釉瓦件）", "url": "https://penn.museum/collections/object/341995", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "瓦钉用于固定檐头的勾头（及陡坡处的星星瓦），防止瓦垄下滑；钉上加盖琉璃钉帽，遮盖钉孔并防雨防锈。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "故宫文章称星星筒瓦加瓦钉、钉帽的做法多用于三大殿、后三宫等重要建筑。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "故宫古建筑琉璃瓦顶的隐蔽构件（星星瓦、瓦钉与钉帽）", "url": "https://www.dpm.org.cn/Uploads/file/2025/02/13/1739432353eIvyvIZcw260.pdf", "date": "未标注（URL 路径为 2025/02/13）"},
+            {"publisher": "百度百科", "title": "瓦钉", "url": "https://baike.baidu.com/item/%E7%93%A6%E9%92%89/3512110", "date": "未标注"},
+            {"publisher": "北京日报客户端", "title": "中国古建不用钉子？太庙屋顶上全是“钉帽”！", "url": "https://xinwen.bjd.com.cn/content/s6a267ac6e4b03fa51a7f84b4.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "清代琉璃瓦按“样”分规格，常用为二样至九样；太和殿屋面用的是实际使用中最大的“二样”黄琉璃瓦，保和殿用“三样”。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "《大清会典》名义上分一样至十样，但紫禁城内未发现一样和十样实物；本条为搜索结果摘要所见，未能打开原文逐字核对（会话网络限制）。",
+          "sources": [
+            {"publisher": "人民日报（人民周刊）", "title": "琉璃花开紫禁城", "url": "https://paper.people.com.cn/rmzk/html/2020-06/24/content_1994771.htm", "date": "2020-06-24"},
+            {"publisher": "澎湃新闻", "title": "解密故宫的华彩琉璃世界——访故宫博物院副研究馆员王文涛", "url": "https://www.thepaper.cn/newsDetail_forward_17163055", "date": "未标注"},
+            {"publisher": "故宫博物院（《紫禁城》杂志）", "title": "紫禁城屋顶的颜色（张鹏）", "url": "https://www.dpm.org.cn/Uploads/File/2020/04/22/u5ea00e1655359.pdf", "date": "未标注（URL 路径为 2020/04/22）"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "核实方式说明（适用于本组全部题材）：本会话的网络白名单不允许直接打开 www.dpm.org.cn、zh.wikipedia.org 等页面（WebFetch 报 ENOTFOUND），因此所有事实均依据 WebSearch 返回的结果摘要与链接核对，未能逐字比对原文；sources 中带括号的 title 是对页面内容的描述而非原标题。如需逐字引用，请在网络设置中放行上述域名后复核。",
+        "滴水的形状：故宫论文与 Architectura Sinica 均称“如意形”；英文维基称檐口板瓦外缘“装饰三角形”，且该句带 citation needed。采信“如意形”，因其出自专业文献且两个独立来源一致。",
+        "琉璃瓦规格：《大清会典》名义上分“一样至十样”，而《钦定大清会典事例》及实物为“二样至九样”八种；太和殿用二样而非一样。两种说法并不矛盾（制度名义 vs 实际使用），说明文字宜写“二样（实际使用的最大规格）”。",
+        "名称：同一构件在不同文献里叫“瓦当”或“勾头”。严格说瓦当指筒瓦前端的圆形端面，勾头指带瓦当的整块檐头筒瓦；说明文字两者皆可，建议写“瓦当（勾头）”。"
+      ]
+    },
+    {
+      "name_zh": "故宫“红墙黄瓦”与明清琉璃瓦颜色等级",
+      "depiction": [
+        "宫墙墙身：通体暗朱红/土红色抹灰，哑光、不反光（不是亮漆）；红色来自以红土为主的罩面灰（主要显色成分为氧化铁），构造为砖墙芯＋底层灰＋红色罩面灰。老墙面常有深浅斑驳、雨水冲刷的竖向流痕和局部褪色发粉。",
+        "墙顶：宫墙顶部覆一道小型黄琉璃瓦顶（墙帽），瓦垄方向垂直于墙的走向，两侧出檐，檐口同样是小号的勾头与滴水，瓦顶下有一道挑出的檐线把黄瓦与红墙分开。注意：这一条依据通行照片与常见官式做法，本次检索未找到权威文字出处，属未核实细节。",
+        "故宫最外圈的城墙不是红墙：紫禁城城垣外表是青灰色城砖（细泥澄浆砖“干摆”砌筑，表面平整），顶部外侧有品字形垛口；红墙主要是城内各宫院的宫墙。",
+        "屋面主色：故宫绝大多数殿宇为黄琉璃瓦。俯瞰时是成片的金黄屋顶、其间穿插红墙。",
+        "例外一：南三所（皇子居所，位于紫禁城东部）屋顶多覆绿琉璃瓦，配红墙。",
+        "例外二：文渊阁（藏书楼）为黑琉璃瓦顶、绿琉璃瓦剪边——屋面大面是黑色，檐口一圈和屋脊是绿色镶边；墙体与彩画也偏青绿冷色。",
+        "对照：天坛祈年殿等祭天建筑用蓝琉璃瓦（深蓝），象征青天，故宫内不以蓝瓦为主。",
+        "配色关系：黄瓦与红墙红柱都是暖色，檐下用青绿彩画过渡；画面里三段色带（上黄、中青绿、下红）是故宫立面的基本识别特征。"
+      ],
+      "palette": [
+        "宫墙红（土红/暗朱红）#A23B2B（估计）",
+        "褪色宫墙红 #BF6455（估计）",
+        "黄琉璃瓦 #E3A81C（估计）",
+        "绿琉璃瓦（南三所、剪边）#2E7D4F（估计）",
+        "黑琉璃瓦（文渊阁）#22272B（估计）",
+        "蓝琉璃瓦（天坛）#1F3F8F（估计）"
+      ],
+      "pitfalls": [
+        "把宫墙画成正红、大红或带高光的油漆红：实际是偏暗、偏土的哑光红，且有斑驳。",
+        "把紫禁城外圈城墙（护城河边、角楼下）也画成红墙：城垣是青灰色砖墙带垛口。",
+        "把故宫所有屋顶一律画成黄色却在说明文字里讲“等级”：如要表现等级，绿（南三所）、黑配绿剪边（文渊阁）才是故宫内的对照样本；蓝瓦属于天坛而非故宫。",
+        "把“绿瓦”等级写成“百姓可用”：绿琉璃属王府、皇子一级，普通民居只能用灰色布瓦。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "北京故宫（紫禁城）始建于明永乐四年（1406年），永乐十八年（1420年）建成。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "故宫官网说法：永乐四年下诏营建，永乐十八年十一月宣告竣工；前期备料约十年，集中施工约四年。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "紫禁城建成（紫禁城建成六百年专题）", "url": "https://www.dpm.org.cn/subject_600/buildingdetails/253789.html", "date": "未标注"},
+            {"publisher": "UNESCO World Heritage Centre", "title": "Imperial Palaces of the Ming and Qing Dynasties in Beijing and Shenyang", "url": "https://whc.unesco.org/en/list/439/.htm", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "北京故宫于1987年列入《世界遗产名录》（2004年扩展纳入沈阳故宫）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre", "title": "Imperial Palaces of the Ming and Qing Dynasties in Beijing and Shenyang", "url": "https://whc.unesco.org/en/list/439/.htm", "date": "未标注"},
+            {"publisher": "World Heritage Site（worldheritagesite.org）", "title": "Imperial Palace", "url": "https://www.worldheritagesite.org/list/id/439", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "黄琉璃瓦等级最高：明清规定只有皇帝的宫殿、陵寝及奉旨兴建的坛庙才可使用黄琉璃瓦。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "中文科普来源未给出《大清会典》具体卷次；“黄色为皇家专用”有大都会博物馆、V&A 等独立印证。",
+          "sources": [
+            {"publisher": "中国华文教育网", "title": "故宫为什么多红色和黄色？", "url": "https://www.hwjyw.com/article/893.html", "date": "未标注"},
+            {"publisher": "The Metropolitan Museum of Art", "title": "Roof-tile end with dragon", "url": "https://www.metmuseum.org/art/collection/search/49228", "date": "未标注"},
+            {"publisher": "故宫博物院（《紫禁城》杂志）", "title": "紫禁城屋顶的颜色（张鹏）", "url": "https://www.dpm.org.cn/Uploads/File/2020/04/22/u5ea00e1655359.pdf", "date": "未标注（URL 路径为 2020/04/22）"}
+          ]
+        },
+        {
+          "claim": "绿琉璃瓦次于黄色，用于皇子居所和王府：故宫南三所（乾隆十一年即1746年建成的皇子居所）屋顶多覆绿琉璃瓦，取“东方属木、主生长”之意。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "南三所", "url": "https://www.dpm.org.cn/explore/building/236452.html", "date": "未标注"},
+            {"publisher": "光明网", "title": "碧琉璃瑞烟笼罩——浅谈官式建筑中的琉璃瓦", "url": "https://news.gmw.cn/2023-07/07/content_36679887.htm", "date": "2023-07-07"},
+            {"publisher": "China Daily（香港版）", "title": "（恭王府报道，提及王府、城门、寺庙用绿瓦）", "url": "https://chinadailyhk.com/article/224079", "date": "2021-06-17"}
+          ]
+        },
+        {
+          "claim": "文渊阁为黑琉璃瓦顶、绿琉璃瓦剪边，寓意黑色主水、以水压火，以保藏书楼安全；该阁建成于乾隆四十一年（1776年），仿宁波天一阁，用于贮藏《四库全书》。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "文渊阁", "url": "https://www.dpm.org.cn/explore/building/236513.html", "date": "未标注"},
+            {"publisher": "澎湃新闻（转北京晚报，周乾讲座报道）", "title": "（故宫防火与文渊阁黑瓦）", "url": "https://www.thepaper.cn/newsDetail_forward_32484366", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "蓝琉璃瓦用于祭天建筑：天坛祈年殿覆蓝色琉璃瓦，象征青天。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "天坛的主体建筑：祈年殿", "url": "https://gygl.beijing.gov.cn/whgy/whgy_wsgc/201912/t20191206_885633.html", "date": "2019-12-06（据 URL）"},
+            {"publisher": "Encyclopaedia Britannica", "title": "Hall of Prayer for Good Harvests", "url": "https://www.britannica.com/place/Hall-of-Prayer-for-Good-Harvests", "date": "未标注"},
+            {"publisher": "科技日报（英文版）", "title": "Brilliant Glazed Roof of Forbidden City", "url": "https://www.stdaily.com/web/English/2023-04/27/content_1921295.html", "date": "2023-04-27"}
+          ]
+        },
+        {
+          "claim": "故宫红墙由砖墙芯、底层灰和罩面灰组成，人们看到的红色是以红土为主的罩面灰，主要显色成分为氧化铁（Fe2O3）。",
+          "status": "verified-2plus-independent",
+          "asOf": "资料日期 2021-09-24",
+          "note": "主要依据故宫博物院研究馆员周乾的说法（引《大清会典》与清工部《工程做法》：红土、糯米、白矾）；《建筑材料学报》论文可印证“红灰（红土灰浆）大量用于故宫红墙及屋顶”。另有通俗说法称用“朱砂”，见 conflicts。",
+          "sources": [
+            {"publisher": "新华网（转科技日报）", "title": "（故宫红墙材料与“宫女魅影”传说，周乾访谈）", "url": "https://www.news.cn/tech/20210924/051ccd16321d498195fd40360d6db5c3/c.html", "date": "2021-09-24"},
+            {"publisher": "《建筑材料学报》", "title": "（红土含量对传统红灰性能影响的研究）", "url": "https://jcxb.ijournals.cn/jzclxb/article/pdf/20218275", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "紫禁城城垣（外圈城墙）高约10米，底宽约8.6米，顶宽约6.7米，周长约3.4千米；顶部外侧砌品字形垛口。",
+          "status": "conflicting",
+          "asOf": "截至2026年11月",
+          "note": "故宫官网不同页面数字不一（高 9.90 / 9.3 / 9.27 米；周长 3428 / 3437.6 米），另有“12米”的说法。说明文字建议写“高约10米”，不要写到小数。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "紫禁城的城垣", "url": "https://www.dpm.org.cn/explore/building/236441.html", "date": "未标注"},
+            {"publisher": "故宫博物院", "title": "故宫城墙修缮工程暨基础设施维修改造一期（试点）工程开工仪式", "url": "https://www.dpm.org.cn/classify_detail/234882.html?hl=%E8%8A%99%E8%93%89", "date": "未标注"},
+            {"publisher": "故宫博物院（研究论文）", "title": "紫禁城城墙现状调查与保护初探", "url": "https://www.dpm.org.cn/Uploads/File/2020/02/16/u5e490f5ea72b3.pdf", "date": "未标注（URL 路径为 2020/02/16）"},
+            {"publisher": "维基百科（中文）", "title": "故宫", "url": "https://zh.wikipedia.org/zh-hans/%E6%95%85%E5%AE%AB", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "故宫宫墙墙顶覆黄琉璃瓦墙帽（小型瓦顶，带勾头滴水）。",
+          "status": "unverified",
+          "asOf": "截至2026年11月",
+          "note": "多轮检索（含限定故宫官网）均未找到直接描述宫墙墙帽构造的权威文字；此条仅凭通行照片印象，可以照此作画，但不建议写进说明文字。",
+          "sources": []
+        }
+      ],
+      "conflicts": [
+        "红墙颜料：故宫研究馆员周乾（科技日报/新华网，2021）依据清代《大清会典》《工程做法》称罩面灰以红土为主、显色成分为氧化铁；部分通俗文章称宫墙为“朱砂红，以朱砂为主要材料调制”。采信“红土（氧化铁）”，因其有文献出处、出自故宫专业人员，且有《建筑材料学报》关于“红灰”的研究旁证。",
+        "紫禁城城垣高度：故宫官网“紫禁城的城垣”页 9.90 米（底宽 8.62、顶宽 6.66 米）；城墙修缮页 9.3 米（底宽 8.55、顶宽 6.63 米）；院刊论文实测 9.27 米；中文维基与故宫旧文 10 米；个别文章 12 米。周长亦有 3428 米与 3437.6 米（墙脚外沿）两种。采信“约10米/约3.4千米”的取整说法，12 米缺乏官方依据不采信。",
+        "绿瓦的使用者：故宫官网写“皇子居所（南三所）”，英文资料多写“crown prince（太子）”，其他中文资料写“亲王、郡王府邸”。三者指向同一等级层次（低于皇帝），说明文字建议写“皇子居所与王府”。",
+        "任务线索未给出具体数字；线索中“黄、绿、蓝、黑各用于何处”经核实为：黄—皇帝宫殿/陵寝/敕建坛庙，绿—皇子居所与王府（故宫南三所），蓝—祭天建筑（天坛），黑—文渊阁（黑瓦绿剪边，取水克火）。需注意蓝瓦不在故宫而在天坛。"
+      ]
+    },
+    {
+      "name_zh": "筒瓦屋面的瓦垄构造与雪后故宫屋面",
+      "depiction": [
+        "屋面由许多平行的纵向条带组成，方向一律顺着屋面坡度（垂直于正脊和檐口）：凹面朝上的板瓦（底瓦）自檐口向屋脊层层叠压，形成凹下的“沟”（走水当）；相邻两列板瓦之间的缝上俯扣半圆筒瓦，形成凸起的“垄”。垄与沟一凸一凹交替，自屋脊直贯檐口。",
+        "一垄筒瓦像一根带竹节的长圆棍：每块筒瓦靠熊头首尾相接，接缝处是一圈细横线，间距均匀；垄的凸起高度约为一个半圆。远看屋面是细密的竖向平行线，近看才见一节一节的横缝。",
+        "底瓦搭接很密（英文维基称清代搭接约七成，古建文章称“三搭头”），所以沟里看到的是一层层很窄的弧形瓦边，而不是整块瓦。",
+        "明清官式做法讲“底瓦坐中”：屋面正中轴线上是一条沟（底瓦垄），筒瓦垄对称分列两侧；每垄下端以勾头收头、每沟下端以滴水收头。",
+        "屋面不是平面而是上陡下缓的凹曲面，瓦垄线随之呈微微下凹的弧线，到檐口处略微上翘；歇山、庑殿顶的各坡面瓦垄在垂脊、戗脊处被斜向截断。",
+        "雪后特征一（薄雪/初融）：雪先留在凹下的沟里，凸起的筒瓦垄背先露出黄色，屋面呈“黄—白相间的细密竖条纹”；这是本组最有辨识度的雪景画面（属照片经验，未取得文字出处）。",
+        "雪后特征二（厚雪）：整片屋面覆白，积雪顺着屋面曲线堆出柔和的弧度，只有檐口一线的勾头滴水、正脊与垂脊的侧面、吻兽和脊兽露出黄色；脊兽头顶各顶一小团雪（媒体形容为戴“雪绒帽”）。",
+        "雪后特征三：红墙在白雪衬托下显得更饱和，墙顶和台基栏杆上也有一层雪；整体是红、黄、白三色。"
+      ],
+      "palette": [
+        "积雪 亮白 #F5F7F9（估计）",
+        "雪的阴影 淡蓝灰 #C8D4E0（估计）",
+        "雪中露出的琉璃黄 #D9A21E（估计）",
+        "雪景中的宫墙红 #9E3327（估计）",
+        "冬季阴天天空 灰蓝 #B4C0CC（估计）"
+      ],
+      "pitfalls": [
+        "把瓦垄画成横向（平行于檐口）的鱼鳞或波浪：官式筒瓦屋面的主导线条是顺坡的竖向垄线。",
+        "只画凸垄不画凹沟，或垄与垄紧贴没有间隔：垄和沟宽度相近、交替出现。",
+        "雪画成一整块平涂的白色屋顶，完全盖住檐口和屋脊：檐口勾头滴水、脊和脊兽应保留黄色轮廓，薄雪时还应有黄白条纹。",
+        "雪景里把红墙画得发灰发暗：实景中红墙与白雪对比更鲜明。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "筒瓦屋面由板瓦和筒瓦配合：板瓦凹面朝上仰铺成排水的沟，半圆形的筒瓦俯扣在相邻两垄板瓦的接缝上防止渗漏，凸者为垄、凹者为沟。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "sources": [
+            {"publisher": "故宫博物院（《故宫学刊》论文）", "title": "故宫西南角楼明、清瓦件对比", "url": "https://www.dpm.org.cn/Uploads/File/2020/02/19/u5e4d00111f849.pdf", "date": "未标注（URL 路径为 2020/02/19）"},
+            {"publisher": "Architectura Sinica（中国建筑术语库）", "title": "筒瓦 tongwa 词条", "url": "https://architecturasinica.org/keyword/k000109", "date": "未标注"},
+            {"publisher": "Construction History Society（剑桥大学建筑系托管）", "title": "Construction History vol.16 pp.3–11（《营造法式》瓦作研究）", "url": "https://www.arct.cam.ac.uk/system/files/documents/chs-vol.16-pp.3-to-11.pdf", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "制瓦时先做成圆筒形泥坯再剖开：对半剖开为筒瓦，剖成四片（或六片）为板瓦。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "sources": [
+            {"publisher": "搜狐号（古建专业自媒体）", "title": "古建筑屋面瓦作营造大全", "url": "https://www.sohu.com/a/396862239_617491", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "title": "Chinese glazed roof tile", "url": "https://en.wikipedia.org/wiki/Chinese_glazed_roof_tile", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "明清官式屋面铺瓦讲究“底瓦坐中”，即屋面正中是一条底瓦垄（沟）。",
+          "status": "single-source",
+          "asOf": "截至2026年11月",
+          "note": "仅见于一篇古建营造科普文章，未取得第二个独立来源；可用于作画，不建议写入说明文字。",
+          "sources": [
+            {"publisher": "搜狐号（古建专业自媒体）", "title": "古建筑屋面瓦作营造大全", "url": "https://www.sohu.com/a/396862239_617491", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "雪后的故宫以“红墙黄瓦披白雪”著称；最近一次有大量官方媒体图片记录的初雪是2025年12月12—13日。",
+          "status": "verified-2plus-independent",
+          "asOf": "资料日期 2025-12-13；另有文章称截至2026年11月8日北京今冬尚未降雪",
+          "note": "属时效性信息，成片中不宜写具体日期，只用“雪落紫禁城/红墙黄瓦映白雪”一类泛化表述即可。",
+          "sources": [
+            {"publisher": "新华网", "title": "（2025年12月13日雪后故宫组图）", "url": "https://www.news.cn/photo/20251213/a77a8e940d06430ea31199c65945f8f7/c.html", "date": "2025-12-13"},
+            {"publisher": "光明网", "title": "唯美！被初雪下的故宫惊艳到了", "url": "https://m.gmw.cn/2025-12/13/content_1304261901.htm", "date": "2025-12-13"},
+            {"publisher": "北京日报客户端", "title": "2026故宫初雪，红墙黄瓦的冬日浪漫已送达", "url": "https://peking.bjd.com.cn/content/s696cdc6ce4b0cd719e9c52ce.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "薄雪时积雪留在瓦沟、筒瓦垄背露出，屋面呈黄白相间的细条纹。",
+          "status": "unverified",
+          "asOf": "截至2026年11月",
+          "note": "这是由瓦垄凹凸构造推出、并与常见雪景照片相符的画面经验，检索未找到明确的文字描述；仅用于作画，不要写成说明文字。",
+          "sources": []
+        }
+      ],
+      "conflicts": [
+        "本题材未发现实质性数据冲突。底瓦搭接比例一处说“清代搭接七成”（英文维基），一处说“三搭头”（古建文章），二者是同一做法的不同表述（压七露三）。",
+        "术语用字：筒瓦又写作“㼧瓦”，板瓦又写作“瓪瓦”（《营造法式》用字）；说明文字用通行的“筒瓦、板瓦”即可。"
+      ]
+    },
+    {
+      "name_zh": "宝顶（天坛祈年殿、故宫中和殿、故宫交泰殿）",
+      "depiction": [
+        "宝顶是攒尖屋顶最高点的收束构件，原本用来封护攒尖顶中心的雷公柱，材料多为金属或琉璃；三座建筑的宝顶都是金色（铜质鎏金/镀金），在画面里是全屋顶唯一的金属高光点。",
+        "祈年殿整体：圆形平面，三重檐圆攒尖顶，三层檐自下而上逐层收小，全部覆深蓝色琉璃瓦；蓝瓦的瓦垄因是圆锥面而呈放射状（上端密、下端疏）；殿身为红柱、红色门窗，檐下是青绿加金的彩画；坐落在三层圆形白色石台上。",
+        "祈年殿宝顶：位于最上层蓝瓦圆锥的尖端，是一个鎏金的球状宝顶（Britannica 称 gilded ball / 球根状金色顶饰），下有收束的金色底座与蓝瓦相接；媒体介绍，三层屋檐的边线连线与宝顶中线在空中相交，夹角近30度，可据此控制整体轮廓。",
+        "中和殿：平面正方形，单檐四角攒尖顶，覆黄琉璃瓦；四条垂脊从四个檐角沿屋面对角线向上汇聚到中心，交汇处安一枚圆形的铜胎鎏金宝顶；殿身三间见方、四面出廊，红柱红门窗。",
+        "交泰殿：形制与中和殿相同而体量更小——方形平面、单檐四角攒尖顶、黄琉璃瓦、铜镀金宝顶；位于乾清宫与坤宁宫之间。",
+        "中和殿/交泰殿宝顶的画法：一个饱满的金色圆球形主体，下接收腰的金色底座，坐在四条垂脊交汇处；高度明显小于屋面高度，只是一个小而亮的金色顶饰（圆球＋底座的细部比例依常见照片，本次未取得权威尺寸）。",
+        "金色质感：鎏金表面为暖金色，受光面近乎白亮、背光面偏赭金，与周围的蓝瓦（祈年殿）或黄瓦（中和殿、交泰殿）要拉开明度差——黄瓦是釉色的黄，宝顶是金属的金。",
+        "四角攒尖顶的瓦垄：每个三角形坡面上的瓦垄都垂直于各自的檐口、相互平行，靠近垂脊处被斜向截短（不是放射状）；只有圆攒尖顶（祈年殿）才是放射状。"
+      ],
+      "palette": [
+        "鎏金宝顶 #D9A521（估计）",
+        "鎏金高光 #FFE9A6（估计）",
+        "祈年殿蓝琉璃瓦 #1E3F8C（估计）",
+        "中和殿/交泰殿黄琉璃瓦 #E3A81C（估计）",
+        "柱与门窗 朱红 #A8322A（估计）",
+        "汉白玉台基 #ECE8DD（估计）"
+      ],
+      "pitfalls": [
+        "把祈年殿屋顶画成黄瓦或三层不同颜色：现存祈年殿三层檐均为蓝瓦（上青中黄下绿是明嘉靖时的旧制，清乾隆时已统一改蓝）。",
+        "把中和殿、交泰殿画成圆顶或重檐：两者都是方形平面、单檐、四条垂脊的四角攒尖顶；有正脊的是太和殿、保和殿。",
+        "把宝顶画成尖塔、葫芦串或佛塔相轮：这三处都是圆润的球状金顶加底座，体量小。",
+        "宝顶与黄瓦用同一种黄色：应区分金属金与釉黄。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "祈年殿是蓝琉璃瓦三重檐圆攒尖顶大殿，殿顶为鎏金宝顶；蓝瓦象征天，圆形象征天圆。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "天坛的主体建筑：祈年殿", "url": "https://gygl.beijing.gov.cn/whgy/whgy_wsgc/201912/t20191206_885633.html", "date": "2019-12-06（据 URL）"},
+            {"publisher": "Encyclopaedia Britannica", "title": "Hall of Prayer for Good Harvests", "url": "https://www.britannica.com/place/Hall-of-Prayer-for-Good-Harvests", "date": "未标注"},
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "天坛游览必读", "url": "https://www.visitbeijing.com.cn/article/4P5U9TeZK72?device=amp", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "祈年殿始建于明永乐十八年（1420年），初名大祀殿；明嘉靖年间改建为三重檐圆殿（大享殿），屋瓦上青、中黄、下绿；清乾隆十六年（1751年）改为统一的蓝瓦金顶，定名祈年殿。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "嘉靖改建年份各处不一（1540年动工说、1545年建成说，Britannica 作“约1530年”），说明文字建议只写“明嘉靖年间”。",
+          "sources": [
+            {"publisher": "天坛公园官网", "title": "祈年殿（景点介绍）", "url": "http://www.tiantanpark.com/contents/5/4028.html", "date": "未标注"},
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "趣说北京：历经两位皇帝两次重修，现在的天坛原来是乾隆的手笔", "url": "https://www.beijing.gov.cn/shipin/qushuobeijing/19513.html", "date": "未标注"},
+            {"publisher": "Encyclopaedia Britannica", "title": "Hall of Prayer for Good Harvests", "url": "https://www.britannica.com/place/Hall-of-Prayer-for-Good-Harvests", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "祈年殿于清光绪十五年（1889年）毁于雷火，次年开始重建，光绪二十二年（1896年）竣工；现存建筑为光绪年间重建。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "1889年焚毁有多方一致（含美国国务院1889年外交档案）；“1896年竣工”见于天坛公园官网与携程（后者可能转引），Lonely Planet 则称“次年即建成”。说明文字建议写“1889年毁于雷火，光绪年间重建”。",
+          "sources": [
+            {"publisher": "天坛公园官网", "title": "祈年殿（景点介绍）", "url": "http://www.tiantanpark.com/contents/5/4028.html", "date": "未标注"},
+            {"publisher": "U.S. Department of State, Office of the Historian", "title": "Foreign Relations of the United States, 1889, Document 77", "url": "https://history.state.gov/historicaldocuments/frus1889/d77", "date": "1889（原始档案）"},
+            {"publisher": "Lonely Planet", "title": "Hall of Prayer for Good Harvests", "url": "https://www.lonelyplanet.com/points-of-interest/hall-of-prayer-for-good-harvests/1328761", "date": "未标注"},
+            {"publisher": "携程攻略", "title": "祈年殿", "url": "https://gs.ctrip.com/html5/you/sight/1/1485550.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "祈年殿高约38米。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "38米（Britannica、北京市公园管理中心、英文维基）与 38.2 米（天坛公园官网、北京市政府英文网）基本一致；另有“殿高 31.6 米＋台基 5.2 米＝通高 36.8 米”的拆分算法。写“约38米”最稳妥。",
+          "sources": [
+            {"publisher": "天坛公园官网", "title": "祈年殿（景点介绍）", "url": "http://www.tiantanpark.com/contents/5/4028.html", "date": "未标注"},
+            {"publisher": "Encyclopaedia Britannica", "title": "Hall of Prayer for Good Harvests", "url": "https://www.britannica.com/place/Hall-of-Prayer-for-Good-Harvests", "date": "未标注"},
+            {"publisher": "Beijing Municipal Government（英文网）", "title": "Hall of Prayer for Good Harvests", "url": "https://english.beijing.gov.cn/specials/parktours/guidevisitors/templeofheaven/mustsee/202301/t20230112_2897330.html", "date": "2023-01-12（据 URL）"}
+          ]
+        },
+        {
+          "claim": "祈年殿直径：24.2 米 / 30 米 / 32 米 / 36 米（各来源不一）。",
+          "status": "conflicting",
+          "asOf": "截至2026年11月",
+          "note": "天坛公园官网与北京市政府英文网 24.2 米；Britannica 30 米（98英尺）；北京市公园管理中心、CGTN、New World Encyclopedia 32 米；英文维基 36 米。差异很可能源于量取位置不同（柱网/殿身/台基），但没有来源说明口径。建议说明文字不写直径；若必须写，用天坛公园官网的 24.2 米并注明出处。",
+          "sources": [
+            {"publisher": "天坛公园官网", "title": "祈年殿（景点介绍）", "url": "http://www.tiantanpark.com/contents/5/4028.html", "date": "未标注"},
+            {"publisher": "北京市公园管理中心", "title": "天坛的主体建筑：祈年殿", "url": "https://gygl.beijing.gov.cn/whgy/whgy_wsgc/201912/t20191206_885633.html", "date": "2019-12-06（据 URL）"},
+            {"publisher": "Encyclopaedia Britannica", "title": "Hall of Prayer for Good Harvests", "url": "https://www.britannica.com/place/Hall-of-Prayer-for-Good-Harvests", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "title": "Temple of Heaven", "url": "https://wikipedia.com/wiki/Tiantan", "date": "未标注"},
+            {"publisher": "CGTN", "title": "Temple of Heaven: architectural wonder on the central axis of Beijing", "url": "https://news.cgtn.com/news/2023-03-09/Temple-of-Heaven-architectural-wonder-on-the-central-axis-of-Beijing-1i25id9KlWw/share_amp.html", "date": "2023-03-09"}
+          ]
+        },
+        {
+          "claim": "祈年殿由28根大柱支撑：中央4根龙井柱象征四季，中层12根金柱象征十二个月，外层12根檐柱象征十二时辰。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "北京市公园管理中心称龙井柱高 19.2 米、直径 1.2 米；Britannica 称内圈柱高至 18 米，略有出入。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "天坛公园祈年殿内的28根大柱", "url": "https://gygl.beijing.gov.cn/whgy/whgy_wsgc/201912/t20191206_885585.html", "date": "2019-12-06（据 URL）"},
+            {"publisher": "New World Encyclopedia", "title": "Temple of Heaven", "url": "https://newworldencyclopedia.org/entry/Temple_of_Heaven", "date": "未标注"},
+            {"publisher": "Lonely Planet", "title": "Hall of Prayer for Good Harvests", "url": "https://www.lonelyplanet.com/points-of-interest/hall-of-prayer-for-good-harvests/1328761", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "祈年殿宝顶为铜鎏金，并与殿檐上的避雷线相连、兼起避雷作用；2005—2006年祈年殿大修后恢复为光绪朝重建后的面貌。",
+          "status": "verified-2plus-independent",
+          "asOf": "资料日期 2005-06 至 2006-04",
+          "note": "“鎏金宝顶”多方一致；“铜鎏金、兼作避雷”出自2005—2006年大修期间的新闻报道。该次大修对宝顶的处理有“仅清洗”与“重新镏金”两种报道，见 conflicts。",
+          "sources": [
+            {"publisher": "新浪新闻（转载媒体报道）", "title": "天坛祈年殿恢复光绪年原貌 修缮工程总投资4700万元", "url": "https://news.sina.com.cn/c/2006-04-14/09158694570s.shtml", "date": "2006-04-14"},
+            {"publisher": "新浪科技（转载媒体报道）", "title": "天坛祈年殿昨起正式大修", "url": "http://tech.sina.com.cn/d/2005-06-17/0948638778.shtml", "date": "2005-06-17"},
+            {"publisher": "北京市公园管理中心", "title": "天坛的主体建筑：祈年殿", "url": "https://gygl.beijing.gov.cn/whgy/whgy_wsgc/201912/t20191206_885633.html", "date": "2019-12-06（据 URL）"}
+          ]
+        },
+        {
+          "claim": "天坛于1998年列入《世界遗产名录》。",
+          "status": "single-source",
+          "asOf": "截至2026年11月",
+          "note": "来源为 UNESCO 官方页面（一手权威），本次未另取独立第二来源。",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre", "title": "Temple of Heaven: an Imperial Sacrificial Altar in Beijing", "url": "https://whc.unesco.org/en/list/881/", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "中和殿平面呈正方形，屋顶为单檐四角攒尖，覆黄色琉璃瓦，正中为铜胎鎏金宝顶；始建于明永乐十八年（1420年），初名华盖殿，嘉靖时改称中极殿，清初定名中和殿。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "故宫官网另载：三间见方、四面出廊、建筑面积 580 平方米（仅官网一处）。科技日报文章把“方殿＋圆形鎏金宝顶”解读为“上圆下方/天圆地方”，属作者阐释。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "中和殿", "url": "https://www.dpm.org.cn/explore/building/236464.html", "date": "未标注"},
+            {"publisher": "科技日报", "title": "（周乾：中和殿为何是正方形）", "url": "https://www.stdaily.com/web/gdxw/2026-07/02/content_541180.html", "date": "2026-07-02"},
+            {"publisher": "China Highlights", "title": "Hall of Central Harmony", "url": "https://www.chinahighlights.com/beijing/forbidden-city/hall-of-central-harmony.htm", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "交泰殿位于乾清宫与坤宁宫之间，平面方形、面阔进深各三间，单檐四角攒尖顶，铜镀金宝顶，黄琉璃瓦；形制似中和殿而体量更小。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至2026年11月",
+          "note": "嘉庆二年（1797年）乾清宫失火殃及此殿，随后重建。始建年代有争议，见 conflicts；说明文字不建议写交泰殿的始建年份。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "交泰殿", "url": "https://www.dpm.org.cn/explore/building/236467.html", "date": "未标注"},
+            {"publisher": "维基百科（中文）", "title": "交泰殿", "url": "https://zh.wikipedia.org/zh-hans/%E4%BA%A4%E6%B3%B0%E6%AE%BF", "date": "未标注"},
+            {"publisher": "Wikipedia（英文）", "title": "Hall of Union", "url": "https://en.wikipedia.org/wiki/Hall_of_Union", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "宝顶原本用于封护攒尖顶中心的雷公柱，所用材料多为金属或琉璃。",
+          "status": "single-source",
+          "asOf": "截至2026年11月",
+          "note": "出自故宫博物院官网“攒尖顶”词条；未另取独立来源。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "攒尖顶（词条）", "url": "https://www.dpm.org.cn/lemmas/241403.html", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "祈年殿直径：天坛公园官网、北京市政府英文网 24.2 米；Britannica 30 米；北京市公园管理中心、CGTN、New World Encyclopedia 32 米；英文维基 36 米。各来源均未说明量取位置。不采信任何单一数字作为定论；如必须使用，倾向管理方（天坛公园官网）的 24.2 米并注明出处，最好在成片中回避直径。",
+        "祈年殿高度：38 米（Britannica、北京市公园管理中心、英文维基）与 38.2 米（天坛公园官网、北京市政府英文网）；另有“殿高 31.6 米＋三层台基 5.2 米＝通高 36.8 米”（北京市公园管理中心另一页面）和“殿 31.8 米＋台基 6.3 米＝38.1 米”的拆分。采信“约38米”，因主流来源一致且差异在取整范围内。",
+        "嘉靖改建年份：首都之窗称1540年下令拆大祀殿改建，另有资料称嘉靖二十四年（1545年）建成，Britannica 称“约1530年”形成圆形格局。建议只写“明嘉靖年间”。",
+        "1889年焚毁后的重建时间：天坛公园官网与携程称次年重建、1896年竣工；Lonely Planet 称次年即建成复制品；MIT 资料称“数年后重建”。采信“1890年动工、1896年竣工”，因出自管理方官网且与“数年后”相容。个别英文页面把1889误写为1989，属笔误。",
+        "2005—2006年大修对宝顶的处理：多数报道称“只对宝顶进行清洗”，另有一篇报道称“对宝顶重新进行镏金”。未能判定，成片不涉及即可。",
+        "中和殿开间与高度：故宫官网、科技日报称面阔进深各三间（四面出廊），China Highlights 等英文资料称“five bays wide”（应是把周围廊计入）；高度有 19 米（携程）与 29 米（英文旅游网站）两说，均非官方数据。采信官网“三间见方、四面出廊”，高度不建议写。",
+        "交泰殿始建年代：故宫官网条目称“约为明嘉靖年间建”；故宫官网另一页面称永乐十八年（1420年）建成；故宫院内考证文章认为嘉靖只是改名、建筑更早已存在。重建年份多数作嘉庆二年（1797年），个别作嘉庆三年。尚无定论，说明文字应回避。",
+        "宝顶工艺用语：故宫官网对中和殿写“铜胎鎏金宝顶”，对交泰殿写“铜镀金宝顶”，其他资料混用“鎏金”“镀金”“gold-plated”。指同一类铜质贴金/鎏金做法，说明文字统一写“鎏金宝顶”即可。"
+      ]
+    }
+  ]
+}

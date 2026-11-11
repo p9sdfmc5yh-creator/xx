@@ -1,0 +1,826 @@
+{
+  "group": "tcm-b",
+  "note": "范围：器具、诊疗与典籍。只用 WebSearch（standard）17 次，未用 WebFetch；全部依据搜索结果摘要判断。其中 5 次检索没有返回可用内容（蜡壳丸、药碾/铜冲/砂锅、满城汉墓医针、“钱”的换算两次），相应事实一律标 unverified，没有凭记忆补写。depiction 与 pitfalls 中标了“常识”的条目未经本次检索证实。个别来源的链接归属是按摘要推断的，已在 note 里逐条说明。",
+  "subjects": [
+    {
+      "shots": ["s02"],
+      "name_zh": "蜡壳丸（蜡丸）",
+      "depiction": [
+        "整体：一枚圆球形蜡壳，直径两三厘米（估计值），壳里封着一粒深褐至乌黑的蜜丸；镜头里只需要蜡壳外形。（常识，未经本次检索证实）",
+        "颜色与质感：蜂蜡本色的蜜黄到乳黄，也有偏白的白蜡壳；表面是哑光到柔和的蜡质光泽，略半透，带浸蜡留下的细微流痕与指触痕，不是塑料或糖果那种镜面高光。（常识）",
+        "合缝：壳身中腰有一圈细细的封口线（两个半球扣合后再用蜡封住），略微凸起或颜色稍深，是蜡壳最好认的细节。（常识）",
+        "印记：传统上壳面常盖一枚小印（朱红或金色，多为药名或店号）。本片建议留素壳，或只画一枚不可辨读的小红印。（常识）",
+        "排布：按分镜沿弧线排成一列，球与球之间留细缝；黑底逆光勾边，蜡的半透明边缘透出一圈暖黄光。"
+      ],
+      "pitfalls": [
+        "名称：药剂学里“蜡丸”另指以蜂蜡作黏合剂制成的丸药，与“用蜡壳封固的蜜丸”不是一回事；成片说明若要写名称，建议写“蜡壳丸”或“蜡壳药丸”。（常识，本次检索未返回相关资料，使用前请再核实）",
+        "把蜡壳画成带螺纹、卡扣的现代塑料球壳，或画成亮闪闪的糖球、珍珠。",
+        "在壳上写真实的药名、堂号或任何功效文字。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "蜡壳丸是把蜜丸封在蜡壳里的传统中药包装形式。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "专门检索了一次（蜡壳丸、蜡皮、封固、大蜜丸），返回的全是微胶囊专利、酒瓶封蜡等无关结果，没有可引用的来源。字幕与成片说明里不要写蜡壳的起源年代、材料配比等细节。"
+        },
+        {
+          "claim": "“蜡丸”在制剂分类里指以蜂蜡为黏合剂的丸剂，与“蜡壳丸”含义不同。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "同上，检索无结果；这一条只作为命名风险提示，采用前需另行核实（例如查《中国药典》制剂通则）。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s15"],
+      "name_zh": "药碾（碾槽与碾轮）",
+      "depiction": [
+        "由两件组成：一条船形的碾槽和一只圆饼形的碾轮。碾槽狭长、两端上翘，截面呈 V 形或 U 形，下有底座或矮足。（常识，未经本次检索证实）",
+        "碾轮是实心圆饼，中间厚、边缘薄而略锐；轮心穿一根横轴，轴向两侧对称伸出，两端是握把（手推或脚蹬）。（常识）",
+        "材质以铸铁最常见，也有铜、石、瓷质；铁质呈深褐到铁黑，轮缘和槽底因长期碾磨而发亮，槽内可留一点药末。（常识）",
+        "分镜要的是带运动模糊的碾轮局部：模糊方向应沿轮缘切线（轮在槽里前后滚动），蓝紫边缘光打在轮缘薄边上。"
+      ],
+      "pitfalls": [
+        "把碾轮画成有辐条的车轮、齿轮或砂轮——它是实心的、中厚边薄的圆饼。",
+        "画成水平转动的石磨或大石碾——药碾是轮子立着在槽里前后滚动。",
+        "轴画偏心或只从一侧伸出；握把应左右对称。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "药碾（药碾子）由碾槽和碾轮两部分组成，用来把药材碾碎成末。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "与铜冲、砂锅、百子柜合并检索了一次，结果只返回了药柜的古董商页面，没有任何关于药碾的资料。形制描述属常识，可以照此作画，但不要在字幕里写年代、别称或出土信息。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s31"],
+      "name_zh": "戥子（戥秤）",
+      "depiction": [
+        "一杆很小的杆秤：细长秤杆（骨、象牙、乌木或铜质），杆上嵌细密的金属星点作刻度；杆长约二三十厘米（估计值）。（常识）",
+        "一端用三根细线或细链吊一只浅圆铜盘；靠近秤盘一端有一到三个丝线提纽；另一侧挂一枚小铜砣。杆、盘、砣三样齐全即可辨认。（常识）",
+        "常配一只贴合器形的硬木戥盒，盒内挖出杆、盘、砣的形槽。两依藏博物馆藏有 18 世纪紫檀戥子盒与 19 世纪乌木戥子盒（见 captionFacts）。",
+        "剪纸拼贴里：用一条细长斜线（杆）、一个小圆（盘）、一个小水滴形（砣）加几根细线即可，铜色配骨白。"
+      ],
+      "pitfalls": [
+        "画成两只盘的天平，或带铁钩的大杆秤。英文维基把它译作 balance，但戥子通常是单盘的小杆秤。（形制为常识）",
+        "秤盘、提纽、秤砣位置画乱：秤盘在一端，提纽靠近秤盘，秤砣在有刻度的长臂上。",
+        "在秤杆上写阿拉伯数字或文字——刻度是星点。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "戥子相传由北宋主管内库的官员刘承珪在整顿度量衡时研制，因小巧精确，此后数百年间多用于称量贵金属和药材。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "Wikipedia (English)", "title": "Liu Chenggui", "url": "https://en.wikipedia.org/wiki/Liu_Chenggui", "date": "未标注"}
+          ],
+          "note": "摘要称该条目引自丘光明《中国古代计量史》与郭正忠关于宋代戥秤的论文，但只有维基一家可引。条目只提到他在宋太宗 976 年即位时主管内库，未给出创制戥子的具体年份，字幕不要写具体年份。"
+        },
+        {
+          "claim": "戥子常配硬木戥盒：两依藏博物馆藏有 18 世纪紫檀戥子盒和 19 世纪乌木戥子盒。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "两依藏博物馆（Liang Yi Museum）", "title": "藏品页 LYMF-440", "url": "https://www.liangyimuseum.com/search-collection/lymf-440", "date": "未标注"},
+            {"publisher": "两依藏博物馆（Liang Yi Museum）", "title": "藏品页 LYMF-214", "url": "https://www.liangyimuseum.com/search-collection/lymf-214", "date": "未标注"}
+          ],
+          "note": "两页同属一家博物馆，算一个来源。摘要只给出材质与年代，没有说明哪一页对应哪一件，也没有尺寸。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": [],
+      "name_zh": "铜冲（捣药罐）——配乐音效题材，无对应镜头",
+      "depiction": [
+        "黄铜铸的深筒形小罐：厚壁、直口或口微敞、平底或带矮圈足，像一只小铜缸。（常识，未经本次检索证实）",
+        "配一根铜杵：上细下粗，杵头圆钝。（常识）",
+        "常带一只中心开孔的铜盖，杵从孔中穿过，防止药料溅出。（常识）",
+        "颜色：黄铜金带暗褐氧化斑，口沿、杵头等常摩擦处磨得发亮；声音是清亮的金属撞击声。"
+      ],
+      "pitfalls": [
+        "与白瓷研钵（s29）混为一物：研钵是浅碗形、用杵研磨；铜冲是深筒形、垂直冲捣。",
+        "画成石臼或木臼。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "铜冲（铜捣药罐）是药铺里用来把药材捣碎的铜制器具，由罐、杵和带孔的盖组成。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "合并检索未返回任何关于铜冲的内容。本片只在配乐里用到它的声音，不涉及字幕，风险低。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s12", "s19"],
+      "name_zh": "煎药砂锅（药罐）",
+      "depiction": [
+        "粗陶或砂质的鼓腹罐：赭红到灰褐，无釉或只在内壁有薄釉，表面粗糙，看得见砂粒。（常识，未经本次检索证实）",
+        "敛口带一圈口沿，一侧有短流（嘴），另有一只中空的直柄或一对小耳，配带钮的盖。（常识）",
+        "肩腹有轮制留下的平行弦纹；下腹和底部被火熏出烟炱，越往下越黑。分镜取的是口沿一段陶土弧，弦纹与烟炱就是主要细节。",
+        "口沿内侧可以有药汤留下的深褐水渍线，但不要画沸溢的夸张效果。"
+      ],
+      "pitfalls": [
+        "画出金属锅（铁、铝、不锈钢）的光泽，或紫砂茶壶那种细腻光润。",
+        "烟炱画在口沿内侧或均匀涂满——应集中在下腹和底部的受火面。",
+        "在罐身写“药”字以外的功效、方名等文字（最好什么都不写）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "传统上煎药多用砂锅、陶罐一类的陶质器皿。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "合并检索未返回任何关于煎药砂锅的内容。形制为常识，可据此作画；字幕不要写“必须用砂锅”“不能用铁器”之类带用药建议性质的话。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s13"],
+      "name_zh": "针灸针与针包",
+      "depiction": [
+        "毫针：一根细而直的银白色金属针，针身光滑、针尖细锐；针柄用细金属丝螺旋缠绕，尾端可有一个小环。（常识，未经本次检索证实）",
+        "一排针长短不一但粗细相近，平行排列，间距均匀；针身要画得极细，高光是一条细线。（常识）",
+        "针包（针卷）：皮质或布质的长条卷包，内衬一排平行的插袋或横带，针插在里面；摊开后一端有系带。分镜要的皮革棕、银、米色与一道红线（系带或缝线）即可。",
+        "米色纸底上取俯拍，针与针卷的投影很淡。"
+      ],
+      "pitfalls": [
+        "画成缝衣针（针尾有针眼）或注射针头（中空、斜口）；缠丝的针柄是辨识要点。",
+        "针画得太粗，或带弯钩、倒刺。",
+        "出现针刺入皮肤的画面、穴位名称或任何疗效文字。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "河北满城汉墓（西汉中山靖王刘胜墓）出土过金、银质医针。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "专门检索了一次，返回的澎湃、人民日报海外版等页面只讲到满城汉墓是刘胜与王后窦绾之墓、1968 年发现、出土文物一万余件，没有一条提到医针及其数量。字幕不要写“金针几枚、银针几枚”。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s13", "s20", "s07"],
+      "name_zh": "“中医针灸”列入联合国教科文组织人类非物质文化遗产代表作名录",
+      "depiction": [
+        "这是一条字幕/说明用的事实，没有专属画面；若需要画面承载，用 s13 针包或 s20 艾灸火头即可。",
+        "项目中文名写“中医针灸”，英文名是 Acupuncture and moxibustion of traditional Chinese medicine（UNESCO 页面标题）。",
+        "名录全称是“人类非物质文化遗产代表作名录”，字幕不要简写成“世界遗产”。",
+        "不要在画面里使用 UNESCO 的徽标。"
+      ],
+      "pitfalls": [
+        "把“人类非物质文化遗产代表作名录”写成“世界文化遗产”或“世界遗产名录”。",
+        "年份写错或与其他项目的年份混淆：“中医针灸”是 2010 年列入，与“京剧”同批。",
+        "把项目名写成“针灸”“中国针灸”“中医”——正式名称是“中医针灸”。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "“中医针灸”于 2010 年列入联合国教科文组织人类非物质文化遗产代表作名录。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "UNESCO Intangible Cultural Heritage", "title": "Acupuncture and moxibustion of traditional Chinese medicine（Inscribed in 2010 (5.COM) on the Representative List）", "url": "https://ich.unesco.org/en/RL/acupuncture-and-moxibustion-of-traditional-chinese-medicine-00425", "date": "未标注"},
+            {"publisher": "中国非物质文化遗产网（ihchina.cn，转新华社报道）", "title": "《中医针灸》《京剧》列入人类非物质文化遗产代表作名录相关报道", "url": "https://www.ihchina.cn/news_other_details/16727.html", "date": "未标注"},
+            {"publisher": "China Daily", "title": "Acupuncture, Peking opera on UNESCO heritage list", "url": "https://covid-19.chinadaily.com.cn/life/keywords/2010-11/17/content_11735131.htm", "date": "2010-11-17（据URL路径）"}
+          ],
+          "note": "三个来源一致。字幕建议只写年份：“2010 年，‘中医针灸’列入联合国教科文组织人类非物质文化遗产代表作名录”。"
+        },
+        {
+          "claim": "这一决定是在肯尼亚内罗毕举行的保护非物质文化遗产政府间委员会第五次会议上作出的，同批通过的中国项目还有“京剧”。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn，转新华社报道）", "title": "内罗毕会议审议通过《中医针灸》和《京剧》", "url": "https://www.ihchina.cn/Article/Index/detail?id=16727", "date": "未标注"},
+            {"publisher": "China Daily", "title": "Acupuncture, Peking opera on UNESCO heritage list", "url": "https://covid-19.chinadaily.com.cn/life/keywords/2010-11/17/content_11735131.htm", "date": "2010-11-17（据URL路径）"},
+            {"publisher": "UNESCO Intangible Cultural Heritage", "title": "Acupuncture and moxibustion of traditional Chinese medicine", "url": "https://ich.unesco.org/en/RL/acupuncture-and-moxibustion-of-traditional-chinese-medicine-00425", "date": "未标注"}
+          ],
+          "note": "中国非遗网（新华社稿）写的具体日期是 2010 年 11 月 16 日；英文检索的摘要提示各来源对具体日期“略有出入”（可能是时差或见报日期所致），所以日期不建议上字幕，只写年份。"
+        },
+        {
+          "claim": "该项目的保护单位是中国针灸学会和中国中医科学院针灸研究所；确认的四位代表性传承人是张缙、程莘农、贺普仁、郭诚杰。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "title": "中医针灸 项目页/相关资讯", "url": "https://www.ihchina.cn/project_details/22213.html", "date": "未标注"},
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "title": "相关资讯", "url": "https://www.ihchina.cn/xgzx_details/18040.html", "date": "未标注"}
+          ],
+          "note": "均出自同一网站，算一个来源；摘要没有标明这两点分别对应哪一页。这是申报当时的情况，人员信息会随时间变化，不建议上字幕。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s20"],
+      "name_zh": "艾灸（艾条、艾炷）",
+      "depiction": [
+        "UNESCO 的描述：艾灸用干燥的艾叶制成圆锥形的艾炷或条状的艾条。分镜的“火头”取艾条燃端最合适。",
+        "艾条：纸卷的圆柱，直径一两厘米（估计值）；燃端是橙红色的炭火，外面覆一层灰白的灰，没有明火火苗。（常识）",
+        "烟：一缕细而直的青白色烟，上升后才慢慢散开；分镜要柔焦，火头只是一团橙红光晕。（常识）",
+        "艾绒：土黄到灰绿色的絮状纤维；若画艾炷，是指尖大小的小圆锥。（常识）"
+      ],
+      "pitfalls": [
+        "画成跳动的明火火焰——艾条是阴燃的红炭头。",
+        "画得像线香那样细，或像雪茄那样有烟叶纹理。",
+        "出现施灸的身体部位特写或任何功效文字。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "艾灸所用的艾炷（圆锥形）和艾条（条状）以干燥的艾叶制成。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "UNESCO Intangible Cultural Heritage", "title": "Acupuncture and moxibustion of traditional Chinese medicine", "url": "https://ich.unesco.org/en/RL/acupuncture-and-moxibustion-of-traditional-chinese-medicine-00425", "date": "未标注"}
+          ],
+          "note": "UNESCO 丝绸之路平台另有一页同题介绍（en.unesco.org/silkroad），属同一机构，不算独立来源。这里只取器物形态，不取任何关于作用的表述。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": [],
+      "name_zh": "火罐（拔罐器具）——无对应镜头，备用",
+      "depiction": [
+        "玻璃火罐：圆球形鼓腹、圆口、口沿厚而圆滑，通体透明。（常识，未经本次检索证实）",
+        "竹罐：一截竹筒，一端留竹节作底，口沿磨圆，竹青或熏成的深褐色。（常识）",
+        "陶罐：小鼓腹陶罐，口沿厚圆。成组出现时大小不一。（常识）"
+      ],
+      "pitfalls": [
+        "画出吸附在皮肤上的罐体或圆形罐印——会带出疗效暗示，本片不取。",
+        "把玻璃罐口沿画成薄而锋利的杯口。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "拔罐古称“角法”，早期以兽角为罐，后来有竹罐、陶罐、玻璃罐。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索额度有限，本片没有火罐镜头，未安排检索。这一条不要写进字幕或说明。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s31"],
+      "name_zh": "百子柜（中药斗柜）",
+      "depiction": [
+        "一面满是小抽屉的木柜，抽屉横竖成格、大小一致，下部可有几只大抽屉；木色深褐或枣红漆。（常识）",
+        "每只抽屉正面有一枚小铜拉环或拉钮，旁边竖写药名标签；因一屉内分几格，面上通常相应写两三个药名。（标签写法为常识）",
+        "检索到的古董家具资料称：抽屉较深，内部分成三格；这类柜子中文称“药柜”，抽屉多的被叫作“百眼柜”（来源见 captionFacts，权威性有限）。",
+        "剪纸拼贴里：一块深色矩形上排若干行列的小方块，每块上点一个铜色小圆（拉环）即可；标签用不可辨读的小墨点代替。"
+      ],
+      "pitfalls": [
+        "在抽屉标签上写出可以辨读却未经核实的药名，或任何功效字样；要写就只用 tcm-a 组已核实用字的药材名。",
+        "画成西式档案柜、图书馆卡片柜（金属标签框、把手一字排开）。",
+        "抽屉大小参差、排列歪斜——斗柜的格子是规整的网格。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "传统中药柜的抽屉较深，内部通常隔成三格，便于分类存放药材。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "Proantic（古董交易平台）", "title": "Chinese Apothecary Cabinet With 101 Drawers - \"the Cabinet With A Hundred Eyes\"", "url": "https://www.proantic.com/en/1695116-chinese-apothecary-cabinet-with-101-drawers-quotthe-cabinet-with-a-hundred-eyesquot.htm.html", "date": "未标注"},
+            {"publisher": "Zentner Collection（古董商）", "title": "tear sheet（19 世纪中药柜，19 只抽屉，每只分三格）", "url": "https://www.zentnercollection.com/catalog/tear-sheet/?i=22014", "date": "未标注"}
+          ],
+          "note": "两个来源相互独立，但都是古董商的商品描述，不属于博物馆、百科、权威媒体或学术来源，所以保守标为 single-source。可以用来指导作画，不建议写进字幕。"
+        },
+        {
+          "claim": "这种药柜俗称“百子柜”，又称“七星斗柜”。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索结果里只出现了“药柜”和英文的 cabinet with a hundred eyes（百眼柜），没有出现“百子柜”“七星斗柜”这两个名称及其解释。分镜里的“百子柜”可以继续作为内部称呼，上字幕前需另行核实。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s31"],
+      "name_zh": "葫芦与“悬壶济世”典故",
+      "depiction": [
+        "亚腰葫芦：上小下大两个圆腹，中间束腰，顶端带一小截藤柄。（常识）",
+        "老熟后的表皮是棕黄到赭黄，光润；腰间可系一道红绳。（常识）",
+        "典故里的“壶”是挂起来的：《神仙传》原文作“常悬一空壶于坐上”，后世多解作葫芦；剪纸拼贴里把葫芦画成悬挂状最贴合典故。",
+        "葫芦上不写字，或至多一个“药”字。"
+      ],
+      "pitfalls": [
+        "把“壶”理解成茶壶、酒壶。",
+        "上下两腹画颠倒（上大下小）或画成一样大。",
+        "把典故出处写成《史记》或《三国志》——检索到的出处是《后汉书》费长房传和《神仙传·壶公》。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "“悬壶”的典故出自《后汉书》费长房传：市中有一位卖药老翁在铺头悬挂一只壶（葫芦），人称壶公，费长房拜他为师；后世以“悬壶”指行医，并有“悬壶济世”之语。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "人民日报海外版", "title": "一壶千金 悬壶济世（成语里的中医）", "url": "https://paper.people.com.cn/rmrbhwb/html/2020-10/09/content_2012192.htm", "date": "2020-10-09"},
+            {"publisher": "中国哲学书电子化计划（ctext.org）", "title": "《神仙传》卷九·壶公", "url": "https://ctext.org/shen-xian-zhuan/9/hugong/ens", "date": "未标注"},
+            {"publisher": "当代中国（ourchinastory.com）", "title": "悬壶济世等中医典故介绍", "url": "https://www.ourchinastory.com/cn/9585", "date": "未标注"}
+          ],
+          "note": "摘要里的转述称老翁在汝南卖药。本次没有直接拿到《后汉书》原文，篇目归属（《方术列传》）未在摘要中出现，字幕写“《后汉书》”即可。第三个来源是否逐字包含这一典故，摘要没有逐条标明。"
+        },
+        {
+          "claim": "《神仙传·壶公》原文有“常悬一空壶于坐上，日入之后，公辄转足跳入壶中”。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "中国哲学书电子化计划（ctext.org）", "title": "《神仙传》卷九·壶公", "url": "https://ctext.org/shen-xian-zhuan/9/hugong/ens", "date": "未标注"}
+          ],
+          "note": "引文据搜索摘要转录，是原典文本。若要整句上字幕，请对照原书再核一遍用字。"
+        }
+      ],
+      "conflicts": [
+        "《后汉书》与《神仙传》都记有壶公故事，文字不完全相同；作为成语出处，检索到的文章都指向《后汉书》费长房传，采信此说。"
+      ]
+    },
+    {
+      "shots": [],
+      "name_zh": "“杏林”“橘井”典故——无对应镜头，文案备用",
+      "depiction": [
+        "杏林：成片的杏树，花期是粉白色的花，果期是橙黄的杏；若画意象，用一片杏树林的剪影即可。（常识）",
+        "橘井：一口石栏水井旁立着一株结果的橘树。（常识）",
+        "两者都是关于医者德行的典故，画面上不要配任何治病场面。"
+      ],
+      "pitfalls": [
+        "人物张冠李戴：杏林是董奉，橘井是苏耽，悬壶是壶公与费长房。",
+        "把“橘井”写成“桔井”；成语通常写作“橘井泉香”“杏林春暖”。（用字为常识）"
+      ],
+      "captionFacts": [
+        {
+          "claim": "“杏林”的典故源自医者董奉，故事见于晋代葛洪《神仙传》。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "澎湃新闻（澎湃号）", "title": "董奉与杏林典故相关文章", "url": "https://m.thepaper.cn/baijiahao_20812150", "date": "未标注"},
+            {"publisher": "当代中国（ourchinastory.com）", "title": "中医典故介绍", "url": "https://www.ourchinastory.com/cn/9585", "date": "未标注"},
+            {"publisher": "人民日报客户端（人民号）", "title": "中医典故相关文章", "url": "https://www.peopleapp.com/rmharticle/30020634855", "date": "未标注"}
+          ],
+          "note": "摘要中有两处不同措辞的表述支持此条，其中澎湃一篇由摘要明确标引；后两个链接是同批结果中的相关页面，摘要没有逐条标明对应关系。董奉的时代，摘要里的文章写“东汉末年”，通行说法也有写三国吴的，字幕建议不写朝代，只写“董奉”。"
+        },
+        {
+          "claim": "“橘井泉香”的典故主角是苏耽，故事见于《神仙传》，时代在西汉。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "当代中国（ourchinastory.com）", "title": "中医典故介绍", "url": "https://www.ourchinastory.com/cn/9585", "date": "未标注"},
+            {"publisher": "网易号", "title": "中医典故相关文章", "url": "https://m.163.com/dy/article/L3C81S1O0523AQHE.html", "date": "未标注"},
+            {"publisher": "人民日报客户端（人民号）", "title": "中医典故相关文章", "url": "https://www.peopleapp.com/rmharticle/30020634855", "date": "未标注"}
+          ],
+          "note": "摘要显示至少两篇文章讲到苏耽（一篇写“西汉时湖南有个叫苏耽的道人”，另一篇写“西汉文帝时”），但没有逐条标明对应链接，上列为同批结果中的相关页面。字幕若用，写“苏耽”“《神仙传》”即可，不写具体年代和地名。"
+        }
+      ],
+      "conflicts": [
+        "苏耽的时代：一说泛称西汉，一说西汉文帝时；两说不矛盾，后者更具体，但只有一个来源，字幕不写具体帝号。",
+        "董奉的时代：检索到的文章写“东汉末年”，另有三国吴的通行说法（未在本次检索中出现）；字幕回避朝代。"
+      ]
+    },
+    {
+      "shots": ["s34"],
+      "name_zh": "五行相生相克与五行生克图",
+      "depiction": [
+        "五个节点等距排在一个圆上（正五边形的五个顶点），沿圆周依次是木、火、土、金、水。顺时针还是逆时针、哪一个在正上方，本次没有检索到统一规定，只要沿圆周的次序是相生顺序即可。",
+        "相生（分镜定为红线）：相邻节点之间沿圆周的弧线箭头，木→火→土→金→水→木，五段首尾相接成一个圆环。",
+        "相克（分镜定为蓝线）：隔一个节点的直线箭头，木→土→水→火→金→木，五条直线正好构成一个五角星。",
+        "文字只有“木火土金水”五个字，这五个字繁体简体写法相同（常识）；用墨笔楷书或隶书写在节点的小圆圈里。",
+        "所有箭头都是单向的；白纸墨线为主，红蓝两色只用来区分两种关系——这套配色是本片自定，不是通行标准。"
+      ],
+      "pitfalls": [
+        "按口语顺序“金木水火土”排在圆上——那既不是相生也不是相克的顺序，圆环和五角星会全部连错。",
+        "箭头方向画反（例如画成“火克水”“土生火”），或把相生画成五角星、相克画成圆环。",
+        "在图上加五脏、五味、病症等对应文字——超出本片只做文化呈现的范围，且未经核实。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "五行相生的顺序是：木生火、火生土、土生金、金生水、水生木。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "Wikipedia (English，镜像)", "title": "Wuxing (Chinese philosophy)", "url": "https://en.wikipedia-on-ipfs.org/wiki/Wuxing_(Chinese_philosophy)", "date": "未标注"},
+            {"publisher": "Wuxia Society", "title": "Five Elements", "url": "https://wuxiasociety.com/five-elements/", "date": "未标注"},
+            {"publisher": "WuKong Education", "title": "The Chinese 5 Elements (Wu Xing) Explained: A Completed Guide", "url": "https://www.wukongsch.com/blog/chinese-five-elements-post-53304", "date": "未标注"}
+          ],
+          "note": "两次检索的摘要都给出同一顺序，另有一份中文资料逐句写明“木生火，火生土，土生金，金生水，水生木”，但摘要没有标明它对应哪个链接。"
+        },
+        {
+          "claim": "五行相克的顺序是：木克土、土克水、水克火、火克金、金克木。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "Wikipedia (English，镜像)", "title": "Wuxing (Chinese philosophy)", "url": "https://en.wikipedia-on-ipfs.org/wiki/Wuxing_(Chinese_philosophy)", "date": "未标注"},
+            {"publisher": "Wuxia Society", "title": "Five Elements", "url": "https://wuxiasociety.com/five-elements/", "date": "未标注"},
+            {"publisher": "WuKong Education", "title": "The Chinese 5 Elements (Wu Xing) Explained: A Completed Guide", "url": "https://www.wukongsch.com/blog/chinese-five-elements-post-53304", "date": "未标注"}
+          ],
+          "note": "同上；英文维基给出的相克序列是 Wood, Earth, Water, Fire, Metal，与中文资料一致。"
+        },
+        {
+          "claim": "五行生克图的常见画法：五行按相生顺序排成圆环，相克关系连成圆内的五角星。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索了两次，结果都只有文字顺序，没有任何一条对图形作出描述，所以标 unverified。但这个画法可以由上面两条已核实的顺序直接推出：把五行按相生顺序放在圆周上，每一组相克关系恰好是“隔一位”，五条连线必然构成五角星。照此作画在逻辑上不会错；方位（谁在上、顺逆时针）没有依据，不要在说明里称之为“标准图式”。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s07"],
+      "name_zh": "经络图与针灸铜人",
+      "depiction": [
+        "分镜是本片自创的蓝晒风格示意：普鲁士蓝底、粉笔白线，勾出肩头的弧形轮廓；经络画成沿肩臂走行的流畅长线，穴位画成线上间隔不等的小圆点或小圈。",
+        "不写穴名和经络名；若构图上需要“有字”的感觉，用不可辨读的粉笔短划代替。",
+        "若改画针灸铜人：青铜铸的成年男子立像，通体铜褐色带暗绿锈，体表密布小孔状的穴位并在旁边刻穴名。资料称宋代铜人与真人等大、四肢可活动拆卸（仅英文维基一家）。",
+        "尺寸参考：国家博物馆展出的明代铜人高 213 厘米，比真人高大；香港浸会大学中医药博物馆展出的是高 170 厘米的复制品。"
+      ],
+      "pitfalls": [
+        "把自创的蓝晒线稿标注成某部古籍的原图或某件文物。",
+        "把现存展品说成“北宋天圣原件”——本次检索到的现存展品都是明代仿铸件或复制品，北宋原件的下落没有检索到。",
+        "写出穴位总数或随手标注穴名：穴位数各家口径不一（354、657、365），穴名未经核实。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "北宋天圣年间，医官王惟一主持铸造针灸铜人。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "Wikipedia (English)", "title": "Wang Weiyi (physician)", "url": "https://en.wikipedia.org/wiki/Wang_Weiyi_(physician)", "date": "未标注"},
+            {"publisher": "香港浸会大学中医药博物馆", "title": "Orientation Zone（明正统仿宋针灸铜人复制品说明）", "url": "https://cmmuseum.hkbu.edu.hk/eng/zone1.html", "date": "未标注"}
+          ],
+          "note": "英文维基另称：他奉诏主持，共铸两具，同时编成《铜人腧穴针灸图经》——“两具”和书名这两点只有维基一家，属 single-source 细节。"
+        },
+        {
+          "claim": "针灸铜人铸成于天圣五年（1027 年）。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "香港浸会大学中医药博物馆", "title": "Orientation Zone", "url": "https://cmmuseum.hkbu.edu.hk/eng/zone1.html", "date": "未标注"}
+          ],
+          "note": "英文维基写的是“自 1026 年起”奉诏主持铸造与编书，与 1027 年铸成并不矛盾，但没有直接写 1027。字幕若要年份，写“北宋天圣年间（11 世纪 20 年代）”最稳妥。"
+        },
+        {
+          "claim": "针灸铜人是针灸教学与考试用的人体经穴模型：使用时体表涂蜡、体内注水，刺中穴位则有水流出。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "香港浸会大学中医药博物馆", "title": "Orientation Zone", "url": "https://cmmuseum.hkbu.edu.hk/eng/zone1.html", "date": "未标注"}
+          ],
+          "note": "性质（教学、考核用模型）可以写；“涂蜡注水”的细节只有一个来源，上字幕需再核。"
+        },
+        {
+          "claim": "中国国家博物馆“古代中国”展厅展出一尊针灸铜人，介绍为明英宗正统八年（1443 年）仿宋代天圣铜人铸造，高 213 厘米，国家一级文物。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "新京报", "title": "国博针灸铜人相关报道", "url": "https://www.bjnews.com.cn/detail/1786673586189890.html", "date": "未标注"},
+            {"publisher": "贵阳晚报（电子版）", "title": "针灸铜人相关版面", "url": "https://wb.gywb.cn/epaper/gywb/res/2025-08/07/5/gywbgywb202508075.pdf", "date": "2025-08-07（据URL路径）"}
+          ],
+          "note": "摘要中的这段引文出自上列两个链接之一，未标明是哪一个，所以按一个来源计。提示（未检索核实，仅供复查）：学界对这尊铜人的铸造年代以及正统铜人现藏何处另有不同看法，字幕里不要写“正统铜人现藏某处”，展陈信息也可能变动。"
+        },
+        {
+          "claim": "针灸铜人体表的穴位数量。",
+          "status": "conflicting",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "Wikipedia (English)", "title": "Wang Weiyi (physician)（354 个）", "url": "https://en.wikipedia.org/wiki/Wang_Weiyi_(physician)", "date": "未标注"},
+            {"publisher": "香港浸会大学中医药博物馆", "title": "Orientation Zone（657 个）", "url": "https://cmmuseum.hkbu.edu.hk/eng/zone1.html", "date": "未标注"},
+            {"publisher": "View of China", "title": "bronze men（365 个）", "url": "https://viewofchina.com/bronze-men", "date": "未标注"}
+          ],
+          "note": "三个数字出自摘要的归纳，其中 365 对应哪个英文页面摘要未标明，上列为最可能的一页。不采信任何一个数字，字幕和画面都不写穴位数。"
+        }
+      ],
+      "conflicts": [
+        "穴位数：354（英文维基）、657（香港浸会大学中医药博物馆）、365（另一英文资料）。可能是统计口径不同（穴名数与左右合计的穴位数），但本次检索没有证实这一解释。处理：都不采用，不写数字。",
+        "铜人高度：约 170 厘米、约 173 厘米（宋代铜人/复制品的不同说法）与 213 厘米（国博明代铜人）指的不是同一件，不构成矛盾，但说明里不要混用。"
+      ]
+    },
+    {
+      "shots": [],
+      "name_zh": "《黄帝内经》——无对应镜头，文案备用",
+      "depiction": [
+        "若需要画面：一函线装古籍，蓝色书衣、白色题签，四眼线装，纸色米黄。（常识）",
+        "题签若写字，繁体作“黃帝內經”（“黃”“內”“經”三字与简体不同；用字为常识，未经本次检索证实），竖排。",
+        "全书分《素问》《灵枢》两部分，可以画成并排的两册。",
+        "不要画出可辨读的正文内容。"
+      ],
+      "pitfalls": [
+        "把它说成“黄帝所著”或写出确切的成书年份——成书年代学界有分歧。",
+        "繁简混写，如“黄帝內经”。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "《黄帝内经》由《素问》和《灵枢》两部分组成，各八十一篇。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "Wikipedia (English)", "title": "Huangdi Neijing", "url": "https://www.Wikipedia.org/wiki/Nei_ching", "date": "未标注"}
+          ],
+          "note": "检索结果里的另外两个链接是同一维基条目的镜像，不算独立来源。"
+        },
+        {
+          "claim": "《黄帝内经》以黄帝与岐伯等人问答的形式写成。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "Wikipedia (English)", "title": "Huangdi Neijing", "url": "https://www.Wikipedia.org/wiki/Nei_ching", "date": "未标注"},
+            {"publisher": "儒家网（徐兴无论文）", "title": "道德、政治、医术——谶纬文献中的儒家治气养性之术", "url": "https://www.rujiazg.com/article/20864", "date": "未标注"}
+          ],
+          "note": "维基称是黄帝与六位大臣的问答；徐兴无文称“黄帝与岐伯间的问答”。"
+        },
+        {
+          "claim": "《黄帝内经》的成书年代。",
+          "status": "conflicting",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "儒家网（徐兴无论文）", "title": "道德、政治、医术——谶纬文献中的儒家治气养性之术（起于战国、迟至西汉以后才完成）", "url": "https://www.rujiazg.com/article/20864", "date": "未标注"},
+            {"publisher": "澎湃新闻", "title": "关于《黄帝内经》成书年代的文章（主张成书于两汉中后期）", "url": "https://m.thepaper.cn/newsDetail_forward_8761417", "date": "未标注"},
+            {"publisher": "中华医史杂志", "title": "2024, Vol.54 Issue(2): 125-129（今本成书前秦汉时期流传的古医书）", "url": "https://search.napstic.cn/literature/periodical/010zhyszz202402010", "date": "2024"}
+          ],
+          "note": "“非一人一时之作”这句原话没有在检索结果中找到出处；但几家都认为它是长时期逐步形成的。字幕建议写“成书于两千多年前”或“约成书于战国至汉代”，不写具体年份，也不写“黄帝著”。"
+        },
+        {
+          "claim": "2011 年 5 月，国家图书馆藏元代古林书堂刻本《黄帝内经》入选联合国教科文组织《世界记忆名录》。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "title": "相关资讯（提及两部医籍入选世界记忆遗产名录）", "url": "https://www.ihchina.cn/news_1_details/10701.html", "date": "未标注"}
+          ],
+          "note": "原文称“联合国世界记忆遗产名录”。只有一个来源，上字幕前建议再核。"
+        }
+      ],
+      "conflicts": [
+        "成书年代：一说起于战国、迟至西汉以后完成（徐兴无）；一说只能成书于两汉中后期（澎湃文章，依据张家山汉简《脉书》只有十一脉而《灵枢·经脉》为十二脉）。两说都承认它不是一次写成。处理：不采信任何确切年份，字幕用“战国至汉代”这样的宽口径。"
+      ]
+    },
+    {
+      "shots": [],
+      "name_zh": "《伤寒论》——无对应镜头，文案备用",
+      "depiction": [
+        "若需要画面：线装古籍，题签繁体作“傷寒論”（用字为常识，未经本次检索证实），竖排。",
+        "可与《黄帝内经》《本草纲目》并置成一摞线装书，书口朝前，露出书根题字。",
+        "不要画出可辨读的条文或方名。"
+      ],
+      "pitfalls": [
+        "把《伤寒论》和《伤寒杂病论》当成同一本书的两个叫法——前者是后者经后人整理析出的一部分。",
+        "写出确切的成书年份——“约公元 200—205 年”只是通行说法，且只有一个来源。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "《伤寒论》源自东汉张仲景所著的《伤寒杂病论》；原书散佚后经后人整理，析为《伤寒论》和《金匮要略》两书。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "可可英语（双语科技百科）", "title": "双语科技百科(医学) 第62期:《伤寒杂病论》", "url": "https://m.kekenet.com/read/201601/419335.shtml", "date": "2016-01（据URL路径）"},
+            {"publisher": "汉典（zdic.net）", "title": "王叔和", "url": "https://www.zdic.net/hans/王叔和", "date": "未标注"},
+            {"publisher": "豆瓣读书", "title": "《伤寒论》图书条目", "url": "https://book.douban.com/subject/1016184/", "date": "未标注"}
+          ],
+          "note": "摘要称张仲景生卒年为 150—215 年（一家之说，字幕不建议写）。"
+        },
+        {
+          "claim": "《伤寒杂病论》成书于东汉末年，通行说法约在公元 200—205 年。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "可可英语（双语科技百科）", "title": "双语科技百科(医学) 第62期:《伤寒杂病论》", "url": "https://m.kekenet.com/read/201601/419335.shtml", "date": "2016-01（据URL路径）"}
+          ],
+          "note": "字幕建议只写“东汉末年”。"
+        },
+        {
+          "claim": "王叔和整理、重新编次了《伤寒论》，今传本出自他的编次。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "汉典（zdic.net）", "title": "王叔和", "url": "https://www.zdic.net/hans/王叔和", "date": "未标注"},
+            {"publisher": "河南中医", "title": "2024, Vol.44 Issue(11): 1621-1625（讨论《伤寒论》中出自王叔和的内容）", "url": "https://search.napstic.cn/literature/periodical/010hnzy202411001", "date": "2024"}
+          ],
+          "note": "王叔和的朝代没有出现在摘要里，字幕若提到他不要加朝代。摘要还提到唐代《外台秘要方》引用过伤寒与杂病尚未分开的本子，说明分书不是一次完成的。"
+        },
+        {
+          "claim": "今传《伤寒论》共十卷、二十二篇。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "汉典（zdic.net）", "title": "王叔和", "url": "https://www.zdic.net/hans/王叔和", "date": "未标注"}
+          ],
+          "note": "这句话在摘要中的具体出处链接没有标明，最可能是汉典的王叔和条；按一个来源计。"
+        }
+      ],
+      "conflicts": []
+    },
+    {
+      "shots": ["s18"],
+      "name_zh": "《本草纲目》（本草木刻插图）",
+      "depiction": [
+        "明刻本版画的样子：黑白线刻，单线勾出根、茎、叶，叶脉和根须用短排线，线条有木刻的顿挫，不是钢笔的匀线。（常识）",
+        "图旁有竖排的楷体药名榜题，外有版框和界栏；榜题若要写字，用繁体并逐字核对，否则用不可辨读的刻痕代替。（常识）",
+        "书名在画面上若出现，繁体写作“本草綱目”（见 captionFacts）。",
+        "资料称金陵本书前有药图两卷、一千一百余幅，画面可以做成一页排多幅小图的版式感，但不要声称是某一页的复刻。",
+        "纸色用纸白到米白，墨色焦黑；可以有少许虫蛀和水渍，不要整体罩黄。"
+      ],
+      "pitfalls": [
+        "把 1578 年写成“刊行”——1578 年是完稿，刊行在 16 世纪 90 年代，具体年份有 1593 与 1596 两说。",
+        "照搬某个版本里的某一幅图却不标注，或把自创的线描说成“金陵本原图”。",
+        "榜题、图注里带出功效主治文字。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "《本草纲目》的作者是明代的李时珍。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "UNESCO Silk Roads Programme", "title": "Ben Cao Gang Mu (《本草纲目》 Compendium of Materia Medica)", "url": "https://en.unesco.org/silkroad/silk-road-themes/documentary-heritage/ben-cao-gang-mu-bencaogangmu-compendium-materia-medica", "date": "未标注"},
+            {"publisher": "台北故宫博物院", "title": "馆方资料（《本草綱目》金陵本说明）", "url": "https://www.npm.edu.tw/NewChineseArtDownload.ashx?bid=4522", "date": "未标注"},
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "title": "相关资讯", "url": "https://www.ihchina.cn/news_1_details/10701.html", "date": "未标注"}
+          ],
+          "note": "UNESCO 页面给出的生卒年是 1518—1593；生卒年只有这一个来源明确写出。"
+        },
+        {
+          "claim": "《本草纲目》于 1578 年完稿。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "UNESCO Silk Roads Programme", "title": "Ben Cao Gang Mu (《本草纲目》 Compendium of Materia Medica)（The first draft was completed in 1578）", "url": "https://en.unesco.org/silkroad/silk-road-themes/documentary-heritage/ben-cao-gang-mu-bencaogangmu-compendium-materia-medica", "date": "未标注"},
+            {"publisher": "中国新闻网", "title": "文化频道相关报道", "url": "https://www.chinanews.com.cn/cul/2019/09-27/8967531.shtml", "date": "2019-09-27（据URL路径）"},
+            {"publisher": "豆瓣读书", "title": "《本草纲目》图书条目", "url": "https://book.douban.com/subject/3698406/", "date": "未标注"}
+          ],
+          "note": "UNESCO 的表述是“初稿完成于 1578 年”，摘要称另有中文来源同样写 1578 年完成，但没有标明是哪个链接；后两个是同批结果中的中文页面。字幕写“1578 年成书（完稿）”，不要写成刊行。"
+        },
+        {
+          "claim": "《本草纲目》最早的刻本由胡承龙在金陵（今南京）刻印，世称“金陵本”，是后世各版本的祖本。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "title": "相关资讯（金陵胡承龙刊刻，最早版本）", "url": "https://www.ihchina.cn/news_1_details/10701.html", "date": "未标注"},
+            {"publisher": "台北故宫博物院", "title": "馆方资料（在南京刊印，世称“金陵本”，最原始的版本）", "url": "https://www.npm.edu.tw/NewChineseArtDownload.ashx?bid=4522", "date": "未标注"},
+            {"publisher": "日本国立国会图书馆（NDL Search）", "title": "书目记录（卷次标注“金陵本”）", "url": "https://ndlsearch.ndl.go.jp/en/books/R100000039-I13408266", "date": "未标注"}
+          ],
+          "note": "胡承龙的名字出自中国非遗网；台北故宫只说“在南京刊印，世称金陵本”，并称王世贞的序也收在其中。"
+        },
+        {
+          "claim": "金陵本《本草纲目》的刊行年份。",
+          "status": "conflicting",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "title": "相关资讯（明万历二十一年，1593 年，金陵胡承龙刊刻）", "url": "https://www.ihchina.cn/news_1_details/10701.html", "date": "未标注"},
+            {"publisher": "台北故宫博物院", "title": "馆方资料（萬曆二十四年，1596，正式在南京刊印）", "url": "https://www.npm.edu.tw/NewChineseArtDownload.ashx?bid=4522", "date": "未标注"},
+            {"publisher": "世界史の窓（y-history.net）", "title": "印刷（刊行は1596年）", "url": "https://y-history.net/appendix/wh0801-097.html", "date": "未标注"},
+            {"publisher": "维基文库", "title": "本草綱目（正式刊行，1596 年）", "url": "https://zh.wikisource.org/wiki/%E6%9C%AC%E8%8D%89%E7%B6%B1%E7%9B%AE", "date": "未标注"}
+          ],
+          "note": "见 conflicts。处理：字幕不写单一年份，写“明万历年间，金陵初刻”；必须给年份时写“1593 年刻、1596 年刊行两说并存”。"
+        },
+        {
+          "claim": "《本草纲目》全书 52 卷，收载药物 1892 种。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "科技日报社数字报平台（digitalpaper.stdaily.com）", "title": "2024-04-05 第 14 版", "url": "https://digitalpaper.stdaily.com/http_www.kjrb.com/kjwzb/images/2024-04/05/14/KJWZB2024040514.pdf", "date": "2024-04-05（据URL路径）"}
+          ],
+          "note": "摘要称这出自“一篇科普文章”，原文为“共 52 卷，192 万字，收载药物 16 部 60 类 1892 种，附药图 1100 余幅”；对应链接是按内容推断的。数字是通行说法，但本次只有一个来源，上字幕前建议再核一次。"
+        },
+        {
+          "claim": "金陵本附有药图一千一百余幅（一说书前药图 2 卷、计 1109 幅）。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "科技日报社数字报平台（digitalpaper.stdaily.com）", "title": "2024-04-05 第 14 版（附药图 1100 余幅）", "url": "https://digitalpaper.stdaily.com/http_www.kjrb.com/kjwzb/images/2024-04/05/14/KJWZB2024040514.pdf", "date": "2024-04-05（据URL路径）"},
+            {"publisher": "国家科技图书文献中心开放期刊（opaj.napstic.cn）", "title": "期刊论文（金陵本相关）", "url": "https://opaj.napstic.cn/periodicalArticle/0120180200005586", "date": "未标注"}
+          ],
+          "note": "“1100 余幅”与“1109 幅（绘药 1129 种）”分别出现在两次检索的摘要里，口径一致；后者对应的链接摘要没有标明，上列期刊论文是最可能的一条。字幕建议写“一千一百余幅”，不写 1109。"
+        },
+        {
+          "claim": "2011 年 5 月，中国中医科学院藏金陵本《本草纲目》入选联合国教科文组织《世界记忆名录》。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "title": "相关资讯", "url": "https://www.ihchina.cn/news_1_details/10701.html", "date": "未标注"}
+          ],
+          "note": "原文称“联合国世界记忆遗产名录”。UNESCO 丝绸之路平台把《本草纲目》列在文献遗产专题下，但摘要没有引出入选年份，所以仍按一个来源计。"
+        },
+        {
+          "claim": "书名的繁体写法是“本草綱目”。",
+          "status": "verified-2plus-independent",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "维基文库", "title": "本草綱目", "url": "https://zh.wikisource.org/wiki/%E6%9C%AC%E8%8D%89%E7%B6%B1%E7%9B%AE", "date": "未标注"},
+            {"publisher": "台北故宫博物院", "title": "馆方资料（文中作《本草綱目》）", "url": "https://www.npm.edu.tw/NewChineseArtDownload.ashx?bid=4522", "date": "未标注"},
+            {"publisher": "University of Pennsylvania（East Asian Books）", "title": "Li Shizhen (李时珍), Jie zi yuan chong ding ben cao gang mu (芥子園重訂本草綱目), 1657", "url": "https://web.sas.upenn.edu/eastasianbooks/?p=95", "date": "未标注"}
+          ],
+          "note": "只有“綱”一字与简体不同。画面若仿古籍题签用繁体“本草綱目”，字幕用简体“本草纲目”，两处不要混写。"
+        }
+      ],
+      "conflicts": [
+        "金陵本刊行年份：1593 年（万历二十一年；中国非遗网称“金陵胡承龙刊刻”，另有文章称 1593 年金陵本为各本祖本）对 1596 年（万历二十四年；台北故宫称“正式在南京刊印”，日文《世界史の窓》、维基文库同）。另有一篇中文文章写 1590 年在南京刊行并提到王世贞作序。采信：不取单一年份。理由：1593 与 1596 各有机构来源，很可能分别指开雕/刻成与正式刊行，但检索结果没有明确区分；1590 只有一处，可能是把作序之年当成了刊行年（推断，未核实），不采用。",
+        "维基文库原文写作“萬曆二十三年(1596年)”，年号纪年与公元年自身对不上（台北故宫写的是万历二十四年即 1596），引用时以台北故宫的写法为准。"
+      ]
+    },
+    {
+      "shots": ["s35"],
+      "name_zh": "处方笺与旧制剂量单位“钱”",
+      "depiction": [
+        "旧式处方竖排书写、自右向左分行；每味药名之后用较小的字写剂量（如“三钱”），常偏在药名的右下方。（常识，未经本次检索证实）",
+        "字体用行书，墨色焦浓；笺纸可有红色或蓝色的竖栏线，笺头留白，不写真实医馆、药号的名称。（常识）",
+        "文字只出现“药名 + 剂量”的样式，沿用分镜已定的“当归 三钱”。若设定为民国及更早的旧笺，用繁体“當歸 三錢”；若用简体“当归 三钱”，就按今人手书的仿古笺处理。全笺繁简保持一致。（繁体用字为常识）",
+        "药草速写放在笺纸空白处，淡墨线描，不压字。",
+        "旧纸用杏黄色，做旧靠纸纹和墨渍，不靠整体偏黄。"
+      ],
+      "pitfalls": [
+        "繁简混写（如“當归 三钱”），或同一张笺上旧制“钱”与现代“克/g”混用。",
+        "写入病名、功效、服法、医嘱等任何诊疗内容；也不要自行扩写更多的药名与剂量组合。",
+        "臆造“钱”的草写符号：旧处方里“钱”有省笔写法，但本次没能核实字形，建议写规范的行书“錢”或“钱”。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "“钱”作为药物计量单位，在宋代已经广泛使用。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "中国中药杂志（经 BVS 文献库收录的摘要）", "title": "Study on measuring units of Chinese medicine in Song dynasties", "url": "https://search.bvsalud.org/gim/resource/es/wpr-324852", "date": "未标注"}
+          ],
+          "note": "摘要原文：The measuring unit “qian” was widely used。可支持“钱”是历史上真实使用的剂量单位。"
+        },
+        {
+          "claim": "旧制一斤为十六两，这一进制在汉代已经通行；现行大陆市制一斤为十两。",
+          "status": "single-source",
+          "asOf": "不随时间变化",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "关于斤两制度的文章", "url": "https://www.thepaper.cn/newsDetail_forward_11029966", "date": "未标注"}
+          ],
+          "note": "检索结果里还有英文维基“Chinese units of measurement”的镜像页，但摘要只引了它关于 1929 年《度量衡法》的内容，没有引十六两制，所以按一个来源计。"
+        },
+        {
+          "claim": "一两为十钱；旧制一钱约合 3 克（3.125 克），中药处方自 1979 年起改用“克”为单位。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "为此检索了两次，都没有返回直接说明 1979 年改制和“一钱约 3 克”出处的结果；搜到的论文反而显示历代“两”的克数换算分歧很大（汉代一两有约 3 克、13.8 克等不同主张）。字幕和画面都不要写换算数字。"
+        },
+        {
+          "claim": "旧处方中剂量写在药名之后，如“当归 三钱”；“钱”字另有省笔的草写形式。",
+          "status": "unverified",
+          "asOf": "不随时间变化",
+          "sources": [],
+          "note": "检索没有返回任何关于处方书写格式和“钱”字写法的资料。“当归 三钱”作为书写样式可以用（“钱”作为剂量单位有来源支持），但省笔符号不要画。"
+        }
+      ],
+      "conflicts": [
+        "古方“两”的现代换算：一篇 2022 年论文主张汉代一两约合 3 克，一篇 2024 年论文主张汉唐一两约合 13.8 克。与本片无直接关系（片中不写换算），记录在此是为了说明不要在字幕里写任何克数。"
+      ]
+    },
+    {
+      "shots": ["s23"],
+      "name_zh": "红外热成像（中医领域的应用）",
+      "depiction": [
+        "伪彩色图像：按色标把温度映成颜色，常见的是由深蓝、紫经红、橙、黄到白的渐变；色块之间是柔和的过渡，没有锐利的边线。（常识）",
+        "画面一侧常有一条竖直的色标条。分镜要的“伪彩色环与竖条纹”可以理解为等温线的同心环加色标条的抽象化。（常识）",
+        "底色用黑，颜色用霓虹感的高饱和，纯作视觉，不加任何文字、数字和箭头。",
+        "若出现人体轮廓，只取抽象的弧形局部，不出现可辨认的面部或躯干全貌。"
+      ],
+      "pitfalls": [
+        "加上温度读数、病灶圈注、证型名称或任何诊断性文字——分镜已注明“纯视觉，不做任何说明”。",
+        "画成 X 光、CT 那样的灰阶影像。",
+        "在成片说明里称它是“中医诊断标准手段”——检索到的综述明确说相关规范尚不统一。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "红外热成像技术在中医领域确有研究与应用，近年有多篇中文期刊论文和综述（例如用红外热图研究证候的体表温度特征，或称其为望诊的延伸）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中医临床研究", "title": "2024, Vol.16 Issue(13): 102-108", "url": "https://search.napstic.cn/literature/periodical/010zylcyj202413018", "date": "2024"},
+            {"publisher": "河南中医", "title": "2024 年第 12 期论文", "url": "https://search.napstic.cn/literature/periodical/010hnzy202412029", "date": "2024"},
+            {"publisher": "AMiner（论文索引）", "title": "Research progress of infrared thermal imaging visualization of traditional Chinese medicine", "url": "https://aminer.org/pub/604b55e56f90b7f6ca86e9da/research-progress-of-infrared-thermal-imaging-visualization-of-traditional-chinese-medicine", "date": "未标注"}
+          ],
+          "note": "只核实“确有其事”，不涉及也不引用任何关于效果的结论。期刊与期号据链接和摘要标题转录，各篇的具体题目摘要没有全部给出。"
+        },
+        {
+          "claim": "有综述指出，红外热像在中医应用中的操作规范、图像分析方法和系统参数尚无统一标准，也缺乏公认的正常人群热图和数据库。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "中医临床研究", "title": "2024, Vol.16 Issue(7) 综述", "url": "https://search.napstic.cn/literature/periodical/010zylcyj202407012", "date": "2024"}
+          ],
+          "note": "摘要说这一判断出自“一篇综述”和“另一篇研究进展文章”，没有标明具体链接，上列是最可能的一条；保守按一个来源计。"
+        },
+        {
+          "claim": "中华中医药学会发布过中医红外热成像方面的团体标准。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "本次检索没有找到。检索到的相关文件只有全国团体标准信息平台（ttbz.org.cn）上由中国医药教育协会归口的《医学红外读图分析师技能规范》草案（编号待定）。不要在说明里提“有某某标准”。"
+        }
+      ],
+      "conflicts": []
+    }
+  ]
+}

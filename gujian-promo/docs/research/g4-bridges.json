@@ -1,0 +1,555 @@
+{
+  "group": "g4-bridges",
+  "filePath": "/tmp/claude-0/-home-user-kashing/82b55bb9-0385-5108-b6bb-ac0899659655/scratchpad/research/g4-bridges.json",
+  "subjects": [
+    {
+      "name_zh": "赵州桥（安济桥）",
+      "depiction": [
+        "整体：单孔、全石砌的坦弧（圆弧）敞肩拱桥，河中没有桥墩。主拱是一段扁平圆弧而不是半圆：净跨约37米、矢高约7.2米，拱高只有跨度的约1/5（矢跨比约0.195）。",
+        "敞肩小拱：主拱两端的拱背上各叠2个小拱，全桥共4个，左右对称；靠桥头（外侧）的小拱较大（净跨约3.8米），靠拱顶（内侧）的较小（净跨约2.85米）。",
+        "比例：全长约64.4米，桥面宽约9米（两端约9.6米，中间略窄）。按侧立面画，全长约为主拱矢高的9倍，主拱净跨约占全长的57%（由64.4米、37.02米、7.23米换算）。",
+        "桥面：坡度平缓（资料称约6.5%），桥面线是一条微微拱起的长弧，接近平桥，不是高驼峰；检索到的资料均称桥体全部用石料建成，未见桥上有亭、廊等木构。",
+        "主拱券：由28道各自独立的石拱券沿桥宽方向并列砌成。侧立面只能看到最外一道券——一条由楔形拱石拼成的弧带（有文章称每道券43块拱石、券厚约1.03米，仅单一来源）；28道并列的砌缝只有从桥下仰视才看得到。",
+        "拱顶装饰：主拱券顶部正中、东西两侧各有一个兽首雕刻（蚣蝮，俗称吸水兽），面向河水。",
+        "栏杆：石栏板加望柱。中段栏板为双面高浮雕雕龙，望柱为蟠龙竹节式；越往两端雕刻越简略（斗子卷叶等素板）。现桥上的栏杆是20世纪50年代按河床出土的旧栏板重新制作的复制品。",
+        "细部（远景可省略）：外侧相邻拱石之间嵌有“腰铁”连接，另有横向铁拉杆加强各道拱券的联系。",
+        "环境与颜色：桥南北向横跨洨河，位于赵县城南的平原上，河面不宽、两岸平坦；桥身为未施彩绘的素石，建议用灰白到青灰的石色（具体色值为估计，未检索到石料颜色的权威描述）。"
+      ],
+      "palette": [
+        "石灰白（桥身主色） #C9C4B8（估计）",
+        "青灰（拱腹、阴影） #8E9296（估计）",
+        "风化暖褐（水渍、旧石） #A89880（估计）",
+        "铁件深褐（腰铁、拉杆头） #4A3F38（估计）",
+        "河水青绿 #7FA39A（估计）",
+        "天空浅蓝 #BFD6E6（估计）"
+      ],
+      "pitfalls": [
+        "把主拱画成半圆或高耸驼峰——应为矢跨比约1:5的扁平圆弧，桥面近乎平直。",
+        "小拱画错：只画2个、4个画成一样大、或大小顺序颠倒（应每端2个、外大内小）；或在河中加桥墩画成多孔联拱桥。",
+        "把“28道拱券”误解成28个桥孔，或在侧立面画出28层同心弧（28道是沿桥宽并列，不是上下叠层）。",
+        "给桥加木亭、廊屋、红漆栏杆或汉白玉雕栏质感——赵州桥是朴素的灰色石桥。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "赵州桥又名安济桥，当地俗称“大石桥”；“安济”之名相传为北宋哲宗所赐。",
+          "status": "verified-2plus-independent",
+          "note": "赐名的具体年份在检索结果中未给出，字幕不宜写具体年份。",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing）", "title": "赵州桥相关文章", "url": "https://www.visitbeijing.com.cn/article/4OZpdEQqCEQ?device=amp", "date": "未标注"},
+            {"publisher": "百度百科", "title": "赵州桥（第一批全国重点文物保护单位）", "url": "https://baike.baidu.com/item/%E8%B5%B5%E5%B7%9E%E6%A1%A5/32450", "date": "未标注"},
+            {"publisher": "Wikipedia (English)", "title": "Anji Bridge", "url": "https://en.wikipedia.org/wiki/Anji_Bridge", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "赵州桥位于河北省石家庄市赵县城南约2.5公里处，横跨洨河。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "百度百科", "title": "赵州桥（河北省赵县的石拱桥）", "url": "https://baike.baidu.com/item/%E8%B5%B5%E5%B7%9E%E6%A1%A5/4635081", "date": "未标注"},
+            {"publisher": "北京旅游网（visitbeijing）", "title": "赵州桥相关文章", "url": "https://www.visitbeijing.com.cn/article/47QrLnlFNiD", "date": "未标注"},
+            {"publisher": "石家庄市人民政府", "title": "赵州桥", "url": "https://www.sjz.gov.cn/columns/aee01a7b-4f7d-42b0-a53b-8c8029713e07/202509/25/5dbbfb1d-8b64-450d-923d-6c06419db04f.html", "date": "2025-09-25（据URL路径）"}
+          ]
+        },
+        {
+          "claim": "赵州桥建于隋代（约595—605年），由匠师李春主持设计建造。",
+          "status": "verified-2plus-independent",
+          "note": "595—605年是主流说法，与线索一致；另有个别来源写605年、595—610年或605—616年，见conflicts。字幕建议写“隋代，约公元595—605年”。",
+          "sources": [
+            {"publisher": "Wikipedia (English)", "title": "Anji Bridge", "url": "https://en.wikipedia.org/wiki/Anji_Bridge", "date": "未标注"},
+            {"publisher": "北京旅游网（visitbeijing）", "title": "赵州桥相关文章", "url": "https://www.visitbeijing.com.cn/article/4OZpdEQqCEQ?device=amp", "date": "未标注"},
+            {"publisher": "China Daily（govt.chinadaily.com.cn）", "title": "Zhaozhou Bridge", "url": "https://govt.chinadaily.com.cn/a/201908/16/WS5d561547498ebcb1905787b3.html", "date": "2019-08-16（据URL路径）"}
+          ]
+        },
+        {
+          "claim": "赵州桥是单孔敞肩圆弧（坦弧）石拱桥，主拱两肩各有2个小拱，共4个。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "石家庄市文化广电和旅游局", "title": "千年古迹焕发新生机——探访“天下第一桥”赵州桥", "url": "https://wglj.sjz.gov.cn/columns/4bccb071-c987-46a8-9718-77801cb4eb16/202405/29/960f3812-2763-408a-ac8f-17213a09bb9a.html", "date": "2024-05-29（据URL路径）"},
+            {"publisher": "百度百科", "title": "赵州桥（河北省赵县的石拱桥）", "url": "https://baike.baidu.com/item/%E8%B5%B5%E5%B7%9E%E6%A1%A5/4635081", "date": "未标注"},
+            {"publisher": "Wikipedia (English)", "title": "Anji Bridge", "url": "https://en.wikipedia.org/wiki/Anji_Bridge", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "赵州桥全长64.4米。",
+          "status": "conflicting",
+          "note": "多数来源（石家庄市政府、中科院力学所、百度百科；英文维基写64米）为64.4米；另有一组旧数据写“桥长50.82米”。采信64.4米，理由见conflicts。",
+          "sources": [
+            {"publisher": "石家庄市人民政府", "title": "赵州桥", "url": "https://www.sjz.gov.cn/columns/aee01a7b-4f7d-42b0-a53b-8c8029713e07/202509/25/5dbbfb1d-8b64-450d-923d-6c06419db04f.html", "date": "2025-09-25（据URL路径）"},
+            {"publisher": "中国科学院力学研究所", "title": "【释疑解惑】说说千年不倒的赵州桥", "url": "https://imech.cas.cn/science/lxyd/syjh/202605/t20260504_8195560.html", "date": "2026-05-04（据URL路径）"},
+            {"publisher": "北京本地宝（持50.82米说）", "title": "河北春游去哪里:赵州桥", "url": "https://m.bj.bendibao.com/tour/218897_9.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "赵州桥主拱净跨37.02米（约37米）。",
+          "status": "conflicting",
+          "note": "中文官方与2026年学术论文为净跨37.02米；英文维基、China Daily为37.37米，ASCE页面为122.6英尺（约37.4米），另有37.35米。字幕写“约37米”可同时兼容各说。",
+          "sources": [
+            {"publisher": "石家庄市人民政府", "title": "赵州桥", "url": "https://www.sjz.gov.cn/columns/aee01a7b-4f7d-42b0-a53b-8c8029713e07/202509/25/5dbbfb1d-8b64-450d-923d-6c06419db04f.html", "date": "2025-09-25（据URL路径）"},
+            {"publisher": "SciOpen（学术期刊论文PDF，DOI 10.26599/HTRD.2026.9480097）", "title": "赵州桥相关保护研究论文", "url": "https://www.sciopen.com/local/article_pdf/10.26599/HTRD.2026.9480097.pdf", "date": "2026（据DOI编号）"},
+            {"publisher": "Wikipedia (English)（持37.37米说）", "title": "Anji Bridge", "url": "https://en.wikipedia.org/wiki/Anji_Bridge", "date": "未标注"},
+            {"publisher": "ASCE（持122.6英尺说）", "title": "Zhaozhou Bridge", "url": "https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/zhaozhou-bridge", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "赵州桥主拱矢高（拱矢）7.23米，拱高与跨度之比约1:5。",
+          "status": "verified-2plus-independent",
+          "note": "ASCE页面为23.9英尺（约7.3米），英文维基“高7.3米”，与7.23米四舍五入后一致。",
+          "sources": [
+            {"publisher": "石家庄市人民政府", "title": "赵州桥", "url": "https://www.sjz.gov.cn/columns/aee01a7b-4f7d-42b0-a53b-8c8029713e07/202509/25/5dbbfb1d-8b64-450d-923d-6c06419db04f.html", "date": "2025-09-25（据URL路径）"},
+            {"publisher": "SciOpen（学术期刊论文PDF）", "title": "赵州桥相关保护研究论文", "url": "https://www.sciopen.com/local/article_pdf/10.26599/HTRD.2026.9480097.pdf", "date": "2026（据DOI编号）"},
+            {"publisher": "百度百科", "title": "赵州桥（河北省赵县的石拱桥）", "url": "https://baike.baidu.com/item/%E8%B5%B5%E5%B7%9E%E6%A1%A5/4635081", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "赵州桥桥面拱顶处宽约9米，两端（拱脚）宽约9.6米。",
+          "status": "verified-2plus-independent",
+          "note": "个别来源笼统写“宽9.5米”或“宽9米/9.6米”，系取值位置不同。",
+          "sources": [
+            {"publisher": "石家庄市人民政府", "title": "赵州桥", "url": "https://www.sjz.gov.cn/columns/aee01a7b-4f7d-42b0-a53b-8c8029713e07/202509/25/5dbbfb1d-8b64-450d-923d-6c06419db04f.html", "date": "2025-09-25（据URL路径）"},
+            {"publisher": "中国科学院力学研究所", "title": "【释疑解惑】说说千年不倒的赵州桥", "url": "https://imech.cas.cn/science/lxyd/syjh/202605/t20260504_8195560.html", "date": "2026-05-04（据URL路径）"}
+          ]
+        },
+        {
+          "claim": "赵州桥主拱由28道各自独立的拱券纵向并列砌筑而成。",
+          "status": "verified-2plus-independent",
+          "note": "“每道拱券厚1.03米、由43块拱石组成”只见于一篇文章，属单一来源，不建议上字幕。",
+          "sources": [
+            {"publisher": "百度百科", "title": "赵州桥（河北省赵县的石拱桥）", "url": "https://baike.baidu.com/item/%E8%B5%B5%E5%B7%9E%E6%A1%A5/4635081", "date": "未标注"},
+            {"publisher": "北京旅游网（visitbeijing）", "title": "赵州桥相关文章", "url": "https://www.visitbeijing.com.cn/article/49nHm2gtcBK", "date": "未标注"},
+            {"publisher": "网易号", "title": "课本里的赵州桥到底有多神？1400年屹立洨河，藏着古人的顶级造桥智慧", "url": "https://www.163.com/dy/article/L85NPETO05565JWF.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "4个小拱中，外侧两个净跨约3.81米，内侧两个净跨约2.85米。",
+          "status": "verified-2plus-independent",
+          "note": "英文工程资料写作3.8米和2.85米，与中文资料一致。",
+          "sources": [
+            {"publisher": "百度百科", "title": "赵州桥（第一批全国重点文物保护单位）", "url": "https://baike.baidu.com/item/%E8%B5%B5%E5%B7%9E%E6%A1%A5/32450", "date": "未标注"},
+            {"publisher": "UTPL 地震工程资料库所载英文工程文献PDF", "title": "UCG-ES-00586", "url": "https://ingenieriasismica.utpl.edu.ec/sites/default/files/publicaciones/UCG-ES-00586_0.pdf", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "赵州桥的雕饰集中在栏板和望柱上，以雕龙栏板、蟠龙竹节望柱最著名；现桥栏杆为20世纪50年代修缮时的复制品，河中曾打捞出隋至清各代栏板等构件一千余块。",
+          "status": "verified-2plus-independent",
+          "note": "出土构件总数有“1000多块”“1200多块”“1500余件”等说法，字幕宜写“千余块”。",
+          "sources": [
+            {"publisher": "石家庄市文化广电和旅游局", "title": "千年古迹焕发新生机——探访“天下第一桥”赵州桥", "url": "https://wglj.sjz.gov.cn/columns/4bccb071-c987-46a8-9718-77801cb4eb16/202405/29/960f3812-2763-408a-ac8f-17213a09bb9a.html", "date": "2024-05-29（据URL路径）"},
+            {"publisher": "China Daily", "title": "Pieces of China's oldest stone arch bridge repaired", "url": "https://covid-19.chinadaily.com.cn/china/2017-08/31/content_31365771.htm", "date": "2017-08-31（据URL路径）"},
+            {"publisher": "中新网", "title": "（新春见闻）“天下第一桥”赵州桥觅“龙”迹", "url": "https://backend.chinanews.com/sh/2024/02-14/10163936.shtml", "date": "2024-02-14（据URL路径）"}
+          ]
+        },
+        {
+          "claim": "现桥每侧中间有5块雕龙栏板、6根蟠龙竹节望柱，两侧共56条龙，加上主拱券顶部两个蚣蝮，合称“58条龙”。",
+          "status": "conflicting",
+          "note": "此为景区/地方文旅口径；另有资料据《安济桥栏杆恢复第五方案》称新造栏板每边25块、中间13块为雕龙栏板（饕餮栏板居中）、两端各6块斗子卷叶栏板。数量说法不一，不建议上字幕。",
+          "sources": [
+            {"publisher": "石家庄市文化广电和旅游局", "title": "千年古迹焕发新生机——探访“天下第一桥”赵州桥", "url": "https://wglj.sjz.gov.cn/columns/4bccb071-c987-46a8-9718-77801cb4eb16/202405/29/960f3812-2763-408a-ac8f-17213a09bb9a.html", "date": "2024-05-29（据URL路径）"},
+            {"publisher": "中新网", "title": "（新春见闻）“天下第一桥”赵州桥觅“龙”迹", "url": "https://backend.chinanews.com/sh/2024/02-14/10163936.shtml", "date": "2024-02-14（据URL路径）"},
+            {"publisher": "知乎专栏（持“每边25块、中间13块雕龙”说）", "title": "这座家喻户晓的千年古桥，居然藏着这么多秘密……", "url": "https://zhuanlan.zhihu.com/p/29728256609", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "赵州桥1961年被国务院公布为第一批全国重点文物保护单位。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "百度百科", "title": "赵州桥（第一批全国重点文物保护单位）", "url": "https://baike.baidu.com/item/%E8%B5%B5%E5%B7%9E%E6%A1%A5/32450", "date": "未标注"},
+            {"publisher": "北京旅游网（visitbeijing）", "title": "赵州桥相关文章", "url": "https://www.visitbeijing.com.cn/article/47QrLnlFNiD", "date": "未标注"},
+            {"publisher": "澎湃新闻", "title": "赵州桥相关报道", "url": "https://m.thepaper.cn/newsDetail_forward_3910245", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "1991年，赵州桥被美国土木工程师学会（ASCE）选定为第12处“国际土木工程历史古迹”。",
+          "status": "conflicting",
+          "note": "多数来源（含ASCE相关页面、Waymarking转述的1991年9月揭牌）为1991年；2026年一篇学术论文写作1989年。采信1991年，但建议上字幕前人工打开ASCE页面复核。",
+          "sources": [
+            {"publisher": "ASCE", "title": "Zhaozhou Bridge", "url": "https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/zhaozhou-bridge", "date": "未标注"},
+            {"publisher": "Waymarking", "title": "Zhaozhou (Anji) Bridge in Hebei Province (China)", "url": "https://www.waymarking.com/waymarks/WM6GJ0_Zhaozhou_Anji_Bridge_in_Hebei_Province_China", "date": "未标注"},
+            {"publisher": "SciOpen（学术论文，持1989年说）", "title": "赵州桥相关保护研究论文", "url": "https://www.sciopen.com/local/article_pdf/10.26599/HTRD.2026.9480097.pdf", "date": "2026（据DOI编号）"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "【方法说明】本会话的网络白名单拦截了 en.wikipedia.org、zh.wikipedia.org、www.asce.org 等站点的直接抓取（WebFetch 报 ENOTFOUND），因此各条事实依据的是 WebSearch 返回的结果摘要与链接，未能逐页打开核对原文与页面日期；date 字段凡写“据URL路径”者是从链接中的日期推得。另外本轮 WebSearch 配额（200次，与其他代理共用）在最后三个补充查询前用尽。",
+        "【全长】64.4米（石家庄市政府官网、中科院力学所、百度百科；英文维基写64米）与50.82米（北京本地宝、部分知乎/旧版百科文字）并存。采信64.4米：来源更权威且为多数；50.82米很可能是另一种量法（不含两端引道/桥台的桥身长度），但检索结果没有给出官方解释，此推断未证实。",
+        "【主拱净跨】37.02米（石家庄市政府、2026年学术论文、百度百科）对37.37米（英文维基、China Daily）、37.35米（个别中文资料）、122.6英尺≈37.4米（ASCE）。采信37.02米作为“净跨”；37.37米据称是1950年代修缮时的另一测值。线索中的“约37米”正确，提示里提到的37.4米即ASCE英尺数换算。",
+        "【建造年代】主流为595—605年（英文维基、多家中文资料）；ASCE相关条目写“605 AD”，个别英文资料写595—610年或605—616年。采信“隋代，约595—605年”，与线索一致。",
+        "【桥宽/桥高】宽度有9米（拱顶）、9.6米（两端）、9.5米等写法，系取值位置不同；“高7.23米”实为拱矢高，另有“桥高8.65米”的说法（单一来源）。字幕只用“矢高7.23米”。",
+        "【ASCE认定年份】1991年（多数来源）对1989年（2026年一篇论文）。采信1991年。",
+        "【栏板数量】“每侧5块雕龙栏板、6根望柱、共58条龙”（地方文旅/中新网）对“每边25块、中间13块雕龙”（修缮方案转述）。两说统计口径可能不同，均不建议写入字幕；画面只需体现“中段雕龙、两端素板”。",
+        "【对线索的核对】线索中的年代、匠师、位置、单孔敞肩圆弧石拱、两肩各2小拱共4个、净跨约37米、28道并列拱券均与查到的资料一致，未发现错误；需要注意的只是“全长”和“净跨”各有两套数字。"
+      ]
+    },
+    {
+      "name_zh": "《清明上河图》中的虹桥",
+      "depiction": [
+        "虹桥是一座单跨木拱桥，河中没有任何桥柱（《东京梦华录》称“其桥无柱，皆以巨木虚架”），桥身像一道弯虹横跨汴河；按画面比例推算跨度约20多米、桥宽约8米（估算值，非实测）。",
+        "拱架：由成排的巨大圆木纵向搭接而成，两套木梁系统相互交叉、穿插搭叠，再以横木和捆扎固定（即“贯木拱”，又称“叠梁拱”“编木拱”）。侧面看，拱肋是几段直木首尾错搭形成的折线弧，不是一条光滑的整弧；桥腹可见一排排并列的圆木和横木。",
+        "颜色：画中木构是淡墨/木本色，没有涂成红色（文献虽说“饰以丹雘”，故宫研究文章指出画中木架画成淡墨）。原作为绢本淡设色，底色是旧绢的黄褐色，以墨线为主、设色极淡。",
+        "桥面：宽而缓，两侧有木栏杆；桥上非常拥挤——车马往来、行人熙攘，两侧挤满商贩摊位。",
+        "桥下主戏：一艘大型漕船正放倒桅杆准备穿过桥孔，船工紧张操作（有研究提到八名船工摇橹），桥上和两岸的人探身围观——这是全卷最紧张、最热闹的场面。",
+        "位置：虹桥在画卷中段，是全画的构图中心；汴河上还有逆流而上、靠岸卸货的货船。",
+        "两端：木拱的拱脚落在两岸的石砌基础上，桥头直接连着街市店铺。",
+        "桥面露天、没有廊屋：新华社等报道指出后世闽浙木拱廊桥与画中虹桥外观差别较大，虹桥上没有带屋顶的廊屋。"
+      ],
+      "palette": [
+        "旧绢底色 #C8A977（估计）",
+        "淡墨木构 #6B5A45（估计）",
+        "赭石（屋舍、船体） #9A6B43（估计）",
+        "墨线 #2E2A26（估计）",
+        "淡花青（河水、远树） #7C8F8A（估计）",
+        "淡朱（零星点缀，少量使用） #A8553A（估计）"
+      ],
+      "pitfalls": [
+        "画成石拱桥——明代摹本把宋本的木桥改成了石桥（英文维基），清院本等后世版本也不同于故宫藏张择端本；北宋原作是木拱桥。",
+        "给桥加桥墩、立柱，或画成带屋顶的廊桥。",
+        "把桥涂成鲜红、把画面调成浓艳重彩——原作是淡设色，木构为淡墨色。",
+        "把拱画成一根光滑弯曲的整木梁，没有体现多根圆木交叠搭接的“编木”结构。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "《清明上河图》为北宋画家张择端所作。",
+          "status": "verified-2plus-independent",
+          "note": "英文学术界表述为“一般认为作者是张择端”。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "张择端清明上河图卷", "url": "https://www.dpm.org.cn/collection/paint/228226.html", "date": "未标注"},
+            {"publisher": "人民网（中国城市报）", "title": "《清明上河图》相关文章", "url": "https://paper.people.com.cn/zgcsb/html/2015-10/19/content_1623618.htm", "date": "2015-10-19（据URL路径）"},
+            {"publisher": "Wikipedia (English)", "title": "Along the River During the Qingming Festival", "url": "https://en.wikipedia.org/wiki/Along_the_River_During_the_Qingming_Festival", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "张择端《清明上河图》卷现藏北京故宫博物院（文物号：新00087177）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "文物号仅见于故宫官网与故宫数字文物库（同一机构），字幕一般不需要。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "张择端清明上河图卷", "url": "https://www.dpm.org.cn/collection/paint/228226.html", "date": "未标注"},
+            {"publisher": "故宫博物院数字文物库", "title": "张择端清明上河图卷", "url": "https://digicol.dpm.org.cn/cultural/detail?id=4e1f69d35f7d419e9f1269e3a5fa2271&page=1", "date": "未标注"},
+            {"publisher": "人民日报海外版", "title": "《清明上河图》相关文章", "url": "https://paper.people.com.cn/rmrbhwb/html/2014-02/14/content_1390784.htm", "date": "2014-02-14（据URL路径）"}
+          ]
+        },
+        {
+          "claim": "画卷尺寸：纵24.8厘米，横528厘米（故宫官网藏品页；常见写法为横528.7厘米）。",
+          "status": "conflicting",
+          "note": "纵24.8厘米各家一致；横向有528厘米（故宫藏品页）、528.7厘米（故宫另一页面、人民网）两种；英文维基信息框为25.5×525厘米，故宫一份研究PDF写纵25.2厘米、横528.7厘米。字幕建议写“纵24.8厘米、横528厘米余”或“长五米多”。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "张择端清明上河图卷", "url": "https://www.dpm.org.cn/collection/paint/228226.html", "date": "未标注"},
+            {"publisher": "故宫博物院", "title": "清明上河图卷（展陈页面）", "url": "https://www.dpm.org.cn/vr/stone-moat/wyd_17.html", "date": "未标注"},
+            {"publisher": "人民网（中国城市报）", "title": "《清明上河图》相关文章", "url": "https://paper.people.com.cn/zgcsb/html/2015-10/19/content_1623618.htm", "date": "2015-10-19（据URL路径）"},
+            {"publisher": "Wikipedia (English)（持25.5×525厘米说）", "title": "Along the River During the Qingming Festival", "url": "https://en.wikipedia.org/wiki/Along_the_River_During_the_Qingming_Festival", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "《清明上河图》为绢本淡设色手卷。",
+          "status": "verified-2plus-independent",
+          "note": "故宫藏品页写“绢本，淡设色”；其他来源有“绢本设色”“绢本墨笔淡设色”“ink and color on silk”等写法，意思一致。英文来源的归属依据搜索摘要，未能逐页打开核对。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "张择端清明上河图卷", "url": "https://www.dpm.org.cn/collection/paint/228226.html", "date": "未标注"},
+            {"publisher": "人民日报海外版", "title": "《清明上河图》相关文章", "url": "https://paper.people.com.cn/rmrbhwb/html/2014-02/14/content_1390784.htm", "date": "2014-02-14（据URL路径）"},
+            {"publisher": "theartwolf", "title": "Zhang Zeduan · Along the River During the Qingming Festival", "url": "https://theartwolf.com/masterworks/along-the-river-during-qingming-festival/", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "画卷描绘北宋都城汴京（今河南开封）汴河两岸的城市生活，中段以虹桥为中心，是全画最热闹的部分。",
+          "status": "verified-2plus-independent",
+          "note": "哈佛大学页面提到有学者（如Valerie Hansen）认为画的是理想化城市而非写实的开封，属学术讨论，不影响通行表述。",
+          "sources": [
+            {"publisher": "中新网", "title": "《清明上河图》相关报道", "url": "https://www.chinanews.com.cn/m/cul/2015/09-20/7533665.shtml", "date": "2015-09-20（据URL路径）"},
+            {"publisher": "Harvard University EALC", "title": "Qingming Scroll", "url": "https://ealc.fas.harvard.edu/qingming-scroll", "date": "未标注"},
+            {"publisher": "澎湃新闻", "title": "《清明上河图》相关文章", "url": "https://www.thepaper.cn/newsDetail_forward_1331066", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "虹桥是一座无柱的木拱桥，以成排巨木相互搭接成拱；桥梁史学者唐寰澄先称之为“叠梁拱”，后改称“贯木拱”，亦有“编木拱”之称。",
+          "status": "verified-2plus-independent",
+          "note": "“无柱”出自宋代文献《东京梦华录》的记述（“其桥无柱，皆以巨木虚架”）。线索中的三个术语指同一种结构，均可用；字幕最稳妥写“木拱桥”。",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "《清明上河图》上汴水贯木拱虹桥", "url": "https://www.dpm.org.cn/study_detail/100191.html", "date": "未标注"},
+            {"publisher": "有方（archiposition）", "title": "木拱桥相关文章", "url": "https://www.archiposition.com/items/73ba29b9af", "date": "未标注"},
+            {"publisher": "Smarthistory", "title": "Qingming scroll 相关文章", "url": "https://smarthistory.org/?p=61959", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "画中虹桥下，一艘大船正放倒桅杆准备穿过桥孔，船工紧张操作，桥上和两岸的人群围观；桥上商贩密集、行人熙攘。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "故宫博物院", "title": "张择端清明上河图卷", "url": "https://www.dpm.org.cn/collection/paint/228226.html", "date": "未标注"},
+            {"publisher": "Harvard University（China Local 项目）", "title": "Qingming scroll detail", "url": "https://chinalocal.omeka.fas.harvard.edu/items/show/1058", "date": "未标注"},
+            {"publisher": "Smarthistory", "title": "Qingming scroll 相关文章", "url": "https://smarthistory.org/?p=61959", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "据画面比例推算，虹桥跨度约20多米，桥宽约8米。",
+          "status": "verified-2plus-independent",
+          "note": "两处来源均为根据画面的估算而非实测：一为张临生文章（跨距约20多公尺、宽8公尺），一为2026年8月报道的研究（跨度约22米、桥面宽约7.5—12米，来源可靠性一般）。属推算值，不建议上字幕；“5根拱骨”之说仅见张临生文。",
+          "sources": [
+            {"publisher": "澎湃新闻（张临生文）", "title": "《清明上河图》相关文章", "url": "https://www.thepaper.cn/newsDetail_forward_1391144", "date": "未标注"},
+            {"publisher": "生物通（ebiotrade）", "title": "虹桥结构研究报道", "url": "https://www.ebiotrade.com/newsf/2026-8/20260811082525710.htm", "date": "2026-08-11（据URL路径）"}
+          ]
+        },
+        {
+          "claim": "张择端，字正道，东武（今山东诸城）人，北宋时供职翰林（图画院）。",
+          "status": "verified-2plus-independent",
+          "note": "生卒年“1085—1145年”常见于媒体，但并无确证，不建议上字幕。",
+          "sources": [
+            {"publisher": "中新网", "title": "《清明上河图》相关报道", "url": "https://www.chinanews.com.cn/m/cul/2015/09-20/7533665.shtml", "date": "2015-09-20（据URL路径）"},
+            {"publisher": "澎湃新闻", "title": "《清明上河图》相关文章", "url": "https://www.thepaper.cn/newsDetail_forward_1331066", "date": "未标注"},
+            {"publisher": "故宫博物院·故宫名画记", "title": "张择端", "url": "https://minghuaji.dpm.org.cn/author/detail?id=7", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "【画卷尺寸】故宫官网藏品页：纵24.8厘米、横528厘米；故宫另一展陈页面与人民网：横528.7厘米；英文维基信息框：25.5×525厘米；故宫一份研究刊物PDF：纵25.2厘米、横528.7厘米。采信故宫藏品页（24.8×528厘米），同时说明528.7厘米是流传最广的写法；两者差0.7厘米，字幕可写“横528厘米余”。",
+        "【桥的颜色】宋代文献说虹桥“饰以丹雘”（涂红），但故宫研究文章指出画中木架画成淡墨，与文献不符。插画以画作为准，用木色/淡墨色，不要涂红。",
+        "【画中桥是否就是文献里的“虹桥”】故宫相关研究（余辉）提到画卷中段的桥以“上土桥”为原型、概称“虹桥”；哈佛页面也提到该桥与开封已知桥梁不能一一对应。通行说法仍称“虹桥”，字幕可照用。",
+        "【结构名称】叠梁拱（唐寰澄早期用语）、贯木拱（唐寰澄后期用语，故宫文章沿用）、编木拱（现今常用）指同一结构，并非互相矛盾。",
+        "【跨度】张临生文“约20多公尺、宽8公尺”与2026年研究报道“跨度约22米、宽7.5—12米”大体一致，但都是按画推算。",
+        "【入藏年份】一条搜索摘要称该卷1957年回归故宫，我未能找到第二个来源印证，且与常见的“1950年代初调入故宫”说法可能不一致，故未列入captionFacts（视为unverified）。",
+        "【未完成的核实】原计划补查“虹桥桥头四根立杆（表木/风信杆）、桥上遮阳伞与轿马相遇”等画面细节，因搜索配额用尽未能核实，故未写入depiction。",
+        "【对线索的核对】作者、朝代、收藏地、木拱无柱等线索均正确；线索未给画卷尺寸，查得为纵24.8厘米、横528（或528.7）厘米。"
+      ]
+    },
+    {
+      "name_zh": "江南水乡石拱桥（周庄、乌镇、同里等）",
+      "depiction": [
+        "典型单孔石拱桥：小跨度、高拱起的驼峰形桥身，桥拱近似半圆，与水中倒影合成一个圆；两端是石阶踏步。参考尺度：周庄世德桥长16米、宽3米、跨度5.9米。",
+        "桥栏：低矮、朴素的石栏板或条石栏，基本没有繁复雕刻；同里三桥的桥身上刻有石刻楹联。",
+        "周庄双桥：一座石拱桥（世德桥，圆拱，跨南北市河）与一座石梁桥（永安桥，方孔，平架在银子浜口）在两河交汇处成直角相连，圆拱加方孔形似古代钥匙，俗称“钥匙桥”。",
+        "乌镇“桥里桥”：通济桥与仁济桥成直角相邻，都是单孔石拱桥，站在一座桥边可以透过桥洞看到另一座桥。",
+        "同里三桥：太平桥、吉利桥、长庆桥呈“品”字形跨在三条河交汇处，彼此相距不足50米。",
+        "民居：粉墙（白墙）黛瓦（青黑色瓦），依水而建、前街后河，街道与河道平行；沿河有石砌驳岸和一级级下到水面的河埠头（水埠）。",
+        "河道狭窄，小船从桥洞下穿过；岸边点缀绿树。",
+        "红灯笼：挂在沿河屋檐下作画面点缀即可（资料把它列为水乡画面的“点缀”，不是建筑构件），数量宜少。"
+      ],
+      "palette": [
+        "粉墙白 #F2EFE6（估计）",
+        "黛瓦青黑 #3B4046（估计）",
+        "桥石灰褐（花岗石/青石） #9C968A（估计）",
+        "河水墨绿 #5E7F74（估计）",
+        "木门窗深棕 #5A3E2B（估计）",
+        "灯笼红 #C8372D（估计）"
+      ],
+      "pitfalls": [
+        "把周庄双桥画成两座拱桥——其实是一座石拱桥（世德桥）加一座石梁桥（永安桥）。",
+        "把桥画得又长又平或做成汉白玉雕栏——江南水乡拱桥是小跨度、高拱、朴素石栏；汉白玉雕栏属北方皇家园林（如玉带桥）。",
+        "灯笼挂得过多过艳，盖过白墙黛瓦的素净基调。",
+        "民居画成红墙黄瓦或北方四合院灰砖样式；应为白墙、青黑瓦、临水而筑。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "周庄双桥由世德桥（石拱桥）和永安桥（石梁桥）组成，始建于明万历年间（1573—1619年），因形似古代钥匙，俗称“钥匙桥”。",
+          "status": "verified-2plus-independent",
+          "note": "年份细节两说：一说两桥均建于1573—1619年间，一说世德桥建于1573年、永安桥1619年后建成；清乾隆三十年（1765年）、道光二十三年（1843年）曾重修重建。字幕写“始建于明万历年间”即可。",
+          "sources": [
+            {"publisher": "周庄旅游官方网站", "title": "双桥-经典必游", "url": "https://www.zhouzhuang.net/scenic_4/1257.html", "date": "未标注"},
+            {"publisher": "维基百科（中文）", "title": "双桥及沿河建筑", "url": "https://zh.wikipedia.org/zh-hans/%E5%8F%8C%E6%A1%A5%E5%8F%8A%E6%B2%BF%E6%B2%B3%E5%BB%BA%E7%AD%91", "date": "未标注"},
+            {"publisher": "Lonely Planet", "title": "Twin Bridges", "url": "https://www.lonelyplanet.com/china/zhouzhuang/attractions/twin-bridges/a/poi-sig/1413404/1337045", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "世德桥长16米、宽3米、跨度5.9米；永安桥长13.3米、宽2.4米、跨度3.5米。",
+          "status": "verified-2plus-independent",
+          "note": "搜索摘要称各来源数据基本一致，但我未能逐页打开核对，百科类页面之间可能互相引用；如上字幕建议再人工复核。",
+          "sources": [
+            {"publisher": "维基百科（中文）", "title": "双桥及沿河建筑", "url": "https://zh.wikipedia.org/zh-hans/%E5%8F%8C%E6%A1%A5%E5%8F%8A%E6%B2%BF%E6%B2%B3%E5%BB%BA%E7%AD%91", "date": "未标注"},
+            {"publisher": "百度百科", "title": "双桥（苏州市昆山市全福路的景点）", "url": "https://baike.baidu.com/item/%E9%9B%99%E6%A9%8B/37114", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "1984年，画家陈逸飞以周庄双桥为题材创作油画《故乡的回忆》，周庄由此声名远播。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "去哪儿旅行（游记）", "title": "周庄游记", "url": "https://touch.travel.qunar.com/youji/6147301", "date": "未标注"},
+            {"publisher": "Lonely Planet", "title": "Twin Bridges", "url": "https://www.lonelyplanet.com/china/zhouzhuang/attractions/twin-bridges/a/poi-sig/1413404/1337045", "date": "未标注"},
+            {"publisher": "live2makan（博客）", "title": "Zhouzhuang 周庄 – The Most Beautiful Water Town in the World", "url": "https://live2makan.com/2024/02/14/zhouzhuang-%e5%91%a8%e5%ba%84-the-most-beautiful-water-town-in-the-world/", "date": "2024-02-14（据URL路径）"}
+          ]
+        },
+        {
+          "claim": "同里“三桥”指太平桥、吉利桥、长庆桥，呈“品”字形跨于三河交汇处，建于明清两代；当地有婚嫁、满月、祝寿时“走三桥”的习俗。",
+          "status": "verified-2plus-independent",
+          "note": "三桥各自的始建/重建年份各页面略有出入，未能核实，字幕不要写具体年份。",
+          "sources": [
+            {"publisher": "携程", "title": "同里三桥景点介绍", "url": "https://gs.ctrip.com/html5/you/sight/95/3947.html", "date": "未标注"},
+            {"publisher": "live2makan（博客）", "title": "Tongli 2/5 – Three Sights 同里三景", "url": "https://live2makan.com/2021/03/23/tongli-2-5-three-sights-%E5%90%8C%E9%87%8C%E4%B8%89%E6%99%AF/", "date": "2021-03-23（据URL路径）"},
+            {"publisher": "可可英语", "title": "中英双语话中国旅游 第75期:千年古镇同里主要景点与周边名胜", "url": "https://m.kekenet.com/menu/201508/395197.shtml", "date": "2015-08（据URL路径）"}
+          ]
+        },
+        {
+          "claim": "乌镇西栅的“桥里桥”由通济桥和仁济桥组成，两桥成直角相邻，均为单孔石拱桥，可透过一桥桥洞看到另一桥；现存两桥为清同治年间重建（通济桥为同治六年，1867年）。",
+          "status": "verified-2plus-independent",
+          "note": "仁济桥明代改建年份有正德十三年（1518年）等不同写法，早期年份不建议上字幕。",
+          "sources": [
+            {"publisher": "维基百科（中文）", "title": "通济桥 (乌镇镇银杏社区)", "url": "https://zh.wikipedia.org/zh-hans/%E9%80%9A%E6%B5%8E%E6%A1%A5_(%E4%B9%8C%E9%95%87%E9%95%87%E9%93%B6%E6%9D%8F%E7%A4%BE%E5%8C%BA)", "date": "未标注"},
+            {"publisher": "老百晓集桥（china-qiao.com）", "title": "桐乡市乌镇镇通济桥", "url": "http://www.china-qiao.com/ql15/jxql/jxql153.htm", "date": "未标注"},
+            {"publisher": "Trip.com", "title": "Qiaoli Bridge", "url": "https://uk.trip.com/travel-guide/attraction/tongxiang/qiaoli-bridge-15391838/", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "江南水乡古镇的典型风貌：民居依水而建、前街后河，粉墙黛瓦，小桥流水，河埠众多。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "澎湃新闻（澎湃号）", "title": "江南水乡建筑相关文章", "url": "https://m.thepaper.cn/baijiahao_29325281", "date": "未标注"},
+            {"publisher": "人民日报", "title": "江南水乡相关文章（2023年12月21日第20版）", "url": "https://paper.people.com.cn/rmrb/html/2023-12/21/nw.D110000renmrb_20231221_1-20.htm", "date": "2023-12-21（据URL路径）"},
+            {"publisher": "QQ阅读（“江南古镇”系列）", "title": "周庄（“江南古镇”系列）", "url": "https://appbook.qq.com/read/1035091114/3", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "“江南水乡古镇”已列入中国世界文化遗产预备名单（UNESCO Tentative List 编号5328，2008年列入），尚未正式列入《世界遗产名录》。",
+          "status": "verified-2plus-independent",
+          "asOf": "预备名单信息为2008年；联合申遗的最新报道为2024年6月与2025年5月。截至 2026 年 11 月是否已有新进展未能复核，使用前请再确认。",
+          "note": "2008年条目包含周庄、甪直、乌镇、西塘；后续报道称扩展到同里等十余个古镇。",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre", "title": "The Ancient Waterfront Towns in the South of Yangtze River（Tentative List 5328）", "url": "https://whc.unesco.org/fr/listesindicatives/5328", "date": "未标注"},
+            {"publisher": "worldheritagesite.org", "title": "The Ancient Waterfront Towns in the South of Yangtze River", "url": "https://www.worldheritagesite.org/tentative/id/5328", "date": "未标注"},
+            {"publisher": "CGTN", "title": "Jiangnan water towns to jointly apply for World Heritage status", "url": "https://news.cgtn.com/news/2024-06-27/Jiangnan-water-towns-to-jointly-apply-for-World-Heritage-status-1uLTiaB4CD6/share_amp.html", "date": "2024-06-27（据URL路径）"}
+          ]
+        },
+        {
+          "claim": "“双桥及沿河建筑”于2002年10月22日被公布为第五批江苏省文物保护单位。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "note": "仅见于中文维基百科条目，未找到第二个独立来源。",
+          "sources": [
+            {"publisher": "维基百科（中文）", "title": "双桥及沿河建筑", "url": "https://zh.wikipedia.org/zh-hans/%E5%8F%8C%E6%A1%A5%E5%8F%8A%E6%B2%BF%E6%B2%B3%E5%BB%BA%E7%AD%91", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "【周庄双桥桥型】Lonely Planet 把永安桥描述为“方形拱”，去哪儿游记和中文维基称其为石梁桥。采信“石梁桥”（中文文保资料口径），二者描述的是同一个方形桥孔。",
+        "【双桥建造年份】“世德桥1573年、永安桥1619年后建成”与“两桥均建于1573—1619年间”两说；周庄官网与百科写“明万历年间（1573—1619年）”。采信“始建于明万历年间”的概括写法。另，百科分类有的标“明代”、有的标“清代”，因两桥始建于明、清代重修重建。",
+        "【乌镇仁济桥改建年份】多数资料为明正德十三年（1518年），个别写“正德30年”（正德只有16年，显系错误）。采信1518年，但建议字幕不写。",
+        "【同里古桥年代】长庆桥“1470年建、1701年重建”、太平桥“清嘉庆年间建”等只见于个别页面且互有出入，未采用。",
+        "【红灯笼】资料把“火红的灯笼”列为水乡画面的点缀；它并非传统建筑构件，现状多为景区布置（后半句为常识判断，未检索到专门来源）。",
+        "【对线索的核对】线索“单孔石拱、桥栏、白墙黛瓦民居、灯笼”总体成立；需修正的一点是周庄最著名的双桥并非两座拱桥，而是一拱一梁。马头墙、观音兜等山墙样式未检索到可靠说明，未写入depiction。"
+      ]
+    },
+    {
+      "name_zh": "北京颐和园玉带桥",
+      "depiction": [
+        "单孔高拱石桥：拱圈极薄而高耸，桥洞为上部略尖的“蛋尖形”高拱（不是正半圆）；单孔净跨约11.38米、矢高约7.5米，拱高约为跨度的三分之二。",
+        "桥面曲线：桥面是双向反弯曲线——中间高高隆起、两端反向下凹顺接堤岸，整体侧影像一条飘动的玉带（S形流线），不是单一圆弧。",
+        "颜色与材质：桥身、桥栏通体洁白，用汉白玉和青白石砌成，配雕刻精细的白石栏板。",
+        "栏杆：栏板加望柱，望柱上雕有向云中飞翔的仙鹤。",
+        "高与陡：桥面高出水面约10米（另说桥高约8.7米），两侧各约38级台阶、坡度约45度，登桥很陡。",
+        "只有一个大桥洞，没有小拱和河中桥墩；桥洞高大，原为让乾隆帝的御舟通过。",
+        "环境：位于颐和园昆明湖西堤上，是西堤六桥中唯一的高拱石桥，两端接长堤，堤上植树、桥下为湖水。"
+      ],
+      "palette": [
+        "汉白玉白（受光面） #F1EEE6（估计）",
+        "青白石冷灰（背光、拱腹） #C9CFCB（估计）",
+        "昆明湖水蓝绿 #6E9AA6（估计）",
+        "堤岸柳绿 #7FA35A（估计）",
+        "天空浅蓝 #CFE3EE（估计）",
+        "石缝/阴影灰 #8C9391（估计）"
+      ],
+      "pitfalls": [
+        "与同园的十七孔桥混淆——玉带桥只有一个桥孔，且拱很高。",
+        "画成正半圆的低拱或平缓石桥——应为又高又薄、略带尖顶的蛋尖形高拱。",
+        "桥面画成单一弧线，漏掉两端反弯的“玉带”波形曲线。",
+        "用灰黄色石材或红色栏杆——应为通体洁白的白石桥。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "玉带桥位于北京颐和园昆明湖西堤，是西堤六桥中唯一的高拱石桥。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "百度百科", "title": "玉带桥（中国北京市海淀区境内过湖通道）", "url": "https://baike.baidu.com/item/%E7%8E%89%E5%B8%A6%E6%A1%A5/79395", "date": "未标注"},
+            {"publisher": "北京旅游网（visitbeijing）", "title": "颐和园玉带桥：深得乾隆帝喜爱的石桥", "url": "https://www.visitbeijing.com.cn/article/47QoGRxk58Q", "date": "未标注"},
+            {"publisher": "Wikipedia (English)", "title": "Jade Belt Bridge", "url": "https://en.wikipedia.org/wiki/Jade_Belt_Bridge", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "玉带桥建于清乾隆年间（1736—1795年），光绪年间重修。",
+          "status": "verified-2plus-independent",
+          "note": "“乾隆年间”各来源一致；具体年份有分歧（见下一条）。“光绪年间重修”见于百度百科及买购网词条，二者可能同源。",
+          "sources": [
+            {"publisher": "百度百科", "title": "玉带桥（中国北京市海淀区境内过湖通道）", "url": "https://baike.baidu.com/item/%E7%8E%89%E5%B8%A6%E6%A1%A5/79395", "date": "未标注"},
+            {"publisher": "Wikipedia (English)", "title": "Jade Belt Bridge", "url": "https://en.wikipedia.org/wiki/Jade_Belt_Bridge", "date": "未标注"},
+            {"publisher": "北京旅游网（visitbeijing）", "title": "去颐和园不能不看的桥", "url": "https://www.visitbeijing.com.cn/article/47Qllqti9Bv", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "玉带桥的具体建造年份：一说乾隆十五年（1750年），一说1751—1764年。",
+          "status": "conflicting",
+          "note": "1750年见携程游记与英文维基部分版本；1751—1764年见中文维基、Structurae（转引维基）。没有检索到颐和园管理处的官方说法，字幕建议只写“清乾隆年间”。",
+          "sources": [
+            {"publisher": "携程（游记）", "title": "皇家园林颐和园之西堤篇——诗词欣赏", "url": "https://you.ctrip.com/travels/beijing1/4082358.html", "date": "未标注"},
+            {"publisher": "维基百科（中文）", "title": "玉带桥 (北京)", "url": "https://zh.wikipedia.org/zh-hant/%E7%8E%89%E5%B8%A6%E6%A1%A5_(%E5%8C%97%E4%BA%AC)", "date": "未标注"},
+            {"publisher": "Structurae", "title": "Jade Belt Bridge", "url": "https://structurae.net/en/structures/jade-belt-bridge", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "玉带桥桥身用汉白玉和青白石砌成，通体洁白。",
+          "status": "verified-2plus-independent",
+          "note": "线索中“汉白玉/青白石”不是二选一，而是两种石材并用。英文维基作“marble and other white stone”，与之相符；百度百科个别版本“全部用玉石琢成”系文学化说法，不采用。",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing）", "title": "去颐和园不能不看的桥", "url": "https://www.visitbeijing.com.cn/article/47Qllqti9Bv", "date": "未标注"},
+            {"publisher": "百度百科", "title": "玉带桥（中国北京市海淀区境内过湖通道）", "url": "https://baike.baidu.com/item/%E7%8E%89%E5%B8%A6%E6%A1%A5/79395", "date": "未标注"},
+            {"publisher": "Wikipedia (English)", "title": "Jade Belt Bridge", "url": "https://en.wikipedia.org/wiki/Jade_Belt_Bridge", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "玉带桥为单孔高拱桥，单孔净跨11.38米，矢高约7.5米。",
+          "status": "single-source",
+          "note": "数字在百度百科、买购网等多个页面出现，但文字雷同，疑为同一来源的转载，未见颐和园官方或测绘资料，故按单一来源处理；“单孔高拱”这一形态本身有多方印证。",
+          "sources": [
+            {"publisher": "百度百科", "title": "玉带桥（中国北京市海淀区境内过湖通道）", "url": "https://baike.baidu.com/item/%E7%8E%89%E5%B8%A6%E6%A1%A5/79395", "date": "未标注"},
+            {"publisher": "买购网", "title": "北京玉带桥-颐和园玉带桥", "url": "https://m.maigoo.com/citiao/142986.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "玉带桥桥面高出水面约10米。",
+          "status": "conflicting",
+          "note": "北京旅游网文章称“高出水面约10米”（另一文称十米有余）；携程游记与一份英文资料称桥高约8.7米；百科给出的是矢高约7.5米（指拱券净高，口径不同）。不建议把具体高度写入字幕。",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing）", "title": "去颐和园不能不看的桥", "url": "https://www.visitbeijing.com.cn/article/47Qllqti9Bv", "date": "未标注"},
+            {"publisher": "携程（游记）", "title": "皇家园林颐和园之西堤篇——诗词欣赏", "url": "https://you.ctrip.com/travels/beijing1/4082358.html", "date": "未标注"},
+            {"publisher": "Visit Beijing（英文）", "title": "Jade Belt Bridge 相关页面", "url": "https://english.visitbeijing.com.cn/article/47ONN8Wak3L", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "玉带桥的桥栏望柱上雕有飞翔的仙鹤。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "百度百科", "title": "玉带桥（中国北京市海淀区境内过湖通道）", "url": "https://baike.baidu.com/item/%E7%8E%89%E5%B8%A6%E6%A1%A5/79395", "date": "未标注"},
+            {"publisher": "携程（游记）", "title": "皇家园林颐和园之西堤篇——诗词欣赏", "url": "https://you.ctrip.com/travels/beijing1/4082358.html", "date": "未标注"},
+            {"publisher": "Wikipedia (English)", "title": "Jade Belt Bridge", "url": "https://en.wikipedia.org/wiki/Jade_Belt_Bridge", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "玉带桥曾是乾隆帝从昆明湖乘船前往玉泉山的水路通道，高拱是为了让御舟（龙舟）通过。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing）", "title": "颐和园玉带桥：深得乾隆帝喜爱的石桥", "url": "https://www.visitbeijing.com.cn/article/47QoGRxk58Q", "date": "未标注"},
+            {"publisher": "Wikipedia (English)", "title": "Jade Belt Bridge", "url": "https://en.wikipedia.org/wiki/Jade_Belt_Bridge", "date": "未标注"},
+            {"publisher": "买购网", "title": "北京玉带桥-颐和园玉带桥", "url": "https://m.maigoo.com/citiao/142986.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "玉带桥俗称“驼峰桥”（英文 Camel's Back Bridge），旧名“穹桥”。",
+          "status": "verified-2plus-independent",
+          "note": "“驼峰桥”中英文来源互证；“穹桥”仅见中文百科类页面。",
+          "sources": [
+            {"publisher": "百度百科", "title": "玉带桥（中国北京市海淀区境内过湖通道）", "url": "https://baike.baidu.com/item/%E7%8E%89%E5%B8%A6%E6%A1%A5/79395", "date": "未标注"},
+            {"publisher": "Wikipedia (English)", "title": "Jade Belt Bridge", "url": "https://en.wikipedia.org/wiki/Jade_Belt_Bridge", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "玉带桥两侧各有38级台阶，坡度约45度。",
+          "status": "single-source",
+          "note": "仅见北京旅游网一篇文章，未找到第二个独立来源。",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing）", "title": "去颐和园不能不看的桥", "url": "https://www.visitbeijing.com.cn/article/47Qllqti9Bv", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "【建造年份】乾隆十五年（1750年；携程游记、英文维基部分版本）对1751—1764年（中文维基、Structurae转引）对笼统的“乾隆年间（1736—1795年）”（百度百科）。1750年是清漪园（颐和园前身）开始兴建之年，1751—1764年覆盖清漪园建设期，两说可能分别指始建与建成，但未找到官方依据。采信“清乾隆年间”这一不会出错的写法。",
+        "【高度】“高出水面约10米”（北京旅游网）、“桥高约8.7米”（携程、英文资料）、“矢高约7.5米”（百科）。三者口径不同（桥面顶高/桥高/拱券净高），无法判定哪个更准，均不建议上字幕。",
+        "【材质】“汉白玉和青白石”（多数中文来源）、“青石和汉白玉”（个别文章）、“white marble and bluestone / greenish white marble”（英文旅游资料）、“全部用玉石琢成”（百科文学化说法）。采信“汉白玉和青白石”。",
+        "【净跨与矢高】11.38米、约7.5米多页雷同，疑同源，未见官方测绘数据，标为单一来源。",
+        "【未完成的核实】原计划补查桥梁史著作（如《中国古桥技术史》）中的测绘数据和颐和园官网说法，因搜索配额用尽、且直接抓取被网络白名单拦截，未能完成。",
+        "【对线索的核对】线索“高拱单孔”正确；“汉白玉/青白石”应理解为两种石材并用而非二选一；年代线索未给具体年份，查得只有“清乾隆年间”可以稳妥使用。"
+      ]
+    }
+  ]
+}

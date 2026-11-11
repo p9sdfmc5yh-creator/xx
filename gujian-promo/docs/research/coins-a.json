@@ -1,0 +1,1876 @@
+{
+  "group": "coins-a",
+  "filePath": "/home/user/kashing/gujian-promo/docs/research/coins-a.json",
+  "searchesUsed": 17,
+  "methodNote": "17 次 WebSearch（standard）全部用完，未用 WebFetch。事实依据检索摘要与链接列表，未逐页核对；凡标“常识提示”的内容不来自本次检索。",
+  "subjects": [
+    {
+      "shots": [
+        "s04"
+      ],
+      "name_zh": "贝币（天然海贝·货贝）",
+      "depiction": [
+        "形状：小型海贝，卵圆形，背部隆起，腹面较平；带细齿的狭长壳口（“贝齿/贝唇”）在腹面正中，不在背面。（齿槽见搜狐科普稿；其余为常识）",
+        "加工：为了穿绳携带，背部多凿孔。按检索到的分期：早期孔小（小孔式），后来孔扩大（大孔式），春秋战国时背部几乎整个磨平（磨背式）。s04 画的“贝背磨开一个大口、露出内腔”相当于大孔式/磨背式，是偏晚的样子；若要表现商代，孔应小而偏在背部一端。（单一来源）",
+        "磨口：磨背是在砺石上磨出来的，口沿是一圈平整的磨面，开口呈椭圆形，可见分层的壳壁断面和幽暗内腔；不是砸破的锯齿状破洞。（常识提示，未检索证实）",
+        "颜色（常识提示，未检索证实）：货贝壳面为乳白至淡黄的瓷质釉面，基本没有成片斑点，至多有两三道模糊的灰青色横带；环纹货贝背部有一圈金黄色细环。出土贝币多已失去釉光，呈白垩色、灰白或土黄，并沾土锈。",
+        "比例（常识提示）：货贝长约 1.5—2.5 厘米，壳厚而小；货贝两侧壳缘有结节状隆起，轮廓略呈菱形，不是光滑的蛋形。"
+      ],
+      "pitfalls": [
+        "把货贝画成布满焦糖色斑点的“虎斑贝/宝贝”。分镜 s04 现在写的“细密的焦糖色斑点”与货贝实物不符（货贝基本无斑），建议改为乳白—淡黄素面，至多加几道淡灰横带或一圈淡金环。此点是常识判断，本次检索没有取得图像或文字佐证，请对照实物照片再定。",
+        "把齿口画到背面，或把磨背画成砸出来的不规则破洞。",
+        "在画面或说明里写“妇好墓出土海贝 6800 余枚”之类的具体数字——两次专门检索都没有查到出处。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "天然海贝曾被用作货币，称贝币。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "搜狐（科普稿）",
+              "title": "魅力汉字 | “贝”的前世今生",
+              "url": "https://www.sohu.com/a/888024379_528910",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States Period Bone Shell Coin 戰國時期 骨質貝幣",
+              "url": "https://www.legends.com.tw/2025/02/24/warring-states-period-bone-shell-coin-%E6%88%B0%E5%9C%8B%E6%99%82%E6%9C%9F-%E9%AA%A8%E8%B3%AA%E8%B2%9D%E5%B9%A3/",
+              "date": "2025-02-24（据URL路径）"
+            }
+          ],
+          "note": "搜狐科普稿与钱币商说明都把天然海贝当作贝币来讲。两处都不是考古报告。"
+        },
+        {
+          "claim": "货贝又名齿贝；各类贝币（珧贝、骨贝、石贝、铜贝等）中最常用的仍是天然海贝。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "搜狐（科普稿）",
+              "title": "魅力汉字 | “贝”的前世今生",
+              "url": "https://www.sohu.com/a/888024379_528910",
+              "date": "未标注"
+            }
+          ],
+          "note": "只见于搜狐科普稿。"
+        },
+        {
+          "claim": "货贝腹面有一条带齿的长槽（称贝齿或贝唇）；为便于携带，背部多凿孔：早期孔小，称小孔式；其后孔扩大，称大孔式；春秋战国时背部几乎磨平，称磨背式。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "搜狐（科普稿）",
+              "title": "魅力汉字 | “贝”的前世今生",
+              "url": "https://www.sohu.com/a/888024379_528910",
+              "date": "未标注"
+            }
+          ],
+          "note": "只有这一篇科普稿给出分期，未见第二来源。"
+        },
+        {
+          "claim": "殷墟妇好墓 1976 年发掘，是殷墟唯一保存完整的商代王室墓葬，出土随葬器物 1928 件，其中有大量海贝。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "中国社会科学网（考古栏目）",
+              "title": "（检索结果未显示标题）t20230420_5623450",
+              "url": "https://www.cssn.cn/kgxc/kgxc_kgxl/202304/t20230420_5623450.shtml",
+              "date": "2023-04-20（据URL路径）"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_3450887",
+              "url": "https://www.thepaper.cn/newsDetail_forward_3450887",
+              "date": "未标注"
+            }
+          ],
+          "note": "“1928 件”在两次检索的摘要里以不同措辞各出现一次，“大量海贝”只出现一次。检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。因无法确认是两个独立页面，保守标为单一来源。"
+        },
+        {
+          "claim": "妇好墓出土海贝的具体数量（流行说法为 6800 余枚或近 7000 枚）。",
+          "status": "unverified",
+          "sources": [],
+          "note": "两次专门检索（第 1、14 次）都没有返回任何带数量的结果，不可上画面或写入说明。"
+        },
+        {
+          "claim": "商周时贝以“朋”为计数单位。",
+          "status": "unverified",
+          "sources": [],
+          "note": "两次检索均未返回相关内容。"
+        },
+        {
+          "claim": "货贝背面的颜色与斑纹（是否有焦糖色斑点）。",
+          "status": "unverified",
+          "sources": [],
+          "note": "没有检索到形态描述。常识上货贝为乳白—淡黄、基本无斑，见 depiction 与 pitfalls 的提示。"
+        }
+      ],
+      "conflicts": [
+        "【方法说明】本组共用 17 次 WebSearch（额度上限），未使用 WebFetch：所有事实依据的是检索返回的综合摘要与链接列表，没有逐页打开核对原文与页面日期。摘要多数不逐句标注出处，凡 note 中写“对应关系未核对”的，链接与论断的对应是按摘要措辞推定的。date 字段写“据URL路径”的是从链接里的日期推得。标为 unverified 的条目里凡写“常识提示”的内容，来自通行的钱币学常识而非本次检索，不得直接用作字幕依据。",
+        "【货贝斑纹】分镜 s04 的“焦糖色斑点”与常识中的货贝（素面乳白—淡黄）不一致；检索没有取得任何一方的证据。建议以实物照片为准，在取得依据前按素面处理。"
+      ],
+      "storyboardChecks": [
+        {
+          "shot": "s04",
+          "question": "货贝作为贝币时背部磨平/穿孔的做法及磨口的典型形状",
+          "answer": "有：背部凿孔，小孔式→大孔式→磨背式（春秋战国，背部几乎磨平）。磨口形状未查到文字描述，按常识为平整的椭圆形磨面开口。",
+          "status": "single-source"
+        },
+        {
+          "shot": "s04",
+          "question": "货贝背面的真实颜色与斑纹",
+          "answer": "未查到。常识：乳白—淡黄素面，无焦糖斑点；建议修改分镜的斑点描述。",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s29"
+      ],
+      "name_zh": "骨贝（仿贝）",
+      "depiction": [
+        "用兽骨磨成海贝外形的仿制贝：体小而扁，轮廓呈瓜子形（一端略尖）。检索到的一件实物说明：长约 32 毫米。（单一来源，钱币商页面）",
+        "正面略鼓，自尖端向下刻一道带齿的凹槽，模仿海贝的齿口；背面较平。（凹槽与刻齿：单一来源；正鼓背平：常识）",
+        "穿孔：该实物两端各有一个圆形穿孔（可能兼作饰物）。s29 画的“偏一侧一个圆孔”可以保留，但孔应落在槽的端部附近，不要钻在侧边中腰；画两个孔（上下各一）更贴近这件实物。",
+        "质感与颜色（常识提示，未检索证实）：骨白、牙黄到土黄，哑光无釉；可见顺向打磨痕和骨质细孔，缝隙嵌黄土，个别被铜锈染出淡绿。s29 的骨白色可用。",
+        "厚度：薄而均匀的骨片，边缘磨圆，不是真贝那样鼓成一个壳。"
+      ],
+      "pitfalls": [
+        "画出瓷釉光泽或贝壳的生长纹——骨贝是哑光骨质。",
+        "把齿纹画成贯通整面的长横线；应是沿中槽两侧的短刻齿。",
+        "在说明里挂具体遗址、墓葬或馆藏名：本次检索没有查到骨贝的出土或馆藏记录。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "骨贝是贝币的仿制品之一，同类仿制贝还有石贝、铜贝等。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "搜狐（科普稿）",
+              "title": "魅力汉字 | “贝”的前世今生",
+              "url": "https://www.sohu.com/a/888024379_528910",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States Period Bone Shell Coin 戰國時期 骨質貝幣",
+              "url": "https://www.legends.com.tw/2025/02/24/warring-states-period-bone-shell-coin-%E6%88%B0%E5%9C%8B%E6%99%82%E6%9C%9F-%E9%AA%A8%E8%B3%AA%E8%B2%9D%E5%B9%A3/",
+              "date": "2025-02-24（据URL路径）"
+            }
+          ],
+          "note": "搜狐稿列出“珧贝、骨贝、石贝、铜贝”；钱币商页面称仿制品用“陶、石、玉、骨”等材料制作，并提到青铜贝。陶、玉两种只见于钱币商页面。"
+        },
+        {
+          "claim": "一件标为战国时期的骨质贝币：长约 32 毫米，瓜子形，自尖端向下有一道模仿贝壳表面的刻齿凹槽，两端各有圆形穿孔，可能兼作饰物。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States Period Bone Shell Coin 戰國時期 骨質貝幣",
+              "url": "https://www.legends.com.tw/2025/02/24/warring-states-period-bone-shell-coin-%E6%88%B0%E5%9C%8B%E6%99%82%E6%9C%9F-%E9%AA%A8%E8%B3%AA%E8%B2%9D%E5%B9%A3/",
+              "date": "2025-02-24（据URL路径）"
+            }
+          ],
+          "note": "钱币商藏品说明，未注明出土地或收藏机构；检索摘要也提示其可信度有限。"
+        },
+        {
+          "claim": "商代晚期已出现青铜铸造的铜贝。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States Period Bone Shell Coin 戰國時期 骨質貝幣",
+              "url": "https://www.legends.com.tw/2025/02/24/warring-states-period-bone-shell-coin-%E6%88%B0%E5%9C%8B%E6%99%82%E6%9C%9F-%E9%AA%A8%E8%B3%AA%E8%B2%9D%E5%B9%A3/",
+              "date": "2025-02-24（据URL路径）"
+            }
+          ],
+          "note": "同一钱币商页面的概括性说法，没有给出具体器物。"
+        },
+        {
+          "claim": "骨贝的流行年代（商周）、典型出土地点与博物馆藏品。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 2 次检索返回的博物馆页面（弗利尔美术馆骨雕）摘要里没有提到贝形器；第 14 次检索也没有返回骨贝材料。"
+        },
+        {
+          "claim": "出土骨贝的常见色泽（骨白至牙黄）。",
+          "status": "unverified",
+          "sources": [],
+          "note": "未检索到文字描述，按常识处理。"
+        }
+      ],
+      "conflicts": [],
+      "storyboardChecks": [
+        {
+          "shot": "s29",
+          "question": "骨贝形制：正面刻一道竖槽、两侧有短齿纹，并钻有一至两个穿孔",
+          "answer": "基本成立：实物说明为“一道刻齿凹槽 + 两端各一圆孔”。只有钱币商一个来源。",
+          "status": "single-source"
+        },
+        {
+          "shot": "s29",
+          "question": "骨贝出土时常见色泽为骨白至牙黄，是否宜画成偏白色",
+          "answer": "未查到；常识上可以，注意哑光。",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s10",
+        "s35"
+      ],
+      "name_zh": "布币：耸肩尖足空首布与平首尖足布",
+      "depiction": [
+        "整体：仿铲形农具的薄片青铜钱。空首布的“首”是一段中空的长銎（可以纳柄），下接扁平的布身，再分成两足。",
+        "耸肩尖足空首布（s10）：两肩向上斜耸成尖角，两足尖长，銎细长中空；英文维基据钱币学著作记载：面、背各有三道平行线，偶有铭文。s10 布身上的“纵向凸线”按三道画。（单一来源）",
+        "比例（常识提示，未检索证实）：大型者通长约 12—15 厘米，銎长约占通长的三分之一；銎为扁的多棱形，上端略收，銎内常留范芯泥；肩尖高出肩根但低于銎顶；两足之间的裆呈弧形内凹，足尖细长。布身很薄，周缘有细郭线。",
+        "平首尖足布（s35 手稿里的“尖足布”，战国赵国）：首是扁平实心的短柄（不再中空），肩平或略耸，两足尖；分大小两种，小型的铭文多为地名。手稿里画“平首、两尖足、中间一道竖线”即可。（单一来源，钱币商说明）",
+        "颜色：青铜质，出土品底色红褐至深褐，覆绿锈、蓝锈和土锈。s10 的深赭褐剪影可用。"
+      ],
+      "pitfalls": [
+        "把空首布的长銎画成实心扁柄（那是战国的平首布），或给平首布加长銎。两类时代不同，不要混在同一排。",
+        "把足画成方足、圆足，或把肩画成平肩/溜肩——耸肩尖足式的肩和足都是尖的。",
+        "在布身上写可读的现代汉字。先秦布币铭文是当时的古文字，本片这两个镜头都不上钱文。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "布币的形制仿自铲形农具。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States period, Ping Pointed Foot Spade, State of Zhao 戰國 平尖足布 趙國造",
+              "url": "https://www.legends.com.tw/2024/04/12/warring-states-period-ping-pointed-foot-spade-state-of-zhao-%E6%88%B0%E5%9C%8B-%E5%B9%B3%E5%B0%96%E8%B6%B3%E5%B8%83-%E8%B6%99%E5%9C%8B%E9%80%A0/",
+              "date": "2024-04-12（据URL路径）"
+            },
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Ancient Chinese coinage",
+              "url": "https://en.Wikipedia.com/wiki/Chinese_coin",
+              "date": "未标注"
+            }
+          ],
+          "note": "钱币商页面称布币是“仿造铲形农具的金属钱币”；英文维基称早期空首布形似金属铲。"
+        },
+        {
+          "claim": "史书把这种铲形钱写作“镈”，或借同音字写作“布”。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States period, Ping Pointed Foot Spade, State of Zhao 戰國 平尖足布 趙國造",
+              "url": "https://www.legends.com.tw/2024/04/12/warring-states-period-ping-pointed-foot-spade-state-of-zhao-%E6%88%B0%E5%9C%8B-%E5%B9%B3%E5%B0%96%E8%B6%B3%E5%B8%83-%E8%B6%99%E5%9C%8B%E9%80%A0/",
+              "date": "2024-04-12（据URL路径）"
+            }
+          ],
+          "note": "只见于钱币商页面。同一页面还说布币“从商朝末期发展到战国”，起始年代没有第二来源，不采用。"
+        },
+        {
+          "claim": "耸肩尖足空首布：肩、足皆尖，长銎中空；面、背各有三道平行线，偶有铭文；出土于河南东北部和山西，属晋国（后归赵国）地域；年代晚于平肩空首布；其形状被认为便于成束捆扎。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Ancient Chinese coinage",
+              "url": "https://en.Wikipedia.com/wiki/Chinese_coin",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Spade money",
+              "url": "https://wikipedia.com/wiki/Spade_coin",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Wikipedia 用户草稿（镜像站 wiki.riteme.site）",
+              "title": "User:Donald Trung/Spade Money (2020 expansion)",
+              "url": "https://wiki.riteme.site/wiki/User:Donald_Trung/Spade_Money_(2020_expansion)",
+              "date": "未标注"
+            }
+          ],
+          "note": "三个链接都出自英文维基一系（条目、镜像、用户扩写稿），算一个来源。"
+        },
+        {
+          "claim": "耸肩尖足空首布属春秋时期。",
+          "status": "unverified",
+          "sources": [],
+          "note": "检索结果只说属“晋国（后为赵国）”地域，没有给出明确时段；“春秋晋国”是通行说法，仅供内部校对。"
+        },
+        {
+          "claim": "战国时期布币以三晋（韩、赵、魏）地区为核心，演变出多种形态。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States period, Ping Pointed Foot Spade, State of Zhao 戰國 平尖足布 趙國造",
+              "url": "https://www.legends.com.tw/2024/04/12/warring-states-period-ping-pointed-foot-spade-state-of-zhao-%E6%88%B0%E5%9C%8B-%E5%B9%B3%E5%B0%96%E8%B6%B3%E5%B8%83-%E8%B6%99%E5%9C%8B%E9%80%A0/",
+              "date": "2024-04-12（据URL路径）"
+            }
+          ],
+          "note": "钱币商藏品说明。"
+        },
+        {
+          "claim": "赵国流通的布币以尖足布为代表，分大型和小型两种；小型尖足布出土较多，品种达四十余种。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States period, Ping Pointed Foot Spade, State of Zhao 戰國 平尖足布 趙國造",
+              "url": "https://www.legends.com.tw/2024/04/12/warring-states-period-ping-pointed-foot-spade-state-of-zhao-%E6%88%B0%E5%9C%8B-%E5%B9%B3%E5%B0%96%E8%B6%B3%E5%B8%83-%E8%B6%99%E5%9C%8B%E9%80%A0/",
+              "date": "2024-04-12（据URL路径）"
+            },
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States Period, Zi Shi Half Pointed Foot Spade, State of Zhao 戰國時期 茲氏半尖足布 趙國造",
+              "url": "https://www.legends.com.tw/2024/11/29/warring-states-periodzi-shi-half-pointed-foot-spadestate-of-zhao%E6%88%B0%E5%9C%8B%E6%99%82%E6%9C%9F%E8%8C%B2%E6%B0%8F%E5%8D%8A%E5%B0%96%E8%B6%B3%E5%B8%83%E8%B6%99%E5%9C%8B%E9%80%A0/",
+              "date": "2024-11-29（据URL路径）"
+            }
+          ],
+          "note": "两个链接是同一钱币商的不同藏品页，算一个来源。"
+        },
+        {
+          "claim": "尖足布铭文举例：“平州”（铸地被认为在今陕西米脂一带，铸造不早于赵武灵王取得该地的公元前 306 年）；“茲氏半”（茲氏在今山西汾阳一带，战国属赵，公元前 248 年被秦攻占）。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States period, Ping Pointed Foot Spade, State of Zhao 戰國 平尖足布 趙國造",
+              "url": "https://www.legends.com.tw/2024/04/12/warring-states-period-ping-pointed-foot-spade-state-of-zhao-%E6%88%B0%E5%9C%8B-%E5%B9%B3%E5%B0%96%E8%B6%B3%E5%B8%83-%E8%B6%99%E5%9C%8B%E9%80%A0/",
+              "date": "2024-04-12（据URL路径）"
+            },
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Warring States Period, Zi Shi Half Pointed Foot Spade, State of Zhao 戰國時期 茲氏半尖足布 趙國造",
+              "url": "https://www.legends.com.tw/2024/11/29/warring-states-periodzi-shi-half-pointed-foot-spadestate-of-zhao%E6%88%B0%E5%9C%8B%E6%99%82%E6%9C%9F%E8%8C%B2%E6%B0%8F%E5%8D%8A%E5%B0%96%E8%B6%B3%E5%B8%83%E8%B6%99%E5%9C%8B%E9%80%A0/",
+              "date": "2024-11-29（据URL路径）"
+            }
+          ],
+          "note": "同一钱币商的两个藏品页。本片不上钱文，仅供校对。"
+        },
+        {
+          "claim": "耸肩尖足空首布的具体尺寸与比例（通长、銎长、肩角）。",
+          "status": "unverified",
+          "sources": [],
+          "note": "两次检索（第 3、13 次）都没有返回尺寸数据；depiction 中的比例是常识估计。"
+        }
+      ],
+      "conflicts": [
+        "【布币起源年代】钱币商页面称布币“从商朝末期发展到战国时代”；英文维基只给出类型先后（平肩空首布早于耸肩尖足空首布），没有支持“商末”的说法。不采信“商末”，说明文字里只写“春秋战国”。"
+      ],
+      "storyboardChecks": [
+        {
+          "shot": "s10",
+          "question": "耸肩尖足空首布的轮廓比例：銎首长短、肩角、足尖形状，布身是否有纵向平行凸线（几道）",
+          "answer": "凸线：三道平行线（英文维基，单一来源）。肩、足皆尖，长銎中空已证实；具体比例数字未查到。",
+          "status": "single-source"
+        },
+        {
+          "shot": "s10",
+          "question": "时代与流通地域（春秋晋国一带）",
+          "answer": "地域：河南东北部与山西，晋（后归赵）——英文维基单一来源；“春秋”这一时段未得到检索结果直接支持。",
+          "status": "single-source"
+        },
+        {
+          "shot": "s35",
+          "question": "尖足布的基本形制：平首、耸肩或平肩、两尖足",
+          "answer": "赵国尖足布、尖足、分大小两种已有来源（钱币商，单一来源）；“平首”与肩形为常识，未检索证实。",
+          "status": "single-source"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s35"
+      ],
+      "name_zh": "刀币（尖首刀、明刀、齐刀）",
+      "depiction": [
+        "形如一把小青铜削刀，自上而下为刀首、刀身、刀柄、柄端圆环四部分。（“由实用刀具演变”有单一来源；四部分的划分为常识）",
+        "刀身弧背、凹刃——刃在内弧一侧；周缘有凸起的细郭；柄扁平，柄面有纵向平行凸线（常见两道），末端接一个小而圆的环。（常识提示，未检索证实）",
+        "类型：尖首刀的刀尖收成尖锋（有来源）；明刀刀身较窄，面有一字，传统释“明”（有来源）；齐刀体大厚重，面文三至六字（字数有来源，体大为常识）。",
+        "尺寸（常识提示，未检索证实）：明刀通长约 13—14 厘米，齐刀约 18 厘米。检索没有返回长度数据，画面与说明都不要写数字。",
+        "颜色：青铜，红褐底带绿锈斑；s35 是墨线手稿，只需轮廓准确。"
+      ],
+      "pitfalls": [
+        "把刃画在外弧一侧，或画成直背直刃的匕首；刀币是弧背凹刃。",
+        "柄端的环画成椭圆或很大的环；应为小圆环，与柄同宽或略宽。",
+        "写钱文：齐三字刀面文传统释“齐法化”，现代另有改释（如“齐大刀”，此说本次没有检索到来源）。手稿镜头不写字是对的。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "刀币由实用的刀具演变而来，主要流通于燕、齐、赵等国。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Knife money",
+              "url": "https://en.wikipedia.org/wiki/Knife_money",
+              "date": "未标注"
+            },
+            {
+              "publisher": "APMEX Learn（贵金属商科普页）",
+              "title": "What is Chinese Knife Money?",
+              "url": "https://learn.apmex.com/answers/what-is-chinese-knife-money/",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Primaltrek（Gary Ashkenazy 的中国钱币资料站）",
+              "title": "Chinese Coins",
+              "url": "https://www.primaltrek.com/chinesecoins.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "检索摘要以“各来源一致”的口气概述，但没有逐句标注出处，也无法打开网页核对，保守按单一来源处理。检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "尖首刀因刀尖收成尖锋而得名，一般与燕国相联系。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Primaltrek（Gary Ashkenazy 的中国钱币资料站）",
+              "title": "Chinese Coins",
+              "url": "https://www.primaltrek.com/chinesecoins.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Knife money",
+              "url": "https://en.wikipedia.org/wiki/Knife_money",
+              "date": "未标注"
+            }
+          ],
+          "note": "命名解释在摘要中只出自一个来源；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "明刀因面文一字传统释读为“明”而得名，常与尖足布、方足布同出；仿明刀样式的博山刀，有来源把年代定在燕占齐地的公元前 284—前 279 年间。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Knife money",
+              "url": "https://en.wikipedia.org/wiki/Knife_money",
+              "date": "未标注"
+            }
+          ],
+          "note": "英文维基一个来源。“明刀属燕国”是通行说法，摘要只间接支持。"
+        },
+        {
+          "claim": "齐国三字刀的面文传统释为“齐法化”（齊法化），意为齐国的法定货币。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Knife money",
+              "url": "https://en.wikipedia.org/wiki/Knife_money",
+              "date": "未标注"
+            },
+            {
+              "publisher": "APMEX Learn（贵金属商科普页）",
+              "title": "What is Chinese Knife Money?",
+              "url": "https://learn.apmex.com/answers/what-is-chinese-knife-money/",
+              "date": "未标注"
+            },
+            {
+              "publisher": "CoinTalk（钱币论坛帖）",
+              "title": "（检索结果未显示标题）post 3165916",
+              "url": "https://www.cointalk.com/goto/post?id=3165916",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要显示有两个来源分别写作“Qi fa hua（齊法化，Qi Legal Money）”与“Qi Fa Huo（authorized currency of Qi）”。检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。“齐大刀”这一改释在本次检索中没有出现。"
+        },
+        {
+          "claim": "齐刀按面文字数分三字刀、五字刀、六字刀等；五字刀带即墨、安阳等铸地名，六字刀铭文更长。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Knife money",
+              "url": "https://en.wikipedia.org/wiki/Knife_money",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要只给出一处；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "刀币出现于春秋时期。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Knife money",
+              "url": "https://en.wikipedia.org/wiki/Knife_money",
+              "date": "未标注"
+            },
+            {
+              "publisher": "CoinTalk（钱币论坛帖）",
+              "title": "（检索结果未显示标题）post 3165916",
+              "url": "https://www.cointalk.com/goto/post?id=3165916",
+              "date": "未标注"
+            }
+          ],
+          "note": "一个来源写春秋时期（公元前 770—前 476 年），论坛帖写约公元前 600 年，两者不矛盾；论坛帖不算可靠来源，按单一来源处理。"
+        },
+        {
+          "claim": "刀币的长度（齐刀约 18 厘米、明刀约 14 厘米）与柄面线纹的数目。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 4 次检索（中文）完全跑偏到兵器刀剑，第 13 次检索（英文）没有返回尺寸与柄纹描述。"
+        }
+      ],
+      "conflicts": [
+        "【齐刀面文释读】检索到的两个来源都按传统释读写作“齐法化”（Qi Fa Hua/Huo）。现代古文字学界另有“齐大刀”的改释，但本次检索没有取得出处。本片不上钱文，不受影响；如将来要写说明文字，请先另行核实再决定用哪个名称。"
+      ],
+      "storyboardChecks": [
+        {
+          "shot": "s35",
+          "question": "刀币的基本形制：弧背凹刃、柄端带圆环，柄上有纵向线纹",
+          "answer": "未取得文字来源（检索只支持“由实用刀具演变”“尖首刀刀尖成锋”，且均为单一来源）。按常识该描述成立。",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "shots": [],
+      "shotNote": "分镜未单列此题材；s35 手稿如要添一枚楚币可参照本条。",
+      "name_zh": "蚁鼻钱（楚国铜贝，俗称鬼脸钱）",
+      "depiction": [
+        "战国楚国的小型铜贝：仿海贝形，上大下小的不规则椭圆形（近水滴/瓜子形），正面凸起，背面平。（两处来源）",
+        "尺寸：一说高约 1.8 厘米，重约 0.6—4.1 克——比指甲盖还小。（单一来源）",
+        "正面有凹下的阴文；最常见的一种字形和钱面合起来像一张脸，所以叫“鬼脸钱”。上端常有一个小孔或小凹点（常识提示）。",
+        "颜色：青铜绿锈或黑褐色。"
+      ],
+      "pitfalls": [
+        "画成真贝那样带齿槽；蚁鼻钱正面是文字，不是齿口。",
+        "把面文写成某个现代汉字。面文释读不统一，只能摹写古文字原形，或干脆不出字。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "蚁鼻钱是战国时期楚国铸行的小型青铜铸币，属于铜贝，又称鬼脸钱。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Ant-nose coin",
+              "url": "https://en.wikipedia.org/wiki/Ant-nose_coin",
+              "date": "未标注"
+            },
+            {
+              "publisher": "搜狐（科普稿）",
+              "title": "魅力汉字 | “贝”的前世今生",
+              "url": "https://www.sohu.com/a/888024379_528910",
+              "date": "未标注"
+            },
+            {
+              "publisher": "环球网·艺术",
+              "title": "（检索结果未显示标题）article/3zYVNq4slhw",
+              "url": "https://art.huanqiu.com/article/3zYVNq4slhw",
+              "date": "未标注"
+            }
+          ],
+          "note": "英文维基与中文科普稿一致。检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "形制：上大下小的不规则椭圆形，形似海贝；正面凸起、有阴文，背面平。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "搜狐（科普稿）",
+              "title": "魅力汉字 | “贝”的前世今生",
+              "url": "https://www.sohu.com/a/888024379_528910",
+              "date": "未标注"
+            },
+            {
+              "publisher": "环球网·艺术",
+              "title": "（检索结果未显示标题）article/3zYVNq4slhw",
+              "url": "https://art.huanqiu.com/article/3zYVNq4slhw",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网（画廊资讯）",
+              "title": "（检索结果未显示标题）g_shownews10807_33449",
+              "url": "https://gallery.artron.net/10807/g_shownews10807_33449.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要显示两篇中文资料分别给出“正面凸起并刻有文字，背面平直”和“背面磨平，正面有阴文”。检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "高约 1.8 厘米，重约 0.6 克至 4.1 克。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "环球网·艺术",
+              "title": "（检索结果未显示标题）article/3zYVNq4slhw",
+              "url": "https://art.huanqiu.com/article/3zYVNq4slhw",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网（画廊资讯）",
+              "title": "（检索结果未显示标题）g_shownews10807_33449",
+              "url": "https://gallery.artron.net/10807/g_shownews10807_33449.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "只在一条资料里出现；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "“蚁鼻钱”一名最早见于宋代洪遵《泉志》：“世谓之蚁鼻钱”。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Ant-nose coin",
+              "url": "https://en.wikipedia.org/wiki/Ant-nose_coin",
+              "date": "未标注"
+            },
+            {
+              "publisher": "环球网·艺术",
+              "title": "（检索结果未显示标题）article/3zYVNq4slhw",
+              "url": "https://art.huanqiu.com/article/3zYVNq4slhw",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要只给出一处；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "主要流通于江淮流域的楚国境内。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Ant-nose coin",
+              "url": "https://en.wikipedia.org/wiki/Ant-nose_coin",
+              "date": "未标注"
+            },
+            {
+              "publisher": "环球网·艺术",
+              "title": "（检索结果未显示标题）article/3zYVNq4slhw",
+              "url": "https://art.huanqiu.com/article/3zYVNq4slhw",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要只给出一处；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "蚁鼻钱最常见面文的释读。",
+          "status": "conflicting",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Ant-nose coin",
+              "url": "https://en.wikipedia.org/wiki/Ant-nose_coin",
+              "date": "未标注"
+            },
+            {
+              "publisher": "环球网·艺术",
+              "title": "（检索结果未显示标题）article/3zYVNq4slhw",
+              "url": "https://art.huanqiu.com/article/3zYVNq4slhw",
+              "date": "未标注"
+            },
+            {
+              "publisher": "搜狐（科普稿）",
+              "title": "魅力汉字 | “贝”的前世今生",
+              "url": "https://www.sohu.com/a/888024379_528910",
+              "date": "未标注"
+            }
+          ],
+          "note": "检索摘要写的是“紊”，同时指出各来源的释读并不统一。见 conflicts。"
+        }
+      ],
+      "conflicts": [
+        "【蚁鼻钱面文】检索摘要给出的常见字是“紊”，并明确提示各来源在释读与命名解释上不统一（“蚂蚁趴在鼻尖”与“形容其小”两说并存）。不采信任何一种现代字的写法上画面；需要出字时摹写原始字形。"
+      ],
+      "storyboardChecks": []
+    },
+    {
+      "shots": [
+        "s15"
+      ],
+      "name_zh": "秦半两",
+      "depiction": [
+        "圆形方孔青铜钱。典型的秦半两没有凸起的内郭和外郭，面背平素，背面无字。（图录数据库，单一来源；与分镜一致）",
+        "钱文只有“半两”二字，篆书（一处来源称小篆），分列方孔左右，自右向左读：右“半”、左“两”；字画凸起、高低不匀。（读序与篆书有两处以上来源）",
+        "钱体厚重，大小轻重不一，轮廓不很圆整，方孔也不甚规矩，边缘常留浇口茬。（常识提示；“轮廓不规整”与分镜一致）",
+        "直径（常识提示，未检索证实）：多在 3 厘米上下，画面不要标数字。",
+        "颜色：青铜褐、红褐底带绿锈。s15 钱文化在运动模糊里，不可辨认即可。"
+      ],
+      "pitfalls": [
+        "给秦半两加上凸起的外郭、内郭（那是后来的五铢等钱）。个别版别边缘微凸，汉代四铢半两有带外郭的，但秦半两主流无郭。",
+        "钱文左右写反（左“半”右“两”）或写成隶书、楷书。确有反文的版别（图录称 legend reversed），但不是常态。",
+        "说明文字写“秦始皇发明半两钱”“李斯书写钱文”或“公元前 221 年统一货币”：半两在战国秦已铸行；李斯题写只是商业鉴赏稿里的传说；具体年份本次没有查到出处。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "秦半两钱文为“半两”二字，篆书，自右向左读（右“半”、左“两”）。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "Numisquare（钱币图录数据库）",
+              "title": "12 liang type 5（检索结果标题；即 ½ Liang 半两，type 5）",
+              "url": "https://www.numisquare.com/12-liang-type-5-1744320450.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "LastDodo（收藏品图录）",
+              "title": "China 12 zhu 175-119 Ban Liang Western Han dynastie",
+              "url": "https://www.lastdodo.com/en/items/5653019-china-12-zhu-175-119-ban-liang-western-han-dynastie",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网（新闻频道，商业鉴赏稿）",
+              "title": "（检索结果未显示标题）n1919112",
+              "url": "https://m-news.artron.net/news/20260615/n1919112.html",
+              "date": "2026-06-15（据URL路径；同一稿件另有多个日期路径）"
+            }
+          ],
+          "note": "图录数据库写“自右向左读、古篆”；LastDodo 条目写“读序：右、左；篆书”（该条目是西汉半两，读法相同）；雅昌稿进一步称为“小篆”（仅此一处）。Numisquare 有多个半两条目，具体哪一条写了读序未核对。"
+        },
+        {
+          "claim": "“半两”即钱的法定重量：当时的半两，合十二铢。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "雅昌艺术网（新闻频道，商业鉴赏稿）",
+              "title": "（检索结果未显示标题）n1919112",
+              "url": "https://m-news.artron.net/news/20260615/n1919112.html",
+              "date": "2026-06-15（据URL路径；同一稿件另有多个日期路径）"
+            },
+            {
+              "publisher": "Numisquare（钱币图录数据库）",
+              "title": "12 liang type 5（检索结果标题；即 ½ Liang 半两，type 5）",
+              "url": "https://www.numisquare.com/12-liang-type-5-1744320450.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "雅昌稿写“每枚重为当时的半两（即十二铢）”；图录数据库把秦半两归为“12 zhu”型。实物轻重不一是常识，说明里不要写克数。"
+        },
+        {
+          "claim": "半两钱在秦统一之前的战国秦国已经铸行。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "雅昌艺术网（新闻频道，商业鉴赏稿）",
+              "title": "（检索结果未显示标题）n1919112",
+              "url": "https://m-news.artron.net/news/20260615/n1919112.html",
+              "date": "2026-06-15（据URL路径；同一稿件另有多个日期路径）"
+            },
+            {
+              "publisher": "Numisquare（钱币图录数据库）",
+              "title": "12 liang type 5 legend reversed（检索结果标题；即 ½ Liang 半两，type 5，反文）",
+              "url": "https://www.numisquare.com/12-liang-type-5-legend-reversed-8052429140.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "雅昌稿称秦始皇“在战国秦半两的基础上改进”；图录数据库把半两类钱币的年代标为公元前 378 年至前 201 年。"
+        },
+        {
+          "claim": "秦始皇统一六国后统一货币，废止六国旧钱，圆形方孔的半两钱通行全国。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "雅昌艺术网（新闻频道，商业鉴赏稿）",
+              "title": "（检索结果未显示标题）n1919112",
+              "url": "https://m-news.artron.net/news/20260615/n1919112.html",
+              "date": "2026-06-15（据URL路径；同一稿件另有多个日期路径）"
+            }
+          ],
+          "note": "商业鉴赏稿。属通行说法，但本次检索只有这一个文字出处。"
+        },
+        {
+          "claim": "典型的（十二铢）秦半两没有内郭、外郭，也没有背文。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Numisquare（钱币图录数据库）",
+              "title": "12 liang type 5（检索结果标题；即 ½ Liang 半两，type 5）",
+              "url": "https://www.numisquare.com/12-liang-type-5-1744320450.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Numisquare（钱币图录数据库）",
+              "title": "12 liang type 4 with lines（检索结果标题；即 ½ Liang 半两，type 4，带线纹）",
+              "url": "https://www.numisquare.com/12-liang-type-4-with-lines-1697995820.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Banliang",
+              "url": "https://en.wikipedia.org/wiki/Banliang",
+              "date": "未标注"
+            }
+          ],
+          "note": "图录数据库的部分条目明确写无郭，另有“with lines”变体写边缘微凸；英文维基提到部分四铢半两有外郭。算图录数据库一个明确来源。"
+        },
+        {
+          "claim": "钱文相传为李斯所书。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "雅昌艺术网（新闻频道，商业鉴赏稿）",
+              "title": "（检索结果未显示标题）n1919112",
+              "url": "https://m-news.artron.net/news/20260615/n1919112.html",
+              "date": "2026-06-15（据URL路径；同一稿件另有多个日期路径）"
+            }
+          ],
+          "note": "商业鉴赏稿的说法，检索摘要也指出这属于传说，不是考古结论。不要写进说明。"
+        },
+        {
+          "claim": "秦统一货币的具体年份（公元前 221 年）。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 6 次检索明确没有找到这一年份的出处，不要写。"
+        }
+      ],
+      "conflicts": [
+        "【半两的年代】图录数据库把半两钱的铸行年代标为公元前 378—前 201 年，早于秦统一（公元前 221 年）。两者并不矛盾：半两始于战国秦，统一后推行全国。说明文字应写“秦统一后通行全国的半两钱”，不要写成“秦始皇创制”。",
+        "【有无外郭】多数图录条目写十二铢半两无内外郭；个别变体边缘微凸，英文维基称部分四铢半两（汉）有外郭。采信“秦半两无郭”作为画面依据。"
+      ],
+      "storyboardChecks": [
+        {
+          "shot": "s15",
+          "question": "秦半两无内外郭、方孔、钱文为篆书“半两”二字分列方孔左右",
+          "answer": "钱文篆书、右“半”左“两”：两处以上来源。无内外郭：图录数据库单一来源（有变体）。圆形方孔：成立。",
+          "status": "verified-2plus-independent"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s09"
+      ],
+      "name_zh": "汉五铢",
+      "depiction": [
+        "圆形方孔青铜钱，边缘有一圈凸起的外郭；通行说法是面有外郭无内郭、背面内外郭俱全。（常识提示：两次检索都没有返回对五铢郭的描述）",
+        "钱文“五銖”二字，篆书，分列方孔两侧，自右向左读：右“五”、左“銖”。“銖”是金字旁加“朱”，用篆形/繁体，不写简体“铢”。（常识提示，未检索证实）",
+        "上林三官五铢的面穿上方多有一道凸起的横线；另有版别在内郭处带圆点（“星”）和月牙（“月”）记号。（英文维基，单一来源）",
+        "直径（常识提示）：约 2.5 厘米，比秦半两小而规整，厚薄均匀。",
+        "颜色：孔雀石绿锈为主，夹蓝锈、土黄泥锈，磨损处露红铜/青铜色。s09 只取上缘局部、不露完整钱文的做法稳妥。"
+      ],
+      "pitfalls": [
+        "把“五銖”左右写反，或写成简体、楷书。",
+        "把钱面画出整齐的放射状“铸造流纹”：没有检索到铸钱表面有规则放射纹的依据，常识上也不典型。s09 建议按分镜自带的备选，用锈层龟裂、层状起伏来充当“叶脉”，并把说法改为“锈蚀纹理”。",
+        "说明里写“五铢流通到唐武德四年”时要留意：621 年是官方废止之年（单一来源），此后民间仍在使用；稳妥的写法是“沿用七百余年”。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "五铢钱始铸于汉武帝元狩五年（公元前 118 年），取代此前的三铢钱。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Wu Zhu",
+              "url": "https://Www.wikipedia.org/wiki/Wu_Zhu",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Han Dynasty（五铢藏品说明）",
+              "url": "https://legends.com.tw/?p=15580",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Western Han Dynasty,（五铢藏品说明）",
+              "url": "https://legends.com.tw/?p=25439",
+              "date": "未标注"
+            }
+          ],
+          "note": "英文维基（公元前 118 年、取代三铢）与钱币商页面（元狩五年）一致；钱币商两个页面算一个来源。"
+        },
+        {
+          "claim": "由上林三官统一铸造的五铢称“上林三官五铢”（三官五铢）。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Han Dynasty（五铢藏品说明）",
+              "url": "https://legends.com.tw/?p=15580",
+              "date": "未标注"
+            },
+            {
+              "publisher": "网易号",
+              "title": "（检索结果未显示标题）H10DGHTU0523D470",
+              "url": "https://m.163.com/dy/article/H10DGHTU0523D470.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Wu Zhu",
+              "url": "https://Www.wikipedia.org/wiki/Wu_Zhu",
+              "date": "未标注"
+            }
+          ],
+          "note": "钱币商页面与网易号文章都提到上林三官；英文维基使用“Shang Lin San Guan Wu Zhu”一名。"
+        },
+        {
+          "claim": "铸币权收归中央、专由上林三官铸钱，是在元鼎四年（公元前 113 年）。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Western Han Dynasty,（五铢藏品说明）",
+              "url": "https://legends.com.tw/?p=25439",
+              "date": "未标注"
+            }
+          ],
+          "note": "年份只见于钱币商一个页面。"
+        },
+        {
+          "claim": "“上林三官”具体指哪三个机构。",
+          "status": "conflicting",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Han Dynasty（五铢藏品说明）",
+              "url": "https://legends.com.tw/?p=15580",
+              "date": "未标注"
+            },
+            {
+              "publisher": "网易号",
+              "title": "（检索结果未显示标题）H10DGHTU0523D470",
+              "url": "https://m.163.com/dy/article/H10DGHTU0523D470.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "钟官、辨铜之外，第三官有“技巧”与“均输”两种写法，见 conflicts。"
+        },
+        {
+          "claim": "“五铢”钱文被此后许多政权沿用约七百年，直到唐代被开元通宝取代。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Wu Zhu",
+              "url": "https://Www.wikipedia.org/wiki/Wu_Zhu",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Han Dynasty（五铢藏品说明）",
+              "url": "https://legends.com.tw/?p=15580",
+              "date": "未标注"
+            }
+          ],
+          "note": "英文维基称该钱文在其后 700 年间被多个政权使用，铸至隋代、为唐开元通宝取代；钱币商页面给出武德四年废止。前 118 年至 621 年约 740 年。"
+        },
+        {
+          "claim": "官方废止五铢在唐高祖武德四年（公元 621 年），民间此后仍长期沿用旧五铢。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Legends（legends.com.tw，钱币商藏品说明；检索摘要称其为“大城邮币社”）",
+              "title": "Han Dynasty（五铢藏品说明）",
+              "url": "https://legends.com.tw/?p=15580",
+              "date": "未标注"
+            }
+          ],
+          "note": "具体年份只见于钱币商页面。"
+        },
+        {
+          "claim": "多数上林三官五铢的面穿上方有一道凸起的横线；另有版别在内郭处带表示“星”的圆点和表示“月”的月牙。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Wu Zhu",
+              "url": "https://Www.wikipedia.org/wiki/Wu_Zhu",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Wikipedia (English)",
+              "title": "Han dynasty coinage",
+              "url": "https://www.Wikipedia.com/wiki/Han_dynasty_coinage",
+              "date": "未标注"
+            }
+          ],
+          "note": "两个链接同属英文维基，算一个来源。"
+        },
+        {
+          "claim": "五铢钱文的书体（篆书）、左右位置（右“五”左“銖”）以及有外郭的形制。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 7、17 两次检索都没有返回对五铢钱文位置、书体和郭的描述。depiction 中的写法是通行常识，s09 不露完整钱文，风险可控。"
+        }
+      ],
+      "conflicts": [
+        "【上林三官所指】检索结果里有“钟官、技巧、辨铜”与“钟官、均输、辨铜”两种写法（钱币商页面与网易号文章）。两说在学界并存，本次检索无法裁定；不采信任何一种，说明文字只写“上林三官”，不展开。",
+        "【五铢的下限】英文维基说五铢铸至隋代、为唐开元通宝取代；钱币商页面说唐武德四年（621 年）官方废止、民间仍沿用。两者不矛盾（前者说铸造，后者说废止）。说明文字用“沿用七百余年”。"
+      ],
+      "storyboardChecks": [
+        {
+          "shot": "s09",
+          "question": "五铢钱文“五銖”的左右位置（右五左铢）与篆书写法",
+          "answer": "两次检索均未返回；通行常识为右“五”左“銖”、篆书。镜头不露完整钱文即可。",
+          "status": "unverified"
+        },
+        {
+          "shot": "s09",
+          "question": "铜钱表面是否确有可见的放射状铸造流纹",
+          "answer": "没有分配到检索额度，未核实；常识上不典型，建议改为锈层龟裂纹。",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s08"
+      ],
+      "name_zh": "海昏侯墓出土五铢钱堆（钱坨参考）",
+      "depiction": [
+        "数量极大的五铢钱堆积在一起，重十余吨；钱与钱相互叠压、锈结成片成坨。（“十余吨”有来源；堆积状态为常识）",
+        "每一枚都是方孔圆钱，而且大小一致（同为五铢，直径约 2.5 厘米）；s08 X 光片里的圆环影像应大小相近，方孔是正方形。",
+        "原物颜色：通体绿锈、蓝绿锈夹泥土；s08 的灰白负片是艺术处理。",
+        "成串的钱是侧立着紧挨排列的，可在坨的一侧画出一段整齐排列的钱缘，其余散乱叠压。（常识提示）"
+      ],
+      "pitfalls": [
+        "写具体枚数：早期报道估计约 200 万枚，较新的材料写 300 余万枚，口径不一；不要在画面或说明里写枚数，只写“十余吨”或“数以百万计”。",
+        "钱影大小悬殊，或把方孔画成圆孔。",
+        "把 s08 说成“海昏侯墓钱堆的 X 光片”：没有查到这类影像的公开案例，镜头只是泛指的钱坨。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "海昏侯墓出土的五铢钱数量。",
+          "status": "conflicting",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "爱思想",
+              "title": "（检索结果未显示标题）data/139574",
+              "url": "https://www.aisixiang.com/data/139574.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_29703069",
+              "url": "https://m.thepaper.cn/newsDetail_forward_29703069",
+              "date": "未标注"
+            },
+            {
+              "publisher": "科技文摘报（科技日报社数字报）",
+              "title": "（检索结果未显示标题）KJWZB2026010209",
+              "url": "https://digitalpaper.stdaily.com/http_www.kjrb.com/kjwzb/images/2026-01/02/09/KJWZB2026010209.pdf",
+              "date": "2026-01-02（据URL路径）"
+            },
+            {
+              "publisher": "文汇报",
+              "title": "海昏侯墓报道（检索结果标题为图注：位于主椁室西南角的漆盾。文汇报记者 付鑫鑫 摄）",
+              "url": "https://www.whb.cn/zhuzhan/kandian/20151227/46463.html",
+              "date": "2015-12-27（据URL路径）"
+            }
+          ],
+          "note": "早期说法“据估计达 200 万枚”，较新的说法“300 余万枚、重达十余吨”。见 conflicts。检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "海昏侯墓出土五铢钱重达十余吨，是中国一次性出土五铢钱最多的汉墓之一。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_29703069",
+              "url": "https://m.thepaper.cn/newsDetail_forward_29703069",
+              "date": "未标注"
+            },
+            {
+              "publisher": "科技文摘报（科技日报社数字报）",
+              "title": "（检索结果未显示标题）KJWZB2026010209",
+              "url": "https://digitalpaper.stdaily.com/http_www.kjrb.com/kjwzb/images/2026-01/02/09/KJWZB2026010209.pdf",
+              "date": "2026-01-02（据URL路径）"
+            }
+          ],
+          "note": "只在较新的一条资料里出现；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "海昏侯墓的墓主（西汉海昏侯刘贺）与所在地（江西南昌）。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 8 次检索的摘要只谈出土数量，没有涉及墓主与地点；属广为人知的通行说法，上字幕前请另行核对。"
+        },
+        {
+          "claim": "钱堆为“千文一贯”提供了实物证据。",
+          "status": "unverified",
+          "sources": [],
+          "note": "检索摘要没有涉及。"
+        },
+        {
+          "claim": "用 X 光或 CT 检视锈结成坨的钱币的公开案例。",
+          "status": "unverified",
+          "sources": [],
+          "note": "不在本组分配的检索范围内，没有查。"
+        }
+      ],
+      "conflicts": [
+        "【五铢钱枚数】约 200 万枚（早期估计）对 300 余万枚（较新材料，并称重十余吨）。清理与统计在持续，较新的数字更大。两个数字都只有摘要层面的依据，无法确认哪一个是最终口径；建议说明文字避开枚数。"
+      ],
+      "storyboardChecks": [
+        {
+          "shot": "s08",
+          "question": "用 X 光/CT 检视锈结钱币的做法是否有公开案例",
+          "answer": "未查（额度用于形制与钱文类硬事实）。",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s27"
+      ],
+      "name_zh": "马蹄金与麟趾金（海昏侯墓）",
+      "depiction": [
+        "马蹄金（展览中又写作“褭蹏金”）：形似马蹄的黄金铸件，分大、小两种；展品实测重约 237.66—246.29 克（应指大马蹄金）。（单一来源）",
+        "器形（常识提示，未检索证实）：中空，底面近圆或椭圆，器壁向上斜收；外壁打磨光洁，近底处有横向波纹；口沿一周有金丝花丝纹带，顶口嵌琉璃或玉片；底部铸“上”“中”“下”其中一字。",
+        "麟趾金：比马蹄金瘦高、底小，像兽趾；展品实测重约 76.12—83.36 克。（重量单一来源；器形为常识提示）",
+        "金饼：圆饼形，每枚约 250 克（单一来源）。常识上隆起的一面粗糙、多小凹坑，略凹的一面有冷凝形成的皱纹或龟裂纹。",
+        "颜色：高纯度黄金的赤金色，光亮、基本无锈；黑底上高光可以很亮。"
+      ],
+      "pitfalls": [
+        "s27 现在画的“圆隆金面、布满浇铸皱纹与小凹坑”更像金饼的隆起面，不像马蹄金——常识上马蹄金外壁光洁并带花丝口沿。若镜头仍叫“马蹄金”，建议在弧线内侧加一道细密的花丝纹带，或以光洁的弧形外壁为主；否则把镜头名改为“金饼”。此判断基于常识，本次没有检索到器形文字描述，请对照海昏侯墓实物照片确认。",
+        "写具体枚数：金饼有 285 枚（2016 年口径）与 385 枚（较新口径），小马蹄金有 31 枚与 33 枚两种写法。说明文字只用各处一致的数字（麟趾金 25 枚、金板 20 块），或不写枚数。",
+        "在金面上写铭文。“上/中/下”只在底部，而且本次检索没有证实。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "海昏侯墓出土麟趾金 25 枚、金板（金钣）20 块。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "文汇报",
+              "title": "（检索结果未显示标题）kandian/20160316/52221",
+              "url": "https://dream-video.whb.cn/zhuzhan/kandian/20160316/52221.html",
+              "date": "2016-03-16（据URL路径）"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_1409946",
+              "url": "https://www.thepaper.cn/newsDetail_forward_1409946",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_25833323",
+              "url": "https://www.thepaper.cn/newsDetail_forward_25833323",
+              "date": "未标注"
+            }
+          ],
+          "note": "2016 年展览口径与较新的资料在这两项上一致（一处写“金板”，一处写“金钣”）。检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "海昏侯墓出土马蹄金 48 枚，其中大马蹄金 17 枚、小马蹄金 31 枚。",
+          "status": "conflicting",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "文汇报",
+              "title": "（检索结果未显示标题）kandian/20160316/52221",
+              "url": "https://dream-video.whb.cn/zhuzhan/kandian/20160316/52221.html",
+              "date": "2016-03-16（据URL路径）"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_1409946",
+              "url": "https://www.thepaper.cn/newsDetail_forward_1409946",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_25833323",
+              "url": "https://www.thepaper.cn/newsDetail_forward_25833323",
+              "date": "未标注"
+            }
+          ],
+          "note": "三条资料里两条合计 48 枚，一条写“大 17、小 33”。采信 48 枚，见 conflicts。检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "海昏侯墓出土金饼的数量。",
+          "status": "conflicting",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "文汇报",
+              "title": "（检索结果未显示标题）kandian/20160316/52221",
+              "url": "https://dream-video.whb.cn/zhuzhan/kandian/20160316/52221.html",
+              "date": "2016-03-16（据URL路径）"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_1409946",
+              "url": "https://www.thepaper.cn/newsDetail_forward_1409946",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_25833323",
+              "url": "https://www.thepaper.cn/newsDetail_forward_25833323",
+              "date": "未标注"
+            }
+          ],
+          "note": "2016 年展览时为 285 枚（金器共 378 件），较新的资料为 385 枚。见 conflicts。检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "海昏侯墓出土金器总重约 115 公斤。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_25833323",
+              "url": "https://www.thepaper.cn/newsDetail_forward_25833323",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_29703069",
+              "url": "https://m.thepaper.cn/newsDetail_forward_29703069",
+              "date": "未标注"
+            }
+          ],
+          "note": "只在较新的一条资料里出现；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "单件重量：金饼每枚约 250 克；马蹄金约 237.66—246.29 克；麟趾金约 76.12—83.36 克（展品测量数据）。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_25833323",
+              "url": "https://www.thepaper.cn/newsDetail_forward_25833323",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_1409946",
+              "url": "https://www.thepaper.cn/newsDetail_forward_1409946",
+              "date": "未标注"
+            }
+          ],
+          "note": "来自展品介绍类文字，只有一处；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "展览中把马蹄金写作“褭蹏金”，分“大褭蹏金”“小褭蹏金”。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_25833323",
+              "url": "https://www.thepaper.cn/newsDetail_forward_25833323",
+              "date": "未标注"
+            }
+          ],
+          "note": "只在一条展览介绍里出现；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "马蹄金、麟趾金的时代（西汉）与器形细节（中空、花丝口沿、嵌琉璃、底铸“上/中/下”）。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 8 次检索只返回数量与重量，没有器形描述。depiction 里的器形是常识提示。"
+        }
+      ],
+      "conflicts": [
+        "【金饼数量】285 枚（2016 年 3 月前后展览口径，当时金器共 378 件）对 385 枚（较新资料，并称金器总重 115 公斤）。采信 385 枚：两个数字是不同清理阶段的统计，较晚的更完整；但两者都只有摘要层面的依据，说明文字最好不写。",
+        "【马蹄金数量】48 枚（2016 年口径；另一条展览介绍写大 17 + 小 31 = 48）对“大 17、小 33”（合计 50，一条较新资料）。采信 48 枚（大 17、小 31）：有两条资料互相吻合，“33”很可能是笔误，但未能打开原页核对。"
+      ],
+      "storyboardChecks": [
+        {
+          "shot": "s27",
+          "question": "马蹄金的时代与器形（底面与隆起面的形状、表面是否有浇铸皱纹）",
+          "answer": "器形没有检索到文字来源。常识：马蹄金外壁光洁、口沿有花丝，粗糙多凹坑的圆隆面是金饼的特征——“圆隆金面”的画法对马蹄金不成立，建议改画或改名。",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s36"
+      ],
+      "name_zh": "摇钱树",
+      "depiction": [
+        "东汉的青铜树形器：青铜铸的树干和多层枝叶插接而成，立在树座上。（青铜树 + 底座：两处以上来源；绵阳市博物馆藏品为红陶座：China Daily 单一来源）",
+        "枝叶是扁平的片状铸件，方孔圆钱挂在叶片边缘，与枝叶铸成一体；叶片上还有龙首、朱雀、鹿、象等纹饰。（China Daily，单一来源）",
+        "绵阳藏品由 29 个部件分七层组合（China Daily）；通高 201 厘米（川观新闻）。两个数字各只有一个来源。",
+        "钱纹外缘的放射状芒线：常识上摇钱树的钱纹周缘多带一圈短芒，但本次检索没有取得文字佐证。s36 可以保留短芒；“越过弧线向上放射的长丝”属艺术夸张，根部的短芒要画得规整、等距。",
+        "原物颜色是青铜绿锈；s36 的银白逆光是有意的色调处理（分镜已注明）。"
+      ],
+      "pitfalls": [
+        "画成真树，或画成圆雕枝干上挂着立体铜钱：枝叶和钱是一片薄薄的片状铸件。",
+        "把钱孔画成圆孔；应为方孔圆钱。",
+        "说明里写“何家山出土”“西王母像”或具体高度：出土地点与西王母形象本次检索没有证实，高度只有单一来源。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "摇钱树是东汉时期的青铜树形器，青铜树身配底座。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "The Metropolitan Museum of Art",
+              "title": "Money Tree",
+              "url": "https://www.metmuseum.org/art/collection/search/640957",
+              "date": "未标注"
+            },
+            {
+              "publisher": "川观新闻（四川日报）",
+              "title": "（记者 吴晓铃，绵阳市博物馆东汉摇钱树报道）",
+              "url": "https://cbgc.scol.com.cn/news/4770211",
+              "date": "未标注"
+            },
+            {
+              "publisher": "China Daily（govt.chinadaily.com.cn）",
+              "title": "Eastern Han Dynasty money tree: a reflection of people's spiritual pursuits",
+              "url": "https://govt.chinadaily.com.cn/s/202307/17/WS64b4f17d498ea274927c54fe/eastern-han-dynasty-money-tree-a-reflection-of-peoples-spiritual-pursuits.html",
+              "date": "2023-07-17（据URL路径）"
+            }
+          ],
+          "note": "大都会艺术博物馆藏品（Money Tree，东汉）与中国媒体对绵阳藏品的报道一致。"
+        },
+        {
+          "claim": "四川绵阳市博物馆藏有一株东汉摇钱树。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "川观新闻（四川日报）",
+              "title": "（记者 吴晓铃，绵阳市博物馆东汉摇钱树报道）",
+              "url": "https://cbgc.scol.com.cn/news/4770211",
+              "date": "未标注"
+            },
+            {
+              "publisher": "China Daily（govt.chinadaily.com.cn）",
+              "title": "Eastern Han Dynasty money tree: a reflection of people's spiritual pursuits",
+              "url": "https://govt.chinadaily.com.cn/s/202307/17/WS64b4f17d498ea274927c54fe/eastern-han-dynasty-money-tree-a-reflection-of-peoples-spiritual-pursuits.html",
+              "date": "2023-07-17（据URL路径）"
+            }
+          ],
+          "note": "川观新闻与 China Daily 两家报道。"
+        },
+        {
+          "claim": "绵阳藏品的青铜树立在红陶座上，方孔圆钱挂在叶片边缘。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "China Daily（govt.chinadaily.com.cn）",
+              "title": "Eastern Han Dynasty money tree: a reflection of people's spiritual pursuits",
+              "url": "https://govt.chinadaily.com.cn/s/202307/17/WS64b4f17d498ea274927c54fe/eastern-han-dynasty-money-tree-a-reflection-of-peoples-spiritual-pursuits.html",
+              "date": "2023-07-17（据URL路径）"
+            }
+          ],
+          "note": "细节只见于 China Daily 的报道。"
+        },
+        {
+          "claim": "绵阳市博物馆藏东汉摇钱树通高 201 厘米，是目前国内现存体型最高大、保存最完整的一株摇钱树。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "川观新闻（四川日报）",
+              "title": "（记者 吴晓铃，绵阳市博物馆东汉摇钱树报道）",
+              "url": "https://cbgc.scol.com.cn/news/4770211",
+              "date": "未标注"
+            }
+          ],
+          "note": "高度与“最高大、最完整”的说法只见于川观新闻；China Daily 另称青铜树干约 1 米高，测量口径不同。不建议把数字上画面。"
+        },
+        {
+          "claim": "绵阳藏品的青铜树由 29 个部件分七层组成；叶片纹饰有龙首、朱雀、鹿、象等。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "China Daily（govt.chinadaily.com.cn）",
+              "title": "Eastern Han Dynasty money tree: a reflection of people's spiritual pursuits",
+              "url": "https://govt.chinadaily.com.cn/s/202307/17/WS64b4f17d498ea274927c54fe/eastern-han-dynasty-money-tree-a-reflection-of-peoples-spiritual-pursuits.html",
+              "date": "2023-07-17（据URL路径）"
+            }
+          ],
+          "note": "China Daily 一个来源。"
+        },
+        {
+          "claim": "绵阳藏品属于国家文物局首批禁止出国（境）展览的文物。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "China Daily（govt.chinadaily.com.cn）",
+              "title": "Eastern Han Dynasty money tree: a reflection of people's spiritual pursuits",
+              "url": "https://govt.chinadaily.com.cn/s/202307/17/WS64b4f17d498ea274927c54fe/eastern-han-dynasty-money-tree-a-reflection-of-peoples-spiritual-pursuits.html",
+              "date": "2023-07-17（据URL路径）"
+            },
+            {
+              "publisher": "川观新闻（四川日报）",
+              "title": "（记者 吴晓铃，绵阳市博物馆东汉摇钱树报道）",
+              "url": "https://cbgc.scol.com.cn/news/4770211",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要只给出一处；检索工具只返回综合摘要，没有逐句标明出自哪个链接；所列链接是该次检索返回的相关页面，逐条对应关系未能打开网页核对。"
+        },
+        {
+          "claim": "大都会艺术博物馆藏东汉青铜摇钱树通高 152 厘米，底座高 46 厘米。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "The Metropolitan Museum of Art",
+              "title": "Money Tree",
+              "url": "https://www.metmuseum.org/art/collection/search/640957",
+              "date": "未标注"
+            }
+          ],
+          "note": "馆方藏品页，数字取自检索摘要。"
+        },
+        {
+          "claim": "绵阳藏品出土于何家山；树上有西王母形象。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 9 次检索的摘要明确说没有提到这两点。"
+        },
+        {
+          "claim": "摇钱树钱纹外缘普遍带放射状芒线（芒刺）。",
+          "status": "unverified",
+          "sources": [],
+          "note": "检索摘要没有涉及；按常识可画短芒。"
+        }
+      ],
+      "conflicts": [
+        "【绵阳藏品高度】川观新闻写通高 201 厘米；China Daily 写青铜树干约 1 米高。很可能是通高（含树座、顶饰）与树干高度的口径差别，未能核对原文。不采信任何一个数字上画面。"
+      ],
+      "storyboardChecks": [
+        {
+          "shot": "s36",
+          "question": "摇钱树枝叶上的钱纹外缘是否普遍带放射状芒线",
+          "answer": "未查到文字来源；常识上常见短芒。",
+          "status": "unverified"
+        },
+        {
+          "shot": "s36",
+          "question": "摇钱树的材质与结构：青铜树身与枝叶、陶或石质树座",
+          "answer": "青铜树身 + 底座：成立，两处以上来源（大都会藏品、绵阳藏品）。陶座：绵阳藏品为红陶座，China Daily 单一来源。石座未查到。",
+          "status": "single-source"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s12"
+      ],
+      "name_zh": "叠铸陶范与石范（钱范）",
+      "depiction": [
+        "钱范是阴模：钱身处凹下，方孔处反而是凸起的小方台，外郭处是更深的一圈细槽；钱腔靠浇道相连。（常识；与分镜一致）",
+        "叠铸：把许多片范片层层叠合，共用一条中心直浇道，一次浇出多层钱。（常识提示；检索只证实叠铸与块范竖式浇铸是范铸法的两种形式）",
+        "范片外形与钱腔排列：本次没有检索到形制描述。常识提示：存世叠铸钱范片多为圆形或圆角方形，每片几个钱腔围绕中心浇口呈放射状排列，各有一条短浇道通向中心；片缘有定位用的榫卯或刻线。s12 的“沿边一圈钱腔、辐条状浇道汇向圆心”与此相符，可按圆形范片画。",
+        "材质：钱范有陶、石、金属三类（论文，单一来源）。陶范是细泥质陶，赭红到灰褐，用过的范面有烟炱；石范常识上多用质软的石料。",
+        "范上钱文是反字的凹痕，只在面范有；背范无字。s12 画成不可读的模糊凹痕即可。"
+      ],
+      "pitfalls": [
+        "把钱腔画成凸起的钱（凸起的是翻制范片用的范模/范母，不是浇铸用的范）。",
+        "说明里把叠铸挂到秦半两上：检索到的论文称半两钱仍以块范竖式浇铸为主，叠铸到西汉才出现。",
+        "钱腔里出现可读、而且是正字的钱文。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "汉代已用叠铸法（叠范）铸钱。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "《中原文物》2024年第3期（经 NAPSTIC 文献索引检出）",
+              "title": "（半两钱范铸工艺研究论文，检索结果未显示标题）",
+              "url": "https://search.napstic.cn/literature/periodical/010zyww202403016",
+              "date": "2024年第3期"
+            },
+            {
+              "publisher": "《中原文物》2024年第2期（经 NAPSTIC 文献索引检出）",
+              "title": "（叠范铸钱分期研究论文，检索结果未显示标题）",
+              "url": "https://search.napstic.cn/literature/periodical/010zyww202402017",
+              "date": "2024年第2期"
+            }
+          ],
+          "note": "两篇都是《中原文物》2024 年的论文（第 2、3 期各一篇），经文献索引检出：一篇说叠铸在西汉时期出现，一篇说汉代经历了叠范铸钱的初级和中级阶段。两文同刊、题材相连，作者是否相同未能核对，保守按单一来源处理。"
+        },
+        {
+          "claim": "块范竖式浇铸与叠铸是范铸法的两种形式；叠铸出现于西汉，半两钱仍以块范竖式铸造为主。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "《中原文物》2024年第3期（经 NAPSTIC 文献索引检出）",
+              "title": "（半两钱范铸工艺研究论文，检索结果未显示标题）",
+              "url": "https://search.napstic.cn/literature/periodical/010zyww202403016",
+              "date": "2024年第3期"
+            }
+          ],
+          "note": "一篇论文的摘要。"
+        },
+        {
+          "claim": "半两钱用范铸法铸造，流程为“祖模→范模→铸范”三个阶段；范的材质有陶质、石质、金属质三类。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "《中原文物》2024年第3期（经 NAPSTIC 文献索引检出）",
+              "title": "（半两钱范铸工艺研究论文，检索结果未显示标题）",
+              "url": "https://search.napstic.cn/literature/periodical/010zyww202403016",
+              "date": "2024年第3期"
+            }
+          ],
+          "note": "一篇论文的摘要。"
+        },
+        {
+          "claim": "叠范铸钱可分初级、中级、高级三个阶段，汉代经历了前两个；部分五铢叠铸范的年代可能在更始至建武十七年之间，是地方铸钱的遗存。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "《中原文物》2024年第2期（经 NAPSTIC 文献索引检出）",
+              "title": "（叠范铸钱分期研究论文，检索结果未显示标题）",
+              "url": "https://search.napstic.cn/literature/periodical/010zyww202402017",
+              "date": "2024年第2期"
+            }
+          ],
+          "note": "一篇论文的摘要，属作者观点。"
+        },
+        {
+          "claim": "叠铸陶范片的具体形制：外形是圆形还是圆角方形、每片钱腔数量、排列方式；以及新莽“大泉五十”叠铸陶范。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 10 次检索没有返回范片形制或“大泉五十”陶范的描述。"
+        },
+        {
+          "claim": "钱币石范的石料种类与形制。",
+          "status": "unverified",
+          "sources": [],
+          "note": "检索只证实半两钱范有石质一类，没有更多细节。"
+        }
+      ],
+      "conflicts": [
+        "【叠铸的时代】分镜备注的“常见说法为新莽至东汉、南朝”与检索到的论文（叠铸在西汉出现；汉代处于初、中级阶段）不矛盾，但起点应提前到西汉。内部校对时写“西汉出现，新莽、东汉以后盛行”较稳妥；后半句“盛行”的时段本次没有来源。"
+      ],
+      "storyboardChecks": [
+        {
+          "shot": "s12",
+          "question": "叠铸陶范片的实际形制：范片外形、每片钱腔数量、钱腔排列",
+          "answer": "未查到。常识：圆形或圆角方形，钱腔围绕中心浇口放射排列。",
+          "status": "unverified"
+        },
+        {
+          "shot": "s12",
+          "question": "叠铸法铸钱出现并盛行的时代",
+          "answer": "出现：西汉；汉代已用叠铸铸钱（《中原文物》两篇论文，按单一来源处理）。“盛行”时段未查到。",
+          "status": "single-source"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s07",
+        "s01"
+      ],
+      "name_zh": "方孔圆钱各部位名称（外郭、内郭、穿、肉、面、背）",
+      "depiction": [
+        "方孔圆钱：圆形钱体中央开一个正方形的孔，方孔四边与钱的横竖中轴线平行。",
+        "四个标注的位置（通行叫法，属常识；检索只在古籍里见到“轮郭”“内郭”“肉好”的用例，没有查到现代术语表）：外郭——钱边缘凸起的一圈；内郭——紧围方孔凸起的方框；穿——中央的方孔本身（古称“好”）；肉——内郭与外郭之间的平地。",
+        "s07 蓝图：外郭画两条同心圆线表示郭宽，内郭画内外两个同心正方形，穿在最里面，肉是两者之间的空白。“穿”字的引线指向孔内，“肉”字的引线指向平地。",
+        "面与背：有钱文的一面叫“面”，另一面叫“背”，文字分别叫面文、背文（s07 只允许四个标注，面/背不上图）。",
+        "比例（常识估计）：外郭宽约为钱径的十二分之一上下，方孔边长约为钱径的四分之一到五分之二（五铢的穿偏大，唐以后的钱穿偏小）。s01 只见外郭剪影，一道同心的宽边暗棱即可。"
+      ],
+      "pitfalls": [
+        "把“穿”标在内郭线上，或把“肉”标进方孔里：穿是孔，肉是实体平地。",
+        "写成“外廓/内廓”。钱币学用“郭”字，古籍作“轮郭”“内郭”。",
+        "方孔画歪、画成圆孔或圆角过大。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "古代钱谱用“郭”指钱上凸起的边：《钱通》中有“无轮郭”“有内郭”等用语。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "维基文库",
+              "title": "《钱通》（四库全书本）卷07",
+              "url": "https://zh.wikisource.org/zh/%E9%8C%A2%E9%80%9A_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B707",
+              "date": "未标注"
+            }
+          ],
+          "note": "维基文库所收《钱通》（四库全书本）卷七的原文用例，是一手文献，但只有这一个出处。"
+        },
+        {
+          "claim": "《钱通》引旧谱有“形制类半两，肉好无轮郭”之语，“肉”“好”连称（肉指钱体，好指钱孔）。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "维基文库",
+              "title": "《钱通》（四库全书本）卷07",
+              "url": "https://zh.wikisource.org/zh/%E9%8C%A2%E9%80%9A_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B707",
+              "date": "未标注"
+            }
+          ],
+          "note": "原文为繁体、无标点（形製類半兩肉好無輪郭），用例可靠；“肉指钱体、好指钱孔”的解释来自检索摘要的归纳，没有术语表出处。"
+        },
+        {
+          "claim": "方孔钱是中间有方孔的圆形钱币，由环形钱演变而来，成为中国古代铜钱的固定形式。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "中国日报网（“道中华”栏目）",
+              "title": "道中华 | 圆形方孔钱通行2000多年的“顶流密码”是什么?",
+              "url": "https://cn.chinadaily.com.cn/a/202306/26/WS649b96cda310ba94c5613c23.html",
+              "date": "2023-06-26（据URL路径）"
+            }
+          ],
+          "note": "中国日报网“道中华”栏目文章。"
+        },
+        {
+          "claim": "钱币有文字的正面称“面”，背面称“背”，背面的文字称“背文”。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "维基文库",
+              "title": "《钱通》（四库全书本）卷07",
+              "url": "https://zh.wikisource.org/zh/%E9%8C%A2%E9%80%9A_(%E5%9B%9B%E5%BA%AB%E5%85%A8%E6%9B%B8%E6%9C%AC)/%E5%8D%B707",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（检索结果未显示标题）newsDetail_forward_1423383",
+              "url": "https://www.thepaper.cn/newsDetail_forward_1423383",
+              "date": "未标注"
+            }
+          ],
+          "note": "《钱通》有“面有四曲文”的用例；澎湃文章有“会昌开元的背文”的用例。两处各证其半，按单一来源处理。澎湃链接的对应关系未核对。"
+        },
+        {
+          "claim": "“外郭”“穿”两词的现代定义（外郭为外缘凸边；穿为方孔，又称“好”），以及四个部位名称的系统图解。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 11、15 两次专门检索都没有返回钱币术语表或图解。四个标注是钱币学通行叫法，可按 depiction 使用，但没有取得第二来源。"
+        }
+      ],
+      "conflicts": [],
+      "storyboardChecks": [
+        {
+          "shot": "s07",
+          "question": "「外郭、内郭、穿（好）、肉」四个部位名称及所指位置",
+          "answer": "“内郭”“轮郭”“肉好”见于《钱通》原文（单一来源）；“外郭”“穿”的定义没有检索到出处。四词是通行术语，位置按 depiction；没有发现相反的说法。",
+          "status": "single-source"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s05",
+        "s17",
+        "s33"
+      ],
+      "name_zh": "红斑绿锈与铜钱锈色矿物（孔雀石、赤铜矿、蓝铜矿）",
+      "depiction": [
+        "绿锈＝孔雀石（碱式碳酸铜），翠绿到深绿，是铜钱上最常见的锈；可以呈葡萄状小团块。有研究称葡萄状结构只见于宋代及更早的钱。（学术论文，单一来源；s17 的“葡萄状小团块”可用）",
+        "红斑：常识上是赤铜矿（氧化亚铜），暗红到朱红，紧贴铜体，常被绿锈盖住，只在局部露出成“斑”。检索证实氧化亚铜是青铜锈层的常见物相，但“红斑即赤铜矿”“内红外绿”没有取得直接出处。",
+        "蓝锈：常识上是蓝铜矿，石青色，常与孔雀石共生。本次检索没有返回蓝铜矿的资料。",
+        "三色对应（s17）：绿＝孔雀石，蓝＝蓝铜矿，红＝赤铜矿。红色面积最小，出现在缝隙和底层。",
+        "出土钱（“生坑”）普遍带绿锈，颜色各异；长期传世把玩的钱表面是黄褐到褐色的包浆。（山东大学教材，单一来源）"
+      ],
+      "pitfalls": [
+        "把颜色和矿物对应弄反（蓝写成孔雀石，绿写成蓝铜矿）。",
+        "把红斑画成浮在最外层的大片红漆；常识上红色贴近铜体，多从绿锈底下露出来。s05 以赤铜红为主色是微距取景的艺术处理，画面里仍应让绿锈压在红色之上（分镜的“绿锈边”符合）。",
+        "在面向观众的文字里把“红斑绿锈”说成有严格定义的科学术语；它是收藏界的俗称，本次没有检索到定义性出处。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "孔雀石（碱式碳酸铜）是古铜钱和出土青铜器上常见的锈蚀产物。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "Mineralogical Magazine（Cambridge Core）",
+              "title": "Modes and textures of secondary minerals on Chinese coins of different ages",
+              "url": "https://core-cms.cambridgecore.org/core/journals/mineralogical-magazine/article/modes-and-textures-of-secondary-minerals-on-chinese-coins-of-different-ages/6D54D9ABDAA47FF4187286030B5CADD7",
+              "date": "未标注"
+            },
+            {
+              "publisher": "《腐蚀与防护》2024年第45卷第10期",
+              "title": "（青铜器锈蚀研究论文，检索结果未显示标题）DOI:10.11973/fsyfh240314",
+              "url": "https://search.napstic.cn/literature/periodical/010fsyfh202410004",
+              "date": "2024"
+            },
+            {
+              "publisher": "《腐蚀与防护》2024年第45卷第4期",
+              "title": "（青铜器锈蚀研究论文，检索结果未显示标题）DOI:10.11973/fsyfh-202404007",
+              "url": "https://search.napstic.cn/literature/periodical/010fsyfh202404009",
+              "date": "2024"
+            }
+          ],
+          "note": "Mineralogical Magazine 的论文在多数中国古钱上检出孔雀石；《腐蚀与防护》的论文在出土青铜器锈层中检出碱式碳酸铜/孔雀石。《腐蚀与防护》哪一篇对应哪一条未核对。"
+        },
+        {
+          "claim": "一项对 796 枚中国古铜钱次生矿物的调查显示：80% 以上的钱币上有孔雀石，与朝代无关；孔雀石的葡萄状结构只见于宋代及更早的钱币。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "Mineralogical Magazine（Cambridge Core）",
+              "title": "Modes and textures of secondary minerals on Chinese coins of different ages",
+              "url": "https://core-cms.cambridgecore.org/core/journals/mineralogical-magazine/article/modes-and-textures-of-secondary-minerals-on-chinese-coins-of-different-ages/6D54D9ABDAA47FF4187286030B5CADD7",
+              "date": "未标注"
+            }
+          ],
+          "note": "一篇论文的数据与结论。"
+        },
+        {
+          "claim": "氧化亚铜（Cu2O）是出土青铜器锈层中的常见物相，可与锡的腐蚀产物、碱式碳酸铜交替分层。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "《腐蚀与防护》2024年第45卷第10期",
+              "title": "（青铜器锈蚀研究论文，检索结果未显示标题）DOI:10.11973/fsyfh240314",
+              "url": "https://search.napstic.cn/literature/periodical/010fsyfh202410004",
+              "date": "2024"
+            },
+            {
+              "publisher": "《腐蚀与防护》2024年第45卷第4期",
+              "title": "（青铜器锈蚀研究论文，检索结果未显示标题）DOI:10.11973/fsyfh-202404007",
+              "url": "https://search.napstic.cn/literature/periodical/010fsyfh202404009",
+              "date": "2024"
+            },
+            {
+              "publisher": "《腐蚀与防护》",
+              "title": "（青铜器锈蚀研究论文，检索结果未显示标题）DOI:10.11973/fsyfh-202301008",
+              "url": "https://fsyfh.mat-test.com/article/doi/10.11973/fsyfh-202301008",
+              "date": "2023"
+            }
+          ],
+          "note": "出自《腐蚀与防护》对四川城坝、罗家坝遗址出土器物的研究（“周期锈蚀现象”）。三个链接同属一刊，具体哪一篇未核对。"
+        },
+        {
+          "claim": "出土古钱经地下腐蚀后颜色各异，钱界称“生坑锈”，普遍带绿锈；传世古钱因长期盘摸、油汗渗入，钱体常呈黄褐或褐色。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "山东大学历史文化学院考古系（王青）",
+              "title": "《钱币鉴定》教材（2004）",
+              "url": "https://www.history.sdu.edu.cn/lab/pdf/21.pdf",
+              "date": "2004"
+            }
+          ],
+          "note": "山东大学考古系教材。"
+        },
+        {
+          "claim": "“红斑绿锈”一词的定义，以及红斑的主要成分是赤铜矿（氧化亚铜）。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 12、16 两次检索都没有返回“红斑绿锈”的定义或赤铜矿的资料。成分对应是通行常识。"
+        },
+        {
+          "claim": "蓝锈为蓝铜矿。",
+          "status": "unverified",
+          "sources": [],
+          "note": "两次检索都没有返回蓝铜矿的资料。"
+        },
+        {
+          "claim": "层位关系：赤铜矿贴近铜基体，孔雀石在其外。",
+          "status": "unverified",
+          "sources": [],
+          "note": "没有直接出处。检索到的研究显示锈层可以是多种物相交替分层，层位并不总是简单的“内红外绿”。"
+        }
+      ],
+      "conflicts": [],
+      "storyboardChecks": [
+        {
+          "shot": "s05",
+          "question": "「红斑绿锈」的矿物对应（赤铜矿在内、孔雀石在外）的层次关系",
+          "answer": "未取得直接出处；氧化亚铜与碱式碳酸铜都是锈层物相已证实。按常识可用，但不要写进说明。",
+          "status": "unverified"
+        },
+        {
+          "shot": "s17",
+          "question": "孔雀石（绿）、蓝铜矿（蓝）、赤铜矿（红）的颜色对应及赤铜矿贴近基体",
+          "answer": "孔雀石在铜钱上最常见、可呈葡萄状：有论文来源。蓝铜矿、赤铜矿的颜色对应与层位：未查到，属常识。",
+          "status": "single-source"
+        },
+        {
+          "shot": "s33",
+          "question": "古钱“红斑”的主要成分是否为赤铜矿（氧化亚铜 Cu2O）",
+          "answer": "未取得直接出处，属通行常识；Cu2O 是青铜锈层常见物相已有论文来源。",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "shots": [
+        "s19"
+      ],
+      "name_zh": "黑漆古（漆古）",
+      "depiction": [
+        "“漆古”是青铜器表面一层致密、平整、光洁发亮、带玉质感的高锡锈层，主要成分是二氧化锡；颜色有黑、绿、黄绿、蓝绿等，黑色的俗称“黑漆古”。（北京大学综述；“黑色者称黑漆古”是通行叫法）",
+        "质感：像漆、像墨玉一样温润的亮面，保留器物原来的表面和细节，没有粉状锈或瘤状锈。s19 的“乌黑里透深灰蓝、云雾状的柔和明暗”相符。",
+        "可以带极少量蓝绿薄锈点和细划痕，不要大片绿锈或土锈。",
+        "钱按方孔圆钱画，外缘有一圈略高的外郭；不出现钱文。虹彩边缘光是摄影式的艺术处理，不是锈色（分镜已注明）。"
+      ],
+      "pitfalls": [
+        "画成哑光的炭黑或煤烟黑；黑漆古是亮的、致密的。",
+        "解释成“涂了漆”或人工上色；它是自然形成的富锡腐蚀层。",
+        "在面向观众的文字里把“黑漆古”当作钱币专名。检索到的资料讲的是青铜器的高锡锈层（多见于南方潮湿地区），用于钱币是否通行没有证实；镜头名只作内部称呼即可。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "“漆古”指古代青铜器表面的高锡锈层：致密平整、光洁发亮、有玉质感、耐腐蚀；主要物相为二氧化锡（SnO2），高锡低铜，能保留器物的原始表面；颜色有绿、黑、黄绿、蓝绿等；多见于湖北、湖南、江西等南方潮湿多雨地区。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "北京大学考古文博学院（刘薇）",
+              "title": "古代青铜器表面高锡锈层研究综述（2019）",
+              "url": "https://archaeology.pku.edu.cn/2019gudaiqingtongqibiaomiangaoxixiucengyanjiuzongshu_liuwei.pdf",
+              "date": "2019"
+            }
+          ],
+          "note": "北京大学考古文博学院刘薇的综述。“黑色的漆古即黑漆古”是通行叫法，综述摘要只列出颜色，没有逐一命名。"
+        },
+        {
+          "claim": "以锡的腐蚀产物为主的富锡（高锡）锈层，是古代青铜器锈层的基本类型之一。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {
+              "publisher": "北京大学考古文博学院（刘薇）",
+              "title": "古代青铜器表面高锡锈层研究综述（2019）",
+              "url": "https://archaeology.pku.edu.cn/2019gudaiqingtongqibiaomiangaoxixiucengyanjiuzongshu_liuwei.pdf",
+              "date": "2019"
+            },
+            {
+              "publisher": "《腐蚀与防护》2024年第45卷第10期",
+              "title": "（青铜器锈蚀研究论文，检索结果未显示标题）DOI:10.11973/fsyfh240314",
+              "url": "https://search.napstic.cn/literature/periodical/010fsyfh202410004",
+              "date": "2024"
+            },
+            {
+              "publisher": "《腐蚀与防护》2024年第45卷第4期",
+              "title": "（青铜器锈蚀研究论文，检索结果未显示标题）DOI:10.11973/fsyfh-202404007",
+              "url": "https://search.napstic.cn/literature/periodical/010fsyfh202404009",
+              "date": "2024"
+            }
+          ],
+          "note": "北大综述专论高锡锈层；《腐蚀与防护》的论文把“富锡锈层”与含氯、氧化、水合锈层并列为四种基本类型，并在出土器物上检出锡的腐蚀产物。《腐蚀与防护》哪一篇对应哪一条未核对。"
+        },
+        {
+          "claim": "“漆古”一词较早见于宋代文献；明代文献已有铜多则偏绿、锡多则偏黑的描述。",
+          "status": "single-source",
+          "sources": [
+            {
+              "publisher": "北京大学考古文博学院（刘薇）",
+              "title": "古代青铜器表面高锡锈层研究综述（2019）",
+              "url": "https://archaeology.pku.edu.cn/2019gudaiqingtongqibiaomiangaoxixiucengyanjiuzongshu_liuwei.pdf",
+              "date": "2019"
+            }
+          ],
+          "note": "同一篇综述。"
+        },
+        {
+          "claim": "“黑漆古”一词用于古钱币包浆是否通行。",
+          "status": "unverified",
+          "sources": [],
+          "note": "第 12、16 两次检索都没有返回把“黑漆古”用于钱币的资料；山东大学教材描述传世古钱包浆为黄褐或褐色。建议镜头名只作内部称呼，对外文字不写“黑漆古”。"
+        }
+      ],
+      "conflicts": [],
+      "storyboardChecks": [
+        {
+          "shot": "s19",
+          "question": "「黑漆古」一词用于古钱币包浆是否通行",
+          "answer": "未证实。来源只把“漆古”用于青铜器高锡锈层。画面不出现该词即可，不必改画面；如需对外称呼，可用分镜自带的备选“传世黑包浆”。",
+          "status": "unverified"
+        }
+      ]
+    }
+  ]
+}

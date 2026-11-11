@@ -1,0 +1,14 @@
+{
+  "name": "gujian-promo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "中国古建筑宣传短片 —— 全程序化绘制的 20 秒匹配剪辑蒙太奇（Canvas 2D + Playwright + ffmpeg）",
+  "scripts": {
+    "fonts": "bash tools/fetch-fonts.sh",
+    "preview": "node tools/preview.js",
+    "audio": "python3 tools/audio.py build/soundtrack.wav",
+    "frames": "node tools/render.js",
+    "encode": "bash tools/encode.sh",
+    "build": "bash tools/build.sh"
+  }
+}

@@ -1,0 +1,613 @@
+{
+  "group": "g78-pagoda-wall-media",
+  "filePath": "/tmp/claude-0/-home-user-kashing/82b55bb9-0385-5108-b6bb-ac0899659655/scratchpad/research/g78-pagoda-wall-media.json",
+  "searchesUsed": 16,
+  "subjects": [
+    {
+      "name_zh": "应县木塔（佛宫寺释迦塔）",
+      "captionFacts": [
+        {
+          "claim": "应县木塔全称佛宫寺释迦塔，位于山西省朔州市应县（县城西北隅）",
+          "status": "verified-2plus-independent",
+          "note": "行政归属是朔州市，不是大同市。",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre（预备名单条目）", "title": "Wooden Structures of Liao Dynasty - Wooden Pagoda of Yingxian County, Main Hall of Fengguo Monastery of Yixian County", "url": "https://whc.unesco.org/fr/listesindicatives/5803", "date": "2013-01-29（提交日期）"},
+            {"publisher": "China Daily（govt.chinadaily.com.cn）", "title": "Yingxian County Wooden Pagoda, Shanxi province", "url": "https://govt.chinadaily.com.cn/s/202204/13/WS625699bc498e6a12c1229e31/yingxian-county-wooden-pagoda-shanxi-province.html", "date": "2022-04-13（据URL）"}
+          ]
+        },
+        {
+          "claim": "建于辽清宁二年（1056年）",
+          "status": "verified-2plus-independent",
+          "note": "1056 年为各来源通行说法；中国时报一文提醒确切建造年代缺乏直接文献、属据风格与文物推定。说明文字写「辽清宁二年（1056年）」即可。",
+          "sources": [
+            {"publisher": "China Daily（govt.chinadaily.com.cn）", "title": "Yingxian County Wooden Pagoda, Shanxi province", "url": "https://govt.chinadaily.com.cn/s/202204/13/WS625699bc498e6a12c1229e31/yingxian-county-wooden-pagoda-shanxi-province.html", "date": "2022-04-13（据URL）"},
+            {"publisher": "澎湃新闻", "url": "https://m.thepaper.cn/detail/31652924", "date": "未标注"},
+            {"publisher": "中国时报（中时新闻网）", "title": "世界最高的木塔!獨一無二純木構造千年不腐 應縣木塔(上)", "url": "https://www.chinatimes.com/realtimenews/20230107000698-263101", "date": "2023-01-07（据URL）"}
+          ]
+        },
+        {
+          "claim": "塔高 67.31 米",
+          "status": "conflicting",
+          "note": "中文来源（澎湃、中国时报等）一致写 67.31 米；英文检索中一处写「约 67 米」，另一处写 65.84 米（检索摘要未指明是哪个页面，且本环境不能打开网页复核）。采信 67.31 米；若求稳妥，说明文字可写「高约 67 米」。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://m.thepaper.cn/detail/31652924", "date": "未标注"},
+            {"publisher": "中国时报（中时新闻网）", "title": "世界最高的木塔!獨一無二純木構造千年不腐 應縣木塔(上)", "url": "https://www.chinatimes.com/realtimenews/20230107000698-263101", "date": "2023-01-07（据URL）"},
+            {"publisher": "China Daily（govt.chinadaily.com.cn）", "title": "Yingxian County Wooden Pagoda, Shanxi province", "url": "https://govt.chinadaily.com.cn/s/202204/13/WS625699bc498e6a12c1229e31/yingxian-county-wooden-pagoda-shanxi-province.html", "date": "2022-04-13（据URL）"}
+          ]
+        },
+        {
+          "claim": "平面为八角形",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "China Daily（govt.chinadaily.com.cn）", "title": "Yingxian County Wooden Pagoda, Shanxi province", "url": "https://govt.chinadaily.com.cn/s/202204/13/WS625699bc498e6a12c1229e31/yingxian-county-wooden-pagoda-shanxi-province.html", "date": "2022-04-13（据URL）"},
+            {"publisher": "中国时报（中时新闻网）", "title": "世界最高的木塔!獨一無二純木構造千年不腐 應縣木塔(上)", "url": "https://www.chinatimes.com/realtimenews/20230107000698-263101", "date": "2023-01-07（据URL）"}
+          ]
+        },
+        {
+          "claim": "外观五层六檐，各层之间夹有暗层共四层，实为九层",
+          "status": "verified-2plus-independent",
+          "note": "个别游记写「外观六层」，系把六重檐误作六层，不采信。英文来源表述为 nine stories, five visible from outside and four hidden inside。",
+          "sources": [
+            {"publisher": "China Daily（govt.chinadaily.com.cn）", "title": "Yingxian County Wooden Pagoda, Shanxi province", "url": "https://govt.chinadaily.com.cn/s/202204/13/WS625699bc498e6a12c1229e31/yingxian-county-wooden-pagoda-shanxi-province.html", "date": "2022-04-13（据URL）"},
+            {"publisher": "中国时报（中时新闻网）", "title": "世界最高的木塔!獨一無二純木構造千年不腐 應縣木塔(上)", "url": "https://www.chinatimes.com/realtimenews/20230107000698-263101", "date": "2023-01-07（据URL）"},
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_9618890", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "底层直径 30.27 米，下有方形与八角形两层砖石台基",
+          "status": "single-source",
+          "note": "仅见于中文检索摘要中的一组表述，无法确认有两个独立出处。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://m.thepaper.cn/detail/31652924", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "被称为世界现存最高、最古老的纯木结构楼阁式建筑（木塔）",
+          "status": "verified-2plus-independent",
+          "note": "属通行评价性表述，建议加「现存」二字。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://m.thepaper.cn/detail/31652924", "date": "未标注"},
+            {"publisher": "中国时报（中时新闻网）", "title": "世界最高的木塔!獨一無二純木構造千年不腐 應縣木塔(上)", "url": "https://www.chinatimes.com/realtimenews/20230107000698-263101", "date": "2023-01-07（据URL）"}
+          ]
+        },
+        {
+          "claim": "1961 年公布为全国重点文物保护单位；2016 年 9 月获吉尼斯世界纪录「世界上最高的木塔」认证",
+          "status": "single-source",
+          "note": "检索摘要中出现一次，未能定位到第二个独立出处。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_9618890", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "2013 年以「辽代木构建筑——应县木塔、义县奉国寺大雄殿」列入世界遗产预备名单，尚未正式列入《世界遗产名录》",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "note": "一手官方来源为 UNESCO 预备名单页（编号 5803，2013-01-29 提交）；worldheritagesite.org 为转述 UNESCO 数据的第三方索引，不算独立来源。片中不要写成「世界文化遗产」。",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre（预备名单条目）", "title": "Wooden Structures of Liao Dynasty - Wooden Pagoda of Yingxian County, Main Hall of Fengguo Monastery of Yixian County", "url": "https://whc.unesco.org/fr/listesindicatives/5803", "date": "2013-01-29（提交日期）"},
+            {"publisher": "World Heritage Site（worldheritagesite.org）", "url": "https://www.worldheritagesite.org/tentative/id/5803", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "塔高：中文来源（澎湃、中国时报）为 67.31 米；一处英文结果为「约 67 米」，另一处英文结果为 65.84 米（摘要未指明页面）。采信 67.31 米，因其为国内各来源一致使用的数据；保守写法为「高约 67 米」。",
+        "外观层数：个别携程游记写「外观六层」，多数来源写「五层六檐、实为九层」。采信后者，六是檐数（底层重檐）不是层数。",
+        "用材：一处写华北落叶松、斗栱用榆木（豆瓣笔记），另两处写红松木（中国时报、哔哩哔哩）。来源均非权威，未能裁定，说明文字不要写具体树种。"
+      ],
+      "depiction": [
+        "八角形平面，立于两层砖石台基之上（下层方形、上层八角形）。",
+        "外观五层六檐：底层带一圈副阶形成重檐，其上四层各出一檐；每层檐上有平坐与栏杆，暗层藏在平坐位置，外观看不出。",
+        "各层檐下、平坐下密布斗栱，是立面最重要的肌理（斗栱种类的具体数字未核实，不要上字幕）。",
+        "塔顶为八角攒尖顶，上立铁质塔刹。（常识，未经本次检索核实）",
+        "通体木构，呈深褐、暗红的旧木色；整体敦实稳重，底径约 30 米对高约 67 米，轮廓不宜画得过瘦。",
+        "楼阁式塔的一般形制：每层有柱、枋、斗栱、出檐和平坐栏杆，层高较大、可登临，形如多层楼阁叠起。（常识，未经本次检索核实）"
+      ],
+      "pitfalls": [
+        "画成方形或六角形平面，或画成日式五重塔那样瘦高、出檐极深的比例。",
+        "把外观画成九层，或漏掉底层重檐只画五檐；正确是五层六檐。",
+        "画成砖石塔、琉璃塔或施以鲜艳彩绘；地点标成大同（实属朔州应县）；称其为「世界文化遗产」（目前只在预备名单）。"
+      ]
+    },
+    {
+      "name_zh": "覆钵式白塔（北京妙应寺白塔、北海白塔）",
+      "captionFacts": [
+        {
+          "claim": "妙应寺白塔始建于元至元八年（1271年），至元十六年（1279年）建成",
+          "status": "verified-2plus-independent",
+          "note": "「1271 年」是始建年，「1279 年」是竣工年，字幕只写一个年份时请注明「始建」。",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing.com.cn）", "url": "https://www.visitbeijing.com.cn/article/4OHYpLERQLJ?device=amp", "date": "未标注"},
+            {"publisher": "China Daily Europe", "url": "https://europe.chinadaily.com.cn/culture/2011-03/18/content_12193665.htm", "date": "2011-03-18（据URL）"},
+            {"publisher": "Medium / A Better Guide to Beijing", "title": "White Dagoba Temple 白塔寺", "url": "https://medium.com/a-better-guide-to-beijing/white-dagoba-temple-白塔寺-5a2fd2dc8b4f", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "妙应寺白塔由尼泊尔匠师阿尼哥主持设计建造",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "China Daily Europe", "url": "https://europe.chinadaily.com.cn/culture/2011-03/18/content_12193665.htm", "date": "2011-03-18（据URL）"},
+            {"publisher": "北京旅游网（visitbeijing.com.cn）", "url": "https://www.visitbeijing.com.cn/article/47QkgmakXu4", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "妙应寺白塔高 50.9 米",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing.com.cn）", "url": "https://www.visitbeijing.com.cn/article/4OHYpLERQLJ?device=amp", "date": "未标注"},
+            {"publisher": "China Daily Europe", "url": "https://europe.chinadaily.com.cn/culture/2011-03/18/content_12193665.htm", "date": "2011-03-18（据URL）"}
+          ]
+        },
+        {
+          "claim": "妙应寺白塔是覆钵式塔（俗称喇嘛塔），被称为建在汉地的第一座覆钵式塔",
+          "status": "single-source",
+          "note": "「第一座」的说法只在一个结果中出现；塔为覆钵式（喇嘛塔）这一点各来源一致。字幕建议只写「元代覆钵式塔」。",
+          "sources": [
+            {"publisher": "网易号", "url": "https://www.163.com/dy/article/G6VH4FP40543VP8P.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "北海白塔位于北海公园琼华岛，建于清顺治八年（1651年），是一座藏式喇嘛塔（覆钵式塔）",
+          "status": "verified-2plus-independent",
+          "note": "来源以北京旅游网多篇文章及百科/旅游类页面为主，权威度一般，但年代说法一致无异说。",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing.com.cn）", "url": "https://www.visitbeijing.com.cn/article/47QrznMKyBE", "date": "未标注"},
+            {"publisher": "买购网词条", "url": "https://www.maigoo.com/citiao/228039.html", "date": "未标注"},
+            {"publisher": "China Daily（chinaservicesinfo.com）", "title": "Beihai Park", "url": "https://www.chinaservicesinfo.com/s/201805/02/WS5ce7590c498e079e680218d6/beihai-park.html", "date": "2018-05-02（据URL）"}
+          ]
+        },
+        {
+          "claim": "北海白塔高 35.9 米",
+          "status": "verified-2plus-independent",
+          "note": "英文来源称妙应寺白塔 50.9 米、比北海白塔高 15 米，与 35.9 米互相印证。",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing.com.cn）", "url": "https://www.visitbeijing.com.cn/article/47QrznMKyBE", "date": "未标注"},
+            {"publisher": "China Daily Europe", "url": "https://europe.chinadaily.com.cn/culture/2011-03/18/content_12193665.htm", "date": "2011-03-18（据URL）"}
+          ]
+        },
+        {
+          "claim": "北海白塔塔座为折角形方须弥座，塔身上圆下方，上部有两层铜质伞盖，顶为鎏金宝珠塔刹，并饰日、月及火焰纹",
+          "status": "single-source",
+          "note": "多个旅游/百科页面措辞相近，无法确认彼此独立，按单一来源处理。",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing.com.cn）", "url": "https://www.visitbeijing.com.cn/article/4MkGucxo6TZ?device=amp", "date": "未标注"},
+            {"publisher": "买购网词条", "url": "https://www.maigoo.com/citiao/228039.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "北海白塔在康熙、雍正年间两次重修，现存塔为雍正年间修复后的面貌",
+          "status": "single-source",
+          "sources": [
+            {"publisher": "北京旅游网（visitbeijing.com.cn）", "url": "https://www.visitbeijing.com.cn/article/47QqaTBZvs3", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "覆钵式塔自下而上为须弥座、覆钵塔身、十三天（相轮）、华盖、塔刹；北海白塔塔身正面设眼光门",
+          "status": "unverified",
+          "note": "专门检索未返回「十三天」「眼光门」的任何内容；属建筑史常识，可作画面依据，但不建议作为字幕断言。",
+          "sources": []
+        }
+      ],
+      "conflicts": [],
+      "depiction": [
+        "自下而上的构成：折角（亚字形）须弥座 → 覆钵形塔身（俗称塔肚，肩部宽、向下略收，像倒扣的钵）→ 塔脖子 → 圆锥形层叠的十三天（相轮）→ 华盖（伞盖）→ 塔刹。（十三天等名目为常识，未经本次检索核实）",
+        "通体白色（白灰抹面），顶部华盖与塔刹为金属的金铜色，白与金的对比是识别要点。",
+        "妙应寺白塔（元）体量大、塔身肥硕，高 50.9 米；北海白塔（清）立于琼华岛山顶，高 35.9 米，体量小而位置高。",
+        "北海白塔：折角形方须弥座，上部两层铜质伞盖，顶为鎏金宝珠塔刹并有日、月、火焰装饰；塔身正面有壶门形的眼光门。（眼光门为常识，未经本次检索核实）",
+        "覆钵塔没有层层出挑的屋檐，轮廓靠曲线而不是檐口线表达。"
+      ],
+      "pitfalls": [
+        "把两座白塔混为一谈：一元一清，相差约 380 年，高度、所在环境（胡同寺院 vs 湖中岛顶）都不同。",
+        "画成楼阁式或密檐式的多层檐塔；或把塔身画成正球形（应为上宽下收的覆钵形）。",
+        "把十三天画成一层层屋檐，或随意增减到明显不对的层数。"
+      ]
+    },
+    {
+      "name_zh": "北魏石窟佛龛（云冈、龙门）的尖拱龛楣与火焰纹",
+      "captionFacts": [
+        {
+          "claim": "云冈石窟（山西大同）为北魏时期开凿的石窟",
+          "status": "verified-2plus-independent",
+          "note": "只核实到「北魏」这一层；具体始凿年见下一条，字幕建议只写「北魏」。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_7014637", "date": "未标注"},
+            {"publisher": "《云冈研究》2022年第2卷第3期（NAPSTIC 索引）", "url": "https://search.napstic.cn/literature/periodical/010ygyj202203012", "date": "2022"}
+          ]
+        },
+        {
+          "claim": "云冈石窟始凿于北魏和平初年（约 460 年，昙曜五窟）",
+          "status": "unverified",
+          "note": "两轮检索都没有返回「460 年」的出处；唯一出现的具体年份是一篇携程游记所写的兴安二年（453 年），不是学术来源。不要在字幕里写云冈的具体始凿年份。",
+          "sources": [
+            {"publisher": "携程游记（非学术来源，给出 453 年说）", "url": "https://gs.ctrip.com/html5/you/travels/275/4026875.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "龙门石窟（河南洛阳）的开凿始于北魏孝文帝迁都洛阳前后（太和十七年，即 493 年前后）",
+          "status": "single-source",
+          "note": "来源表述为：太和十七年（493 年）八月孝文帝南下，次年迁都洛阳，其后拉开龙门石窟开凿大幕。字幕宜写「北魏迁都洛阳前后（约 493 年）」。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_24990649", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "龙门石窟位于伊河两岸龙门山与香山的石灰岩崖壁上，有窟龛 2345 个、造像约 10 万尊",
+          "status": "single-source",
+          "sources": [
+            {"publisher": "Wikipedia", "title": "Longmen Grottoes", "url": "https://WWW.wikipedia.org/wiki/Longmen_Caves", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "火焰纹在北魏佛像背光上较早出现（云冈第 20 窟北魏早期坐佛为例），窟门楣顶上也常见；北魏早期的火焰纹融合云纹特点、形近云气纹，晚期特征更强烈",
+          "status": "single-source",
+          "note": "同一篇文章的论述；火焰纹起源学界无定论。",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_7014637", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "云冈石窟的龛式有屋形龛（常配一斗三升拱与人字栱，如第 10、12 窟前室）、方形龛（第 14 窟西壁）、宝盖龛（第 6 窟）及多种复合龛；第 6 窟中心塔柱下层龛楣上雕有飞天与连珠纹",
+          "status": "single-source",
+          "note": "分别出自两篇介绍性文章，均非正式考古报告。",
+          "sources": [
+            {"publisher": "澎湃新闻（澎湃号）", "url": "https://m.thepaper.cn/baijiahao_9614594", "date": "未标注"},
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_6095677", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "北魏佛龛常作尖拱形龛楣，楣面饰火焰纹（龙门古阳洞为典型）",
+          "status": "unverified",
+          "note": "两轮检索均未得到对「尖拱龛／尖拱龛楣＋火焰纹」的直接论述，只查到火焰纹见于背光与门楣。属石窟考古常识，可作为画面元素，但不要在字幕里作具体断言（如某窟某龛）。",
+          "sources": []
+        }
+      ],
+      "conflicts": [
+        "云冈始凿年代：携程游记写兴安二年（453 年）；通行的「和平初年（约 460 年）昙曜五窟」说在检索结果中未出现。两者都未获可靠来源支持，均不采信为字幕内容，只写「北魏」。"
+      ],
+      "depiction": [
+        "佛龛构成：圆拱形龛口，其上加一道尖拱形（桃尖形）龛楣，楣面内浅浮雕火焰纹；龛两侧有龛柱，龛梁两端常作龙首或鸟首反顾。（常识，未经本次检索核实）",
+        "火焰纹是程式化的连续尖瓣、波状纹样，贴着楣面或背光边缘成带状排列；北魏早期形近云气纹，晚期更尖锐强烈。",
+        "云冈另有屋形龛（瓦垄、一斗三升、人字栱）、方形龛（帷幔、三角间宝珠）、宝盖龛，可与尖拱龛并置以显变化。",
+        "龛楣上可配飞天、连珠纹；龛内为坐佛或交脚菩萨，身后有背光。",
+        "石色：龙门为青灰色石灰岩（已核实）；云冈为黄褐色砂岩（常识，未经本次检索核实）。"
+      ],
+      "pitfalls": [
+        "用龙门奉先寺卢舍那大佛（唐代）代表「北魏石窟」。",
+        "把火焰纹画成写实的火苗或火堆，而不是浅浮雕的程式化纹带。",
+        "把云冈（山西大同）与龙门（河南洛阳）的地点、石色混用，或写出未经核实的具体开凿年份。"
+      ]
+    },
+    {
+      "name_zh": "汉代云纹瓦当",
+      "captionFacts": [
+        {
+          "claim": "汉代云纹瓦当的基本构图是：当面中央为当心（圆钮／圆饼），以隔线（界格线）划分当面，各区内饰云纹",
+          "status": "verified-2plus-independent",
+          "note": "当心与隔线分区这两点由澎湃文章与《中原文物》论文分别支持；「四分」见下一条；「边轮」一词未在检索结果中出现。",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "艺术开卷｜两汉瓦当", "url": "https://m.thepaper.cn/newsDetail_forward_20495570", "date": "未标注"},
+            {"publisher": "《中原文物》2024年第4期（NAPSTIC 索引）", "title": "试析东汉陵园遗址出土的云纹瓦当", "url": "https://search.napstic.cn/literature/periodical/010zyww202404014", "date": "2024"}
+          ]
+        },
+        {
+          "claim": "西汉京畿地区云纹瓦当的当心有两种典型形式：较早的以双十字线划分当面、当心分为四部分并各加三角形；较晚的为半球形当心外饰一周连珠纹，流行于西汉中晚期",
+          "status": "single-source",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "艺术开卷｜两汉瓦当", "url": "https://m.thepaper.cn/newsDetail_forward_20495570", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "云纹瓦当在西汉大为流行，约占西汉瓦当的七成",
+          "status": "single-source",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_2353217", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "洛阳地区两汉之际云纹瓦当的当心多饰圆饼，东汉时又在圆饼之外增设一圆圈",
+          "status": "single-source",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "艺术开卷｜两汉瓦当", "url": "https://m.thepaper.cn/newsDetail_forward_20495570", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "东汉陵园遗址出土云纹瓦当按隔线可分为双隔线、无隔线、三隔线三大类共 21 个型式，云纹线条由断开为主逐渐转为相接为主",
+          "status": "single-source",
+          "note": "学术论文，可信度高，但只有一个来源。",
+          "sources": [
+            {"publisher": "《中原文物》2024年第4期（NAPSTIC 索引）", "title": "试析东汉陵园遗址出土的云纹瓦当", "url": "https://search.napstic.cn/literature/periodical/010zyww202404014", "date": "2024"}
+          ]
+        },
+        {
+          "claim": "当面外缘有一圈凸起的边轮；常见云纹瓦当的直径数值",
+          "status": "unverified",
+          "note": "两轮检索均未给出边轮的文字描述或普通云纹瓦当的直径范围；只查到西安秦砖汉瓦博物馆「瓦当王」直径约 60 厘米（特例）。字幕不要写直径数字。",
+          "sources": [
+            {"publisher": "人民政协网", "title": "目前所知最大的汉代瓦当展出 直径达60厘米", "url": "https://www.rmzxw.com.cn/scjb/zx/2015/04/29/491547.shtml", "date": "2015-04-29（据URL）"}
+          ]
+        }
+      ],
+      "conflicts": [],
+      "depiction": [
+        "圆形当面，外缘一圈凸起的素面宽边轮。（边轮为常识，未经本次检索核实）",
+        "当心是一枚凸起的圆钮（圆饼或半球形）；西汉中晚期款在圆钮外绕一周连珠纹，东汉款在圆饼外加一道圆圈。",
+        "从当心圆圈向边轮引出四组隔线（多为双线），把当面等分成四个扇形界格。",
+        "每个界格内饰一组卷云纹（向两侧对卷的蘑菇形或羊角形），四组对称。（云纹具体样式为常识，未经本次检索核实）",
+        "灰陶质，青灰色，模印阳线，表面粗朴无釉；位置在筒瓦最前端的檐口。"
+      ],
+      "pitfalls": [
+        "画成文字瓦当、四神瓦当，或后世的莲花纹、兽面纹、龙纹瓦当。",
+        "画成彩色琉璃或金属质感；汉代瓦当是素灰陶。",
+        "界格不是四分、云纹不卷曲或不对称；或在汉代檐口加上三角形滴水（滴水是后世才流行的构件，常识，未经本次检索核实）。"
+      ]
+    },
+    {
+      "name_zh": "明长城的垛口与敌楼；长城长度",
+      "captionFacts": [
+        {
+          "claim": "国家文物局 2012 年 6 月 5 日公布：中国历代长城总长度为 21196.18 千米",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "这是包含壕堑、界壕和山险等的各时代长城资源总长度，不是单指明长城。检索未见此后有新的官方总长度数字。",
+          "sources": [
+            {"publisher": "China Daily", "title": "Great Wall much longer than previously believed", "url": "https://covid-19.chinadaily.com.cn/usa/china/2012-06/13/content_15496934.htm", "date": "2012-06-13（据URL）"},
+            {"publisher": "The World（PRI）", "title": "Great Wall of China length announced after five year study", "url": "https://theworld.org/stories/2012-06-06/great-wall-china-length-announced-after-five-year-study", "date": "2012-06-06（据URL）"},
+            {"publisher": "凤凰网（转财新报道，引国家文物局《中国长城保护报告》）", "url": "https://news.ifeng.com/c/7fbGQwQpRMn", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "明长城长度为 8851.8 千米",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "note": "检索摘要中只有 China Highlights 的各朝代长度表明确列出该数字；这是广为引用的官方数据，但本次未能拿到第二个独立出处的明文。",
+          "sources": [
+            {"publisher": "China Highlights", "title": "Great Wall length", "url": "https://www.chinahighlights.com/greatwall/fact/great-wall-length.htm", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "各时代长城资源分布于北京、河北、山西等 15 个省（自治区、直辖市）的 404 个县（市、区）",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "note": "出自国家文物局《中国长城保护报告》的媒体转述；英文资料另有「10 个省级行政区」之说，口径不同，见 conflicts。",
+          "sources": [
+            {"publisher": "凤凰网（转财新报道，引国家文物局《中国长城保护报告》）", "url": "https://news.ifeng.com/c/7fbGQwQpRMn", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "明长城墙顶砌有垛口墙（设垛口、射孔），沿线建有可驻兵的空心敌台（敌楼）",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "北京日报（京报网）", "url": "https://news.bjd.com.cn/2026/08/21/11924951.shtml", "date": "2026-08-21（据URL）"},
+            {"publisher": "Heritage Science（DOAJ 收录）", "title": "Discovery and Reconstruction of the Remains of the Beacon-Equipped Hollow Enemy Towers along the Ming Great Wall", "url": "https://doaj.org/article/ac5fedb4a9eb4902aab23096c744a336", "date": "2024-03"},
+            {"publisher": "Wikipedia", "title": "Ming Great Wall", "url": "https://en.wikipedia.com/wiki/Ming_Wall", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "空心敌台相传为戚继光镇守蓟镇时所创，中空、四面开箭窗，可「内卫战卒，下发兵炮，外击敌人」；据文献统计，至万历九年（1581年）密云境内空心敌台达 343 座",
+          "status": "single-source",
+          "note": "北京日报原文以「据说，明代以前长城敌台都是实心」起笔，本身带有保留语气；字幕宜写「相传」或「戚继光主持增建」。",
+          "sources": [
+            {"publisher": "北京日报（京报网）", "url": "https://news.bjd.com.cn/2026/06/18/11813542.shtml", "date": "2026-06-18（据URL）"}
+          ]
+        },
+        {
+          "claim": "司马台长城有射孔呈「品」字形分布的垛口墙；古北路一带可见戚继光「削砖为脊」的尖顶垛口；垛口上曾装可转动、可取下的木质「牌堵」",
+          "status": "single-source",
+          "note": "出自北京日报「长城有故事」栏目对天津大学长城研究团队成果的报道。",
+          "sources": [
+            {"publisher": "北京日报（京报网）", "url": "https://news.bjd.com.cn/2026/08/21/11924951.shtml", "date": "2026-08-21（据URL）"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "长城分布的省级行政区数量：凤凰网（转财新）引国家文物局报告为 15 个省（区、市）404 个县；英文资料称 2012 年公布的测量覆盖 10 个省级行政区。两者口径可能不同（后者可能指明长城范围），未能查清。采信国家文物局报告的 15 个，但建议字幕不写该数字。"
+      ],
+      "depiction": [
+        "墙顶朝外一侧砌垛口墙：垛墙与垛口凹凸相间，垛墙上有瞭望孔、下部有射孔；朝内一侧是较矮的宇墙（女墙）。（内外高低之别为常识，未经本次检索核实）",
+        "敌楼（空心敌台）骑墙而建、高出墙面，砖砌中空，四面开拱券箭窗（实例为每面三窗、两券两伏），顶部环以垛口。",
+        "墙体沿山脊起伏蜿蜒，京畿砖石段为条石基础加青砖墙身。（常识，未经本次检索核实）",
+        "可选细节：司马台段的「品」字形射孔墙；古北路的尖顶（削砖为脊）垛口。",
+        "敌楼之间墙顶马道连续，敌楼之间间距不等，随地形疏密变化。"
+      ],
+      "pitfalls": [
+        "墙顶两侧都画成同样高的锯齿形垛口。",
+        "把 21196.18 千米说成明长城的长度，或把 8851.8 千米说成长城总长；单位应为千米（公里）。",
+        "给明代砖石长城配上「秦始皇修筑」的说明；秦汉长城与明长城在位置和材料上都不同。"
+      ]
+    },
+    {
+      "name_zh": "打树花（河北蔚县暖泉镇）",
+      "captionFacts": [
+        {
+          "claim": "打树花产生并流传于河北省蔚县暖泉镇一带，是元宵节期间的民间社火活动",
+          "status": "verified-2plus-independent",
+          "note": "蔚县隶属张家口市为常识，检索结果中未明写；「蔚」在此读 yù，配音注意。",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "url": "https://www.ihchina.cn/tenyear_protect_detail/20231.html", "date": "未标注"},
+            {"publisher": "中国日报网", "title": "文化中国行｜勇敢者的游戏：打树花", "url": "https://china.chinadaily.com.cn/a/202502/04/WS67a17cb4a310be53ce3f40fe.html", "date": "2025-02-04（据URL）"}
+          ]
+        },
+        {
+          "claim": "做法：把生铁熔成约 1600℃ 的铁水，表演者用浸过水的长柄柳木勺舀起铁水泼向古城墙，铁水迸溅成火花，形如枝繁叶茂的树冠",
+          "status": "verified-2plus-independent",
+          "note": "「泼向城墙、迸溅成花」和「约 1600℃」有多个来源；「柳木勺」明文见中国日报，另一来源只写「长柄木勺」。",
+          "sources": [
+            {"publisher": "中国日报网", "title": "文化中国行｜勇敢者的游戏：打树花", "url": "https://china.chinadaily.com.cn/a/202502/04/WS67a17cb4a310be53ce3f40fe.html", "date": "2025-02-04（据URL）"},
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "url": "https://www.ihchina.cn/tenyear_protect_detail/20231.html", "date": "未标注"},
+            {"publisher": "当代中国（ourchinastory.com）", "title": "《延禧攻略》里的中国文化遗产 1600℃的春节「烟花」", "url": "https://www.ourchinastory.com/cn/8063", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "据称产生于明代中叶，至今已有 500 余年历史，与暖泉当地发达的冶铁业有关",
+          "status": "verified-2plus-independent",
+          "note": "属传承说法，字幕建议用「相传」「已有五百余年」。",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "url": "https://www.ihchina.cn/tenyear_protect_detail/20231.html", "date": "未标注"},
+            {"publisher": "北京旅游网（visitbeijing.com.cn）", "url": "https://www.visitbeijing.com.cn/article/47QtYTQ1ulf", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "非遗级别：国家级非物质文化遗产代表性项目，名录项目名为「打铁花（蔚县打树花）」，2021 年列入",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "中国日报称 2021 年 5 月入选；非遗网名录页显示 2021 年更新。「第五批」字样未在检索结果中出现，字幕不要写批次。",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "url": "https://www.ihchina.cn/search_result/startdate/order.html/order/1/p/1912.html", "date": "2021-08-23（页面更新日期）"},
+            {"publisher": "中国日报网", "title": "文化中国行｜勇敢者的游戏：打树花", "url": "https://china.chinadaily.com.cn/a/202502/04/WS67a17cb4a310be53ce3f40fe.html", "date": "2025-02-04（据URL）"}
+          ]
+        },
+        {
+          "claim": "分工为「掌炉」（冶炼、抬送铁水）与「掌勺」（泼洒表演）两部分",
+          "status": "single-source",
+          "sources": [
+            {"publisher": "中国非物质文化遗产网（ihchina.cn）", "url": "https://www.ihchina.cn/tenyear_protect_detail/20231.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "一场表演约熔化 500 公斤生铁",
+          "status": "single-source",
+          "sources": [
+            {"publisher": "中国日报网", "title": "文化中国行｜勇敢者的游戏：打树花", "url": "https://china.chinadaily.com.cn/a/202502/04/WS67a17cb4a310be53ce3f40fe.html", "date": "2025-02-04（据URL）"}
+          ]
+        }
+      ],
+      "conflicts": [],
+      "depiction": [
+        "夜晚，高大的古堡墙前，表演者手持长柄木勺，舀起金红色铁水，自下而上奋力泼向墙面。",
+        "铁水撞墙后炸开，万点火花呈伞状、树冠状向上向外散落，这是「树花」之名的由来；火花以金黄、橙红为主。",
+        "表演者戴宽檐草帽、穿厚重的反穿羊皮袄作防护。（常识，未经本次检索核实）",
+        "画面一侧可有熔铁炉与抬送铁水的「掌炉」人，与「掌勺」表演者分工。",
+        "背景是青砖或夯土的堡墙与堡门，不是开阔广场或夜空。"
+      ],
+      "pitfalls": [
+        "与河南确山等地的「打铁花」（在花棚下用花棒把铁水击向空中）混同；蔚县打树花是用木勺把铁水泼向城墙。（确山做法为常识，未经本次检索核实）",
+        "画成从地面升空爆开的烟花。",
+        "地点写成山西，或把级别写成「省级非遗」「世界非遗」；应为河北蔚县暖泉镇、国家级非遗。"
+      ]
+    },
+    {
+      "name_zh": "再现媒介：《清明上河图》《千里江山图》《营造法式》与三维激光扫描点云",
+      "captionFacts": [
+        {
+          "claim": "《清明上河图》为北宋张择端所作，现藏北京故宫博物院，描绘北宋都城汴京（今开封）汴河两岸的繁华景象",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "光明网", "url": "https://m.gmw.cn/2025-10/01/content_1304170343.htm", "date": "2025-10-01（据URL）"},
+            {"publisher": "香港01", "title": "故宫博物院建院百周年 张择端《清明上河图》暌违10年全卷展出", "url": "https://global.hk01.com/即时中国/60281613/故宫博物院建院百周年-张择端-清明上河图-暌违10年全卷展出", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "《清明上河图》于 2025 年 9 月 30 日至 12 月 30 日在故宫博物院建院百年之际全卷展出，为时隔十年再度全卷展出",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "光明网", "url": "https://m.gmw.cn/2025-10/01/content_1304170343.htm", "date": "2025-10-01（据URL）"},
+            {"publisher": "香港01", "title": "故宫博物院建院百周年 张择端《清明上河图》暌违10年全卷展出", "url": "https://global.hk01.com/即时中国/60281613/故宫博物院建院百周年-张择端-清明上河图-暌违10年全卷展出", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "《清明上河图》尺寸为纵 24.8 厘米、横 528.7 厘米",
+          "status": "unverified",
+          "note": "两轮检索都只得到「5 米多长」的表述，没有任何结果给出精确尺寸。字幕可写「全长五米余」，不要写精确数字。",
+          "sources": [
+            {"publisher": "光明网（仅有「5米多长」之说）", "url": "https://m.gmw.cn/2025-10/01/content_1304170343.htm", "date": "2025-10-01（据URL）"}
+          ]
+        },
+        {
+          "claim": "《千里江山图》为北宋王希孟所作的青绿山水长卷，绢本设色，现藏故宫博物院；作者与年代依据卷后蔡京题跋，作于政和三年（1113年），相传作者时年十八岁",
+          "status": "verified-2plus-independent",
+          "note": "有学者（如曹星原）对作者归属与真伪提出过质疑，故宫方面认定为北宋后期作品。字幕写「北宋·王希孟」无妨，「十八岁」宜加「相传」。",
+          "sources": [
+            {"publisher": "文汇报", "url": "https://dzb.whb.cn/images/2017-10/18/10/101018.pdf", "date": "2017-10-18（据URL）"},
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_2112697", "date": "未标注"},
+            {"publisher": "Sino Cultural", "title": "A Masterpiece Unveiled: The Legacy of A Thousand Li of Rivers and Mountains by Wang Ximeng", "url": "https://sinocultural.com/blogs/all-blogs/a-masterpiece-unveiled-the-legacy-of-a-thousand-li-of-rivers-and-mountains-by-wang-ximeng", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "《千里江山图》全卷横约 11.9 米（1191.5 厘米）",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "澎湃新闻", "url": "https://www.thepaper.cn/newsDetail_forward_1881609", "date": "未标注"},
+            {"publisher": "Omeka 图像著录条目（署故宫博物院藏，1113 年）", "url": "https://alexandramickle.omeka.net/items/show/68", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "《千里江山图》纵 51.5 厘米",
+          "status": "conflicting",
+          "note": "Omeka 著录为 51.5 × 1191.5 厘米；维基共享资源镜像页的图像说明写 11.91 米 × 55.8 厘米。采信 51.5 厘米（与横向 1191.5 同出一条完整著录），但两处都不是故宫官方页面，字幕不要写纵向尺寸。",
+          "sources": [
+            {"publisher": "Omeka 图像著录条目", "url": "https://alexandramickle.omeka.net/items/show/68", "date": "未标注"},
+            {"publisher": "维基共享资源镜像（wiki.riteme.site）", "title": "File:Wang Ximeng - A Thousand Li of River (Bridge).jpg", "url": "https://wiki.riteme.site/wiki/File:Wang_Ximeng_-_A_Thousand_Li_of_River_(Bridge).jpg", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "《营造法式》由北宋李诫奉敕编修，元符三年（1100年）成书，崇宁二年（1103年）刊行颁布",
+          "status": "verified-2plus-independent",
+          "note": "个别资料把元符三年换算成 1101 年，或主张崇宁三年刊行，均非学界主流；采用 1100 年成书、1103 年刊行。",
+          "sources": [
+            {"publisher": "京都大学学术情报库（KURENAI）", "url": "https://repository.kulib.kyoto-u.ac.jp/dspace/bitstream/2433/66810/1/jic072_771.pdf", "date": "未标注"},
+            {"publisher": "北京大学（fh.pku.edu.cn）", "url": "https://fh.pku.edu.cn/docs/2018-11/20181115002655664069.pdf", "date": "2018-11（据URL）"},
+            {"publisher": "墨尔本大学 Asian Art Dialogue", "title": "Building Standards, Yingzao fashi《营造法式》", "url": "https://blogs.unimelb.edu.au/asianartdialogue/?p=713", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "哲宗绍圣四年（1097年）命李诫重新编修《营造法式》，因元祐旧本只有料状、缺少用材制度",
+          "status": "single-source",
+          "sources": [
+            {"publisher": "北京大学（fh.pku.edu.cn）", "url": "https://fh.pku.edu.cn/docs/2018-11/20181115002655664069.pdf", "date": "2018-11（据URL）"}
+          ]
+        },
+        {
+          "claim": "《营造法式》全书 34 卷",
+          "status": "conflicting",
+          "note": "豆瓣图书简介称李诫自述三十六卷、今本为三十四卷；京都大学论文与墨尔本大学资料直接写 36 卷。两种计卷口径并存，字幕不要写卷数。",
+          "sources": [
+            {"publisher": "豆瓣读书（图书简介）", "url": "https://book.douban.com/subject/2107448/", "date": "未标注"},
+            {"publisher": "京都大学学术情报库（KURENAI）", "url": "https://repository.kulib.kyoto-u.ac.jp/dspace/bitstream/2433/66810/1/jic072_771.pdf", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "三维激光扫描获取的点云已被用于古建筑与石窟的数字化测绘、三维重建和图纸绘制",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "note": "多篇期刊论文：点云配准与纹理映射、点云与无人机倾斜影像融合、用点云绘制平立剖面图等。",
+          "sources": [
+            {"publisher": "《武汉大学学报·信息科学版》", "url": "https://ch.whu.edu.cn/article/id/1640", "date": "未标注"},
+            {"publisher": "《北京测绘》2024年第38卷第1期（NAPSTIC 索引）", "url": "https://search.napstic.cn/literature/periodical/010bjch202401008", "date": "2024"},
+            {"publisher": "《山西建筑》2025年第51卷第3期（NAPSTIC 索引）", "url": "https://search.napstic.cn/literature/periodical/010shanxjz202503005", "date": "2025"}
+          ]
+        },
+        {
+          "claim": "应用实例：云冈石窟曾作为「基于激光点云的大型文物景观三维重建」方法的试验对象",
+          "status": "single-source",
+          "note": "论文与页面的对应依据检索摘要判断；其他查到的实例有白马寺齐云塔、云南白族历史建筑、同乐傈僳族民居、靖江王陵。",
+          "sources": [
+            {"publisher": "《武汉大学学报·信息科学版》", "url": "https://ch.whu.edu.cn/article/id/1640", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "应县木塔、故宫已做过三维激光扫描点云采集",
+          "status": "unverified",
+          "note": "检索结果中没有出现这两处的具体点云案例，额度用尽未能补查。片中若出现「点云」画面，不要在字幕里指名应县木塔或故宫已被扫描。",
+          "sources": []
+        }
+      ],
+      "conflicts": [
+        "《千里江山图》纵向尺寸：Omeka 著录 51.5 厘米，维基共享镜像页 55.8 厘米。采信 51.5 厘米（完整著录，横向数字与多方一致），但建议字幕只写「长近十二米」。",
+        "《营造法式》卷数：34 卷（今本）与 36 卷（李诫自述／部分学术资料）两说并存，系计卷口径不同。不写卷数。",
+        "《营造法式》年代：个别资料写元符三年为 1101 年、或刊行于崇宁三年；主流为 1100 年成书、1103 年刊行，采信主流。"
+      ],
+      "depiction": [
+        "《清明上河图》：横向长卷，绢本淡设色，墨线为主、色彩浅淡，整体是旧绢的黄褐色调；内容为汴河、木构拱桥、舟船、城门楼与街市人物。（设色与具体场景为常识，未经本次检索核实）",
+        "《千里江山图》：横向长卷，石青、石绿的浓重青绿山峦配赭色与浩渺江面，其间有渔村、长桥、亭榭。（具体场景为常识，未经本次检索核实）",
+        "《营造法式》：宋代官修建筑规范，再现时宜用白描线图风格的木构图样（斗栱、梁架、彩画样稿）配竖排版刻文字。（图样风格为常识，未经本次检索核实）",
+        "点云：由海量离散小点构成建筑轮廓，点的疏密不均，常用伪彩色或灰度显示，可见扫描盲区的空洞；可由点云过渡到线图或实景。",
+        "四种媒介可按时间排成一条线：北宋绘画与官书（12 世纪初）到当代数字测绘。"
+      ],
+      "pitfalls": [
+        "把《清明上河图》画成浓艳青绿，或把《千里江山图》画成水墨淡彩；两者色调截然不同。",
+        "版本混淆：张择端本藏北京故宫博物院；明仇英本、清院本是另外的作品（常识，未经本次检索核实）。作者朝代勿写成南宋或唐。",
+        "把《营造法式》与清代工部《工程做法》混同，或在字幕里写未经核实的精确尺寸、卷数。"
+      ]
+    }
+  ]
+}

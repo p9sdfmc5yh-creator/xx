@@ -1,0 +1,537 @@
+{
+  "group": "g3-temple-of-heaven",
+  "filePath": "/tmp/claude-0/-home-user-kashing/82b55bb9-0385-5108-b6bb-ac0899659655/scratchpad/research/g3-temple-of-heaven.json",
+  "subjects": [
+    {
+      "name_zh": "天坛祈年殿（外观与沿革）",
+      "depiction": [
+        "整体自下而上四段：三层汉白玉圆形台基（祈谷坛）→ 朱红殿身 → 三层蓝色琉璃瓦圆檐 → 鎏金宝顶。三重檐自下而上逐层收小，外轮廓近似伞形/圆锥形；央视报道称三层檐口连线与宝顶中线夹角近30度，即整体是一个顶角约60度的稳定三角形构图。",
+        "屋顶为三重檐圆形攒尖顶：没有正脊、垂脊和翘角，三层檐口都是完整的水平圆环（透视下为椭圆）；蓝色琉璃筒瓦的瓦垄从上向檐口呈放射状辐射，越往上越密集收拢于宝顶之下。",
+        "比例要点（官方口径）：殿高31.6米，三层台基合计高5.2米，通高36.8米；台基下层直径90.3米、中层79.3米、上层68.2米。台基很宽很扁——总高只有殿高的约1/6，下层直径约为殿身直径的3倍上下，殿只占台基顶面中央一小块。",
+        "殿身为圆形，外圈12根朱红檐柱把立面等分为12开间，柱间为朱红色门窗；中层檐、上层檐之下各有一圈较矮的环形“腰身”，施青绿底贴金彩画和斗拱，不要画成三层都有同样高的墙身。",
+        "檐下色彩带：每层檐下是一圈青（蓝）、绿相间并大量贴金的龙凤和玺彩画与斗拱，飞椽头为金色“卍”（万）字；从远处看是蓝瓦之下一条青绿泛金的窄带，再下是朱红。",
+        "台基三层各有一圈汉白玉栏杆（望柱加栏板）。望柱头与出水嘴纹样逐层不同：上层龙、中层凤、下层云；四面有台阶（出陛），南北正中的御路石浮雕自上而下也是龙、凤、云。",
+        "屋瓦现状三层全部为蓝色。明嘉靖时曾是上青、中黄、下绿三色瓦，清乾隆年间才统一为蓝色——画现状不能画成三色。",
+        "匾额：上层檐下正南悬竖匾“祈年殿”，蓝底金字、金色边框（此条凭通行图像资料，本轮联网未能核实匾额细节，如要特写请另行确认）。",
+        "配色关系：蓝瓦、金顶、红柱红门、青绿金彩画、白色台基，五种颜色层次分明；殿体量大而台基洁白开阔，背景宜为天空，突出“天”的意象。"
+      ],
+      "palette": [
+        "琉璃瓦蓝 #1F3F8F（估计）",
+        "鎏金宝顶金 #D4A017（估计）",
+        "柱与门窗朱红 #B02A20（估计）",
+        "彩画群青 #1D4E9E（估计）",
+        "彩画石绿 #2E8B6B（估计）",
+        "汉白玉台基 #EDEAE0（估计）"
+      ],
+      "pitfalls": [
+        "把屋顶画成黄色琉璃瓦，或画成上蓝中黄下绿三色——现状三层檐全部是蓝瓦（三色是明代旧貌）。",
+        "画成方形殿或带屋脊、翘角的重檐庑殿/歇山——祈年殿是圆形攒尖顶，没有屋脊和翘角，檐口是正圆。",
+        "台基画得太窄太高，或只画一层/两层——台基是三层宽扁的圆台，每层都有汉白玉栏杆。",
+        "檐数画错（两层或四层），或三层檐画成同样大小——必须是三层且自下而上逐层明显收小，顶端有金色宝顶。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "祈年殿的前身“大祀殿”始建于明永乐十八年（1420年），最初是一座矩形（方形）大殿，用于合祀天地。",
+          "status": "verified-2plus-independent",
+          "note": "1420年只是前身建筑的年代，现存圆殿的形制来自1545年，现存实物为1890年代重建。字幕不宜写成“祈年殿建于1420年”而不加说明，可写“始建于1420年”。",
+          "sources": [
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "祈年殿相关介绍", "url": "https://www.visitbeijing.com.cn/article/4EFs5Mcd0NG", "date": "未标注"},
+            {"publisher": "MIT Libraries Dome", "title": "Hall of Prayer for Good Harvests", "url": "https://dome.mit.edu/handle/1721.3/150581", "date": "未标注"},
+            {"publisher": "Encyclopaedia Britannica", "title": "Hall of Prayer for Good Harvests", "url": "https://www.britannica.com/place/Hall-of-Prayer-for-Good-Harvests", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "明嘉靖二十四年（1545年）在大祀殿原址建成三重檐圆形的“大享殿”，三层瓦色自上而下为青（蓝）、黄、绿。",
+          "status": "verified-2plus-independent",
+          "note": "线索“1545年改圆殿大享殿”成立。旧殿拆除/新殿开工年份有嘉靖十九年（1540）与嘉靖二十年、二十一年（1541、1542）两种说法，建成年份1545各家一致。Britannica 另称“约1530年取得现在的圆形”，与中文资料不符，未采信。",
+          "sources": [
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "祈年殿相关介绍", "url": "https://www.visitbeijing.com.cn/article/4EFs5Mcd0NG", "date": "未标注"},
+            {"publisher": "MIT Libraries Dome", "title": "Hall of Prayer for Good Harvests", "url": "https://dome.mit.edu/handle/1721.3/150581", "date": "未标注"},
+            {"publisher": "北京市人民政府国际版门户（english.beijing.gov.cn）", "title": "Tiantan Park: A Tourist Attraction Transformed From a Ritual Site", "url": "https://english.beijing.gov.cn/travellinginbeijing/citytours/202012/t20201224_2184246.html", "date": "2020-12-24（URL所示）"}
+          ]
+        },
+        {
+          "claim": "清乾隆十六年（1751年）大享殿更名为“祈年殿”。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "祈年殿相关介绍", "url": "https://www.visitbeijing.com.cn/article/4EFs5Mcd0NG", "date": "未标注"},
+            {"publisher": "京报网（北京日报副刊）", "title": "天坛之变与祭祀之礼", "url": "https://news.bjd.com.cn/2023/08/24/10540919.shtml", "date": "2023-08-24"},
+            {"publisher": "MIT Libraries Dome", "title": "Hall of Prayer for Good Harvests", "url": "https://dome.mit.edu/handle/1721.3/150581", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "清乾隆年间把三色瓦统一改为蓝（青）色琉璃瓦；中文资料记为乾隆十七年（1752年），英文资料多并入1751年。",
+          "status": "conflicting",
+          "note": "线索“1751年更名并改蓝瓦”需要修正：更名在1751年，改瓦按北京旅游网为1752年。字幕建议写“乾隆年间改为蓝瓦”或“1751至1752年”，不要把改瓦单独写成1751年。",
+          "sources": [
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "祈年殿相关介绍（乾隆十七年改青色琉璃瓦）", "url": "https://www.visitbeijing.com.cn/article/4P5U9TeZK72?device=amp", "date": "未标注"},
+            {"publisher": "MIT Libraries Dome", "title": "Hall of Prayer for Good Harvests（1751年改全蓝瓦）", "url": "https://dome.mit.edu/handle/1721.3/150581", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "清光绪十五年八月二十四日（公历1889年9月18日）祈年殿遭雷击起火焚毁。",
+          "status": "verified-2plus-independent",
+          "note": "京报网给的是农历日期，携程页面给的是公历日期，经历法换算两者是同一天（光绪十五年八月初一为公历1889年8月26日），并不矛盾。",
+          "sources": [
+            {"publisher": "京报网（北京日报副刊）", "title": "天坛之变与祭祀之礼", "url": "https://news.bjd.com.cn/2023/08/24/10540919.shtml", "date": "2023-08-24"},
+            {"publisher": "携程攻略", "title": "祈年殿景点介绍", "url": "https://gs.ctrip.com/html5/you/sight/1/1485550.html", "date": "未标注"},
+            {"publisher": "MIT Libraries Dome", "title": "Hall of Prayer for Good Harvests", "url": "https://dome.mit.edu/handle/1721.3/150581", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "焚毁次年（1890年）开始按原样重建，1896年（光绪二十二年）完工，现存祈年殿即这次重建的建筑。",
+          "status": "verified-2plus-independent",
+          "note": "线索把“焚毁及重建”都记在1889年，不准确：1889年是焚毁，重建在1890至1896年。个别英文导游资料写“历时16年重建”，属孤例，未采信。来源多为旅游与新闻类页面，未能查到官方志书原文。",
+          "sources": [
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "祈年殿相关介绍（翌年开始重建）", "url": "https://www.visitbeijing.com.cn/article/4EFs5Mcd0NG", "date": "未标注"},
+            {"publisher": "携程攻略", "title": "祈年殿景点介绍（次年重建，1896年完工）", "url": "https://gs.ctrip.com/html5/you/sight/1/1485550.html", "date": "未标注"},
+            {"publisher": "中华网", "title": "天坛相关报道（耗时六年原样重建）", "url": "https://news.china.com/socialgd/10000169/20260514/49494245.html", "date": "2026-05-14"}
+          ]
+        },
+        {
+          "claim": "祈年殿为三重檐圆形攒尖顶，覆蓝色琉璃瓦，顶端为鎏金宝顶。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "百度百科", "title": "祈谷坛", "url": "https://baike.baidu.com/item/%E7%A5%88%E8%B0%B7%E5%9D%9B/4724037", "date": "未标注"},
+            {"publisher": "金羊网（转央视CCTV4节目内容）", "title": "文化中国行·传世古建 天坛", "url": "https://news.ycwb.com/2025-03/16/content_53295715.htm", "date": "2025-03-16"}
+          ]
+        },
+        {
+          "claim": "祈年殿高度：官方口径为殿高31.6米、三层台基高5.2米、通高36.8米；通行说法为“高约38米”（一说38.2米）。",
+          "status": "conflicting",
+          "note": "采信北京市公园管理中心官方页面的31.6米、5.2米、36.8米。38米左右的说法见于百度百科、北京旅游网、英文百科等，很可能是含台基的另一种量法（38.2米减去6米台基约为32米，与殿高31.6米接近），这一解释是研究员推断，未见来源明说。字幕若只写一个数，建议写“通高约38米”或“殿高约32米”，并避免写到小数点。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "百度百科", "title": "祈年殿（殿高38.2米）", "url": "https://baike.baidu.com/item/%E7%A5%88%E5%B9%B4%E6%AE%BF/2034363", "date": "未标注"},
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "天坛公园:建筑独特 古迹众多（高38米）", "url": "https://www.visitbeijing.com.cn/article/48BMl7OxIpo", "date": "未标注"},
+            {"publisher": "New World Encyclopedia", "title": "Temple of Heaven（38 m tall）", "url": "https://newworldencyclopedia.org/entry/Temple_of_Heaven", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "祈年殿直径：有32.72米（约32米）、24.2米、36米三种说法。",
+          "status": "conflicting",
+          "note": "32.72米见百度百科“祈谷坛”和中国网；约32米见北京旅游网、New World Encyclopedia；24.2米见北京市政府国际版页面和北京旅游网另一篇文章（同文称殿内面积460平方米）；36米见英文维基百科镜像。研究员倾向认为24.2米指殿身（檐柱圈一带），32米左右含出檐，但没有来源明确说明量取位置，故不下结论。建议字幕不写直径，或写“直径约32米”并知悉存在分歧。",
+          "sources": [
+            {"publisher": "百度百科", "title": "祈谷坛（直径32.72米）", "url": "https://baike.baidu.com/item/%E7%A5%88%E8%B0%B7%E5%9D%9B/4724037", "date": "未标注"},
+            {"publisher": "中国网·中国国情", "title": "天坛：祈年殿", "url": "http://guoqing.china.com.cn/2019-03/25/content_74609512_4.htm", "date": "2019-03-25"},
+            {"publisher": "北京市人民政府国际版门户（english.beijing.gov.cn）", "title": "Hall of Prayer for Good Harvests（38.2 m high, 24.2 m in diameter）", "url": "https://english.beijing.gov.cn/specials/parktours/guidevisitors/templeofheaven/mustsee/202301/t20230112_2897330.html", "date": "2023-01-12（URL所示）"},
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "天坛介绍（殿高38.2米，直径24.2米）", "url": "https://www.visitbeijing.com.cn/article/4N0bP1sjf3e", "date": "未标注"},
+            {"publisher": "Wikipedia（镜像站）", "title": "Temple of Heaven（36 m in diameter, 38 m tall）", "url": "https://wikipedia.com/wiki/Tiantan", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "祈年殿坐落在三层汉白玉圆形台基（祈谷坛）上，官方数据：台基通高5.2米，上、中、下层直径分别为68.2米、79.3米、90.3米。",
+          "status": "conflicting",
+          "note": "三层汉白玉圆台这一点各家一致。尺寸有出入：北京旅游网、MIT 称台高6米；有博客称通高6.30米、直径68.2、79.6、90.8米。采信北京市公园管理中心的数据。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "天坛介绍（高6米的汉白玉圆台）", "url": "https://www.visitbeijing.com.cn/article/4N0bP1sjf3e", "date": "未标注"},
+            {"publisher": "新浪博客（古槐蜂）", "title": "天坛祈年殿的前世今生（下）", "url": "https://blog.sina.com.cn/s/blog_13484f6ef0102yuep.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "殿内28根大柱分三圈：中央4根龙井柱象征一年四季，中圈12根金柱象征十二个月，外圈12根檐柱象征一天十二时辰；中、外两圈合计24根象征二十四节气，全部28根象征二十八星宿。",
+          "status": "verified-2plus-independent",
+          "note": "线索“4龙井柱加12金柱加12檐柱”成立。另有“再加柱顶8根童柱共36根，象征三十六天罡”的说法，见于博客与网易文章，属引申说法，字幕慎用。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "New World Encyclopedia", "title": "Temple of Heaven", "url": "https://newworldencyclopedia.org/entry/Temple_of_Heaven", "date": "未标注"},
+            {"publisher": "中国日报网（央视新闻）", "title": "文化中国行丨从“天圆地方”到最速曲线 古人把哲学与科学“搬进”天坛", "url": "https://cn.chinadaily.com.cn/a/202505/13/WS6822a943a310205377032cb3.html", "date": "2025-05-13"},
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "天坛公园:建筑独特 古迹众多", "url": "https://www.visitbeijing.com.cn/article/48BMl7OxIpo", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "祈谷坛三层栏杆的望柱与出水嘴纹样：上层为龙，中层为凤，下层为云。",
+          "status": "verified-2plus-independent",
+          "note": "新京报引公园工作人员说法是“第一层云首、第二层凤首、第三层龙首”，那是自下往上数，与“上龙、中凤、下云”一致。",
+          "sources": [
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "祈年殿相关介绍", "url": "https://www.visitbeijing.com.cn/article/4EFs5Mcd0NG", "date": "未标注"},
+            {"publisher": "新京报", "title": "祈年殿汉白玉台螭首相关报道", "url": "https://www.bjnews.com.cn/detail/1784434400129176.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "天坛于1998年以“天坛：北京皇家祭坛”之名列入联合国教科文组织《世界遗产名录》（文化遗产，标准 i、ii、iii）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {"publisher": "UNESCO World Heritage Centre", "title": "Decision 2752（Temple of Heaven: an Imperial Sacrificial Altar in Beijing）", "url": "https://whc.unesco.org/en/decisions/2752", "date": "1998"},
+            {"publisher": "World Heritage Site (worldheritagesite.org)", "title": "Temple of Heaven", "url": "https://www.worldheritagesite.org/list/id/881", "date": "未标注"},
+            {"publisher": "UNESCO（网页存档）", "title": "Nomination file 881", "url": "https://webarchive.unesco.org/web/20190903123252/http://whc.unesco.org/uploads/nominations/881.pdf", "date": "1998"}
+          ]
+        },
+        {
+          "claim": "天坛也是2024年列入《世界遗产名录》的“北京中轴线”的构成要素之一。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "note": "本轮只在央视系报道（中国日报网、光明网转载同一节目）中看到，按同源计为单一来源。",
+          "sources": [
+            {"publisher": "中国日报网（央视新闻）", "title": "文化中国行丨从“天圆地方”到最速曲线 古人把哲学与科学“搬进”天坛", "url": "https://cn.chinadaily.com.cn/a/202505/13/WS6822a943a310205377032cb3.html", "date": "2025-05-13"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "【方法说明】本会话的 WebFetch 被网络白名单拦截（zh.wikipedia.org、en.wikipedia.org、news.bjd.com.cn、whc.unesco.org、www.visitbeijing.com.cn、tech.huanqiu.com 均无法解析），因此全部核对只基于 WebSearch 返回的结果摘要，未能逐页通读原文；页面发布日期多数取自 URL 中的日期。另外 WebSearch 配额在最后一轮耗尽，匾额细节、椽身颜色、龙井柱纹饰、圜丘壝墙等几项未能完成核实，已在相应条目标注。",
+        "高度：北京市公园管理中心称殿高31.6米、台基5.2米、通高36.8米；百度百科、北京市政府国际版称38.2米；北京旅游网、New World Encyclopedia、英文维基镜像称38米；个别导游网站称33米或32米。采信官方的分项数据，“约38米”可作为通行说法使用。",
+        "直径：32.72米（百度百科祈谷坛、中国网）、32米（北京旅游网、New World Encyclopedia）、24.2米（北京市政府国际版、北京旅游网另一篇）、36米（英文维基镜像、chiculture.org.hk）、30米（个别英文导游站）。没有来源说明量取位置，不采信任何单一数字，建议字幕回避或写“约32米”。",
+        "改蓝瓦年份：北京旅游网记为乾隆十七年（1752年），MIT Dome 记为1751年。采信中文资料的分述（1751年更名、1752年改瓦），字幕写“乾隆年间”最稳妥。",
+        "大享殿开工与旧殿拆除：一说嘉靖十九年（1540年）开始修建，一说嘉靖二十年（1541年）拆大祀殿、二十一年（1542年）建大享殿；建成年份1545年一致。Britannica 称“约1530年取得圆形”，与以上均不符，未采信。",
+        "重建工期：多数来源为1890年动工、1896年完工（约6年）；个别英文导游资料称“16年”，未采信。",
+        "台基尺寸：官方5.2米、68.2、79.3、90.3米；另有6米（北京旅游网、MIT）、6.30米与68.2、79.6、90.8米（博客）。采信官方。",
+        "木料：多篇中文资料称“28根楠木大柱”，但现存建筑是1890年代重建，重建所用木料的说法本轮未核实，建议字幕不要写木材种类。“全殿不用一根钉子”见于英文维基镜像和导游资料，属通俗说法，不建议写入字幕。"
+      ]
+    },
+    {
+      "name_zh": "天坛圜丘坛",
+      "depiction": [
+        "露天的三层圆形石坛，坛上没有任何屋宇。三层同心圆台自下而上逐层收小，直径之比为下21、中15、上9（即7比5比3，按清代营造尺的丈计）。",
+        "非常扁平：通高只有5.17米（各层高约1.6到1.9米），而下层直径约54.9米——总高不到下层直径的十分之一，不要画成高耸的塔台。",
+        "每层坛边都有一圈汉白玉栏杆（望柱加栏板），栏杆立在汉白玉须弥座台帮之上；远看是三道白色圆环。",
+        "东、南、西、北四个正方向各有一道台阶从地面直通顶层，每层9级，四道台阶把每层栏杆分成四段弧。",
+        "坛面铺青灰色的艾叶青石。上层正中是一块圆形的天心石，四周是扇形石板拼成的同心圆环共9环：第1环9块、第2环18块、第3环27块，依次每环多9块，第9环81块。画第1环时9块各占40度，第2环18块各占20度，以此类推。",
+        "环数继续向外计：中层为第10到18环（90块到162块），下层为第19到27环（171块到243块）。俯视构图时可用越往外越细密的放射状石缝表现。",
+        "栏板数量按实测为上层36块、中层72块、下层108块，即每两道台阶之间的一段弧上分别是9块、18块、27块栏板。",
+        "配色以白色栏杆和青灰坛面为主，几乎没有彩色构件；天空占大面积最能体现祭天的空旷感。",
+        "坛外有两重矮墙（壝墙），内圈圆形、外圈方形，红墙蓝瓦，四面各有白石棂星门（此条凭通行图像资料，本轮联网未核实，远景可简化处理）。"
+      ],
+      "palette": [
+        "汉白玉栏杆 #ECE8DC（估计）",
+        "艾叶青石坛面 #9AA39C（估计）",
+        "石缝与阴影 #6F7872（估计）",
+        "壝墙红 #A8372B（估计）",
+        "壝墙瓦蓝 #24468F（估计）"
+      ],
+      "pitfalls": [
+        "在坛顶画殿宇或亭子——圜丘是露天祭坛，上面没有建筑。",
+        "把台子画得太高太陡——它是直径远大于高度的三层扁圆台。",
+        "石板环数或块数乱画：上层必须是天心石外9环，第1环9块、最外一环81块；不要把“81块”当成上层总数（上层9环合计405块）。",
+        "坛面画成纯白——坛面是青灰色艾叶青石，只有栏杆和台帮是白色汉白玉。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "圜丘坛始建于明嘉靖九年（1530年），是明清两代皇帝冬至祭天的场所。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "圜丘", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048232.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "京报网", "title": "圜丘相关历史文章", "url": "https://news.bjd.com.cn/2022/09/27/10170283.shtml", "date": "2022-09-27"},
+            {"publisher": "Wikipedia", "title": "Circular Mound Altar", "url": "https://en.wikipedia.org/wiki/Circular_Mound_Altar", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "清乾隆十四年（1749年）圜丘扩建改建，形成现在的规模。",
+          "status": "conflicting",
+          "note": "京报网、百度百科、北京旅游网及其英文版均为乾隆十四年（1749年）；百度百科另一词条记工程为1749至1753年；英文维基百科称“1740年重建”。采信1749年（多家中文资料一致，且有年号对应）。",
+          "sources": [
+            {"publisher": "京报网", "title": "圜丘相关历史文章", "url": "https://news.bjd.com.cn/2022/09/27/10170283.shtml", "date": "2022-09-27"},
+            {"publisher": "百度百科", "title": "圜丘坛", "url": "https://baike.baidu.com/item/%E5%9C%9C%E4%B8%98%E5%9D%9B/4327145", "date": "未标注"},
+            {"publisher": "Visit Beijing（北京旅游网英文版）", "title": "Circular Mound Altar", "url": "https://english.visitbeijing.com.cn/article/47OMpcwBlpS", "date": "未标注"},
+            {"publisher": "Wikipedia", "title": "Circular Mound Altar（rebuilt in 1740）", "url": "https://en.wikipedia.org/wiki/Circular_Mound_Altar", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "圜丘为三层露天圆形石坛，各层坛面铺艾叶青石，四周环以汉白玉栏杆。",
+          "status": "verified-2plus-independent",
+          "note": "线索“三层汉白玉圆台”是通行的简称；严格说坛面是艾叶青石，栏杆和须弥座台帮是汉白玉。字幕写“三层圆形石坛”或“三层汉白玉栏杆环绕的圆坛”更准确。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "圜丘", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048232.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "携程攻略", "title": "圜丘坛景点介绍", "url": "https://gs.ctrip.com/html5/you/sight/1/1487585.html", "date": "未标注"},
+            {"publisher": "百度百科", "title": "圜丘坛", "url": "https://baike.baidu.com/item/%E5%9C%9C%E4%B8%98%E5%9D%9B/4327145", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "明代圜丘原为蓝色琉璃台面，乾隆改建时改用艾叶青石台面和汉白玉栏杆。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "百度百科", "title": "圜丘坛", "url": "https://baike.baidu.com/item/%E5%9C%9C%E4%B8%98%E5%9D%9B/4327145", "date": "未标注"},
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "天坛介绍", "url": "https://www.visitbeijing.com.cn/article/4N0bP1sjf3e", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "上层坛面正中为圆形的天心石，外围扇形石板共9环：第1环9块、第2环18块，每环递增9块，第9环81块；9环合计405块（连天心石406块）。",
+          "status": "verified-2plus-independent",
+          "note": "线索“第一圈9块…第九圈81块”成立。注意81块是第9环的块数，不是上层总数。",
+          "sources": [
+            {"publisher": "京报网", "title": "圜丘相关历史文章", "url": "https://news.bjd.com.cn/2022/09/27/10170283.shtml", "date": "2022-09-27"},
+            {"publisher": "Wikipedia", "title": "Circular Mound Altar", "url": "https://en.wikipedia.org/wiki/Circular_Mound_Altar", "date": "未标注"},
+            {"publisher": "携程攻略", "title": "圜丘坛景点介绍（上层石板405块）", "url": "https://gs.ctrip.com/html5/you/sight/1/1487585.html", "date": "未标注"},
+            {"publisher": "北京市公园管理中心", "title": "圜丘（环天心石有石板9重）", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048232.html", "date": "2019-12-11（URL所示）"}
+          ]
+        },
+        {
+          "claim": "三层坛面石板环数连续计共27环，最外一环（下层第27环）243块；三层扇面石合计3402块，即378个“九”。",
+          "status": "verified-2plus-independent",
+          "note": "算术自洽：9乘以（1加到27的和378）等于3402；其中上层405块、中层1134块、下层1863块。",
+          "sources": [
+            {"publisher": "环球网科技", "title": "天坛圜丘数字相关科普文章", "url": "https://tech.huanqiu.com/article/3zk5pV7vOK7", "date": "未标注"},
+            {"publisher": "中国社会科学网", "title": "天坛圜丘的数字之谜", "url": "https://cssn.cn/kgxc/kgxc_kgsb/202207/t20220728_5431455.shtml", "date": "2022-07-28"}
+          ]
+        },
+        {
+          "claim": "圜丘栏板数量：实测为上层36块、中层72块、下层108块，共216块；旧资料常写上层72、中层108、下层180，共360块。",
+          "status": "conflicting",
+          "note": "采信216块：中国社会科学网、环球网、澎湃新闻的专题文章均写明实际栏板数为36、72、108，并指出216合《周易》“乾之策二百一十有六”；首都之窗视频称乾隆最初想做360块以合周天360度，后因每块过小而改为216块。360块之说见于360cities、中国经济网2004年专题、百度百科等较早的介绍性文字，应是把设计象征数当成了实际数。两种数字都是9的倍数。字幕建议只说“栏板、台阶数目皆为九的倍数”，不写具体总数。",
+          "sources": [
+            {"publisher": "中国社会科学网", "title": "天坛圜丘的数字之谜", "url": "https://cssn.cn/kgxc/kgxc_kgsb/202207/t20220728_5431455.shtml", "date": "2022-07-28"},
+            {"publisher": "澎湃新闻", "title": "天坛圜丘坛的数字“密码”", "url": "https://m.thepaper.cn/newsDetail_forward_9032526", "date": "未标注"},
+            {"publisher": "环球网科技", "title": "天坛圜丘数字相关科普文章", "url": "https://tech.huanqiu.com/article/3zk5pV7vOK7", "date": "未标注"},
+            {"publisher": "首都之窗（北京市人民政府门户网站）", "title": "趣说北京：天坛的建筑颜色和数量颇有学问，细节蕴藏先贤智慧", "url": "https://www.beijing.gov.cn/shipin/qushuobeijing/19566.html", "date": "未标注"},
+            {"publisher": "中国经济网", "title": "“亿兆景从”圜丘坛（360块之说）", "url": "http://www.ce.cn/ztpd/cjzt/lyzt/2004/sjyczgx/whyc/tiantan/tsjd/t20040413_649334.shtml", "date": "2004-04-13"},
+            {"publisher": "360cities", "title": "The Circular Mound Altar – Heavenly Center Stone（72、108、180，共360块）", "url": "https://www.360cities.net/cs/image/the-circular-mound-altar-heavenly-center-stone-1351-beijing", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "三层坛面直径按清代尺度为上层九丈、中层十五丈、下层二十一丈，合计四十五丈，寓“九五”之数；四面出陛，每层台阶9级。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "环球网科技", "title": "天坛圜丘数字相关科普文章", "url": "https://tech.huanqiu.com/article/3zk5pV7vOK7", "date": "未标注"},
+            {"publisher": "百度百科", "title": "圜丘坛", "url": "https://baike.baidu.com/item/%E5%9C%9C%E4%B8%98%E5%9D%9B/4327145", "date": "未标注"},
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "天坛公园:建筑独特 古迹众多（石板、栏板、台阶数目均为九或九的倍数）", "url": "https://www.visitbeijing.com.cn/article/48BMl7OxIpo", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "圜丘通高5.17米；上层直径约23.65米，下层直径约54.9米。",
+          "status": "verified-2plus-independent",
+          "note": "通高5.17米见北京市公园管理中心与携程（携程并给出上、中、下层高1.87、1.63、1.67米）；环球网称“约5.2米”；百度百科有“5.71米”的写法，疑为数字颠倒，未采信。上层直径23.65米只见于携程一处，下层约54.9米见于环球网（另有54.92米之说），这两个直径数字的独立来源不足两家，使用时请加“约”。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "圜丘", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048232.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "携程攻略", "title": "圜丘坛景点介绍", "url": "https://gs.ctrip.com/html5/you/sight/1/1487585.html", "date": "未标注"},
+            {"publisher": "环球网科技", "title": "天坛圜丘数字相关科普文章", "url": "https://tech.huanqiu.com/article/3zk5pV7vOK7", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "天心石的直径（宽度）：一说0.95米，一说0.80米。",
+          "status": "conflicting",
+          "note": "两个数字各只有一处来源，无法判断，字幕不要写天心石尺寸。",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "天坛圜丘坛的数字“密码”", "url": "https://m.thepaper.cn/newsDetail_forward_9032526", "date": "未标注"},
+            {"publisher": "百度百科", "title": "圜丘坛", "url": "https://baike.baidu.com/item/%E5%9C%9C%E4%B8%98%E5%9D%9B/4327145", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "栏板总数：216块（上36、中72、下108；中国社会科学网、澎湃、环球网、首都之窗）对360块（上72、中108、下180；360cities、中国经济网、百度百科等）。采信216块为现状实数，360为乾隆改建时的设计象征数。",
+        "乾隆改建年份：1749年（乾隆十四年；京报网、百度百科、北京旅游网）对1740年（英文维基百科）。采信1749年。",
+        "通高：5.17米（北京市公园管理中心、携程）、约5.2米（环球网）、5.71米（百度百科一处）。采信5.17米。",
+        "天心石尺寸：0.95米对0.80米，无法判断，均不采用。",
+        "米制直径：携程称上层23.65米，环球网称最大直径约54.9米；“丈”的换算长度存在争议，北京市文物局有专文《北京天坛圜丘坛建筑尺度研究》（https://wwj.beijing.gov.cn/bjww/362760/362770/436348561/index.html），但本轮未能读到正文。"
+      ]
+    },
+    {
+      "name_zh": "祈年殿内部（龙凤藻井、彩画、斗拱与椽飞）",
+      "depiction": [
+        "仰视构图是一组层层收缩的同心圆：最外是下层天花，向内一圈12根朱红金柱，再向内是4根通天的龙井柱，其上三层圆形天花和斗拱逐层收小，最中心是圆形的龙凤藻井，整体像一个向上收拢的穹窿。",
+        "龙凤藻井：圆形，井心是金色的高浮雕一龙一凤，龙头、凤首突起；四周由层层叠叠的斗拱环形托起。官方表述为“三层天花，中间设置龙凤藻井”，另有资料称藻井由两层斗拱加一层天花组成、上下三层皆为圆形并逐层收缩。",
+        "殿内地面正中有一块圆形的龙凤石（天然纹理的大理石，纹路像一龙一凤），与正上方的藻井上下对应；俯视或剖视镜头可以表现这条垂直轴线。",
+        "梁枋彩画为龙凤和玺：青（蓝）地与绿地相间，图案为沥粉贴金的龙与凤，金线勾边，整体金碧辉煌。和玺彩画的识别特征是枋心与两端之间用锯齿状的折线分隔，不要画成旋子彩画的圆形旋花。",
+        "因为殿是圆形，额枋、天花枋等横向构件都是弧形，沿圆周连成环；斗拱也沿圆环等距排列，官方媒体称全殿斗拱有两百多个。",
+        "柱子：中央4根龙井柱高19.2米、直径1.2米，极其粗壮高耸；12根金柱、12根檐柱为朱红色。龙井柱通体朱红地上饰金色花纹（纹样种类本轮未核实，特写镜头请另行确认）。",
+        "外檐椽飞：飞椽头（方形端面）为绿地沥粉贴金“卍”（万）字，这一点有2005年修缮报道为证；檐椽头（圆形端面）按和玺彩画配套做法为龙眼或金寿字。椽身通行做法为朱红油饰，但本轮未能联网核实祈年殿的椽身颜色。",
+        "色彩总关系：朱红（柱）、青与绿（彩画底色与斗拱）、金（龙凤、线条、藻井），金色用量很大，暗部为深褐红。"
+      ],
+      "palette": [
+        "贴金 #D9A520（估计）",
+        "柱身朱红 #A8261C（估计）",
+        "彩画群青 #1B4AA0（估计）",
+        "彩画石绿 #2F8F6B（估计）",
+        "暗部褐红 #3A1F14（估计）",
+        "龙凤石灰白 #CFCBC2（估计）"
+      ],
+      "pitfalls": [
+        "把藻井画成方形或八角形套叠（那是太和殿等方殿的做法）——祈年殿的天花和藻井全部是圆形，逐层收缩。",
+        "藻井中心只画一条蟠龙——祈年殿井心是一龙一凤；只有金龙的是皇穹宇的藻井。",
+        "把梁枋彩画画成旋子彩画（一圈圈旋花）或苏式彩画（包袱山水人物）——这里是最高等级的龙凤和玺。",
+        "把横梁画成直线——圆殿里的额枋是沿圆周弯曲的弧形构件。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "祈年殿内设三层天花，中央为龙凤藻井。",
+          "status": "verified-2plus-independent",
+          "note": "百度百科同一词条里另有“九龙藻井”的写法，澎湃一篇文章称“蟠龙藻井”；官方页面和央视报道均为“龙凤”，采信“龙凤藻井”。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "京报网", "title": "祈年殿藻井，老祖宗的审美绝妙！", "url": "https://news.bjd.com.cn/2025/03/20/11102691.shtml", "date": "2025-03-20"},
+            {"publisher": "百度百科", "title": "祈年殿", "url": "https://baike.baidu.com/item/%E7%A5%88%E5%B9%B4%E6%AE%BF/2034363", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "藻井为圆形，由层层斗拱托起，井心雕饰金色龙凤，与殿内地面中心天然纹理的“龙凤石”上下呼应。",
+          "status": "verified-2plus-independent",
+          "note": "藻井层数说法不一：知乎文章称“上下分3层，皆为圆形，层层收缩”，一旅游网站称“两层斗拱及一层天花”。两者可以相容，但都不是权威来源。龙凤石直径约88厘米只见于一篇博客，未采用。",
+          "sources": [
+            {"publisher": "金羊网（转央视CCTV4节目内容）", "title": "文化中国行·传世古建 天坛", "url": "https://news.ycwb.com/2025-03/16/content_53295715.htm", "date": "2025-03-16"},
+            {"publisher": "知乎专栏", "title": "这里是天坛 · 祈谷坛", "url": "https://zhuanlan.zhihu.com/p/672389044", "date": "未标注"},
+            {"publisher": "百度百科", "title": "祈年殿（龙凤呈祥石）", "url": "https://baike.baidu.com/item/%E7%A5%88%E5%B9%B4%E6%AE%BF/2034363", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "祈年殿梁枋施龙凤和玺彩画。",
+          "status": "verified-2plus-independent",
+          "note": "线索“和玺彩画”成立，更准确的名称是“龙凤和玺”。官方页面说的是殿内梁枋；外檐大额枋也是龙凤和玺的说法来自博客，可信度一般。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "新浪博客（古槐蜂）", "title": "天坛祈年殿的前世今生（下）", "url": "https://blog.sina.com.cn/s/blog_13484f6ef0102yuep.html", "date": "未标注"},
+            {"publisher": "知乎专栏", "title": "北京古迹游之1：天坛", "url": "https://zhuanlan.zhihu.com/p/16434488042", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "2005年5月至2006年4月祈年殿大修，外檐彩画依据1935年以前的历史照片复原，檐下飞椽头由栀花图案改回金万字（卍）。",
+          "status": "verified-2plus-independent",
+          "asOf": "资料日期 2005—2016 年",
+          "sources": [
+            {"publisher": "新浪新闻中心（转载报纸报道）", "title": "祈年殿彩画恢复历史原貌", "url": "https://news.sina.com.cn/c/2005-12-15/10507715100s.shtml", "date": "2005-12-15"},
+            {"publisher": "新浪新闻中心（转载报纸报道）", "title": "祈年殿彩画恢复当年神采", "url": "https://news.sina.com.cn/c/2005-12-14/16177708095s.shtml", "date": "2005-12-14"},
+            {"publisher": "中国新闻网", "title": "天坛修缮相关报道", "url": "https://www.chinanews.com.cn/cul/2016/05-06/7861083.shtml", "date": "2016-05-06"}
+          ]
+        },
+        {
+          "claim": "清官式和玺彩画的椽头配套做法：飞檐椽头用沥粉贴金万字（绿色地），老檐椽头用龙眼或沥粉贴金寿字。",
+          "status": "verified-2plus-independent",
+          "note": "两处来源都是行业科普文章，不是官方或学术文献，权威性一般；祈年殿飞椽头为金万字另有上一条的修缮报道佐证。",
+          "sources": [
+            {"publisher": "微博文章", "title": "古建彩绘（叁）：金龙和玺", "url": "https://www.weibo.com/ttarticle/p/show?id=2309404371805593818795", "date": "未标注"},
+            {"publisher": "东方晨光", "title": "四合院屋顶的细节装饰：金万字方椽头", "url": "https://m.dfcgzs.com.cn/culture/chwh/17877.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "祈年殿椽身为朱红油饰（线索所说“朱红椽身”）。",
+          "status": "unverified",
+          "note": "本轮未搜到直接描述祈年殿椽身颜色的来源，且搜索配额已用完。清官式建筑椽望通常刷红、近椽头处椽肚刷绿（俗称红帮绿底），这只是研究员的常识判断，不能当作已核实事实。此项只影响画面，不建议写入字幕。",
+          "sources": []
+        },
+        {
+          "claim": "祈年殿内柱枋之上有两百多个斗拱，层层叠叠承托屋顶和藻井。",
+          "status": "single-source",
+          "note": "中国日报网、京报网、金羊网的说法都出自同一档央视节目，按单一来源计。",
+          "sources": [
+            {"publisher": "中国日报网（央视新闻）", "title": "文化中国行丨从“天圆地方”到最速曲线 古人把哲学与科学“搬进”天坛", "url": "https://cn.chinadaily.com.cn/a/202505/13/WS6822a943a310205377032cb3.html", "date": "2025-05-13"},
+            {"publisher": "京报网", "title": "祈年殿藻井，老祖宗的审美绝妙！", "url": "https://news.bjd.com.cn/2025/03/20/11102691.shtml", "date": "2025-03-20"}
+          ]
+        },
+        {
+          "claim": "1889年失火前，祈年殿三重檐下的彩画自上而下分别为龙和玺、凤和玺、云纹和玺，重建后统一改为龙凤和玺。",
+          "status": "single-source",
+          "note": "只见于一篇知乎文章（配有1860年与1900年照片对比），未见官方或学术来源，不建议写入字幕。",
+          "sources": [
+            {"publisher": "知乎专栏", "title": "北京古迹游之1：天坛", "url": "https://zhuanlan.zhihu.com/p/16434488042", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "“龙井柱”之名来自其上方的藻井（建筑学上属重檐金柱）。",
+          "status": "single-source",
+          "note": "见澎湃新闻一篇介绍古建柱式的文章，文中写作“蟠龙藻井”，与官方的“龙凤藻井”用词不同。",
+          "sources": [
+            {"publisher": "澎湃新闻", "title": "古建筑柱式相关文章", "url": "https://www.thepaper.cn/newsDetail_forward_13127296", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "藻井名称：北京市公园管理中心、央视、京报网称“龙凤藻井”；百度百科同词条内另出现“九龙藻井”，哔哩哔哩一篇笔记也写“九龙藻井”，澎湃一文写“蟠龙藻井”。采信官方的“龙凤藻井”。",
+        "藻井构成：一说“上下三层皆圆形、层层收缩”（知乎、百度百科），一说“两层斗拱加一层天花”（tcmap 旅游页面），官方只说“三层天花、中间设龙凤藻井”。画面按“圆形、逐层收缩、斗拱环绕、井心金色龙凤”处理即可，字幕不写层数。",
+        "斗拱数量“两百多个”仅有央视系一个源头，属约数。",
+        "椽身颜色、龙井柱柱身纹样（常见说法为朱红地沥粉贴金花卉）本轮均未能核实；搜索摘要里有一处说“金柱柱身朱红底漆上有沥粉贴金图案”，与通常所说“龙井柱贴金、其余柱素红”不一致，未能判定。"
+      ]
+    },
+    {
+      "name_zh": "祈年殿平面（同心圆柱网与放射状梁架）",
+      "depiction": [
+        "平面是正圆。柱子排成三圈同心圆：内圈4根龙井柱、中圈12根金柱、外圈12根檐柱，共28根。Britannica 的表述是“三圈同心圆排列的巨大木柱”。",
+        "外圈12根檐柱和中圈12根金柱都按30度等分圆周，每根金柱与一根檐柱落在同一条半径上，形成12条放射线（径向对位这一点凭通行平面图，本轮未找到文字来源核实）。",
+        "内圈4根龙井柱呈正方形布置，位于东北、东南、西南、西北四个斜向上，南北中轴线从两柱之间穿过，所以从南门望进去是两根巨柱夹着正中的神位（此条凭殿内照片与通行平面图，本轮未找到文字来源核实，图上请标“示意”）。",
+        "柱径内粗外细：龙井柱直径1.2米（高19.2米，已核实）；金柱约0.8米、檐柱约0.6米只是未能落实出处的说法。平面图上三圈柱点应画成内大外小。",
+        "承重关系可用三种颜色或线型区分：4根龙井柱托上层檐，12根金柱托中层檐，12根檐柱托下层檐——正好对应三重檐。",
+        "梁架：殿内没有横贯全殿的大梁和长檩，柱与柱之间用弧形的枋沿圆周连成三道圆环；4根龙井柱之间架弧形承重枋，枋上再立8根童柱，与4根龙井柱合成12个支点托起上层屋架；椽子自中心向外呈放射状（伞骨状）排布。",
+        "圆心正下方的地面是圆形龙凤石，圆心正上方是龙凤藻井和宝顶，可在平面图中心画一个小圆标出。",
+        "殿外是三层同心圆台基，官方直径为68.2米、79.3米、90.3米；若平面图要带台基，三道圆的间距各约5.5米，四个正方向画台阶。",
+        "各圈柱网的半径未查到可靠实测数据，殿身直径本身也有24.2米与32.72米两说，平面图请按视觉比例绘制并注明“示意图，非测绘图”。"
+      ],
+      "palette": [
+        "柱点朱红 #B02A20（估计，示意图用色）",
+        "龙井柱强调金 #D4A017（估计，示意图用色）",
+        "梁枋连线群青 #1D4E9E（估计，示意图用色）",
+        "台基与底色汉白玉 #EDEAE0（估计，示意图用色）",
+        "辅助线墨灰 #3B3B3B（估计，示意图用色）"
+      ],
+      "pitfalls": [
+        "三圈柱数画错（常见错成4、8、16或三圈都是12）——必须是内4、中12、外12。",
+        "把4根龙井柱画在正东南西北的轴线上——它们应在四个斜向，中轴线上不立柱（此点未经文字来源核实，但殿内照片可证从南门看神位不被柱遮挡）。",
+        "画出横贯圆心的十字大梁——祈年殿不用大梁长檩，是弧形枋成环、椽子放射的做法。",
+        "在示意图上标注精确到厘米的柱网半径或殿身直径——这些数据来源互相矛盾或查不到，只能标“约”或不标。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "祈年殿柱网为三圈同心圆：内圈4根龙井柱、中圈12根金柱、外圈12根檐柱，共28根。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "Encyclopaedia Britannica", "title": "Temple of Heaven", "url": "https://www.britannica.com/topic/Temple-of-Heaven", "date": "未标注"},
+            {"publisher": "New World Encyclopedia", "title": "Temple of Heaven", "url": "https://newworldencyclopedia.org/entry/Temple_of_Heaven", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "4根龙井柱支撑上层檐，12根金柱支撑中层檐，12根檐柱支撑下层檐。",
+          "status": "verified-2plus-independent",
+          "note": "香港教育局 e-gallery 一份学生导览资料写“4根龙井柱用以支撑中层屋檐”，与官方页面不符，未采信。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "百度百科", "title": "祈年殿", "url": "https://baike.baidu.com/item/%E7%A5%88%E5%B9%B4%E6%AE%BF/2034363", "date": "未标注"},
+            {"publisher": "荔枝新闻", "title": "天坛又火了！原来祈年殿的柱子，藏着中国人独有的宇宙浪漫", "url": "https://m.jstv.com/news/2026/5/14/1504495857398112256.html", "date": "2026-05-14"}
+          ]
+        },
+        {
+          "claim": "中央4根龙井柱通高19.2米，直径1.2米。",
+          "status": "verified-2plus-independent",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "中国网·中国国情", "title": "天坛：祈年殿", "url": "http://guoqing.china.com.cn/2019-03/25/content_74609512_4.htm", "date": "2019-03-25"},
+            {"publisher": "北京旅游网（北京市文化和旅游局）", "title": "天坛公园:建筑独特 古迹众多", "url": "https://www.visitbeijing.com.cn/article/48BMl7OxIpo", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "殿内不用大梁和长檩，屋顶由28根大柱与36根枋桷互相衔接承托。",
+          "status": "verified-2plus-independent",
+          "note": "“36根枋桷”的数字来自百度百科和博客；香港教育局资料只说“无大梁和长檩，以28根楠木柱和枋承重”。字幕写“不用大梁长檩，全靠柱与枋榫卯相接”较稳妥。",
+          "sources": [
+            {"publisher": "百度百科", "title": "祈年殿", "url": "https://baike.baidu.com/item/%E7%A5%88%E5%B9%B4%E6%AE%BF/2034363", "date": "未标注"},
+            {"publisher": "香港教育局 e-gallery（学生导览资料）", "title": "天坛导览（龔韵伊）", "url": "https://e-gallery.edb.edcity.hk/wp-content/uploads/2023/09/龔韵伊-1.pdf", "date": "2023-09（URL所示）"}
+          ]
+        },
+        {
+          "claim": "4根龙井柱之间架4根弧形承重枋，枋上立8根童柱，与龙井柱合计12个支点支撑上层屋架。",
+          "status": "single-source",
+          "note": "完整表述只见于新浪博客（古槐蜂）；“柱顶有8根童柱”另见新浪博客（欣然）和网易文章，但都不是权威来源。画结构示意可以采用，字幕不建议写。",
+          "sources": [
+            {"publisher": "新浪博客（古槐蜂）", "title": "天坛祈年殿的前世今生（下）", "url": "https://blog.sina.com.cn/s/blog_13484f6ef0102yuep.html", "date": "未标注"},
+            {"publisher": "新浪博客（欣然）", "title": "天坛公园的主体建筑——祈年殿", "url": "https://blog.sina.com.cn/s/blog_5d9ca2d80100lciu.html", "date": "未标注"}
+          ]
+        },
+        {
+          "claim": "金柱直径约0.8米，檐柱直径约0.6米。",
+          "status": "unverified",
+          "note": "搜索摘要中出现过这组数字，但未能确认出自哪一页面，也没有第二来源，仅供画示意图时参考柱径“内粗外细”的关系。",
+          "sources": []
+        },
+        {
+          "claim": "4根龙井柱位于东北、东南、西南、西北四隅；12根金柱与12根檐柱径向一一对位。",
+          "status": "unverified",
+          "note": "本轮没有搜到描述柱位方向的文字来源，搜索配额已用完。这是依据通行平面图和殿内照片的判断，示意图可按此绘制但须注明“示意”，不要写入字幕。",
+          "sources": []
+        },
+        {
+          "claim": "祈年殿台基三层同心圆的直径为68.2米、79.3米、90.3米（官方数据）。",
+          "status": "conflicting",
+          "note": "博客另有68.2、79.6、90.8米之说，差别不到1%，对示意图无影响；采信北京市公园管理中心数据。",
+          "sources": [
+            {"publisher": "北京市公园管理中心", "title": "祈年殿", "url": "https://gygl.beijing.gov.cn/mlgy/mlgy_gyjg01/201912/t20191211_1048233.html", "date": "2019-12-11（URL所示）"},
+            {"publisher": "新浪博客（古槐蜂）", "title": "天坛祈年殿的前世今生（下）", "url": "https://blog.sina.com.cn/s/blog_13484f6ef0102yuep.html", "date": "未标注"}
+          ]
+        }
+      ],
+      "conflicts": [
+        "承重对应：北京市公园管理中心称龙井柱托上层檐、金柱托中层、檐柱托下层；香港教育局 e-gallery 学生资料称龙井柱托中层檐。采信官方页面（也符合结构逻辑：最高的柱托最高的檐）。",
+        "殿身直径24.2米与32.72米并存（详见祈年殿外观条目），因此平面图不能据此推算三圈柱网的半径。",
+        "童柱：多数写“8根童柱”，书栈网一处写作“8根铜柱”，应为错字；“加童柱共36根象征三十六天罡”属引申说法。",
+        "柱位方向（龙井柱在四隅）与金柱、檐柱径向对位没有查到文字来源，属未核实项。"
+      ]
+    }
+  ]
+}

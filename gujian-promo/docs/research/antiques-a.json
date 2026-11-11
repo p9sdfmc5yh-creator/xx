@@ -1,0 +1,1953 @@
+{
+  "group": "antiques-a",
+  "subjects": [
+    {
+      "shots": [
+        "s01"
+      ],
+      "name_zh": "汝窑天青釉与开片（碗沿）",
+      "depiction": [
+        "釉色“天青”：低饱和度的灰蓝绿，像雨后初晴的天色；资料称其为“失透的天青色乳浊釉”，即不透明、不刺眼，光泽柔和如凝脂，高光要软而宽，不要镜面反光。",
+        "开片：釉面可有细密、浅淡、走向不规则的裂纹（俗称“蟹爪纹”，也称冰裂纹），线很细，颜色只比釉色略深；也可以完全不画——台北故宫的“无纹水仙盆”正以没有开片著称。",
+        "胎与支钉：胎为“香灰色”；满釉支烧，器底留有芝麻粒大小的支钉痕（“芝麻钉”）。s01 只取碗沿时这两项不必入画，画到器底时才需要。",
+        "碗沿：器壁薄、口沿圆润；口沿釉薄处颜色略浅，可借此做“地平线上一线亮光”（釉薄处色浅为常识性描述，本轮未单独核实）。",
+        "配色：天青为主，亮部过渡到月白（极浅的青白），暗部压到夜蓝；画面里不要出现深色网状裂纹。"
+      ],
+      "pitfalls": [
+        "把天青画成高饱和的天蓝、湖蓝或翠绿；汝釉是偏灰、乳浊的青。",
+        "把开片画成哥窑式的黑粗网线或规则蜂窝；汝窑开片细、浅、碎，而且并非件件都有。",
+        "釉面画成透明玻璃质强反光；应为失透、柔光。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "汝窑瓷器的典型特征：失透的天青色乳浊釉、香灰色胎、器底有芝麻粒大小的支钉痕（“芝麻钉”，满釉支烧所留）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "当代中国 Our China Story（“香港故宫 每日一文物”栏目）",
+              "title": "香港故宮 每日一文物|淡天青釉笔洗",
+              "url": "https://www.ourchinastory.com/zh/4292",
+              "date": "未标注"
+            },
+            {
+              "publisher": "新民周刊（版面 PDF）",
+              "title": "（2026-09-07 期版面，含汝窑、钧窑、哥窑等介绍；原标题未获取）",
+              "url": "https://img1.xinmin.cn/xmzk/2026-09-07/270907.pdf",
+              "date": "未标注（URL 路径为 2026-09-07）"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（汝窑相关文章；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_32058002",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要显示三处出处一致：香港故宫文化博物馆栏目把“冰裂纹、香灰色胎、芝麻掙釘”列为鉴别依据；新民周刊解释“满釉支烧……称为芝麻钉”；另有一篇报道列出“天青釉、香灰胎、底部芝麻大小的支烧痕”（该报道的落地页推定为澎湃链接）。"
+        },
+        {
+          "claim": "汝窑釉面常见细密开片，俗称“蟹爪纹”，也称冰裂纹。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新民周刊（版面 PDF）",
+              "title": "（2026-09-07 期版面，含汝窑、钧窑、哥窑等介绍；原标题未获取）",
+              "url": "https://img1.xinmin.cn/xmzk/2026-09-07/270907.pdf",
+              "date": "未标注（URL 路径为 2026-09-07）"
+            },
+            {
+              "publisher": "当代中国 Our China Story（“香港故宫 每日一文物”栏目）",
+              "title": "香港故宮 每日一文物|淡天青釉笔洗",
+              "url": "https://www.ourchinastory.com/zh/4292",
+              "date": "未标注"
+            }
+          ],
+          "note": "“蟹爪纹”见新民周刊；“冰裂纹”见香港故宫栏目。两个名称指同一类现象，字幕择一即可。"
+        },
+        {
+          "claim": "并非所有汝窑器都有开片：台北故宫博物院藏“汝窑青瓷无纹水仙盆”以天青纯净、没有开片著称，底有六枚支钉痕。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "澎湃新闻",
+              "title": "（汝窑相关文章；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_32058002",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Substack 个人专栏",
+              "title": "（汝窑相关文章；原标题未获取）",
+              "url": "https://maruamru777.substack.com/p/231",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要转述台北故宫典藏说明，但没有返回台北故宫官网链接；所列两条为该次检索中可能承载此内容的页面（推定）。"
+        },
+        {
+          "claim": "汝官窑窑址在河南省宝丰县清凉寺。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新华网",
+              "title": "（涉及河南宝丰清凉寺汝官窑遗址的报道；原标题未获取）",
+              "url": "https://www.news.cn/politics/20250612/bcd869d79124407ebb8928998ed45cb4/c.html",
+              "date": "未标注（URL 路径为 2025-06-12）"
+            },
+            {
+              "publisher": "中国日报网",
+              "title": "（汝瓷相关报道；摘要所称“央视报道”推定落在此页或金羊网页）",
+              "url": "https://cn.chinadaily.com.cn/a/202506/13/WS684b8f56a310205377037d82.html",
+              "date": "未标注（URL 路径为 2025-06-13）"
+            },
+            {
+              "publisher": "金羊网（羊城晚报）",
+              "title": "（汝窑/汝瓷相关报道；原标题未获取）",
+              "url": "https://news.ycwb.com/ikinvkctjc/content_53613668.htm",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要分别引新华网与央视报道；央视报道的落地页推定为中国日报网或金羊网链接。"
+        },
+        {
+          "claim": "清凉寺汝官窑烧造时间只有约 20 年；天青釉汝瓷于 20 世纪 80 年代复烧成功。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "中国日报网",
+              "title": "（汝瓷相关报道；摘要所称“央视报道”推定落在此页或金羊网页）",
+              "url": "https://cn.chinadaily.com.cn/a/202506/13/WS684b8f56a310205377037d82.html",
+              "date": "未标注（URL 路径为 2025-06-13）"
+            },
+            {
+              "publisher": "金羊网（羊城晚报）",
+              "title": "（汝窑/汝瓷相关报道；原标题未获取）",
+              "url": "https://news.ycwb.com/ikinvkctjc/content_53613668.htm",
+              "date": "未标注"
+            }
+          ],
+          "note": "仅见摘要所称的央视报道一处（落地页推定）。"
+        },
+        {
+          "claim": "汝窑的年代为北宋，传统上列为宋代名窑之首。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "属教科书级常识，但本轮各条摘要没有直接出现“北宋”字样，也未检索“五大名窑”排序，故按规则标未核实；字幕写“宋·汝窑”风险较低，写“名窑之首/之魁”前请复核。"
+        },
+        {
+          "claim": "传世汝窑瓷器的数量：各家说法不一（“不足百件”“一百余件”“全世界 67 件，其中北京故宫 17 件、台北故宫 23 件”）。",
+          "status": "conflicting",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "当代中国 Our China Story（“香港故宫 每日一文物”栏目）",
+              "title": "香港故宮 每日一文物|淡天青釉笔洗",
+              "url": "https://www.ourchinastory.com/zh/4292",
+              "date": "未标注"
+            },
+            {
+              "publisher": "中国日报网",
+              "title": "（汝瓷相关报道；摘要所称“央视报道”推定落在此页或金羊网页）",
+              "url": "https://cn.chinadaily.com.cn/a/202506/13/WS684b8f56a310205377037d82.html",
+              "date": "未标注（URL 路径为 2025-06-13）"
+            },
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（汝窑相关资讯；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20260117/n1945439.html",
+              "date": "未标注（URL 路径为 2026-01-17；雅昌同一文章常有多个日期路径，仅供参考）"
+            }
+          ],
+          "note": "香港故宫栏目称“现时的存世品一百余件”；央视报道称“传世作品不足百件”；一篇出处不明的资讯称 67 件（落地页推定为雅昌链接）。详见 conflicts。"
+        }
+      ],
+      "conflicts": [
+        "核实方式说明（适用于本组全部题材）：本轮 WebSearch 上限 17 次，已全部用完；按要求未使用 WebFetch，所有事实只依据搜索结果摘要与返回的链接判断，未能打开原文逐字比对。搜索摘要常常不逐条标明出处，因此：① sources 里带括号的 title 是对页面内容的描述，不是原标题；② note 里写“推定”的，表示该链接确实出现在那次检索结果里，但具体由哪一页承载该句是推断；③ 只有摘要明确显示至少两个不同出处各自陈述同一事实时才标 verified-2plus-independent，否则一律降为 single-source；④ date 一栏看不到页面日期，凡写“URL 路径为…”的都取自链接本身。成片说明如需逐字引用，请放行相应域名后复核原文。",
+        "汝窑存世数量：香港故宫栏目“一百余件”、央视“不足百件”、某资讯“67 件（北京故宫 17、台北故宫 23）”三说并存，差异应来自统计口径与统计年份不同。采信做法：成片不写具体件数；如必须写，用“传世仅百件上下”，因为两家较权威的出处都落在百件上下，而“67 件”出处不明。",
+        "开片不是汝窑的必要特征（有“无纹水仙盆”为反例）；说明文字不要写成“汝窑必有开片”。"
+      ]
+    },
+    {
+      "shots": [
+        "s05"
+      ],
+      "name_zh": "珊瑚红釉配松石绿釉里（口沿描金）",
+      "depiction": [
+        "配色关系：器外珊瑚红地，器内（以及外底）松石绿釉——佳士得著录的一件带乾隆款的珊瑚红地描金莲纹撇口瓶，即“外壁珊瑚红、金彩绘莲花，器内松石绿，矾红乾隆篆书款”。画面上两色在口沿处相接。",
+        "珊瑚红：像红珊瑚的暖红，略偏橙，平匀、不流淌、没有窑变深浅（一处拍卖说明称其为 iron-red enamel，即铁红一系）；光泽柔和，不是郎窑红那种深而透的宝石红。",
+        "松石绿：像绿松石的浅蓝绿，不透明、匀净的平涂感（质感为常识性描述）；带乾隆款的彩瓷常见器内与外底满施此色。",
+        "金：珊瑚红地上的纹饰可用金彩描绘（如莲花）。口沿一线描金是合理画法，但“珊瑚红外壁 + 松石绿里 + 金口”三者同器，本轮没有查到逐字对应的著录（松石绿地乾隆款瓶带金口见佳士得著录）。金色宜薄、略哑，不要做成厚金属条。",
+        "如果画到器底：款识可为矾红（铁红）篆书款；也见款识写在松石绿地上的做法。画面最好不出现文字。"
+      ],
+      "pitfalls": [
+        "把珊瑚红画成深沉的宝石红、牛血红或粉调的胭脂红；应是偏橙的暖红且平匀。",
+        "把松石绿画成翠绿、祖母绿或孔雀蓝；应是偏蓝的浅绿、乳浊不透明。",
+        "在这两种色地上加开片、流釉、窑变斑——它们的特点是匀净。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "“外壁珊瑚红、器内（或外底）松石绿”的配色确有实物著录。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "佳士得（拍卖图录）",
+              "title": "（珊瑚红地描金莲纹撇口瓶，器内松石绿，矾红乾隆篆书款；原标题未获取）",
+              "url": "https://www.christies.com.cn/lot/lot-729976",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Oriental Art Auctions（拍卖图录）",
+              "title": "（据 URL：A matched pair of Chinese coral red decorated double gourd vases；原标题未获取）",
+              "url": "https://www.orientalartauctions.com/object/artchin15746-a-matched-pair-of-chinese-coral-red-decorated-double-gourd-vases",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Drouot（拍卖图录）",
+              "title": "（据 URL：Chine, vase de forme balustre en…；珊瑚红地粉彩人物瓶，民国；原标题未获取）",
+              "url": "https://drouot.com/en/l/21836426-chinevase-de-forme-balustre-en",
+              "date": "未标注"
+            }
+          ],
+          "note": "佳士得：珊瑚红地、外壁金彩绘莲花、器内松石绿、矾红乾隆篆书款（落地页推定为 lot-729976，该次结果中另两件佳士得拍品标题均为松石绿地）；Oriental Art Auctions：通体铁红彩，口内与外底施松石绿釉，寄托乾隆款；Drouot：珊瑚红地粉彩瓶，底款写在松石绿地上，民国。三者都是拍卖图录而非博物馆著录，后两件并非乾隆本朝。"
+        },
+        {
+          "claim": "带乾隆款的“珊瑚红地描金、器内松石绿”实例：佳士得著录的珊瑚红地描金莲纹撇口瓶（撇口、足外撇，外壁金彩绘莲花，器内松石绿，矾红乾隆篆书款）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "佳士得（拍卖图录）",
+              "title": "（珊瑚红地描金莲纹撇口瓶，器内松石绿，矾红乾隆篆书款；原标题未获取）",
+              "url": "https://www.christies.com.cn/lot/lot-729976",
+              "date": "未标注"
+            }
+          ],
+          "note": "只有佳士得一处；摘要没有说明拍卖行是否把它定为乾隆本朝，也未见博物馆藏品页印证。字幕不宜写“乾隆朝典型配色”这类断语。"
+        },
+        {
+          "claim": "松石绿釉常施于带乾隆款彩瓷的器内与外底。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "佳士得（拍卖图录）",
+              "title": "A FAMILLE ROSE TURQUOISE-GROUND VASE",
+              "url": "https://www.christies.com.cn/lot/lot-6194720",
+              "date": "未标注"
+            },
+            {
+              "publisher": "佳士得（拍卖图录）",
+              "title": "A FINE AND RARE TURQUOISE-GROUND FAMILLE ROSE LANTERN VASE",
+              "url": "https://www.christies.com.cn/lot/lot-1647549",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Heritage Auctions（拍卖图录）",
+              "title": "（据 URL：A Chinese turquoise-ground famille rose enamel vase, late Qing/Republic period，lot 78132；原标题未获取）",
+              "url": "https://fineart.ha.com/itm/ceramics-and-porcelain/a-chinese-turquoise-ground-famille-rose-enamel-vase-late-qing-republic-period-marks-underglaze-blue-six-character-qianlo/a/8155-78132.s",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Oriental Art Auctions（拍卖图录）",
+              "title": "（据 URL：A matched pair of Chinese coral red decorated double gourd vases；原标题未获取）",
+              "url": "https://www.orientalartauctions.com/object/artchin15746-a-matched-pair-of-chinese-coral-red-decorated-double-gourd-vases",
+              "date": "未标注"
+            }
+          ],
+          "note": "佳士得一件松石绿地粉彩瓶“底与器内亦施松石绿”（落地页推定为所列两件松石绿地拍品之一）；Heritage Auctions 一件晚清/民国瓶“乾隆款写在松石绿地的底上”；Oriental Art Auctions 同上。均为拍卖图录，其中部分为后仿，说明这是沿用很久的做法。"
+        },
+        {
+          "claim": "珊瑚红属于以铁为呈色剂的低温红（铁红/矾红一系）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "Oriental Art Auctions（拍卖图录）",
+              "title": "（据 URL：A matched pair of Chinese coral red decorated double gourd vases；原标题未获取）",
+              "url": "https://www.orientalartauctions.com/object/artchin15746-a-matched-pair-of-chinese-coral-red-decorated-double-gourd-vases",
+              "date": "未标注"
+            }
+          ],
+          "note": "仅一处拍卖说明把珊瑚红器的釉彩称为 iron-red enamel；“低温”二字本轮未查到直接出处。"
+        },
+        {
+          "claim": "京都国立博物馆馆藏品数据库收录乾隆款“珊瑚红地留白竹文碗”：竹纹以瓷胎留白，衬在明亮的珊瑚红地上，底有“大清乾隆年製”款。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "京都国立博物馆 馆藏品数据库",
+              "title": "（珊瑚红地留白竹文碗，乾隆款；英文条目）",
+              "url": "https://knmdb.kyohaku.go.jp/eng/27569.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要对款识工艺的表述前后不一（一处说蓝料、一处说青花），只采信“乾隆款”与“留白竹纹”两点。"
+        },
+        {
+          "claim": "“珊瑚红外壁 + 松石绿里 + 口沿描金”三者同器。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "佳士得（拍卖图录）",
+              "title": "A FAMILLE ROSE TURQUOISE-GROUND VASE",
+              "url": "https://www.christies.com.cn/lot/lot-6194720",
+              "date": "未标注"
+            }
+          ],
+          "note": "本轮未查到三者俱全的著录；仅查到松石绿地乾隆款瓶带描金口沿（佳士得），以及珊瑚红地上以金彩绘纹。画面保留金线可以，字幕不要把它说成定式。"
+        }
+      ],
+      "conflicts": [
+        "计划里写“珊瑚红釉配松石绿”，资料里多称“珊瑚红地”“矾红/铁红彩”，名称不完全统一；说明文字建议写“珊瑚红地、松石绿里”。",
+        "本题材未能取得故宫博物院等博物馆的直接著录（专门检索了一次中文、一次英文），现有依据全部是拍卖图录，可信度低于其他题材。"
+      ]
+    },
+    {
+      "shots": [
+        "s07"
+      ],
+      "name_zh": "梅瓶的器型与部位名称（口、颈、肩、腹、足）",
+      "depiction": [
+        "轮廓自上而下：小口——口径很小，唇沿略外卷；短颈——极短，几乎口下即肩；丰肩——肩部圆鼓宽博，是全器最宽处且位置很高；腹——自肩以下以长弧线向内收（“瘦底”）；近足处（古称“胫”）最细，再略微外撇（“抵于足微丰”）；落在浅圈足上。",
+        "比例：瘦高修长，高明显大于最大径（约 1.5—2 倍为常识性估计，本轮未核实，线图上不要标具体尺寸数字）。",
+        "半剖面一侧画出均匀的薄壁、中空内腔和内凹的圈足底；半立面一侧只画外轮廓与几道弦线。",
+        "标注用字（简体）：口、颈、肩、腹、足；需要更细时可加“胫”（下腹近足处）与“圈足”。许之衡《饮流斋说瓷》原文用的是口、颈、肩、胫、足。",
+        "梅瓶原为盛酒器、常配盖；线图可不画盖，也不要在瓶口画一大束花——口小到“仅与梅之瘦骨相称”。"
+      ],
+      "pitfalls": [
+        "肩画得太低、太溜，成了橄榄瓶或玉壶春瓶（玉壶春是撇口、细长颈、垂腹，正好相反）。",
+        "口画大、颈画长；极小的口和极短的颈是梅瓶的识别点。",
+        "下腹直接收成尖底或平切无足；应收到最细后微微外撇，落在圈足上。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "梅瓶的形制通常概括为：小口、短颈、丰肩、瘦底、圈足。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "网易号",
+              "title": "（梅瓶介绍文章；原标题未获取）",
+              "url": "https://m.163.com/dy/article/CUK09P6H0514E131.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（梅瓶介绍资讯；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20250428/n1376134.html",
+              "date": "未标注（URL 中日期不稳定）"
+            },
+            {
+              "publisher": "澎湃号",
+              "title": "看见文物 | 这件器物,代表元代景德镇瓷器烧制的最高水平",
+              "url": "https://m.thepaper.cn/baijiahao_14701587",
+              "date": "未标注"
+            },
+            {
+              "publisher": "新浪新闻",
+              "title": "（梅瓶相关报道；原标题未获取）",
+              "url": "https://news.sina.com.cn/sx/2025-06-23/detail-infazrrn9590336.shtml",
+              "date": "未标注（URL 路径为 2025-06-23）"
+            }
+          ],
+          "note": "摘要称“多数现代资料”如此概括，并引了两种略有出入的说法（“小口、丰肩、瘦底、圈足”与“小口、短颈、丰肩、收腰、瘦底”）；具体哪两页为推定。计划里的“敛腹”与资料里的“瘦底/收腰”是同一处的不同说法。"
+        },
+        {
+          "claim": "许之衡《饮流斋说瓷》：“梅瓶口细而颈短，肩极宽博，至胫稍狭，抵于足微丰，口径之小仅与梅之瘦骨相称，故名梅瓶。”",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "SciEngine（期刊论文 PDF）",
+              "title": "（梅瓶名称与造型研究；原标题未获取）",
+              "url": "https://www.sciengine.com/doi/pdf/49A587E38B6345BAABD10859304C0AA2",
+              "date": "未标注"
+            },
+            {
+              "publisher": "新浪新闻",
+              "title": "（梅瓶相关报道；原标题未获取）",
+              "url": "https://news.sina.com.cn/sx/2025-06-23/detail-infazrrn9590336.shtml",
+              "date": "未标注（URL 路径为 2025-06-23）"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（梅瓶相关文章；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_2272774",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要称“多家资料都引用了这段文字”并给出原句；引文用字以摘要所录为准，未能对照原书。若上字幕建议只取“口径之小仅与梅之瘦骨相称”一句。"
+        },
+        {
+          "claim": "部位名称“口、颈、肩、腹、足”都是梅瓶描述中的通行用语。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "SciEngine（期刊论文 PDF）",
+              "title": "（梅瓶名称与造型研究；原标题未获取）",
+              "url": "https://www.sciengine.com/doi/pdf/49A587E38B6345BAABD10859304C0AA2",
+              "date": "未标注"
+            },
+            {
+              "publisher": "北京旅游网",
+              "title": "（磁州窑器物/展览介绍；原标题未获取）",
+              "url": "https://www.visitbeijing.com.cn/article/4FFIk9QHtvX",
+              "date": "未标注"
+            },
+            {
+              "publisher": "网易号",
+              "title": "（梅瓶介绍文章；原标题未获取）",
+              "url": "https://m.163.com/dy/article/CUK09P6H0514E131.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "《饮流斋说瓷》用口、颈、肩、胫、足；现代概括用小口、短颈、丰肩、圈足；磁州窑白地黑花梅瓶的著录写“肩部和腹部绘有……”（出自磁州窑那次检索，落地页推定）。“胫”指下腹近足处，可选标。"
+        },
+        {
+          "claim": "梅瓶宋代又称“经瓶”，最初是盛酒器，常带盖。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "澎湃号",
+              "title": "看见文物 | 这件器物,代表元代景德镇瓷器烧制的最高水平",
+              "url": "https://m.thepaper.cn/baijiahao_14701587",
+              "date": "未标注"
+            },
+            {
+              "publisher": "SciEngine（期刊论文 PDF）",
+              "title": "（梅瓶名称与造型研究；原标题未获取）",
+              "url": "https://www.sciengine.com/doi/pdf/49A587E38B6345BAABD10859304C0AA2",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要只引了一处原句（“梅瓶之型，出现于唐宋，宋代又称经瓶”），落地页为推定；“与经筵制度有关”摘要自己也加了“据说”，不要上字幕。"
+        },
+        {
+          "claim": "“梅瓶”这一名称最早何时出现：说法不一（清末《陶雅》《饮流斋说瓷》始见 / 元代已有）。",
+          "status": "conflicting",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "SciEngine（期刊论文 PDF）",
+              "title": "（梅瓶名称与造型研究；原标题未获取）",
+              "url": "https://www.sciengine.com/doi/pdf/49A587E38B6345BAABD10859304C0AA2",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（梅瓶相关文章；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_2272774",
+              "date": "未标注"
+            }
+          ],
+          "note": "详见 conflicts。"
+        }
+      ],
+      "conflicts": [
+        "“梅瓶”之名的出现时间：一篇学术文章称最早见于清代晚期的《陶雅》《饮流斋说瓷》；另一篇称至少元代已有此称。采信做法：字幕不写“最早”，只说“因口小仅容梅枝而得名（见许之衡《饮流斋说瓷》）”；两说之中学术文章一方更可信，但本轮无法进一步核对。",
+        "《饮流斋说瓷》的成书年代本轮未核实（摘要把它与《陶雅》并称“清代晚期”，通行说法是民国初年），字幕不要写它的年代。"
+      ]
+    },
+    {
+      "shots": [
+        "s14"
+      ],
+      "name_zh": "粉彩婴戏图",
+      "depiction": [
+        "地子：奶白瓷面（暖调白釉）；纹饰是釉上彩。",
+        "粉彩质感：先以“玻璃白”打底，再施彩并用笔洗染出由浓到淡的过渡，所以颜色粉润柔和、有深浅层次（衣褶、花瓣、脸颊都带晕染），区别于五彩的平涂硬边。",
+        "人物：一组童子沿弧线嬉戏，头大身短、圆脸；衣色用粉红、淡绿、淡黄、浅蓝、赭，细线勾轮廓。放风筝、骑竹马、捉迷藏一类的游戏内容与发式服饰是常识性描述，本轮未逐项核实。",
+        "配景宜少：一段栏杆、一块洞石或一枝花即可，留出大片奶白地。",
+        "只画孩童，不画成人；形象从传统婴戏图（如传为宋代苏汉臣一路的画作）取法。"
+      ],
+      "pitfalls": [
+        "画成五彩或珐琅般浓艳平涂、黑线生硬；粉彩要“粉”，色阶柔。",
+        "把童子画成缩小的成人，或发式、服装现代化。",
+        "底色画成冷白纸色，或在白地上加开片。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "粉彩是釉上彩：先在瓷面上涂一层“玻璃白”，再在其上施彩并用笔渲染出浓淡变化。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "台湾科技大学（教学/学术资料 PDF）",
+              "title": "（清代粉彩工艺说明；原标题未获取）",
+              "url": "https://hac.ntust.edu.tw/var/file/73/1073/img/2880/449055397.pdf",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（粉彩与玻璃白介绍资讯；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20250704/n1265047.html",
+              "date": "未标注（URL 中日期不稳定）"
+            }
+          ],
+          "note": "台湾科技大学资料讲工序；雅昌资讯称“加入玻璃白后，可以用渲染手法画出比五彩更精确、色彩更丰富的画面”。"
+        },
+        {
+          "claim": "粉彩在雍正、乾隆两朝成为釉上彩的主流，官窑、民窑都大量生产。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "台湾科技大学（教学/学术资料 PDF）",
+              "title": "（清代粉彩工艺说明；原标题未获取）",
+              "url": "https://hac.ntust.edu.tw/var/file/73/1073/img/2880/449055397.pdf",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（雍正、乾隆粉彩资讯；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20260119/n1254270.html",
+              "date": "未标注（URL 中日期不稳定）"
+            }
+          ],
+          "note": "“主流、官民窑均大量生产”见台湾科技大学资料；雅昌另一篇谈乾隆粉彩承接雍正风格，可印证两朝盛行。"
+        },
+        {
+          "claim": "玻璃白由氧化铅、氧化硅和氧化砷组成。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "台湾科技大学（教学/学术资料 PDF）",
+              "title": "（清代粉彩工艺说明；原标题未获取）",
+              "url": "https://hac.ntust.edu.tw/var/file/73/1073/img/2880/449055397.pdf",
+              "date": "未标注"
+            }
+          ],
+          "note": "仅此一处；属技术细节，不建议上字幕。"
+        },
+        {
+          "claim": "“仕女婴戏”系列粉彩瓷盘约烧造于雍正年间（1730 年前后），人物形象常以“雍正十二美人图”为摹本。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "SciEngine（期刊论文 PDF）",
+              "title": "（“仕女婴戏”粉彩瓷盘研究；原标题未获取）",
+              "url": "https://www.sciengine.com/doi/pdf/0F752DC4D15D4BD78547F82BB84C75D8",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（婴戏图/粉彩相关文章；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_18371972",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要称出自一篇研究文章，落地页推定为所列两条之一。"
+        },
+        {
+          "claim": "婴戏题材有绘画渊源，如传为宋代苏汉臣的婴戏图（北京故宫、台北故宫有相关藏品与乾隆御题）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "澎湃新闻",
+              "title": "（婴戏图/粉彩相关文章；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_18371972",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要只作概括性提及，未给出具体藏品名；落地页为推定。"
+        },
+        {
+          "claim": "粉彩创烧于康熙晚期。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "通行说法，但本轮摘要没有出现；字幕如写“康熙创烧”需另行复核，写“盛于雍正、乾隆”则有两处来源。"
+        },
+        {
+          "claim": "故宫博物院藏有以“粉彩婴戏图”命名的具体器物。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索时带了“故宫博物院”关键词，但摘要明确说没有找到故宫针对粉彩婴戏图的专门页面；字幕不要点名具体藏品。"
+        }
+      ],
+      "conflicts": [
+        "一篇资料提到雍正时期官窑粉彩人物题材较少、以花卉最多；如字幕要写“粉彩婴戏”的盛行年代，宜写“清代”或“雍正、乾隆以来”，不要说成雍正官窑的主流题材。"
+      ]
+    },
+    {
+      "shots": [
+        "s15"
+      ],
+      "name_zh": "建盏兔毫",
+      "depiction": [
+        "器形：束口盏——口大足小，斜腹形似漏斗；口沿下有一道浅浅内收的束口线；小圈足，近足处不施釉、露出深色粗胎（露胎与胎色为常识性描述，本轮未核实）。",
+        "釉：厚而亮的黑釉，色分乌黑、绀黑、青黑；口沿釉薄处发褐，盏心积釉更厚更黑（釉薄发褐为常识性描述）。",
+        "兔毫：自口沿向盏心放射的细长丝纹，细如兔毛，长短粗细参差、略随釉流弯曲；色黄褐或银灰。它是窑火中铁氧化物在釉面析晶自然形成的，不是画上去的。",
+        "s15“像运动模糊”的处理：让毫纹沿放射方向拉长、首尾渐隐即可；蓝紫虹彩只宜作口沿或毫纹上薄薄一层干涉色，面积要小。"
+      ],
+      "pitfalls": [
+        "把毫纹画成等粗等距的直线，或画成油滴、曜变那样的圆斑——兔毫、油滴、鹧鸪斑、曜变是不同品类。",
+        "大面积蓝紫光晕会让人误认作“曜变”；兔毫的主调是黑地上的褐丝或银丝。",
+        "器形画成直口饭碗或高足杯；束口线和小圈足是识别点。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "建盏的窑变斑纹大致分为兔毫、油滴、鹧鸪斑、曜变等种类。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "搜狐号",
+              "title": "被两宋皇族、文人雅士追逐的稀罕茶器 ——鹧鸪斑建盏",
+              "url": "https://www.sohu.com/a/201764072_698448",
+              "date": "未标注"
+            },
+            {
+              "publisher": "tenmokus.com（建盏商家博客）",
+              "title": "jianzhan pottery understand in 3 minutes",
+              "url": "https://tenmokus.com/zh-hans/blogs/news/jianzhan-pottery-understand-in-3-minutes",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（建盏相关资讯；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20260715/n1945136.html",
+              "date": "未标注（URL 中日期不稳定）"
+            }
+          ],
+          "note": "摘要中一处列出四类；另一处（转述日本 16 世纪文献）并提兔毫盏、油滴盏、曜变盏；搜狐文章标题即“鹧鸪斑建盏”。具体对应哪一页为推定。"
+        },
+        {
+          "claim": "建窑遗址位于福建省南平市建阳区水吉镇，故又称“水吉窑”；建盏是建窑的代表性产品。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "人民日报",
+              "title": "（2024 年 11 月 2 日第 07 版建盏相关文章；原标题未获取）",
+              "url": "https://paper.people.com.cn/rmrb/html/2024-11/02/nw.D110000renmrb_20241102_3-07.htm",
+              "date": "未标注（URL 路径为 2024-11-02，即见报日期）"
+            },
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（建窑建盏烧制技艺项目页；原标题未获取）",
+              "url": "https://www.ihchina.cn/project_details/18279",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要只作一条陈述、未分列出处，按规则记为单一来源；该次结果里同时有人民日报版面与中国非遗网项目页，属常识级事实，风险低。"
+        },
+        {
+          "claim": "建盏器形口大足小、形似漏斗，以束口盏最具特色。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "人民日报",
+              "title": "（2024 年 11 月 2 日第 07 版建盏相关文章；原标题未获取）",
+              "url": "https://paper.people.com.cn/rmrb/html/2024-11/02/nw.D110000renmrb_20241102_3-07.htm",
+              "date": "未标注（URL 路径为 2024-11-02，即见报日期）"
+            },
+            {
+              "publisher": "搜狐号",
+              "title": "建盏:一瓷越千年 茶韵跨山海",
+              "url": "https://www.sohu.com/a/856418026_115239",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要未分列出处，落地页为推定。"
+        },
+        {
+          "claim": "建盏釉色以黑为主，可分乌黑、绀黑、青黑等。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "搜狐号",
+              "title": "建盏:一瓷越千年 茶韵跨山海",
+              "url": "https://www.sohu.com/a/856418026_115239",
+              "date": "未标注"
+            },
+            {
+              "publisher": "tenmokus.com（建盏商家博客）",
+              "title": "jianzhan pottery understand in 3 minutes",
+              "url": "https://tenmokus.com/zh-hans/blogs/news/jianzhan-pottery-understand-in-3-minutes",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要未分列出处，落地页为推定。"
+        },
+        {
+          "claim": "兔毫等斑纹属铁系结晶釉，是铁氧化物在釉面析晶形成的，在窑火中自然生成。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "tenmokus.com（建盏商家博客）",
+              "title": "jianzhan pottery understand in 3 minutes",
+              "url": "https://tenmokus.com/zh-hans/blogs/news/jianzhan-pottery-understand-in-3-minutes",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要称“有来源认为”；“胎釉含铁量高达 8%”这一数字出自商家网站，不要引用。"
+        },
+        {
+          "claim": "日本一份 16 世纪文献把兔毫盏列在曜变盏、油滴盏之后。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "搜狐号",
+              "title": "被两宋皇族、文人雅士追逐的稀罕茶器 ——鹧鸪斑建盏",
+              "url": "https://www.sohu.com/a/201764072_698448",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要未给文献名，落地页为推定；不建议上字幕。"
+        },
+        {
+          "claim": "宋徽宗《大观茶论》：“盏色贵青黑，玉毫条达者为上。”",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "专门带关键词检索，摘要明确说没有找到《大观茶论》或“玉毫条达”的内容；这句引文流传很广，但本轮未核实，上字幕前必须对原书。"
+        }
+      ],
+      "conflicts": [
+        "计划里 s15 写“蓝紫虹彩口沿”。本轮资料只说兔毫是黑釉上的铁系析晶丝纹，没有提到蓝紫虹彩；蓝紫光晕通常与“曜变”联系在一起。建议把虹彩压到很弱，或在说明里只称“兔毫”。"
+      ]
+    },
+    {
+      "shots": [
+        "s16"
+      ],
+      "name_zh": "郎窑红与“灯草边”（灯草口）",
+      "depiction": [
+        "釉色：深艳透亮的宝石红，玻璃质感强、湿亮；资料称它是名贵铜红釉里色彩最鲜艳的一种。",
+        "灯草边：釉汁厚，高温下向下流，口沿釉层变薄而露出白胎，形成一圈旋绕的细白线；白线细而略不匀，向下很快过渡到红，不是硬边。",
+        "上浅下深：越往下釉越厚、色越浓；圈足处聚釉成滴注状却不流过足（“脱口垂足郎不流”）。",
+        "s16 画面：黑底、强高光、口沿一线白；釉面带纵向的流动深浅，不要平涂。"
+      ],
+      "pitfalls": [
+        "把口沿白线画成描上去的白漆边，或画成很宽的白口。",
+        "红色偏橙（成了珊瑚红、矾红）或偏粉（成了豇豆红）；郎窑红要深、要透。",
+        "整器一色无深浅；应口沿浅、下部浓。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "郎窑红是清代康熙朝的红釉品种，相传为康熙四十四年至五十一年（1705—1712）江西巡抚郎廷极主持景德镇窑务时督烧，故名。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（郎窑红介绍文章；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20251122/n1438486.html",
+              "date": "未标注（URL 中日期不稳定，同一文章另有 20250807 路径）"
+            },
+            {
+              "publisher": "搜狐号·典藏",
+              "title": "典藏君 | 绿如春水初生日,红似朝霞欲上时——康熙豇豆红釉瓷器",
+              "url": "https://www.sohu.com/a/288600798_651622",
+              "date": "未标注"
+            },
+            {
+              "publisher": "Chiswick Auctions（拍卖图录）",
+              "title": "（据 URL：A rare and very large Chinese copper-red-glazed langyao rouleau vase, Qing dynasty, Kangxi period，lot 37）",
+              "url": "https://www.chiswickauctions.co.uk/auction/lot/lot-37---a-rare-and-very-large-chinese-copper-red-glazed-langyao-rouleau-vase-qing-dynasty-kangxi-period/?lot=326907",
+              "date": "页面标题显示拍卖日 13 May 2026"
+            }
+          ],
+          "note": "雅昌介绍文与一篇学术性文章（把郎窑红列为康熙朝三种高温铜红釉之一，年代同为 1705—1712；落地页推定为搜狐典藏文）一致；Chiswick 拍卖标题亦作“康熙·郎窑铜红釉”。注意摘要用了“相传”。"
+        },
+        {
+          "claim": "郎窑红属高温铜红釉，是名贵铜红釉中色彩最鲜艳的一种。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "搜狐号·典藏",
+              "title": "典藏君 | 绿如春水初生日,红似朝霞欲上时——康熙豇豆红釉瓷器",
+              "url": "https://www.sohu.com/a/288600798_651622",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（郎窑红介绍文章；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20251122/n1438486.html",
+              "date": "未标注（URL 中日期不稳定，同一文章另有 20250807 路径）"
+            },
+            {
+              "publisher": "Chiswick Auctions（拍卖图录）",
+              "title": "（据 URL：A rare and very large Chinese copper-red-glazed langyao rouleau vase, Qing dynasty, Kangxi period，lot 37）",
+              "url": "https://www.chiswickauctions.co.uk/auction/lot/lot-37---a-rare-and-very-large-chinese-copper-red-glazed-langyao-rouleau-vase-qing-dynasty-kangxi-period/?lot=326907",
+              "date": "页面标题显示拍卖日 13 May 2026"
+            }
+          ],
+          "note": "“康熙朝三种高温铜红釉之一”与“色彩最鲜艳的一种”分别出自两处；拍卖标题亦称 copper-red-glazed。"
+        },
+        {
+          "claim": "郎窑红器口沿因釉层薄而露出白胎，呈一圈白线，俗称“灯草边”。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（郎窑红介绍文章；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20251122/n1438486.html",
+              "date": "未标注（URL 中日期不稳定，同一文章另有 20250807 路径）"
+            },
+            {
+              "publisher": "苏富比（拍卖图录）",
+              "title": "（2015 年“单色釉”专场 lot 38 图录说明；原标题未获取）",
+              "url": "https://www.sothebys.com/zh/auctions/ecatalogue/2015/monochrome-n09396/lot.38.html",
+              "date": "未标注（拍卖年份 2015）"
+            },
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（铜红釉/郎窑红相关条目；原标题未获取）",
+              "url": "https://www.ihchina.cn/Article/Index/detail?id=24981",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要分两处说明：一处解释“灯草边”（釉汁厚、高温流淌、口沿露出白胎呈旋状白线），一处解释“脱口”（口沿因釉层薄而露白色）；摘要称这些说法主要来自拍卖与收藏类网站，落地页为推定。"
+        },
+        {
+          "claim": "俗语“脱口垂足郎不流”：口沿露白（脱口），圈足聚釉处呈滴注状（垂足），但釉不流过足（郎不流）。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（郎窑红介绍文章；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20251122/n1438486.html",
+              "date": "未标注（URL 中日期不稳定，同一文章另有 20250807 路径）"
+            },
+            {
+              "publisher": "苏富比（拍卖图录）",
+              "title": "（2015 年“单色釉”专场 lot 38 图录说明；原标题未获取）",
+              "url": "https://www.sothebys.com/zh/auctions/ecatalogue/2015/monochrome-n09396/lot.38.html",
+              "date": "未标注（拍卖年份 2015）"
+            }
+          ],
+          "note": "摘要给出该俗语及解释，并说明出自多家拍卖、收藏类网站；属行业口诀而非学术表述。"
+        },
+        {
+          "claim": "郎窑的性质与郎窑红的归属有不同看法：有考证认为郎窑是郎廷极自己设立之窑，且郎窑红未必纯是其创烧。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新浪",
+              "title": "（郎窑与郎廷极相关考证文章；原标题未获取）",
+              "url": "https://sina.cn/news/detail/5304894308486105.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "仅一篇考证文章（落地页推定）；因此字幕宜写“相传因郎廷极督烧而得名”，不要写“郎廷极创烧”。"
+        }
+      ],
+      "conflicts": [
+        "名称：计划写“灯草口”，本轮搜索结果里出现的是“灯草边”（检索词里带了“灯草口”，摘要仍只引“灯草边”）。两种叫法行内都在用，但有据可查的是“灯草边”；说明文字建议写“灯草边”，或写“灯草边（又称灯草口）”并在复核后保留括号内容。",
+        "郎廷极与郎窑红的关系存在“督烧得名”的通行说法与“未必由其创烧”的考证意见，字幕用“相传”即可回避。"
+      ]
+    },
+    {
+      "shots": [
+        "s17"
+      ],
+      "name_zh": "钧窑窑变",
+      "depiction": [
+        "釉质：乳浊釉，厚而不透明；整体是“釉在流动中交融”的感觉。",
+        "色彩：蓝系（天蓝、天青、月白）为底，红紫系（玫瑰紫、海棠红、丁香紫、茄皮紫）成片成斑，交界处互相渗化出紫，边界柔软、没有规律。",
+        "流向：自上而下流淌，口沿与棱线处釉薄色浅，下部积釉浓厚（釉薄处色浅发褐为常识性描述，本轮未核实）。",
+        "细节可选“蚯蚓走泥纹”：釉层里曲折迂回的细线痕，像蚯蚓在泥里爬过；线不闭合、不成网。",
+        "没有笔绘纹样，色彩全靠窑变。"
+      ],
+      "pitfalls": [
+        "画出笔触或规则的线性渐变；窑变是自然流淌、晕化的。",
+        "紫红过艳成荧光紫或大红；钧红是玫瑰紫、海棠红一类带蓝味的红。",
+        "把蚯蚓走泥纹画成闭合的开片网（那是哥窑）。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "“窑变”：钧瓷入窑时是一种釉色，出窑后釉面呈现天蓝、玫瑰紫等不同色彩，色泽随窑内温度与气氛变化而不同。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新民周刊（版面 PDF）",
+              "title": "（2026-09-07 期版面，含汝窑、钧窑、哥窑等介绍；原标题未获取）",
+              "url": "https://img1.xinmin.cn/xmzk/2026-09-07/270907.pdf",
+              "date": "未标注（URL 路径为 2026-09-07）"
+            },
+            {
+              "publisher": "网易号",
+              "title": "（钧窑釉色介绍文章；原标题未获取）",
+              "url": "https://m.163.com/dy/article/DSL792AA05452MVW.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（钧瓷相关条目；原标题未获取）",
+              "url": "https://www.ihchina.cn/news_1_details/10893.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要中两处分别陈述：一处给出“入窑时是一种颜色，出窑后……称为窑变”，另一处讲铜在窑内温度、气氛变化下呈现红、紫、蓝等色；落地页为推定。俗语“入窑一色，出窑万彩”的八字写法本轮未见，字幕如用需复核。"
+        },
+        {
+          "claim": "宋钧釉色：红紫一系有玫瑰紫（玫瑰红）、海棠红、丁香紫、葡萄紫、茄皮紫；蓝一系有天蓝、天青、月白及蓝地红斑。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "网易号",
+              "title": "（钧窑釉色介绍文章；原标题未获取）",
+              "url": "https://m.163.com/dy/article/DSL792AA05452MVW.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（钧窑相关资讯；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20260615/n1931652.html",
+              "date": "未标注（URL 中日期不稳定，同一文章另有 20250505 路径）"
+            }
+          ],
+          "note": "两篇文章都列出天青、天蓝、月白、玫瑰紫；海棠红、丁香紫等名目只见其中一篇。摘要提醒各资料对“玫瑰紫”“海棠红”的定义并不完全统一。"
+        },
+        {
+          "claim": "钧窑窑址在河南禹州，烧乳浊釉。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新民周刊（版面 PDF）",
+              "title": "（2026-09-07 期版面，含汝窑、钧窑、哥窑等介绍；原标题未获取）",
+              "url": "https://img1.xinmin.cn/xmzk/2026-09-07/270907.pdf",
+              "date": "未标注（URL 路径为 2026-09-07）"
+            },
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（钧瓷相关条目；原标题未获取）",
+              "url": "https://www.ihchina.cn/news_1_details/10893.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要只作一条陈述、未分列出处，按规则记为单一来源（落地页推定）；属常识级事实，风险低。"
+        },
+        {
+          "claim": "钧釉的红、紫色与釉中的铜有关：铜在高温还原气氛中呈色。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "网易号",
+              "title": "（钧窑釉色介绍文章；原标题未获取）",
+              "url": "https://m.163.com/dy/article/DSL792AA05452MVW.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（钧窑/钧瓷相关文章；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_27150870",
+              "date": "未标注"
+            }
+          ],
+          "note": "一处明说铜在高温还原气氛中呈红、紫、蓝；另一处只说釉料配入铜、铁、磷、锡等多种元素。“蓝色也来自铜”的说法只见一处，不要上字幕。"
+        },
+        {
+          "claim": "钧瓷釉面可见“蚯蚓走泥纹”等曲折迂回的流纹。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（钧瓷相关条目；原标题未获取）",
+              "url": "https://www.ihchina.cn/news_1_details/10893.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要称出自现代钧瓷资料，并提醒不宜直接当作宋代钧瓷的标准特征；作为画面细节可用，字幕慎用。"
+        }
+      ],
+      "conflicts": [
+        "官窑/民窑与釉色归属：有资料说北宋钧瓷的紫红窑变系列属“皇家垄断”，天蓝、月白等纯色主要是民窑产品；另有资料不作此区分。说明文字不要写“官钧”“御用”。",
+        "年代提醒（未经本轮检索核实）：传世玫瑰紫釉花盆一类“官钧”器物的年代，学界有北宋与更晚两种意见；字幕只写“钧窑”或“宋代名窑”即可，不要写具体纪年。"
+      ]
+    },
+    {
+      "shots": [
+        "s23"
+      ],
+      "name_zh": "瓷器的科技检测（X 射线荧光、CT、高光谱/多光谱等）",
+      "depiction": [
+        "真实科学影像的样子（常识性描述，本轮未逐项核实）：X 射线荧光元素面扫描是按像素着色的伪彩色分布图；高光谱/多光谱是同一表面在许多波段下的一叠图像，可合成伪彩色并配反射光谱曲线；CT 与 X 光是灰度的断层/透视图，器壁亮、空腔暗。",
+        "s23 的“伪彩色带 + 竖条纹”是艺术化处理，可理解为逐列扫描的波段条带；色带按光谱顺序或热力图色标排列，瓶体轮廓保持清楚。",
+        "瓶形用简洁的梅瓶或长颈瓶剪影即可；可让纹饰（如青花缠枝）在某些色带里“显影”得更清楚，呼应光谱成像能增强肉眼难辨图案的特点。",
+        "不要出现真实机构名、仪器品牌、读数或文物编号；需要刻度时只画无字的色标条。"
+      ],
+      "pitfalls": [
+        "字幕写成“多光谱扫描鉴定瓷器”之类的定论——本轮查到的瓷器实例是 X 射线荧光、热释光、显微分析、CT 与同步辐射；高光谱用于瓷器只查到研究性论文，没有查到博物馆对整件瓷瓶做多光谱扫描的公开实例。",
+        "把多光谱画成能看穿器壁的“透视”，或把 CT、X 光画成彩色；前者看表面反射，后者才是灰度透视。",
+        "编造数据标签。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "X 射线荧光分析可无损测定古陶瓷的元素组成：上海博物馆文保科技中心用 X 射线能量色散荧光仪检测古陶瓷；《物理学报》论文用微束 X 射线荧光谱仪对一片明代青花瓷残片作无损微区分析。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新浪财经（转载“70 年看上博”系列报道）",
+              "title": "（上海博物馆文保科技中心古陶瓷检测技术介绍；原标题未获取）",
+              "url": "https://finance.sina.cn/2022-04-27/detail-imcwipii6693143.d.html",
+              "date": "未标注（URL 路径为 2022-04-27）"
+            },
+            {
+              "publisher": "《物理学报》",
+              "title": "（微束 X 射线荧光谱仪及其在考古样品无损微区分析中的应用；原标题未获取）",
+              "url": "https://wulixb.iphy.ac.cn/article/cstr/32037.14.aps.56.6894",
+              "date": "未标注（链接编号为第 56 卷）"
+            }
+          ],
+          "note": "两处相互独立（媒体报道 + 学术论文）。"
+        },
+        {
+          "claim": "上海博物馆文保科技中心的古陶瓷检测手段包括热释光、X 射线能量色散荧光和显微分析。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新浪财经（转载“70 年看上博”系列报道）",
+              "title": "（上海博物馆文保科技中心古陶瓷检测技术介绍；原标题未获取）",
+              "url": "https://finance.sina.cn/2022-04-27/detail-imcwipii6693143.d.html",
+              "date": "未标注（URL 路径为 2022-04-27）"
+            }
+          ],
+          "note": "出自“70 年看上博”系列报道（新浪转载）。"
+        },
+        {
+          "claim": "微束 X 射线荧光分析明代青花瓷残片显示：青花部位锰、钴的含量与颜色深浅一致，这类元素分布可用于判断产地和真伪。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "《物理学报》",
+              "title": "（微束 X 射线荧光谱仪及其在考古样品无损微区分析中的应用；原标题未获取）",
+              "url": "https://wulixb.iphy.ac.cn/article/cstr/32037.14.aps.56.6894",
+              "date": "未标注（链接编号为第 56 卷）"
+            }
+          ],
+          "note": "学术论文一处；“判断真伪”是论文的应用展望，字幕不要说成定论。"
+        },
+        {
+          "claim": "工业 CT 可在不切割、不打开文物的前提下分析其内部结构、制作工艺与材料，古陶瓷是适用对象之一。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "Waygate Technologies / Baker Hughes（设备厂商博客）",
+              "title": "（文物 CT 无损分析科普文章；原标题未获取，URL 末段为 ct-cultural-heritage-nondestructive-analysis-artifacts）",
+              "url": "https://www.bakerhughes.com/waygate-technologies/blog/ct-cultural-heritage-nondestructive-analysis-artifacts",
+              "date": "未标注"
+            }
+          ],
+          "note": "出处是设备厂商的科普文章，非学术研究；同次结果里另有一篇尼康 X 射线 CT 案例（industry.nikon.com），摘要未说明内容，未采用。"
+        },
+        {
+          "claim": "高光谱成像同时提供影像与光谱信息，可按物质的光谱特征识别分类且不损伤文物；已有研究用它发掘陶器、壁画上肉眼难辨的彩绘图案。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "researching.cn（期刊论文 PDF，2019 年第 39 卷第 3 期）",
+              "title": "（高光谱成像用于文物分析的论文；原标题未获取）",
+              "url": "https://www.researching.cn/ArticlePdf/m00026/2019/39/3/2019-03-0942.pdf",
+              "date": "未标注（URL 路径为 2019 年）"
+            },
+            {
+              "publisher": "researching.cn（期刊论文 PDF，2022 年第 42 卷第 5 期）",
+              "title": "（高光谱相关论文；原标题未获取）",
+              "url": "https://www.researching.cn/ArticlePdf/m00026/2022/42/5/1567.pdf",
+              "date": "未标注（URL 路径为 2022 年）"
+            },
+            {
+              "publisher": "researching.cn（期刊论文 PDF，2022 年第 42 卷第 11 期）",
+              "title": "（高光谱相关论文；原标题未获取）",
+              "url": "https://www.researching.cn/ArticlePdf/m00026/2022/42/11/3526.pdf",
+              "date": "未标注（URL 路径为 2022 年）"
+            }
+          ],
+          "note": "摘要显示这是两项不同的研究：一项讲高光谱成像的原理与无损优势（对应 2019 年那篇），一项讲从陶器和壁画的高光谱图像中挖掘隐含图案（落地页推定为 2022 年两篇之一）。但几条链接都在同一期刊平台上，无法确认是两个互相独立的出处，故只记单一来源。研究对象是彩绘陶器与壁画，不是瓷器。"
+        },
+        {
+          "claim": "高光谱用于瓷器尚属研究探索：一项基于景德镇青花瓷片的研究测量胎釉与青花料的反射率，发现不同年代青花料的光谱特征差异明显，认为对断代有潜力；该文同时指出当时尚未见到用高光谱分析瓷器文物的成果。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "X-MOL（论文索引页）",
+              "title": "（高光谱/光谱分析相关论文；原标题未获取）",
+              "url": "https://www.x-mol.com/paper/1377816436633915392",
+              "date": "未标注"
+            },
+            {
+              "publisher": "researching.cn（期刊论文 PDF，2022 年第 42 卷第 5 期）",
+              "title": "（高光谱相关论文；原标题未获取）",
+              "url": "https://www.researching.cn/ArticlePdf/m00026/2022/42/5/1567.pdf",
+              "date": "未标注（URL 路径为 2022 年）"
+            }
+          ],
+          "note": "学术论文一处，落地页为推定。"
+        },
+        {
+          "claim": "同步辐射可分析文物的元素组成和晶体结构，并据此推断制作年代与产地（中国科学院高能物理研究所的研究，2025 年文化和自然遗产日报道）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "中国日报网",
+              "title": "借助高科技 “慧眼”识文物",
+              "url": "https://cn.chinadaily.com.cn/a/202506/16/WS685e4c02a3106af2b3c714f6.html",
+              "date": "未标注（URL 路径为 2025-06-16）"
+            }
+          ],
+          "note": "报道针对文物总体，并非专指瓷器。"
+        },
+        {
+          "claim": "博物馆对完整瓷瓶进行“多光谱扫描”的公开实例。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "arXiv",
+              "title": "A review of cultural heritage inspection: Toward terahertz from mid-infrared region",
+              "url": "https://arxiv.org/pdf/2510.11521",
+              "date": "未标注（编号显示为 2025 年 10 月）"
+            }
+          ],
+          "note": "两次检索（中文关键词）都没有找到直接案例；仅有一篇文物检测综述泛泛提到光谱成像前景。s23 可作为艺术化画面保留，但字幕建议改写为“科技检测”“光谱成像”等不指向具体做法的说法。"
+        }
+      ],
+      "conflicts": [
+        "计划里 s23 题为“多光谱扫描下的瓷瓶”。本轮能核实的瓷器检测实例是 X 射线荧光、热释光、显微分析、CT、同步辐射；“多光谱/高光谱扫描整件瓷瓶”没有查到实例，且有论文明说瓷器的高光谱研究起步晚。采信做法：画面不改，字幕与成片说明不要出现“多光谱鉴定”之类的事实性表述。",
+        "检索时指定了“故宫博物院 文保科技部”，摘要明确说没有找到其对古陶瓷做高光谱成像或工业 CT 的报道；不要在说明文字里点名故宫。"
+      ]
+    },
+    {
+      "shots": [
+        "s26"
+      ],
+      "name_zh": "青花“分水”技法",
+      "depiction": [
+        "两步效果：先有较深的钴蓝轮廓线（缠枝莲的 S 形主茎、莲瓣、卷叶），轮廓内再用含水多的料水填染，色块里有水渍般的浓淡与积料深点（工序为常识性描述，本轮摘要未给出步骤）。",
+        "色阶：同一种钴蓝分出由浓到淡的多个层次，效果如水墨；最深处近蓝黑，最淡处是带灰的浅蓝。",
+        "“水路”：色块之间、色块与轮廓之间留一线均匀的白地；过窄则青色过密、画面板结，过宽则青少白多、显得松散。",
+        "地与釉：白釉地微泛青，蓝彩在透明釉之下，边缘略有晕散，表面有一层柔和的釉光（层次关系为常识性描述）。",
+        "纹样：缠枝莲连续不断，花头正侧相间，枝叶翻卷。"
+      ],
+      "pitfalls": [
+        "把蓝色平涂成一个色块；分水的看点是同一蓝色的浓淡层次。",
+        "蓝色偏紫或偏黑灰，或把笔触画在釉面之上像釉上彩。",
+        "没有水路，花叶糊成一团。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "“分水”是青花瓷的传统绘制技法：利用同一种钴料的浓淡变化分出层次，效果近于水墨。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "国家科技期刊开放平台（《陶瓷》2025 年论文）",
+              "title": "（论青花“分水”技法的源流；原标题未获取）",
+              "url": "https://opaj.napstic.cn/periodicalArticle/0120250402645414",
+              "date": "未标注（摘要称 2025 年发表）"
+            },
+            {
+              "publisher": "新华网（书画频道）",
+              "title": "（提及“铁线描工笔、青花分水、青花写意”与“剔青”工艺的报道；原标题未获取）",
+              "url": "https://www.xinhuanet.com/shuhua/20231225/b232d431259240a199a07bbfc0bb2ea6/c.html",
+              "date": "未标注（URL 路径为 2023-12-25）"
+            },
+            {
+              "publisher": "国家科技期刊开放平台（期刊论文）",
+              "title": "（青花分水技法相关论文；原标题未获取）",
+              "url": "https://search.napstic.cn/literature/periodical/010jdztc202404044",
+              "date": "未标注（编号显示为 2024 年第 4 期）"
+            },
+            {
+              "publisher": "人民日报海外版（版面 PDF）",
+              "title": "（韩国陶艺家金顺植谈青花浓淡与分水画法的报道；原标题未获取）",
+              "url": "https://paper.people.com.cn/rmrbhwb/pc/attachement/202607/28/1d398c68-38b8-4b4b-a35a-8ce8875fd531.pdf",
+              "date": "未标注（URL 路径为 2026-07-28）"
+            }
+          ],
+          "note": "《陶瓷》论文与另一篇论文都称其为历史悠久的传统技法、讲究浓淡适宜；新华网把“青花分水”与铁线描工笔、青花写意并列为传统手法；人民日报海外版报道引陶艺家语“青花只有钴蓝一色，靠浓淡变化出层次”。"
+        },
+        {
+          "claim": "分水技法在清代康熙年间最为成熟，多见于康熙青花：一个颜色分成不同的色调，如同水墨。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "国家科技期刊开放平台（《陶瓷》2025 年论文）",
+              "title": "（论青花“分水”技法的源流；原标题未获取）",
+              "url": "https://opaj.napstic.cn/periodicalArticle/0120250402645414",
+              "date": "未标注（摘要称 2025 年发表）"
+            },
+            {
+              "publisher": "什么值得买（社区文章）",
+              "title": "（青花瓷知识文章；原标题未获取）",
+              "url": "https://post.smzdm.com/p/a26opp2d/",
+              "date": "未标注"
+            }
+          ],
+          "note": "《陶瓷》论文称“康熙年间中期发展成熟”；另一篇文章称“分水技术多用于清代康熙年间的青花瓷上”（落地页推定为社区文章或香港大学美术博物馆线上展览页，后者权威性更高但无法确认）。"
+        },
+        {
+          "claim": "分水起源于元代，明代成化中期得到发展，清代康熙中期成熟。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "国家科技期刊开放平台（《陶瓷》2025 年论文）",
+              "title": "（论青花“分水”技法的源流；原标题未获取）",
+              "url": "https://opaj.napstic.cn/periodicalArticle/0120250402645414",
+              "date": "未标注（摘要称 2025 年发表）"
+            }
+          ],
+          "note": "仅《陶瓷》2025 年论文一处。"
+        },
+        {
+          "claim": "传统青花绘制手法包括铁线描工笔、青花分水和青花写意。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新华网（书画频道）",
+              "title": "（提及“铁线描工笔、青花分水、青花写意”与“剔青”工艺的报道；原标题未获取）",
+              "url": "https://www.xinhuanet.com/shuhua/20231225/b232d431259240a199a07bbfc0bb2ea6/c.html",
+              "date": "未标注（URL 路径为 2023-12-25）"
+            }
+          ],
+          "note": "新华网 2023 年 12 月报道一处。"
+        },
+        {
+          "claim": "青花装饰中的留白称“水路”，绘制时要求水路均匀。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "SciEngine（期刊论文 PDF）",
+              "title": "（青花装饰“水路”与分水相关论文；原标题未获取）",
+              "url": "https://www.sciengine.com/doi/pdf/E007319DB68043A48AB00F2DE9665DF5",
+              "date": "未标注"
+            }
+          ],
+          "note": "期刊论文一处（落地页推定）。"
+        },
+        {
+          "claim": "“料分五色”：头浓、正浓、二浓、正淡、影淡。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "cga.shanghai.nyu.edu（页面内容疑为 AI 生成）",
+              "title": "（介绍王步青花的页面；原标题未获取）",
+              "url": "https://cga.shanghai.nyu.edu/?p=8986",
+              "date": "未标注"
+            }
+          ],
+          "note": "检索两次都没有找到这套五级名称的直接出处；唯一沾边的是一个疑为 AI 生成的页面提到借鉴“墨分五色”，不可作依据。字幕不要写这五个名目。"
+        },
+        {
+          "claim": "分水所用的专用笔称“鸡头笔”。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索两次，摘要均明确说没有找到鸡头笔的说明；不要上字幕。"
+        }
+      ],
+      "conflicts": [
+        "未发现相互矛盾的说法；但“料分五色”的五级名称和“鸡头笔”都没有查到可靠出处，字幕里只说“以浓淡分出层次”即可。"
+      ]
+    },
+    {
+      "shots": [
+        "s28"
+      ],
+      "name_zh": "德化白瓷（瓷塑衣褶）",
+      "depiction": [
+        "釉色：温润的乳白，白中微泛暖黄或微粉（传统称“象牙白”“猪油白”，另有“孩儿红”之名）；釉与胎浑然一体，质感如凝脂，暗部带暖调而不发灰蓝（质感为常识性描述）。",
+        "衣褶：德化瓷塑（观音等）的衣纹长而流畅，自上垂落，褶棱凸起、褶谷深陷；s28 的“一道道白色凸棱”就是受光的褶棱（衣纹特征本轮未查到专门论述，按常识处理）。",
+        "线的节奏：棱线近乎平行又有收放，粗细、间距有变化，局部交汇或分叉，像水流；不要机械等距。",
+        "素白，无彩绘、无描金；黑底衬托。"
+      ],
+      "pitfalls": [
+        "画成冷白石膏或青白瓷；德化白偏暖、润。",
+        "衣褶画成整齐的瓦楞条纹。",
+        "文字里只写“象牙白”而不点明是瓷——本片不出现象牙题材，说明应写“德化白瓷”，“象牙白”只是釉色名。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "德化白瓷有“中国白”之称；中国国家博物馆 2023 年举办“中国白——德化白瓷展”。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新京报",
+              "title": "（国家博物馆“中国白——德化白瓷展”报道；原标题未获取）",
+              "url": "https://m.bjnews.com.cn/detail/1692953564129957.html",
+              "date": "未标注（展览为 2023 年）"
+            },
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（德化瓷烧制技艺项目页；原标题未获取）",
+              "url": "https://www.ihchina.cn/project_details/9802.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃号",
+              "title": "（德化白瓷/何朝宗相关文章；原标题未获取）",
+              "url": "https://m.thepaper.cn/baijiahao_15662744",
+              "date": "未标注"
+            }
+          ],
+          "note": "展览名见新京报；“因洁白如玉、温润典雅而享有中国白美誉”见另一处（落地页推定为中国非遗网或澎湃号）。法文 Blanc de Chine 的来历摘要未展开，不要写。"
+        },
+        {
+          "claim": "国博“中国白——德化白瓷展”通过色谱分析，对德化窑传统的“猪油白”“象牙白”“孩儿红”等概念作了界定和归纳。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "新京报",
+              "title": "（国家博物馆“中国白——德化白瓷展”报道；原标题未获取）",
+              "url": "https://m.bjnews.com.cn/detail/1692953564129957.html",
+              "date": "未标注（展览为 2023 年）"
+            }
+          ],
+          "note": "新京报一处；三种名称的具体色差本轮未查到。"
+        },
+        {
+          "claim": "何朝宗是德化瓷塑最杰出的大师之一，擅塑佛、观音、仙人像，融合泥塑、木雕、石雕技法，世称“何派”。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "澎湃号",
+              "title": "（德化白瓷/何朝宗相关文章；原标题未获取）",
+              "url": "https://m.thepaper.cn/baijiahao_15662744",
+              "date": "未标注"
+            },
+            {
+              "publisher": "blancdechine-org.pages.dev（非官方德化白瓷藏品目录网站，转录荷兰国立博物馆著录）",
+              "title": "（荷兰国立博物馆藏 AK-MAK-594 渡海观音，传何朝宗）",
+              "url": "https://blancdechine-org.pages.dev/zh/objects/rijks-ak-mak-594",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要未分列出处，落地页为推定。"
+        },
+        {
+          "claim": "荷兰国立博物馆藏有一件“传何朝宗”渡海观音像，年代标为清初（约 1675—1699），背部有“何朝宗”方印。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "blancdechine-org.pages.dev（非官方德化白瓷藏品目录网站，转录荷兰国立博物馆著录）",
+              "title": "（荷兰国立博物馆藏 AK-MAK-594 渡海观音，传何朝宗）",
+              "url": "https://blancdechine-org.pages.dev/zh/objects/rijks-ak-mak-594",
+              "date": "未标注"
+            }
+          ],
+          "note": "出自非官方的藏品目录网站对馆方著录的转录；“传”表示作者归属存疑。"
+        },
+        {
+          "claim": "芝加哥艺术学院藏“传何朝宗”观音像高 47.1 厘米。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "blancdechine-org.pages.dev（非官方德化白瓷藏品目录网站，转录芝加哥艺术学院著录）",
+              "title": "（芝加哥艺术学院藏 1924.369 观音，传何朝宗）",
+              "url": "https://blancdechine-org.pages.dev/zh/objects/aic-1924-369",
+              "date": "未标注"
+            }
+          ],
+          "note": "同上，非官方转录；不建议上字幕。"
+        },
+        {
+          "claim": "何朝宗的生活年代（通行说法为明代中晚期）。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "本轮摘要没有给出其生卒或朝代，反而出现了被标为清初的“传何朝宗”作品；字幕不要写何朝宗的朝代，如需写请另行核实。"
+        },
+        {
+          "claim": "德化窑在福建省德化县。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（德化瓷烧制技艺项目页；原标题未获取）",
+              "url": "https://www.ihchina.cn/project_details/9802.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "地理常识，但摘要中没有出现“福建”字样（中国非遗网项目页应有申报地区，未能打开）；风险很低，可按常识使用。"
+        }
+      ],
+      "conflicts": [
+        "何朝宗的年代：通行说法是明代，而检索到的馆藏著录把“传何朝宗”作品标为清初康熙（约 1675—1699）。这反映的是带何朝宗印的作品年代跨度大、归属存疑，不等于何朝宗本人是清人。采信做法：字幕不出现何朝宗的朝代，也不把 s28 的画面指认为某件何朝宗作品。"
+      ]
+    },
+    {
+      "shots": [
+        "s29"
+      ],
+      "name_zh": "永乐甜白釉",
+      "depiction": [
+        "釉色：纯净而温润的白，略带暖调，釉面肥润、柔光；不是冷青白，也不是死白（暖调为常识性描述）。",
+        "胎：极薄，接近“半脱胎”，迎光可透；碗沿要画得轻、薄。",
+        "暗花：纹饰刻在胎上，罩釉后只有光线掠过时才隐约可见；画面上最多用极淡的影线暗示，不可画成清晰线描。",
+        "s29 构图：下半白瓷碗沿，上半紫檀木纹；瓷面不加任何彩绘。"
+      ],
+      "pitfalls": [
+        "白色发蓝发灰；甜白是暖而润的白。",
+        "把暗花画得像青花或刻线一样醒目。",
+        "碗壁画得厚重。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "甜白釉是明代永乐朝的白釉瓷，永乐年间为宫廷所推崇。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "网易号",
+              "title": "（永乐甜白釉介绍文章；原标题未获取）",
+              "url": "https://m.163.com/dy/article/GTRP90VV0552X8GD.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（永乐甜白釉相关文章；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_20927866",
+              "date": "未标注"
+            },
+            {
+              "publisher": "markyin.pages.dev（克利夫兰艺术博物馆藏品的转述介绍页，非馆方页面）",
+              "title": "'Sweet White' Meiping with Cloud Collars",
+              "url": "https://markyin.pages.dev/treasures-abroad/cma-yongle-meiping",
+              "date": "未标注"
+            }
+          ],
+          "note": "网易文、澎湃文与克利夫兰艺术博物馆藏“永乐甜白釉暗花梅瓶”的介绍页三处一致。"
+        },
+        {
+          "claim": "永乐甜白瓷许多器壁极薄，接近“半脱胎”，光可透见。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "网易号",
+              "title": "（永乐甜白釉介绍文章；原标题未获取）",
+              "url": "https://m.163.com/dy/article/GTRP90VV0552X8GD.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（永乐甜白釉相关文章；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_20927866",
+              "date": "未标注"
+            }
+          ],
+          "note": "网易文称“器壁极薄，接近半脱胎，光可透见”；澎湃文称“半透明的甜白釉”。"
+        },
+        {
+          "claim": "甜白釉器常带“暗花”：纹饰刻于胎体之上，只有光线掠过时才隐约可见。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "网易号",
+              "title": "（永乐甜白釉介绍文章；原标题未获取）",
+              "url": "https://m.163.com/dy/article/GTRP90VV0552X8GD.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "markyin.pages.dev（克利夫兰艺术博物馆藏品的转述介绍页，非馆方页面）",
+              "title": "'Sweet White' Meiping with Cloud Collars",
+              "url": "https://markyin.pages.dev/treasures-abroad/cma-yongle-meiping",
+              "date": "未标注"
+            }
+          ],
+          "note": "网易文称“薄胎暗刻花纹上施温润白釉”；克利夫兰藏品介绍页解释“暗花”。后者是对馆藏的转述页而非馆方页面。"
+        },
+        {
+          "claim": "“甜白”得名于在薄胎暗刻花纹上施以温润的白釉、给人甜润之感。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "网易号",
+              "title": "（永乐甜白釉介绍文章；原标题未获取）",
+              "url": "https://m.163.com/dy/article/GTRP90VV0552X8GD.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "仅网易文一处，且是概括性说法；“因似白糖而名”等其他解释本轮未见，字幕不要解释得名缘由。"
+        },
+        {
+          "claim": "甜白釉为景德镇御窑所烧；景德镇御窑出土的修复残件曾与故宫传世瓷器对比展出。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "环球网",
+              "title": "（景德镇御窑出土残件与故宫传世瓷器对比展报道；原标题未获取）",
+              "url": "https://china.huanqiu.com/article/9CaKrnJOjEW",
+              "date": "未标注"
+            }
+          ],
+          "note": "环球网报道一处，且摘要未明说展品是否专指甜白釉；“景德镇御窑”可按常识使用。"
+        }
+      ],
+      "conflicts": [
+        "未发现相互矛盾的说法。检索时带了“故宫博物院”关键词，但摘要明确说没有找到故宫官方的甜白釉专题资料，字幕不要点名具体藏品。"
+      ]
+    },
+    {
+      "shots": [
+        "s30"
+      ],
+      "name_zh": "弘治娇黄釉（又写作浇黄）",
+      "depiction": [
+        "釉色：明亮、娇嫩、匀净的正黄，苏富比图录形容为蛋黄色（egg-yolk yellow）；不偏橙、不偏绿。",
+        "釉面：平整光润、通体一色，无开片、无流纹、无纹饰（匀净无纹为常识性描述）。",
+        "典型器：弘治黄釉盘——薄胎，施黄釉，底有青花六字款（款文具体写法本轮未核实，画面不要写字）。",
+        "s30 上半幅：明黄釉面加柔和高光即可。"
+      ],
+      "pitfalls": [
+        "黄色偏橙、偏土，或带金属光。",
+        "加上开片、窑变或彩绘纹饰——那就不是单色的娇黄釉了。",
+        "同一支片子里“娇黄”“浇黄”混用；两种写法都见于资料，应统一一种。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "明代黄釉以弘治朝烧造水平最高，其釉色称“娇黄”，也写作“浇黄”。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "搜狐号",
+              "title": "（明代黄釉/弘治娇黄介绍文章；原标题未获取）",
+              "url": "https://m.sohu.com/a/198487213_593406",
+              "date": "未标注"
+            },
+            {
+              "publisher": "扬子晚报网",
+              "title": "（介绍明弘治浇黄釉盘的报道；原标题未获取）",
+              "url": "https://www.yzwb.net/news/yw/202510/t20251020_278975.html",
+              "date": "未标注（URL 路径为 2025-10-20）"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（2017 年故宫博物院与景德镇弘治、正德御窑瓷器对比展报道；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_1812857",
+              "date": "未标注"
+            }
+          ],
+          "note": "搜狐文称弘治黄釉最好、称“娇黄”；扬子晚报网介绍“明弘治年间烧制的浇黄釉盘”；澎湃报道称浇黄釉瓷是弘治、正德御窑的代表品类之一。"
+        },
+        {
+          "claim": "2017 年故宫博物院与景德镇市合办弘治、正德御窑瓷器对比展，浇黄釉瓷是其中的代表品类之一。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "澎湃新闻",
+              "title": "（2017 年故宫博物院与景德镇弘治、正德御窑瓷器对比展报道；原标题未获取）",
+              "url": "https://www.thepaper.cn/newsDetail_forward_1812857",
+              "date": "未标注"
+            }
+          ],
+          "note": "澎湃报道一处。"
+        },
+        {
+          "claim": "北京故宫博物院藏有清宫旧藏的弘治黄釉盘，著录于《故宫博物院藏文物珍品全集·颜色釉》（1999 年）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "苏富比（拍卖图录，中文）",
+              "title": "（香港 2013 年“中国瓷器及工艺品”lot 3060 图录说明；原标题未获取）",
+              "url": "https://www.sothebys.com/zh/auctions/ecatalogue/2013/fine-chinese-ceramics-and-works-of-art-hk0461/lot.3060.html",
+              "date": "未标注（拍卖年份 2013）"
+            }
+          ],
+          "note": "出自苏富比图录的参考著录，属转引；未见故宫官网页面。落地页为推定（该次结果有多条苏富比拍品）。"
+        },
+        {
+          "claim": "弘治黄釉盘的面貌：薄胎，施蛋黄色釉，底有青花六字款；有一件直径 21.5 厘米。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "Sotheby's（拍卖图录，英文）",
+              "title": "Imperial Porcelain – A Private Collection（弘治黄釉盘拍品说明）",
+              "url": "https://sothebys.com/buy/ea80d5ce-ad5d-4a8f-9ef1-4edd6457b8e4/lots/a4def1c7-5124-4b88-a5d9-05fa9545dfc1",
+              "date": "未标注"
+            },
+            {
+              "publisher": "苏富比（拍卖图录，中文）",
+              "title": "（香港 2013 年“中国瓷器及工艺品”lot 3060 图录说明；原标题未获取）",
+              "url": "https://www.sothebys.com/zh/auctions/ecatalogue/2013/fine-chinese-ceramics-and-works-of-art-hk0461/lot.3060.html",
+              "date": "未标注（拍卖年份 2013）"
+            }
+          ],
+          "note": "均为苏富比图录（同一出版方算一处）；款文“大明弘治年制”的具体写法摘要未给出。"
+        },
+        {
+          "claim": "黄釉按呈色和制作工艺可分浇黄、蛋黄、蜜蜡黄等品种。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "扬子晚报网",
+              "title": "（介绍明弘治浇黄釉盘的报道；原标题未获取）",
+              "url": "https://www.yzwb.net/news/yw/202510/t20251020_278975.html",
+              "date": "未标注（URL 路径为 2025-10-20）"
+            }
+          ],
+          "note": "扬子晚报网一处。"
+        },
+        {
+          "claim": "低温铁黄釉在明初已经出现。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "搜狐号",
+              "title": "（明代黄釉/弘治娇黄介绍文章；原标题未获取）",
+              "url": "https://m.sohu.com/a/198487213_593406",
+              "date": "未标注"
+            }
+          ],
+          "note": "搜狐文一处；可支持“以铁呈色的低温黄釉”这一性质，但力度有限。"
+        },
+        {
+          "claim": "娇黄釉是低温铅釉，“浇黄”因浇釉法施釉而得名。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "专门带“低温铅釉”检索，摘要明确说没有查到铅釉、配方或烧成温度的说明，也没有解释“浇”字的由来；这两点流传很广，但本轮未核实，不要上字幕。"
+        }
+      ],
+      "conflicts": [
+        "“娇黄”与“浇黄”：资料里两种写法并存，摘要指出来源没有交代二者是同一釉色的两种叫法还是不同品种（另有把“浇黄”与“蛋黄”“蜜蜡黄”并列为品种的分法）。采信做法：沿用计划里的“娇黄”，全片统一；必要时写“娇黄（亦作浇黄）”。"
+      ]
+    },
+    {
+      "shots": [
+        "s30"
+      ],
+      "name_zh": "磁州窑白地黑花",
+      "depiction": [
+        "工艺层次：胎体上先施一层白色化妆土，再以黑彩笔绘；白地是暖调的牙白、米白，不是冷白（色调与罩透明釉为常识性描述）。",
+        "笔法：民窑的写意笔绘，毛笔一笔成形，线条有粗细、顿挫，黑白对比强烈（笔法为常识性描述）。",
+        "纹样：缠枝花卉（资料描述“花瓣肥大，花叶纤细卷曲”）等；s30 下半幅的“卷草水波”本轮没有查到专门描述，按常识处理。",
+        "黑彩：乌黑至黑褐；元代多偏褐，又称“白地褐彩”。",
+        "如果画到整器：梅瓶、瓷枕是代表器型。"
+      ],
+      "pitfalls": [
+        "白地画成冷白、黑彩画成青花蓝。",
+        "线条画得工整匀细如工笔；磁州窑贵在粗放流畅。",
+        "把“剔花”（剔掉化妆土露出胎色）当成“绘花”来画——本镜头是笔绘。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "磁州窑是宋、金、元时期北方著名的民间瓷窑，窑址在今河北省邯郸市磁县观台镇与峰峰矿区彭城镇一带，因宋代属磁州而得名。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（磁州窑烧制技艺项目页；原标题未获取）",
+              "url": "https://www.ihchina.cn/project_details/14273.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "北京旅游网",
+              "title": "（磁州窑器物/展览介绍；原标题未获取）",
+              "url": "https://www.visitbeijing.com.cn/article/4FFIk9QHtvX",
+              "date": "未标注"
+            },
+            {
+              "publisher": "界面新闻",
+              "title": "（磁州窑相关文章；原标题未获取）",
+              "url": "https://m.jiemian.com/article/1966411.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要引了两处各自独立的表述（一处“河北磁县观台镇与彭城镇一带，宋代属磁州，故名”，一处“邯郸市磁县的观台镇和峰峰矿区彭城镇一带”）；落地页为推定。原文朝代顺序写作“北宋、元、金”。"
+        },
+        {
+          "claim": "磁州窑装饰最突出的特征，是在施白色化妆土的胎体上用绘、划、刻、剔、印、塑等技法作装饰；白地黑花是其中的代表品种。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（磁州窑烧制技艺项目页；原标题未获取）",
+              "url": "https://www.ihchina.cn/project_details/14273.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "中国非物质文化遗产网",
+              "title": "（磁州窑相关条目；原标题未获取）",
+              "url": "https://www.ihchina.cn/project_details/26373.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃号",
+              "title": "（磁州窑相关文章；原标题未获取）",
+              "url": "https://m.thepaper.cn/baijiahao_17059788",
+              "date": "未标注"
+            }
+          ],
+          "note": "“白色化妆土 + 多种技法”一句与“装饰技法包括化妆白瓷、白釉刻划花、珍珠地刻花……白地黑花……”一句分见两处；其中一处推定为中国非遗网项目页。"
+        },
+        {
+          "claim": "白地黑花属于釉下彩装饰。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "澎湃号",
+              "title": "（磁州窑相关文章；原标题未获取）",
+              "url": "https://m.thepaper.cn/baijiahao_17059788",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要的概括性陈述，未标出处（落地页推定）。"
+        },
+        {
+          "claim": "元代磁州窑仍以白地黑花为主，但黑彩多呈褐色或黑褐色，因此也称“白地褐彩”。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "人民政协网",
+              "title": "（磁州窑相关文章；原标题未获取）",
+              "url": "https://www.rmzxw.com.cn/scjb/ypyj/2015/03/17/467343.shtml",
+              "date": "未标注（URL 路径为 2015-03-17）"
+            }
+          ],
+          "note": "摘要一处（落地页推定）。"
+        },
+        {
+          "claim": "磁州窑瓷枕颇为著名，枕底往往有“张家”“李家”“王家”“陈家造”等作坊印记。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "北京旅游网",
+              "title": "（磁州窑器物/展览介绍；原标题未获取）",
+              "url": "https://www.visitbeijing.com.cn/article/4FFIk9QHtvX",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要一处（落地页推定）；画面不要出现印记文字。"
+        },
+        {
+          "claim": "一件宋代磁州窑白地黑花梅瓶：腹部绘缠枝花卉为主题纹饰，花瓣肥大，花叶纤细卷曲。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "北京旅游网",
+              "title": "（磁州窑器物/展览介绍；原标题未获取）",
+              "url": "https://www.visitbeijing.com.cn/article/4FFIk9QHtvX",
+              "date": "未标注"
+            }
+          ],
+          "note": "摘要一处（落地页推定），可作纹样参考。"
+        },
+        {
+          "claim": "磁州窑白地黑花常见卷草纹、水波纹。",
+          "status": "unverified",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [],
+          "note": "检索词里带了“卷草纹”，摘要明确说没有查到卷草纹的具体描述；属常见说法，画面可用，字幕不要专门点名。"
+        }
+      ],
+      "conflicts": [
+        "未发现相互矛盾的说法。朝代表述有“宋金元”“北宋、元、金”等不同排序，字幕写“宋金元”即可。"
+      ]
+    },
+    {
+      "shots": [
+        "s32"
+      ],
+      "name_zh": "哥窑“金丝铁线”",
+      "depiction": [
+        "两级开片：大开片线较粗、色深如铁（黑至深褐）；大片之内又有细小开片，线细、色浅如金（浅黄褐）——合称“金丝铁线”。大开片先出现，细开片后在其间生成。",
+        "网形：不规则多边形，大小参差，线条有轻微弯折与粗细变化，像龟裂或冰裂；不是规则六边形（形态为常识性描述）。",
+        "釉色：灰青、米黄一类的淡雅色，乳浊、柔光（“灰青”见资料，“米黄”为常识性补充）。",
+        "如果画到口和足：“紫口铁足”——口沿釉薄处透出紫色胎体，圈足无釉处呈铁色。",
+        "裂纹在釉层之内，线边略有晕染，不是浮在表面的墨线。"
+      ],
+      "pitfalls": [
+        "只画一种颜色、一种粗细的裂纹；必须有深粗、浅细两级。",
+        "画成规则蜂窝或龟背锦。",
+        "把“金丝”画成闪亮的金属金线；它只是浅黄褐色的细纹。"
+      ],
+      "captionFacts": [
+        {
+          "claim": "“金丝铁线”指哥窑釉面大小两重开片：较大的开片纹线色深如铁线，其间较小的开片纹线色浅如金丝。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "Wikipedia（英文）",
+              "title": "Ge ware",
+              "url": "https://en.wikipedia.org/wiki/Ge_ware",
+              "date": "未标注"
+            },
+            {
+              "publisher": "网易号",
+              "title": "（哥窑收藏文章；原标题未获取）",
+              "url": "https://www.163.com/dy/article/DPT0CSS905330472.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（哥窑相关文章；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20250929/n1340091.html",
+              "date": "未标注（URL 中日期不稳定）"
+            }
+          ],
+          "note": "英文维基称这种双重开片在中国传统上叫“金丝铁线”，分别指较小与较大的网状裂纹；一篇收藏文章称“网纹……黑者如铁线，二者互相交织”（落地页推定）。"
+        },
+        {
+          "claim": "开片在烧成后的冷却过程中形成：胎与釉的膨胀系数不同，冷却时釉面开裂。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "Wikipedia（英文）",
+              "title": "Ge ware",
+              "url": "https://en.wikipedia.org/wiki/Ge_ware",
+              "date": "未标注"
+            },
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（哥窑开片与“紫口铁足”介绍文章；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20260618/n1340086.html",
+              "date": "未标注（URL 中日期不稳定）"
+            }
+          ],
+          "note": "英文维基侧重“快速冷却”并提到可能与釉中二氧化硅偏低有关；行业文章侧重“胎釉膨胀系数不同”。两说都指向冷却阶段，机理细节不要上字幕。"
+        },
+        {
+          "claim": "传世哥窑的窑址至今没有确认，哥窑与龙泉窑的关系也有争议。",
+          "status": "verified-2plus-independent",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "网易号",
+              "title": "（哥窑收藏文章；原标题未获取）",
+              "url": "https://www.163.com/dy/article/DPT0CSS905330472.html",
+              "date": "未标注"
+            },
+            {
+              "publisher": "澎湃新闻",
+              "title": "（哥窑相关文章；原标题未获取）",
+              "url": "https://m.thepaper.cn/newsDetail_forward_24656792",
+              "date": "未标注"
+            },
+            {
+              "publisher": "环球网",
+              "title": "（哥窑相关文章；原标题未获取）",
+              "url": "https://huanqiu.com/article/443KnlVrDJm",
+              "date": "未标注"
+            }
+          ],
+          "note": "一处称“迄今为止尚未发现烧造典型传世哥窑瓷器的窑址”，另一处称二者土质颜色不符、窑址难下判断；落地页为推定。"
+        },
+        {
+          "claim": "较宽的开片先出现，较细的开片随后在其内部逐步形成。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "Wikipedia（英文）",
+              "title": "Ge ware",
+              "url": "https://en.wikipedia.org/wiki/Ge_ware",
+              "date": "未标注"
+            }
+          ],
+          "note": "英文维基一处。"
+        },
+        {
+          "claim": "“紫口铁足”：口沿釉薄处显出紫色胎体，圈足无釉处呈铁色；哥窑胎含铁量高，开片纹线因而显深褐色。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "雅昌艺术网",
+              "title": "（哥窑开片与“紫口铁足”介绍文章；原标题未获取）",
+              "url": "https://m-news.artron.net/news/20260618/n1340086.html",
+              "date": "未标注（URL 中日期不稳定）"
+            }
+          ],
+          "note": "行业文章一处；摘要提醒这是常见说法而非学界定论。"
+        },
+        {
+          "claim": "故宫博物院藏有哥窑灰青釉八方杯（文中标为南宋）。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "网易号",
+              "title": "（哥窑收藏文章；原标题未获取）",
+              "url": "https://www.163.com/dy/article/DPT0CSS905330472.html",
+              "date": "未标注"
+            }
+          ],
+          "note": "收藏文章一处（落地页推定），未见故宫官网页面；年代标注不要照搬上字幕。"
+        },
+        {
+          "claim": "哥窑被列为中国“五大名窑”之一。",
+          "status": "single-source",
+          "asOf": "截至 2026 年 11 月",
+          "sources": [
+            {
+              "publisher": "srantique.pages.dev（个人/商业网站）",
+              "title": "One of China's Five Great Kilns（Ge ware）",
+              "url": "https://srantique.pages.dev/ge-ware",
+              "date": "未标注"
+            }
+          ],
+          "note": "该次结果中只有一个英文网站的页面标题直接写明 One of China's Five Great Kilns；属通行说法，风险低。"
+        }
+      ],
+      "conflicts": [
+        "哥窑的窑址与年代都有争议（传世哥窑窑址未明，年代有南宋等不同标注）；字幕不要写具体窑址和纪年，只写“哥窑”或“传世哥窑”。",
+        "“金丝”“铁线”的颜色解释各家略有出入（摘要里有一句“网纹细黑者如铁线”，与通行的“粗深为铁线、细浅为金丝”字面不合，疑为摘录截断）。采信通行解释，并与英文维基“较小/较大两重开片”的说法一致。"
+      ]
+    }
+  ]
+}
