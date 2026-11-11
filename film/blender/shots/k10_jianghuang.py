@@ -106,7 +106,7 @@ def face_material():
     nrm = m.bump(grain, strength=0.6, distance=m.mixf(0.000006, 0.000022, dull), normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.50, specular=0.30, normal=nrm,
           coat=m.math('MULTIPLY', m.math('SUBTRACT', 1.0, dull), 0.12), coat_roughness=0.20, coat_normal=nrm,
-          sss=m.mixf(0.75, 0.15, is_skin), sss_radius=(1.0, 0.33, 0.04), sss_scale=0.0009)
+          sss=m.mixf(0.30, 0.10, is_skin), sss_radius=(1.0, 0.33, 0.04), sss_scale=0.0005)
     _MATS['face'] = m
     return m
 
@@ -151,7 +151,7 @@ def make_items(seed=0, n=6):
 # ----------------------------------------------------------------------------- build + render
 def main():
     args = C.parse_args()
-    C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
+    C.setup_scene(args, look='AgX - Punchy', exposure=-0.75)     # bright saturated orange desaturates under AgX: keep it lower
     cam, info = C.disc_camera(R0, elevation_deg=ELEV, lens_mm=85, apex=0.535, edge=0.68)
     ol = make_outline(args.seed)
     fields = make_fields(ol)
@@ -165,7 +165,7 @@ def main():
                radius=(0.00007, 0.00014), depth=(0.0001, 0.0005), rise=(0.0, 0.5), wander=0.25, droop=0.1,
                seed=args.seed + 5, nseg=12)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.2)
-    D.lights(info, tint=(0.92, 0.95, 1.0), key=0.72, fill=0.50, rim=0.9, top=0.15, key_az=-58, key_el=44, sheen=0.06, sheen_size=0.7,
+    D.lights(info, tint=(1.0, 0.97, 0.92), key=0.66, fill=0.50, rim=0.9, top=0.15, key_az=-58, key_el=44, sheen=0.06, sheen_size=0.7,
              sheen_az=-9, sheen_el=28)
     D.finish(args, SHOT)
 
