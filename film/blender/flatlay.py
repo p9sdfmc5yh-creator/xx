@@ -1748,7 +1748,7 @@ def main(argv=None):
             if (shot.get('optional_sources') or cli.empty) and not standin and not os.path.exists(os.path.join(SHOT_DIR, sid + '.py')):
                 print('[items] %s not written yet - skipped' % sid)
                 continue
-            S = ItemSet(sid, seed=0)
+            S = ItemSet(sid, seed=0, scale=float(shot.get('item_scale', 1.0)))
             cache[sid] = S
             sets.append(S)
         if not sets and not cli.empty:

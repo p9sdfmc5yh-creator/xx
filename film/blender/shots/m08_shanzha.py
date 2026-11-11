@@ -367,7 +367,7 @@ def shanzha_material(sss_method='BURLEY'):
     fl = m.hsv(fl, 0.5, 1.0, m.map_range(sp, 0.30, 0.70, 0.84, 1.14))
     # --- skin: deep red to maroon, dark creases, pale lenticel dots
     sn = m.noise(scale=330, detail=3, roughness=0.6, vector=P)
-    sk = m.mix((0.29, 0.014, 0.011), (0.105, 0.007, 0.007), m.map_range(sn, 0.30, 0.70))
+    sk = m.mix((0.32, 0.015, 0.011), (0.115, 0.007, 0.007), m.map_range(sn, 0.30, 0.70))
     sk = m.mix(sk, (0.050, 0.005, 0.005), m.map_range(cav, 0.2, 0.9, 0.0, 0.80, smooth=True))
     vd = m.voronoi(scale=820, vector=P)
     vc = m.node('ShaderNodeSeparateColor', {0: m.voronoi(scale=820, vector=P, output='Color')}).outputs[0]
@@ -470,7 +470,7 @@ def main():
 
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=(0.86, 1.0, 0.90), key=0.80, fill=0.80, rim=1.0, world=1.0, key_size=1.0)
+    C.studio_lights(info, tint=(0.90, 1.0, 0.92), key=0.96, fill=1.0, rim=1.05, world=1.1, key_size=1.0)
 
     C.render(args)
     if not args.region:

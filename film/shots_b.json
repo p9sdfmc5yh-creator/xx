@@ -1,5 +1,5 @@
 {
- "_about": "Master shot table of VERSION B (top-down specimen plates / ingredient typography) of 《药食同源》.\nRun this file to (re)generate film/shots_b.json.  Same timeline, audio and cut grid as version A\n(film/shots.json): 1248 frames @ 30 fps; every start/end below is a cut of the original film.\n\nScene keys\n  id, start, end      frame range [start, end)\n  layout              wreath | glyph | landing | taiji | dishes | bespoke   (film/blender/flatlay.py)\n  text                glyph string poured from the ingredient (glyph / landing), else null\n  label               what the 2-D text layer writes over the plate (information for the compositor)\n  source              ingredient module id(s) in film/blender/shots/ (make_items)\n  ground              {type: paper|slate|walnut|linen, colour: DISPLAY sRGB 0-255 of the lit ground,\n                       grid: {type, pitch_m, line_m, colour, opacity, major}, fibres, cloud, ...}\n  frame_width_m       physical width of the frame on the ground, chosen for the ingredient\n  item_mm / item_w_mm assumed length / width of one item the width was chosen for (flatlay rescales the\n                       frame when the real module differs by more than 15 %; lock_width: true disables it)\n  seed                layout + paper seed\n  text_mode           'light' = white overlay text (dark ground), 'dark' = dark-ink overlay text (pale ground)\n  exposure            stops; pale grounds need ~ +0.9 to render as pale paper under AgX Punchy\n  final_res           final render size (b00-b04 are rendered 5 % oversize for the slow push-in)\n  params              layout parameters (see README_B.md)\n",
+ "_about": "Master shot table of VERSION B (top-down specimen plates / ingredient typography) of 《药食同源》.\nRun this file to (re)generate film/shots_b.json.  Same timeline, audio and cut grid as version A\n(film/shots.json): 1248 frames @ 30 fps; every start/end below is a cut of the original film.\n\nLOOK (user: \"不要搞得像鬼片\"): BRIGHT, warm, clean vintage specimen plates.  Every ground is a light or\nmid-tone handmade card stock with visible fibre (never near-black), each plate its own colour chosen\nfor contrast with the ingredient (pale ingredients on mid-tones, dark / saturated ones on pale paper).\nFirst and last page are warm WHITE paper with a faint ruled grid.\n\nScene keys\n  id, start, end      frame range [start, end)\n  layout              wreath | glyph | landing | taiji   (film/blender/flatlay.py)\n  text                glyph string poured from the ingredient (glyph / landing), else null\n  label               what the 2-D text layer writes over the plate (information for the compositor)\n  source              ingredient module id(s) in film/blender/shots/ (make_items)\n  ground              {type: paper, colour: DISPLAY sRGB 0-255 of the lit ground,\n                       grid: {type, pitch_m, line_m, colour, opacity, major}, fibres, cloud, ...}\n  frame_width_m       physical width of the frame on the ground, chosen for the measured item size\n                      (lock_width: true everywhere - flatlay does not rescale)\n  item_scale          optional uniform scale of the module's items (smaller cut pieces)\n  seed                layout + paper seed\n  text_mode           'dark' = dark-ink overlay text (pale ground), 'light' = white overlay text (mid-tone ground)\n  exposure            stops (1.0 for every plate: one consistent bright exposure; papers paler than a\n                      0.90 albedo can render get a small display gain in flatlay, see display_gain)\n  params              layout parameters (see README_B.md)\n",
  "fps": 30,
  "width": 3840,
  "height": 2160,
@@ -8,8 +8,8 @@
   "lens_mm": 135,
   "look": "AgX - Punchy",
   "final_res": [
-   3840,
-   2160
+   1920,
+   1080
   ]
  },
  "scenes": [
@@ -23,64 +23,59 @@
    "source": [
     "m02_gouqi",
     "m03_dazao",
-    "m08_shanzha",
     "m09_juhua",
     "m06_lianzi",
-    "m07_baihe",
-    "m05_jupi",
+    "m08_shanzha",
     "k03_guiyuan",
-    "k14_rougui",
     "m04_shengjiang",
-    "k07_chixiaodou",
-    "k15_qianshi"
+    "k09_gancao",
+    "m07_baihe",
+    "k11_shaji",
+    "m01_shanyao",
+    "k06_sangshen"
    ],
-   "optional_sources": true,
    "ground": {
     "type": "paper",
     "colour": [
-     214,
-     203,
-     178
+     241,
+     236,
+     224
     ],
+    "fibres": 1.0,
+    "cloud": 0.035,
     "grid": {
      "type": "square",
-     "pitch_m": 0.0225,
-     "line_m": 0.0006,
+     "pitch_m": 0.0195,
+     "line_m": 0.00045,
      "colour": [
-      176,
-      44,
-      30
+      150,
+      120,
+      96
      ],
-     "opacity": 0.8,
+     "opacity": 0.3,
      "major": 0
-    },
-    "fibres": 1.2,
-    "cloud": 0.05
+    }
    },
-   "frame_width_m": 0.9,
-   "item_mm": null,
+   "frame_width_m": 0.62,
    "lock_width": true,
    "seed": 11,
    "text_mode": "dark",
-   "exposure": 0.9,
-   "final_res": [
-    4032,
-    2268
-   ],
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
-     0.535,
-     0.62,
-     0.5
+     0.5,
+     0.72,
+     0.7
     ],
-    "layers": 2.0,
-    "reach": 0.55,
-    "rough": 0.14,
-    "strays": 14,
-    "mix": "patches"
+    "layers": 1.0,
+    "reach": 0.3,
+    "rough": 0.1,
+    "strays": 10,
+    "mix": "patches",
+    "patch": 0.13
    },
-   "note": "cream xuan with a cinnabar printed grid; loose wreath of every available ingredient in patches; the centre (title 196 px + three lines, y 0.33-0.75 H, <= 0.50 W wide) stays clear"
+   "note": "warm white paper with a faint ruled grid; a sparse single-layer border of twelve ingredients in small patches; the centre (u 0.14-0.86, v 0.15-0.85) is clear for the title cards"
   },
   {
    "id": "b01_yinyang",
@@ -94,151 +89,172 @@
     "k02_yiyiren"
    ],
    "ground": {
-    "type": "slate",
+    "type": "paper",
     "colour": [
-     38,
-     42,
-     48
-    ]
+     200,
+     130,
+     100
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
    },
-   "frame_width_m": 0.46,
-   "item_mm": [
-    3.0,
-    6.0
-   ],
+   "frame_width_m": 0.4,
+   "lock_width": true,
    "seed": 12,
    "text_mode": "light",
-   "exposure": 0.0,
-   "final_res": [
-    4032,
-    2268
-   ],
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.72
+     0.725
     ],
     "diameter": 0.5,
     "dot": 0.2,
     "layers": 3
    },
-   "note": "yin = black sesame, yang = white coix seed, two opposite eyes; text zone above y 0.45 H is bare slate"
+   "note": "yin = black sesame, yang = white coix seed, two opposite eyes, on terracotta card; the text zone above y 0.46 H is bare paper"
   },
   {
    "id": "b02_cabinet",
    "start": 256,
    "end": 320,
-   "layout": "bespoke",
-   "script": "flatlay_b02_cabinet.py",
+   "layout": "wreath",
    "text": null,
-   "label": "四气 · 五味 (white, upper 42 %)",
+   "label": "四气 · 五味 (upper-centre window)",
    "source": [
-    "s02_cabinet"
+    "k09_gancao",
+    "m04_shengjiang",
+    "m08_shanzha",
+    "m09_juhua",
+    "k05_bohe",
+    "k10_jianghuang",
+    "k14_rougui",
+    "m05_jupi"
    ],
    "ground": {
-    "type": "none"
+    "type": "paper",
+    "colour": [
+     238,
+     228,
+     206
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
    },
-   "frame_width_m": 1.6,
+   "frame_width_m": 0.66,
+   "lock_width": true,
    "seed": 13,
-   "text_mode": "light",
-   "exposure": 0.0,
-   "final_res": [
-    4032,
-    2268
-   ],
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
-    "dark_above": 0.42
+    "window": [
+     0.5,
+     0.385,
+     0.6,
+     0.37
+    ],
+    "layers": 1.7,
+    "reach": 0.5,
+    "rough": 0.14,
+    "strays": 8,
+    "mix": "patches",
+    "patch": 0.2
    },
-   "note": "frontal drawer grid from the assets of s02_cabinet.py; upper 42 % falls into darkness (NOT BUILT YET)"
+   "note": "herbs & spices of the four natures / five flavours (liquorice, ginger, hawthorn, chrysanthemum, mint, turmeric, cinnamon, tangerine peel) in organic patches on cream paper"
   },
   {
    "id": "b03_grains",
    "start": 320,
    "end": 384,
-   "layout": "dishes",
+   "layout": "wreath",
    "text": null,
-   "label": "五谷为养 ... (white, above)",
+   "label": "五谷为养 ... (upper-centre window)",
    "source": [
     "s03_millet",
-    "k02_yiyiren",
     "k07_chixiaodou",
+    "k02_yiyiren",
     "k04_heizhima",
-    "m06_lianzi"
+    "m06_lianzi",
+    "k12_juemingzi",
+    "k15_qianshi"
    ],
    "ground": {
-    "type": "walnut",
+    "type": "paper",
     "colour": [
-     58,
-     36,
-     22
-    ]
+     150,
+     168,
+     134
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
    },
-   "frame_width_m": 0.6,
-   "item_mm": [
-    1.6,
-    6.0,
-    7.0,
-    3.0,
-    14.0
-   ],
+   "frame_width_m": 0.3,
+   "lock_width": true,
    "seed": 14,
    "text_mode": "light",
-   "exposure": 0.0,
-   "final_res": [
-    4032,
-    2268
-   ],
+   "exposure": 1.0,
    "params": {
-    "centre_v": 0.72,
-    "dish": 0.15,
-    "pitch": 0.18,
-    "kinds": [
-     "wood",
-     "celadon",
-     "wood",
-     "celadon",
-     "wood"
+    "window": [
+     0.5,
+     0.385,
+     0.6,
+     0.37
     ],
-    "heap": 0.3,
-    "fill": 0.8
+    "layers": 2.0,
+    "reach": 0.55,
+    "rough": 0.1,
+    "strays": 6,
+    "mix": "sectors",
+    "sector_start": 205.0,
+    "sector_blur": 0.05
    },
-   "note": "five 90 mm dishes (turned wood / celadon) heaped with millet, coix seed, adzuki bean, black sesame, lotus seed"
+   "note": "seven grains / seeds (millet, adzuki bean, coix seed, black sesame, lotus seed, cassia seed, gorgon nut), one per sector around the window, on sage card"
   },
   {
    "id": "b04_bowl",
    "start": 384,
    "end": 448,
-   "layout": "bespoke",
-   "script": "flatlay_b04_bowl.py",
+   "layout": "wreath",
    "text": null,
-   "label": "药食同源 / 既是食品，又是中药材 (white, above)",
+   "label": "药食同源 / 既是食品，又是中药材 (upper-centre window)",
    "source": [
-    "s04_bowl"
+    "m02_gouqi",
+    "m03_dazao",
+    "m09_juhua",
+    "m06_lianzi",
+    "k03_guiyuan",
+    "m01_shanyao"
    ],
    "ground": {
-    "type": "linen",
+    "type": "paper",
     "colour": [
-     22,
-     34,
-     66
-    ]
+     122,
+     148,
+     170
+    ],
+    "fibres": 1.0,
+    "cloud": 0.05
    },
-   "frame_width_m": 0.62,
+   "frame_width_m": 0.56,
+   "lock_width": true,
    "seed": 15,
    "text_mode": "light",
-   "exposure": 0.0,
-   "final_res": [
-    4032,
-    2268
-   ],
+   "exposure": 1.0,
    "params": {
-    "centre": [
+    "window": [
      0.5,
-     0.74
+     0.385,
+     0.6,
+     0.37
     ],
-    "diameter": 0.62
+    "layers": 1.8,
+    "reach": 0.52,
+    "rough": 0.14,
+    "strays": 8,
+    "mix": "patches",
+    "patch": 0.18
    },
-   "note": "top-down blue-and-white bowl, amber broth, floating goji, on indigo linen (NOT BUILT YET; linen ground exists)"
+   "note": "goji + jujube + chrysanthemum + lotus seed + longan + yam on slate-blue card"
   },
   {
    "id": "b05_shanyao",
@@ -253,18 +269,18 @@
    "ground": {
     "type": "paper",
     "colour": [
-     18,
-     74,
-     72
+     200,
+     130,
+     100
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.8,
-   "item_mm": 35,
+   "frame_width_m": 0.476,
+   "lock_width": true,
    "seed": 20,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -272,10 +288,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -291,18 +307,18 @@
    "ground": {
     "type": "paper",
     "colour": [
-     36,
-     15,
-     11
+     238,
+     228,
+     206
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.34,
-   "item_mm": 14,
+   "frame_width_m": 0.265,
+   "lock_width": true,
    "seed": 21,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -310,10 +326,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -329,18 +345,18 @@
    "ground": {
     "type": "paper",
     "colour": [
+     194,
      214,
-     201,
-     174
+     198
     ],
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.72,
-   "item_mm": 32,
+   "frame_width_m": 0.631,
+   "lock_width": true,
    "seed": 22,
    "text_mode": "dark",
-   "exposure": 0.9,
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -348,10 +364,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -367,18 +383,18 @@
    "ground": {
     "type": "paper",
     "colour": [
-     30,
-     60,
-     96
+     100,
+     124,
+     164
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.8,
-   "item_mm": 35,
+   "frame_width_m": 0.502,
+   "lock_width": true,
    "seed": 23,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -386,10 +402,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -405,18 +421,18 @@
    "ground": {
     "type": "paper",
     "colour": [
-     27,
-     23,
-     20
+     194,
+     212,
+     224
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 1.0,
-   "item_mm": 45,
+   "frame_width_m": 0.783,
+   "lock_width": true,
    "seed": 24,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -424,10 +440,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -443,18 +459,18 @@
    "ground": {
     "type": "paper",
     "colour": [
-     112,
-     50,
-     78
+     208,
+     152,
+     144
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.34,
-   "item_mm": 14,
+   "frame_width_m": 0.281,
+   "lock_width": true,
    "seed": 25,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -462,10 +478,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -481,18 +497,18 @@
    "ground": {
     "type": "paper",
     "colour": [
-     44,
-     27,
-     72
+     150,
+     168,
+     134
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.66,
-   "item_mm": 30,
+   "frame_width_m": 0.518,
+   "lock_width": true,
    "seed": 26,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -500,10 +516,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -519,18 +535,18 @@
    "ground": {
     "type": "paper",
     "colour": [
-     16,
-     46,
-     28
+     240,
+     222,
+     170
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.46,
-   "item_mm": 20,
+   "frame_width_m": 0.376,
+   "lock_width": true,
    "seed": 27,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -538,10 +554,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -557,18 +573,18 @@
    "ground": {
     "type": "paper",
     "colour": [
-     24,
-     31,
-     70
+     122,
+     148,
+     170
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.56,
-   "item_mm": 25,
+   "frame_width_m": 0.438,
+   "lock_width": true,
    "seed": 28,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -576,10 +592,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -595,18 +611,18 @@
    "ground": {
     "type": "paper",
     "colour": [
-     40,
-     22,
-     8
+     220,
+     210,
+     228
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.8,
-   "item_mm": 35,
+   "frame_width_m": 0.65,
+   "lock_width": true,
    "seed": 29,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "window": [
      0.5,
@@ -614,10 +630,10 @@
      0.46,
      0.3
     ],
-    "layers": 2.4,
+    "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 9
+    "strays": 8
    }
   },
   {
@@ -633,29 +649,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     36,
-     38,
-     44
+     200,
+     130,
+     100
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.614,
-   "item_mm": 10,
-   "item_w_mm": 10,
-   "size_by": "width",
+   "frame_width_m": 1.049,
+   "lock_width": true,
    "seed": 40,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -671,29 +685,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     18,
-     76,
-     78
+     100,
+     148,
+     146
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.512,
-   "item_mm": 6,
-   "item_w_mm": 5,
-   "size_by": "width",
+   "frame_width_m": 0.624,
+   "lock_width": true,
    "seed": 41,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -709,29 +721,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     52,
-     17,
-     11
+     238,
+     228,
+     206
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 1.125,
-   "item_mm": 22,
-   "item_w_mm": 22,
-   "size_by": "width",
+   "frame_width_m": 1.293,
+   "lock_width": true,
    "seed": 42,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -747,29 +757,27 @@
    "ground": {
     "type": "paper",
     "colour": [
+     242,
      214,
-     203,
-     178
+     188
     ],
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.295,
-   "item_mm": 3,
-   "item_w_mm": 1.8,
-   "size_by": "width",
+   "frame_width_m": 0.34,
+   "lock_width": true,
    "seed": 43,
    "text_mode": "dark",
-   "exposure": 0.9,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -785,29 +793,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     203,
-     210,
-     190
+     238,
+     208,
+     200
     ],
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.921,
-   "item_mm": 35,
-   "item_w_mm": 18,
-   "size_by": "width",
+   "frame_width_m": 1.499,
+   "lock_width": true,
    "seed": 44,
    "text_mode": "dark",
-   "exposure": 0.9,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -823,29 +829,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     212,
-     180,
-     203
+     240,
+     222,
+     170
     ],
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.614,
-   "item_mm": 20,
-   "item_w_mm": 10,
-   "size_by": "width",
+   "frame_width_m": 0.741,
+   "lock_width": true,
    "seed": 45,
    "text_mode": "dark",
-   "exposure": 0.9,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -861,29 +865,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     36,
-     20,
-     18
+     194,
+     214,
+     198
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.46,
-   "item_mm": 7,
-   "item_w_mm": 4.5,
-   "size_by": "width",
+   "frame_width_m": 0.466,
+   "lock_width": true,
    "seed": 46,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -899,30 +901,29 @@
    "ground": {
     "type": "paper",
     "colour": [
-     14,
-     40,
-     30
+     220,
+     210,
+     228
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 1.535,
-   "item_mm": 40,
-   "item_w_mm": 30,
-   "size_by": "width",
+   "frame_width_m": 1.365,
+   "lock_width": true,
    "seed": 47,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
-   }
+    "strays": 0.01
+   },
+   "item_scale": 0.6
   },
   {
    "id": "b23_gancao",
@@ -937,29 +938,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     100,
-     30,
-     22
+     122,
+     148,
+     170
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.614,
-   "item_mm": 18,
-   "item_w_mm": 10,
-   "size_by": "width",
+   "frame_width_m": 0.989,
+   "lock_width": true,
    "seed": 48,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -975,29 +974,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     16,
-     40,
-     86
+     86,
+     134,
+     142
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.716,
-   "item_mm": 20,
-   "item_w_mm": 14,
-   "size_by": "width",
+   "frame_width_m": 1.076,
+   "lock_width": true,
    "seed": 49,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -1013,29 +1010,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     48,
-     66,
-     50
+     208,
+     224,
+     206
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.655,
-   "item_mm": 8,
-   "item_w_mm": 8,
-   "size_by": "width",
+   "frame_width_m": 0.632,
+   "lock_width": true,
    "seed": 50,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -1051,29 +1046,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     196,
-     204,
-     184
+     238,
+     228,
+     206
     ],
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.368,
-   "item_mm": 5,
-   "item_w_mm": 3,
-   "size_by": "width",
+   "frame_width_m": 0.358,
+   "lock_width": true,
    "seed": 51,
    "text_mode": "dark",
-   "exposure": 0.9,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -1089,29 +1082,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     198,
-     158,
-     60
+     194,
+     212,
+     224
     ],
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 2.558,
-   "item_mm": 50,
-   "item_w_mm": 50,
-   "size_by": "width",
+   "frame_width_m": 3.082,
+   "lock_width": true,
    "seed": 52,
    "text_mode": "dark",
-   "exposure": 0.5,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -1127,29 +1118,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     20,
-     25,
-     36
+     210,
+     216,
+     188
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 1.351,
-   "item_mm": 80,
-   "item_w_mm": 12,
-   "size_by": "length",
+   "frame_width_m": 1.787,
+   "lock_width": true,
    "seed": 53,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -1165,29 +1154,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     34,
-     50,
-     80
+     156,
+     130,
+     164
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.716,
-   "item_mm": 7,
-   "item_w_mm": 7,
-   "size_by": "width",
+   "frame_width_m": 0.646,
+   "lock_width": true,
    "seed": 54,
    "text_mode": "light",
-   "exposure": 0.0,
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -1203,29 +1190,27 @@
    "ground": {
     "type": "paper",
     "colour": [
-     24,
-     19,
-     15
+     234,
+     204,
+     146
     ],
     "fibres": 1.0,
-    "cloud": 0.08
+    "cloud": 0.05
    },
-   "frame_width_m": 0.829,
-   "item_mm": 45,
-   "item_w_mm": 15,
-   "size_by": "length",
+   "frame_width_m": 3.278,
+   "lock_width": true,
    "seed": 55,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
-     0.47
+     0.46
     ],
-    "height": 0.72,
+    "height": 0.74,
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
-    "strays": 0.012
+    "strays": 0.01
    }
   },
   {
@@ -1234,39 +1219,37 @@
    "end": 1248,
    "layout": "landing",
    "text": "药食同源",
-   "label": "outro cards (white, lower third)",
+   "label": "outro cards (dark ink, lower third)",
    "source": [
-    "k02_yiyiren"
+    "m02_gouqi"
    ],
    "ground": {
     "type": "paper",
     "colour": [
-     152,
-     36,
-     26
+     241,
+     236,
+     224
     ],
+    "fibres": 1.0,
+    "cloud": 0.035,
     "grid": {
      "type": "square",
-     "pitch_m": 0.025,
-     "line_m": 0.0007,
+     "pitch_m": 0.0281,
+     "line_m": 0.00065,
      "colour": [
-      214,
-      160,
-      84
+      150,
+      120,
+      96
      ],
-     "opacity": 0.55,
+     "opacity": 0.3,
      "major": 0
-    },
-    "fibres": 1.0,
-    "cloud": 0.07
+    }
    },
-   "frame_width_m": 1.0,
-   "item_mm": 6.0,
-   "item_w_mm": 5.0,
-   "size_by": "width",
+   "frame_width_m": 0.9,
+   "lock_width": true,
    "seed": 77,
-   "text_mode": "light",
-   "exposure": 0.0,
+   "text_mode": "dark",
+   "exposure": 1.0,
    "params": {
     "centre": [
      0.5,
@@ -1276,14 +1259,14 @@
     "font": "NotoSansCJKsc-Black.otf",
     "thin": 0.1,
     "tracking": 0.1,
-    "strays": 0.006
+    "strays": 0.004
    },
    "reveal": {
     "per_char_frames": 8,
     "order": "药食同源",
-    "empty_variant": "--empty"
+    "empty_variant": "--empty  ->  renders_b/b31_empty.png"
    },
-   "note": "title poured from white coix seeds on cinnabar-red paper with a pale gold grid; lower third clear for the white outro lines; render it twice (full + --empty) for the 2-D stop-motion reveal, one character per 8 frames"
+   "note": "the four characters poured from dried goji berries (vermilion on warm white paper with a faint ruled grid, like a red seal); block centre (0.50 W, 0.40 H), width 0.80 W; lower third clear; rendered twice (full + --empty, identical camera / light / paper) for the 2-D stop-motion reveal"
   }
  ]
 }
