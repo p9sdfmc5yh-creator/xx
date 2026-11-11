@@ -478,6 +478,95 @@ def pack_select(x, y, ang, a, b, rng, k=0.92, n_fixed=0):
     return np.sort(pr[state == 1])
 
 
+def relax_pack(c, signed, rng, iters=140, k=0.96, edge=0.9, tol=0.0, dir_fn=None, align_w=0.04, rho_end=0.62,
+               max_overlap=0.34, max_out=0.40, verbose=''):
+    """Dense oriented packing by soft-particle relaxation ("pour, then pat into shape").
+
+    c       candidate dict (x, y, ang, a, b, ...) thrown too densely into the region (they overlap).
+    signed  signed(x, y) -> (distance to the region outline in metres, + inside; unit gradient gx, gy
+            pointing inwards).  Discs are pushed back until they are inside by edge * radius - tol.
+    Every footprint is a chain of discs (spindle: the end discs are rho_end x the waist radius).
+    Overlapping discs push each other apart (force + torque), dir_fn(x, y) optionally keeps the long
+    axis along a direction field.  Afterwards the worst offenders are removed until nothing overlaps
+    by more than max_overlap x its half width or sticks out by more than max_out x its half width.
+    Returns the surviving candidates (jammed coverage ~0.8 instead of ~0.55 for random dart throwing)."""
+    x, y, ang = c['x'].astype(float).copy(), c['y'].astype(float).copy(), c['ang'].astype(float).copy()
+    a, b = c['a'].astype(float), c['b'].astype(float)
+    N = len(x)
+    if N == 0:
+        return c
+    asp = float((a / b).max())
+    nd = 1 if asp < 1.2 else int(np.clip(2 * math.ceil(asp) - 1, 3, 9))
+    ts = np.linspace(-1.0, 1.0, nd) if nd > 1 else np.zeros(1)
+    rj = b[:, None] * (1.0 - (1.0 - rho_end) * ts[None, :] ** 2)
+    off = ts[None, :] * (a[:, None] - rj)
+    amax = float(a.max())
+    pairs = np.zeros((0, 2), int)
+
+    def discs():
+        ca, sa = np.cos(ang), np.sin(ang)
+        return x[:, None] + off * ca[:, None], y[:, None] + off * sa[:, None], ca, sa
+
+    def contacts(px, py, pairs):
+        i, j = pairs[:, 0], pairs[:, 1]
+        dx = px[i][:, :, None] - px[j][:, None, :]
+        dy = py[i][:, :, None] - py[j][:, None, :]
+        dist = np.sqrt(dx * dx + dy * dy) + 1e-12
+        ov = np.clip((rj[i][:, :, None] + rj[j][:, None, :]) * k - dist, 0.0, None)
+        return i, j, dx, dy, dist, ov
+
+    for it in range(iters):
+        px, py, ca, sa = discs()
+        if it % 3 == 0:
+            pairs = cKDTree(np.stack([x, y], 1)).query_pairs(2.05 * amax, output_type='ndarray')
+        FX = np.zeros((N, nd))
+        FY = np.zeros((N, nd))
+        if len(pairs):
+            i, j, dx, dy, dist, ov = contacts(px, py, pairs)
+            fx, fy = 0.5 * ov * dx / dist, 0.5 * ov * dy / dist
+            np.add.at(FX, i, fx.sum(2))
+            np.add.at(FY, i, fy.sum(2))
+            np.add.at(FX, j, -fx.sum(1))
+            np.add.at(FY, j, -fy.sum(1))
+        sd, gx, gy = signed(px, py)
+        pen = np.clip(edge * rj - tol - sd, 0.0, None)
+        FX += pen * gx
+        FY += pen * gy
+        step = 0.55 * (1.0 - 0.6 * it / iters)
+        Fx, Fy = FX.sum(1), FY.sum(1)
+        mag = np.hypot(Fx, Fy) + 1e-12
+        lim = np.minimum(1.0, 0.45 * b / (step * mag))
+        x += step * Fx * lim
+        y += step * Fy * lim
+        if nd > 1:
+            tq = (off * ca[:, None] * FY - off * sa[:, None] * FX).sum(1) / (0.5 * a * a)
+            if dir_fn is not None and align_w > 0:
+                tq += align_w * np.sin(2.0 * (dir_fn(x, y) - ang))
+            ang += np.clip(step * tq, -0.10, 0.10)
+    # ---- remove the worst offenders
+    alive = np.ones(N, bool)
+    px, py, ca, sa = discs()
+    sd, gx, gy = signed(px, py)
+    out = (np.clip(edge * rj - tol - sd, 0.0, None) / b[:, None]).max(1)
+    alive &= out <= max_out
+    pairs = cKDTree(np.stack([x, y], 1)).query_pairs(2.05 * amax, output_type='ndarray')
+    if len(pairs):
+        i, j, dx, dy, dist, ov = contacts(px, py, pairs)
+        o = ov.reshape(len(i), -1).max(1) / np.minimum(b[i], b[j])
+        m = o > max_overlap
+        i, j, o = i[m], j[m], o[m]
+        for q in np.argsort(-o):                                    # worst pair first: drop the more crowded one
+            if alive[i[q]] and alive[j[q]]:
+                ci, cj = np.sum((i == i[q]) | (j == i[q])), np.sum((i == j[q]) | (j == j[q]))
+                alive[i[q] if ci >= cj else j[q]] = False
+    res = {q: v[alive] for q, v in c.items()}
+    res['x'], res['y'], res['ang'] = x[alive], y[alive], ang[alive]
+    if verbose:
+        cov = float(np.sum(math.pi * res['a'] * res['b']))
+        print('[relax] %s: %d thrown, %d kept (%d discs each), footprint area %.0f cm2' % (verbose, N, int(alive.sum()), nd, cov * 1e4))
+    return res
+
+
 def blue_noise(pts, rad, rng):
     """Variable-radius blue noise (discs): indices of the kept points."""
     pts = np.asarray(pts, float)
@@ -569,11 +658,29 @@ def _scatter_passes(extent, sets, mix, dens_fns, rng, k=(0.94, 0.88, 0.85), over
     return Placement.cat(parts)
 
 
+def _patch_assign(sets, extent, wavelength, rng, weights=None):
+    """assign(x, y) -> set index: organic patches (one smooth random field per ingredient, the largest
+    wins) so that a mixed scatter reads as groups of each ingredient that blend at their borders."""
+    n = len(sets)
+    if n == 1:
+        return lambda x, y: np.zeros(len(x), int)
+    w, h = 256, int(256 * (extent[3] - extent[2]) / (extent[1] - extent[0])) + 1
+    cell = wavelength / (extent[1] - extent[0]) * w
+    wts = np.ones(n) if weights is None else np.asarray(weights, float)
+    fields = [Field2(fbm2(h, w, cell, rng, 2, 0.4) / 0.6 + 0.35 * math.log(max(wts[i], 1e-3)), extent) for i in range(n)]
+
+    def assign(x, y):
+        sc = np.stack([f(x, y) for f in fields], 0) + rng.normal(0, 0.10, (n, len(x)))
+        return np.argmax(sc, 0)
+    return assign
+
+
 def layout_wreath(frame, sets, P, rng):
     """Items scattered densely along the frame edges (cropped by the frame), thinning towards a clear
     rounded window.  P keys (all optional): window [u, v, w, h] (frame fractions, default
     [0.50, 0.42, 0.46, 0.30]), layers (1-3), reach (0-1: how far the dense band reaches towards the
-    window), rough (irregularity of the inner boundary), strays (count), mix (per source weight)."""
+    window), rough (irregularity of the inner boundary), strays (count), mix ('patches' | 'random' |
+    list of per-source weights)."""
     wu, wv, ww, wh = P.get('window', [0.50, 0.42, 0.46, 0.30])
     layers = float(P.get('layers', 2.4))
     reach = float(P.get('reach', 0.55))
@@ -597,30 +704,46 @@ def layout_wreath(frame, sets, P, rng):
     s = (f - 1.0) / np.maximum(f * tedge - 1.0, 1e-6)
     s = np.where(tedge <= 1.0, 1.0 + (1.0 / np.maximum(tedge, 1e-6) - 1.0), s)   # outside the frame: > 1
     s = np.clip(s, -1.0, 2.0)
-    # distance (m) from the window outline, used for the hard "keep clear" test
     win = f <= 1.0
-    dwin = ndi.distance_transform_edt(~win) * px
+    dwin = ndi.distance_transform_edt(~win) * px                    # metres from the window outline
     nz = fbm2(ny, nx, 0.16 * frame.W / px, rng, octaves=4, gain=0.55) / 0.6
     s2 = s + rough * nz * np.clip(1.6 - s, 0.3, 1.0)
     e0 = 1.0 - reach                                                # s where the ground layer becomes complete
-    d0 = C.smoothstep(e0 - 0.42, e0, s2) ** 1.6
-    d1 = C.smoothstep(e0 + 0.02, min(e0 + 0.40, 1.0), s2) * np.clip(layers - 1.0, 0, 1)
-    d2 = C.smoothstep(e0 + 0.30, 1.05, s2) * np.clip(layers - 2.0, 0, 1)
+    d0 = C.smoothstep(e0 - 0.40, e0, s2) ** 2.0
+    d1 = C.smoothstep(e0 + 0.05, min(e0 + 0.42, 1.0), s2) ** 1.5 * np.clip(layers - 1.0, 0, 1)
+    d2 = C.smoothstep(e0 + 0.32, 1.05, s2) ** 1.5 * np.clip(layers - 2.0, 0, 1)
     F0, F1, F2, FD = Field2(d0, ext), Field2(d1, ext), Field2(d2, ext), Field2(dwin, ext)
-    Smax = max(float(s.a.max()) for s in sets)
+    clear = float(P.get('clear_m', 0.012 * frame.H))
 
-    def keep(x, y, r):
-        return FD(x, y) > 0.9 * Smax + 0.012 * frame.H              # nothing may reach into the text window
+    def keep(x, y, a):
+        return FD(x, y) > 0.95 * a + clear                          # nothing may reach into the text window
 
-    mix = P.get('mix', [1.0] * len(sets))
+    mix = P.get('mix', 'patches')
+    assign = None
+    if isinstance(mix, str):
+        # equal AREA share per ingredient: big items must not swamp small ones
+        share = np.array([1.0 / (s_.L * s_.Wd) for s_ in sets])
+        if mix == 'patches' and len(sets) > 1:
+            assign = _patch_assign(sets, ext, float(P.get('patch', 0.22)) * frame.W, rng)
+        mix = share
     fns = [F0, F1, F2][:max(1, int(math.ceil(layers)))]
-    pl = _scatter_passes(ext, sets, mix, fns, rng, keep=keep)
+    pl = _scatter_passes(ext, sets, mix, fns, rng, keep=keep, assign=assign)
     # a few single strays between the dense band and the window
     if n_stray > 0:
-        band = Field2(((s2 > 0.02) & (s2 < e0 - 0.30) & (s <= 1.0)).astype(np.float32) * 0.5, ext)
-        st = _scatter_passes(ext, sets, mix, [band], rng, spacing=(7.0,), oversample=1.0, keep=keep)
-        if len(st) > n_stray:
-            st = st.take(rng.permutation(len(st))[:n_stray])
+        band = Field2(((s2 > 0.03) & (s2 < e0 - 0.22) & (s <= 1.0)).astype(np.float32), ext)
+        xs = rng.uniform(ext[0], ext[1], 4000)
+        ys = rng.uniform(ext[2], ext[3], 4000)
+        ok = band(xs, ys) > 0.5
+        c = _candidates(sets, mix, xs[ok], ys[ok], rng, assign=assign)
+        kk = keep(c['x'], c['y'], c['a'])
+        c = {q: v[kk] for q, v in c.items()}
+        sel = blue_noise(np.stack([c['x'], c['y']], 1), 2.6 * Lmax, rng)[:n_stray]
+        if len(pl):                                                 # not on top of the scatter
+            d, _ = cKDTree(np.stack([pl.x, pl.y], 1)).query(np.stack([c['x'][sel], c['y'][sel]], 1))
+            sel = sel[d > 1.1 * Lmax]
+        c = {q: v[sel] for q, v in c.items()}
+        c['ang'] = rng.uniform(0, 2 * math.pi, len(sel))
+        st = _to_placement(c, sets, 0)
         st.stray[:] = True
         pl = Placement.cat([pl, st])
     info = dict(window=[wu, wv, ww, wh], extent=list(ext))
@@ -670,14 +793,31 @@ class _MaskPatch(object):
         G.text_mask = G._ysty_text_mask
 
 
-def layout_glyph(frame, sets, P, rng, text, seed=0):
-    """Characters poured from the ingredient.  Uses glyph_layout.glyph_layout for the stroke fill
-    (one call per pouring pass so that upper layers are inset -> a mound, not a slab), then fits
-    elongated items into the strokes and hands everything to settle().
+def _stroke_direction(mask, sw):
+    """Local stroke direction (radians, image coordinates: x right, y DOWN) from the structure tensor
+    of the softened mask - the direction along which the mask changes least."""
+    sm = ndi.gaussian_filter(mask.astype(np.float32), 0.30 * sw)
+    gy, gx = np.gradient(sm)
+    sig = 0.55 * sw
+    jxx, jyy, jxy = ndi.gaussian_filter(gx * gx, sig), ndi.gaussian_filter(gy * gy, sig), ndi.gaussian_filter(gx * gy, sig)
+    return 0.5 * np.arctan2(2 * jxy, jxx - jyy) + math.pi / 2
 
-    P keys: centre [u, v] (default [0.50, 0.47]), height (glyph block height / frame height, 0.72) or
-    width (block width / frame width), font, tracking, thin (stroke erosion, fraction of stroke width),
-    passes (list of dicts: inset (x item half-width), density), align (0-1 | 'auto'), strays (fraction)."""
+
+def layout_glyph(frame, sets, P, rng, text, seed=0):
+    """Characters poured from the ingredient.
+
+    Two stroke-fill engines share the same rasterised (optionally thinned) glyph mask:
+      'glyph_layout'  glyph_layout.glyph_layout() once per pouring pass (upper passes inset -> a mound,
+                      not a slab).  Disc footprints: right for seeds / berries / anything roundish.
+      'packed'        oriented packing (pack_pass): elongated items lie ALONG the strokes, side by
+                      side, and every footprint is tested against the outline - the only way to get
+                      crisp strokes out of spindle-shaped things like goji or cinnamon.
+    engine 'auto' = 'packed' when the item aspect is > 1.3.  Both end in settle().
+
+    P keys: centre [u, v] (default [0.50, 0.47]); height (block height / frame height, 0.72) or width
+    (block width / frame width); font; tracking; thin (stroke erosion, fraction of the stroke width);
+    engine; passes (list of dicts: inset (item widths), k (overlap factor), fill (0-1)); align
+    (0-1 | 'auto'); edge_tol (item widths an item may stick out); strays (fraction of the count)."""
     S = sets[0]
     font = P.get('font', G.DEFAULT_FONT)
     tracking = float(P.get('tracking', 0.06))
@@ -686,50 +826,25 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
     mask = _glyph_mask(text, font, tracking, thin)
     mh, mw = mask.shape
     if 'width' in P:
-        block_w = float(P['width']) * frame.W
-        px_per_m = mw / block_w
+        px_per_m = mw / (float(P['width']) * frame.W)
     else:
-        block_h = float(P.get('height', 0.72)) * frame.H
-        px_per_m = mh / block_h
+        px_per_m = mh / (float(P.get('height', 0.72)) * frame.H)
     sw = stroke_width_robust(mask)
-    item_r = S.r_eff
-    stroke_items = G.stroke_width_px(mask) / (2.0 * item_r * px_per_m)      # what glyph_layout needs to reproduce px_per_m
-    stroke_w_items = sw / px_per_m / S.Wd
+    engine = P.get('engine', 'auto')
+    if engine == 'auto':
+        engine = 'packed' if S.aspect > 1.3 else 'glyph_layout'
     align = P.get('align', 'auto')
     if align == 'auto':
-        align = float(np.clip((S.aspect - 1.15) / 1.0, 0.0, 0.9))
-    b_over_r = 0.5 * S.Wd / item_r
-    passes = P.get('passes') or [dict(inset=1.0, density=1.0), dict(inset=1.9, density=1.0), dict(inset=3.0, density=1.0)]
+        align = float(np.clip((S.aspect - 1.1) / 0.9, 0.0, 0.92))
+    align = float(align)
     stray_frac = float(P.get('strays', 0.012))
     cx, cy = frame.xy(cu, cv_)
-    parts = []
-    with _MaskPatch(mask):
-        for p, ps in enumerate(passes):
-            lay = G.glyph_layout(text, item_r=item_r, stroke_items=stroke_items, item_h=0.5 * S.T, shape='flat',
-                                 passes=1, density=float(ps.get('density', 1.0)),
-                                 edge_inset=float(ps.get('inset', 1.0)) * b_over_r,
-                                 size_jitter=0.07, stray_frac=stray_frac if p == 0 else 0.0,
-                                 stray_reach=float(P.get('stray_reach', 5.0)), align=float(align), font_file=font,
-                                 tracking=tracking, seed=seed * 31 + p)
-            n = len(lay['z'])
-            pl = Placement(n)
-            pl.x, pl.y = lay['xy'][:, 0] + cx, lay['xy'][:, 1] + cy
-            pl.var, _ = _pick_variants(S, n, rng)
-            pl.scale = np.clip(lay['scale'], 0.84, 1.16)
-            pl.yaw = lay['yaw'] - S.theta[pl.var]                    # glyph_layout's yaw = direction of the long axis
-            pl.order[:] = p
-            pl.stray = lay['stray'].copy()
-            keep_frac = float(ps.get('keep', 1.0))
-            if keep_frac < 1.0:
-                pl = pl.take(rng.random(n) < keep_frac)
-            parts.append(pl)
-    pl = Placement.cat(parts)
-
-    # world <-> mask pixel mapping (mask row 0 = top)
-    def to_px(x, y):
-        return (np.asarray(x) - cx) * px_per_m + mw / 2.0, -(np.asarray(y) - cy) * px_per_m + mh / 2.0
-
+    tol_px = float(P.get('edge_tol', 0.22)) * S.Wd * px_per_m
     dt_out = ndi.distance_transform_edt(~mask)                      # px outside the strokes
+    dt_in = ndi.distance_transform_edt(mask)
+
+    def to_px(x, y):
+        return (np.asarray(x, float) - cx) * px_per_m + mw / 2.0, -(np.asarray(y, float) - cy) * px_per_m + mh / 2.0
 
     def outside_px(x, y):
         fx, fy = to_px(x, y)
@@ -738,41 +853,121 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
         v[ok] = dt_out[np.asarray(fy)[ok].astype(int), np.asarray(fx)[ok].astype(int)]
         return v
 
-    # ---- fit elongated items into the strokes: the long axis must not stick out of the outline
-    if S.aspect > 1.25:
-        tol = float(P.get('edge_tol', 0.30)) * S.Wd * px_per_m
-        ts = np.array([-0.92, -0.5, 0.5, 0.92])
-        nfix = ndrop = 0
-        keep = np.ones(len(pl), bool)
-        angs = np.linspace(0, math.pi, 16, endpoint=False)
-        for i in np.where(~pl.stray)[0]:
-            a = S.a[pl.var[i]] * pl.scale[i]
-            ang0 = pl.yaw[i] + S.theta[pl.var[i]]
+    parts = []
+    if engine == 'glyph_layout':
+        passes = P.get('passes') or [dict(inset=0.55), dict(inset=1.5), dict(inset=2.6, fill=0.7)]
+        item_r = S.r_eff
+        stroke_items = G.stroke_width_px(mask) / (2.0 * item_r * px_per_m)      # reproduces px_per_m inside the tool
+        with _MaskPatch(mask):
+            for p, ps in enumerate(passes):
+                lay = G.glyph_layout(text, item_r=item_r, stroke_items=stroke_items, item_h=0.5 * S.T, shape='sphere',
+                                     passes=1, density=1.0, edge_inset=float(ps.get('inset', 0.55)) * S.Wd / (2 * item_r),
+                                     size_jitter=0.07, stray_frac=0.0, align=align, font_file=font, tracking=tracking,
+                                     seed=seed * 31 + p)
+                n = len(lay['z'])
+                pl = Placement(n)
+                pl.x, pl.y = lay['xy'][:, 0] + cx, lay['xy'][:, 1] + cy
+                pl.var, _ = _pick_variants(S, n, rng)
+                pl.scale = np.clip(lay['scale'], 0.84, 1.16)
+                pl.yaw = lay['yaw'] - S.theta[pl.var]                # the tool's yaw = direction of the long axis
+                pl.order[:] = p
+                if float(ps.get('fill', 1.0)) < 1.0:
+                    pl = pl.take(rng.random(n) < float(ps['fill']))
+                parts.append(pl)
+    else:
+        passes = P.get('passes') or [dict(mode='relax', pack=0.86), dict(mode='rsa', inset=0.8, k=0.90, fill=0.45)]
+        sdir = _stroke_direction(mask, sw)
+        sd_img = (dt_in - dt_out).astype(np.float32)                # signed distance (px), + inside the stroke
+        sgy, sgx = np.gradient(ndi.gaussian_filter(sd_img, 1.5))
+        gn = np.hypot(sgx, sgy) + 1e-9
+        sgx, sgy = sgx / gn, sgy / gn
 
-            def worst(ang):
-                return float(outside_px(pl.x[i] + ts * a * math.cos(ang), pl.y[i] + ts * a * math.sin(ang)).max())
+        def pix(x, y):
+            fx, fy = to_px(x, y)
+            return np.clip(fy.astype(int), 0, mh - 1), np.clip(fx.astype(int), 0, mw - 1), fx, fy
 
-            if worst(ang0) <= tol:
+        def signed(x, y):
+            iy, ix, fx, fy = pix(x, y)
+            d = sd_img[iy, ix] / px_per_m
+            far = np.maximum(np.maximum(-fx, fx - mw), np.maximum(-fy, fy - mh))
+            d = np.where(far > 0, d - far / px_per_m, d)
+            return d, sgx[iy, ix], -sgy[iy, ix]                     # image y is down
+
+        def dir_fn(x, y):
+            iy, ix, _, _ = pix(x, y)
+            return -sdir[iy, ix]
+
+        ts_l = np.array([-0.90, -0.45, 0.0, 0.45, 0.90])
+        for p, ps in enumerate(passes):
+            inset = float(ps.get('inset', 0.0))
+            ys_, xs_ = np.where(dt_in >= max((0.40 + inset) * S.Wd * px_per_m - tol_px, 0.5))
+            if len(ys_) == 0:
                 continue
-            d = np.abs(((angs - ang0 + math.pi / 2) % math.pi) - math.pi / 2)
-            done = False
-            for j in np.argsort(d):
-                if worst(angs[j]) <= tol:
-                    pl.yaw[i] = angs[j] + (math.pi if rng.random() < 0.5 else 0.0) - S.theta[pl.var[i]]
-                    nfix += 1
-                    done = True
-                    break
-            if not done:
-                w = [worst(a_) for a_ in angs]
-                j = int(np.argmin(w))
-                if w[j] <= 2.2 * tol:
-                    pl.yaw[i] = angs[j] - S.theta[pl.var[i]]
-                    nfix += 1
-                else:
-                    keep[i] = False
-                    ndrop += 1
-        pl = pl.take(keep)
-        print('[glyph] fitted %d items into the strokes, dropped %d' % (nfix, ndrop))
+            fill = float(ps.get('fill', 1.0))
+            foot = math.pi * S.L * S.Wd / 4.0
+
+            def throw(n, ys_=ys_, xs_=xs_):
+                j = rng.integers(0, len(ys_), n)
+                fx, fy = xs_[j] + rng.random(n), ys_[j] + rng.random(n)
+                x = (fx - mw / 2.0) / px_per_m + cx
+                y = -(fy - mh / 2.0) / px_per_m + cy
+                c = _candidates(sets, [1.0], x, y, rng)
+                sd_ = -sdir[np.clip(fy.astype(int), 0, mh - 1), np.clip(fx.astype(int), 0, mw - 1)]   # world angle (y up)
+                c['ang'] = np.where(rng.random(n) < align, sd_ + rng.normal(0, 0.16, n), rng.uniform(0, math.pi, n))
+                c['sd'] = sd_
+                return c
+
+            if ps.get('mode', 'rsa') == 'relax':
+                area = float(mask.sum()) / px_per_m ** 2
+                c = throw(int(float(ps.get('pack', 0.86)) * area / foot))
+                c = relax_pack(c, signed, rng, iters=int(ps.get('iters', 140)), tol=tol_px / px_per_m, dir_fn=dir_fn,
+                               align_w=0.05 * align, verbose='pass %d' % p)
+                c['ang'] = c['ang'] + np.where(rng.random(len(c['x'])) < 0.5, math.pi, 0.0)
+            else:
+                def sample(n, throw=throw, inset=inset):
+                    c = throw(n)
+                    ok = np.zeros(n, bool)
+                    ang = c['ang']
+                    for attempt in range(2):                         # 2nd try: exactly along the stroke
+                        todo = ~ok
+                        if attempt == 1:
+                            ang = np.where(todo, c['sd'], ang)
+                        ca, sa = np.cos(ang[todo]), np.sin(ang[todo])
+                        a_, b_ = c['a'][todo], c['b'][todo]
+                        w = np.zeros(int(todo.sum()))
+                        for t in ts_l:                               # points along the long axis ...
+                            w = np.maximum(w, outside_px(c['x'][todo] + t * a_ * ca, c['y'][todo] + t * a_ * sa))
+                        for t in (-0.85, 0.85):                      # ... and across the waist
+                            w = np.maximum(w, outside_px(c['x'][todo] - t * b_ * sa, c['y'][todo] + t * b_ * ca))
+                        idx = np.flatnonzero(todo)
+                        ok[idx[w <= tol_px]] = True
+                    c['ang'] = ang + np.where(rng.random(n) < 0.5, math.pi, 0.0)
+                    return {q: v[ok] for q, v in c.items()}
+                n_cap = len(ys_) / px_per_m ** 2 / foot
+                c = pack_pass(sample, int(3.0 * n_cap) + 50, rng, k=float(ps.get('k', 0.9)), rounds=int(ps.get('rounds', 4)))
+            pl = _to_placement(c, sets, p)
+            if fill < 1.0 and len(pl):
+                pl = pl.take(rng.random(len(pl)) < fill)
+            parts.append(pl)
+    pl = Placement.cat(parts)
+
+    # ---- a few loose items around the characters (never inside the counters)
+    n_stray = int(round(stray_frac * len(pl)))
+    if n_stray > 0:
+        closed = ndi.binary_closing(np.pad(mask, 40), iterations=max(2, int(1.2 * sw)))[40:-40, 40:-40]
+        dist_c = ndi.distance_transform_edt(~closed) / px_per_m
+        yy, xx = np.where((dist_c > 0.9 * S.L) & (dist_c < float(P.get('stray_reach', 4.0)) * S.L))
+        if len(yy):
+            j = rng.integers(0, len(yy), 40 * n_stray)
+            x = (xx[j] + 0.5 - mw / 2.0) / px_per_m + cx
+            y = -(yy[j] + 0.5 - mh / 2.0) / px_per_m + cy
+            c = _candidates(sets, [1.0], x, y, rng)
+            sel = blue_noise(np.stack([x, y], 1), 1.6 * S.L, rng)[:n_stray]
+            c = {q: v[sel] for q, v in c.items()}
+            c['ang'] = rng.uniform(0, 2 * math.pi, len(sel))
+            st = _to_placement(c, sets, 0)
+            st.stray[:] = True
+            pl = Placement.cat([pl, st])
 
     def allowed(x, y):
         return float(outside_px(np.array([x]), np.array([y]))[0]) <= 0.0
@@ -789,28 +984,22 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
     boxes = []
     for (c0, c1) in runs:
         rows = np.flatnonzero(mask[:, c0:c1].any(1))
-        x0 = (c0 - mw / 2.0) / px_per_m + cx
-        x1 = (c1 - mw / 2.0) / px_per_m + cx
-        y1 = -(rows.min() - mh / 2.0) / px_per_m + cy
-        y0 = -(rows.max() - mh / 2.0) / px_per_m + cy
-        u0, v0 = frame.uv(x0, y1)
-        u1, v1 = frame.uv(x1, y0)
+        u0, v0 = frame.uv((c0 - mw / 2.0) / px_per_m + cx, -(rows.min() - mh / 2.0) / px_per_m + cy)
+        u1, v1 = frame.uv((c1 - mw / 2.0) / px_per_m + cx, -(rows.max() - mh / 2.0) / px_per_m + cy)
         boxes.append([round(float(u0), 5), round(float(v0), 5), round(float(u1), 5), round(float(v1), 5)])
     ext = frame.extent(1.2 * S.L)
-    info = dict(text=text, font=font, thin=thin, px_per_m=px_per_m, stroke_width_m=sw / px_per_m,
-                stroke_items_wide=stroke_w_items, block_m=[mw / px_per_m, mh / px_per_m], char_boxes=boxes,
-                align=float(align))
-    print('[glyph] %r: block %.0f x %.0f mm, stroke %.1f mm = %.1f item widths (%.1f footprint diameters), '
-          'align %.2f' % (text, mw / px_per_m * 1e3, mh / px_per_m * 1e3, sw / px_per_m * 1e3, stroke_w_items,
-                          sw / px_per_m / (2.0 * item_r), float(align)))
-    return pl, dict(extent=ext, allowed=allowed, candidates=int(P.get('candidates', 3)), info=info,
-                    mask=(mask, px_per_m, cx, cy))
+    info = dict(text=text, font=font, thin=thin, engine=engine, px_per_m=px_per_m, stroke_width_m=sw / px_per_m,
+                stroke_items_wide=sw / px_per_m / S.Wd, block_m=[mw / px_per_m, mh / px_per_m], char_boxes=boxes, align=align)
+    print('[glyph] %r (%s): block %.0f x %.0f mm, stroke %.1f mm = %.1f item widths / %.1f item lengths, align %.2f, %d items' % (
+        text, engine, mw / px_per_m * 1e3, mh / px_per_m * 1e3, sw / px_per_m * 1e3, sw / px_per_m / S.Wd,
+        sw / px_per_m / S.L, align, len(pl)))
+    return pl, dict(extent=ext, allowed=allowed, candidates=int(P.get('candidates', 4)), info=info)
 
 
 def layout_taiji(frame, sets, P, rng):
     """Taiji disc: sets[0] = yin (dark, e.g. black sesame), sets[1] = yang (light, e.g. coix seed).
     P: centre [u, v] (0.50, 0.72), diameter (fraction of frame height, 0.50), dot (radius / R, 0.17),
-    layers, rotate_deg (0 = classic: light on the left rising, head up)."""
+    layers, rotate_deg (0 = classic: light on the left, its head at the top)."""
     cu, cv_ = P.get('centre', [0.50, 0.72])
     R = 0.5 * float(P.get('diameter', 0.50)) * frame.H
     dot = float(P.get('dot', 0.17)) * R
@@ -822,8 +1011,7 @@ def layout_taiji(frame, sets, P, rng):
     X, Y = np.meshgrid(np.linspace(ext[0], ext[1], 900), np.linspace(ext[3], ext[2], 900))
     xr = (X - cx) * math.cos(rotd) + (Y - cy) * math.sin(rotd)
     yr = -(X - cx) * math.sin(rotd) + (Y - cy) * math.cos(rotd)
-    rr = np.hypot(xr, yr)
-    disc = rr <= R
+    disc = np.hypot(xr, yr) <= R
     up = np.hypot(xr, yr - R / 2) <= R / 2
     dn = np.hypot(xr, yr + R / 2) <= R / 2
     yang = disc & (((xr < 0) & ~dn) | up)                           # light half: left side, head at the top
@@ -837,17 +1025,13 @@ def layout_taiji(frame, sets, P, rng):
     for si, m in ((0, yin), (1, yang)):
         S = sets[si]
         dt = ndi.distance_transform_edt(m) * px
-        fns = []
-        for p in range(layers):
-            inset = (0.55 + 1.1 * p) * 0.5 * S.Wd
-            fns.append(Field2((dt > inset).astype(np.float32), ext))
-        pl = _scatter_passes(ext, [S], [1.0], fns, rng, spacing=(0.98, 0.92, 0.9), oversample=6.0)
+        fns = [Field2((dt > (0.45 + 0.95 * p) * S.Wd * 0.5 + 0.9 * p * S.Wd).astype(np.float32), ext) for p in range(layers)]
+        pl = _scatter_passes(ext, [S], [1.0], fns, rng, k=(0.94, 0.90, 0.88), oversample=3.0, rounds=4)
         pl.iset[:] = si
         pl.group[:] = si
         parts.append(pl)
     pl = Placement.cat(parts)
-    my, mg = Field2(yin.astype(np.float32), ext), Field2(yang.astype(np.float32), ext)
-    return pl, dict(extent=frame.extent(0.02), allowed=None, candidates=1, info=info, zone=(my, mg))
+    return pl, dict(extent=frame.extent(0.02), allowed=None, candidates=1, info=info)
 
 
 def _dish_profile(R, kind):
@@ -879,7 +1063,7 @@ def _smooth_profile(pts, n=160):
 def layout_dishes(frame, sets, P, rng):
     """N small round dishes in a row, each heaped with one ingredient (sets[i] -> dish i).
     P: centre_v (0.72), dish (diameter / frame width, 0.150), pitch (/ frame width, 0.180),
-    kinds (list 'wood' | 'celadon'), heap (mound height / dish radius, 0.30), fill (0.82 of the radius)."""
+    kinds (list 'wood' | 'celadon'), heap (mound height / dish radius, 0.30), fill (0.80 of the radius)."""
     n = len(sets)
     cv_ = float(P.get('centre_v', 0.72))
     Rd = 0.5 * float(P.get('dish', 0.150)) * frame.W
@@ -888,13 +1072,12 @@ def layout_dishes(frame, sets, P, rng):
     heap = float(P.get('heap', 0.30))
     fill = float(P.get('fill', 0.80))
     _, cy = frame.xy(0.5, cv_)
-    centres = [((i - (n - 1) / 2.0) * pitch, cy) for i in range(n)]
+    centres = [((i - (n - 1) / 2.0) * pitch, float(cy)) for i in range(n)]
     profs = [_smooth_profile(_dish_profile(Rd, kinds[i % len(kinds)])) for i in range(n)]
     inner = []
     for pr in profs:                                                # inside surface: from the rim top inwards
         j = int(np.argmax(pr[:, 1]))
-        ins = pr[j:][::-1]                                          # r ascending from the centre to the rim
-        inner.append(ins)
+        inner.append(pr[j:][::-1])                                  # r ascending from the centre to the rim
 
     def base(X, Y):
         Hh = np.zeros_like(X, dtype=np.float32)
@@ -909,12 +1092,12 @@ def layout_dishes(frame, sets, P, rng):
         dx, dy = centres[i]
         ext = (dx - Rd, dx + Rd, dy - Rd, dy + Rd)
         Rf = fill * Rd
-        nl = int(np.clip(round(heap * Rd / max(S.T * 0.75, 1e-6)), 2, 14))       # layers needed for the mound
+        nl = int(np.clip(round(heap * Rd / max(S.T * 0.72, 1e-6)), 2, 16))       # layers needed for the mound
         fns = []
         for p in range(nl):
-            rp = Rf * math.sqrt(max(1.0 - p / float(nl), 0.02))                 # paraboloid mound
+            rp = Rf * math.sqrt(max(1.0 - p / float(nl), 0.03))                 # paraboloid mound
             fns.append((lambda x, y, rp=rp, dx=dx, dy=dy: (np.hypot(x - dx, y - dy) < rp).astype(float)))
-        pl = _scatter_passes(ext, [S], [1.0], fns, rng, spacing=(0.97, 0.9, 0.88), oversample=6.0)
+        pl = _scatter_passes(ext, [S], [1.0], fns, rng, k=(0.94, 0.9, 0.88), oversample=3.0, rounds=3)
         pl.iset[:] = i
         pl.group[:] = i
         parts.append(pl)
@@ -1150,7 +1333,7 @@ def build_ground(frame, G_, exposure, seed, tex_px, margin, tag):
     pos = m.position()
     if kind == 'paper':
         lum = 0.2126 * col[0] + 0.7152 * col[1] + 0.0722 * col[2]
-        pale = tuple(float(min(0.95, c * 1.0 + (0.55 * lum + 0.035) + 0.25 * (lum - c))) for c in col)   # undyed strands
+        pale = tuple(float(min(0.95, (c + 0.15 * (lum - c)) * (1.0 + 0.55 * (1.0 - lum) ** 2) + 0.004)) for c in col)   # strands take less dye
         fleck = tuple(float(c * 0.22 + 0.006) for c in (col[0] * 1.2, col[1] * 0.9, col[2] * 0.7))
         cl = float(G_.get('cloud', 0.07))
         base = m.hsv(col, 0.5, m.map_range(cB, 0, 1, 1.0 + 0.5 * cl, 1.0 - 0.5 * cl), m.map_range(cB, 0, 1, 1 - cl, 1 + cl))

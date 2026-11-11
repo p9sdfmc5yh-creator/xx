@@ -20,7 +20,7 @@ from _botanicals import C, rot, merge_parts, hair_tubes, settle, finish         
 
 SHOT = 'k05_bohe'
 R_DOME = 0.19             # a 48 mm leaf is ~730 px (1920 frame) at the horizon: 2-3 leaves across
-SEED = 1
+SEED = 2
 N_UP, N_FLIP = 6, 1
 SKY_TINT = (0.93, 1.0, 0.90)   # pale green-white sky of the shot
 
@@ -248,11 +248,12 @@ def main():
     weights = [1.0] * N_UP + [0.35] * N_FLIP
 
     sol = C.planet_solve(R_DOME)
-    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=4.2, coverage=0.80, weights=weights, seed=args.seed,
-                       scale_range=(0.84, 1.12), tilt_deg=6, roll_deg=7, candidates=8, sink=0.10, rough=0.002)
+    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=3.6, coverage=0.80, weights=weights, seed=args.seed,
+                       scale_range=(0.84, 1.12), tilt_deg=4.5, roll_deg=6, candidates=8, sink=0.10, rough=0.002,
+                       max_slope_deg=13)        # leaves stay near-tangent: a shingled dome, no see-through pile
     n = len(heap)
     C.instance_on_points('heap', variants, heap, attrs={'tone': np.clip(rng.beta(1.8, 2.2, n), 0, 1)})
-    C.dome_base(R_DOME - 0.002, C.simple_material('base', (0.006, 0.022, 0.004), 0.9))
+    C.dome_base(R_DOME - 0.0004, C.simple_material('base', (0.006, 0.022, 0.004), 0.9))
 
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.56, edge=0.685, top_margin=0.03)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
