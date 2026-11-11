@@ -24,7 +24,7 @@ import common as C                                                              
 SHOT = 's03_millet'
 NAME = '小米（五谷）'
 FINAL_RES = (4032, 2268)      # 64-frame shot: film frame + 5 % for the push-in
-R_DOME = 0.105                # bare dome radius -> a grain is ~44 px at the horizon of a 1920 frame (x2.1 at 4K)
+R_DOME = 0.19                 # bare dome radius -> a grain is ~44 px at the horizon of a 1920 frame (x2.1 at 4K)
 N_WHOLE, N_BROKEN, N_HULL = 10, 2, 2
 PI = math.pi
 

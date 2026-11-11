@@ -57,11 +57,42 @@ LIGHT_E = 2.0          # scene-linear value of a white diffuse card at the frame
 def albedo_for_display(srgb255, exposure=0.0):
     """Albedo (linear RGB) that renders as the given DISPLAY colour (sRGB 0-255) on a flat matte
     ground under the flat-lay rig with AgX Punchy at the given exposure (stops).  Per-channel
-    inversion of the measured tone curve (good to a few % for the muted paper colours used here)."""
+    inversion of the measured tone curve (good to a few % for the muted paper colours used here).
+    A paper paler than a 0.90 albedo can render is scaled down as a whole (hue kept); display_gain()
+    then says by how much the finished picture has to be lifted."""
     d = np.clip(np.asarray(srgb255, float) / 255.0, 0.0, 0.93)
     lin = np.interp(d, _LUT_DISP, _LUT_LIN) * 2.0 ** (-exposure)
     lin = np.maximum(lin - VEIL, 0.25 * lin)                         # the paper's own sheen / specular adds ~VEIL
-    return np.clip(lin / LIGHT_E, 0.0005, 0.92)
+    a = lin / LIGHT_E
+    if a.max() > A_MAX:
+        a = a * (A_MAX / a.max())
+    return np.clip(a, 0.0005, 0.92)
+
+
+A_MAX = 0.90           # palest paper albedo used
+
+
+def display_gain(srgb255, exposure=0.0):
+    """Display-space gain that brings a ground whose albedo was capped by albedo_for_display() up to
+    its target colour (1.0 when the colour is reachable)."""
+    d = np.clip(np.asarray(srgb255, float) / 255.0, 0.0, 0.97)
+    a = albedo_for_display(srgb255, exposure)
+    got = np.interp((a * LIGHT_E + VEIL) * 2.0 ** exposure, _LUT_LIN, _LUT_DISP)
+    g = float(np.max(d) / max(np.max(got), 1e-6))
+    return float(np.clip(g, 1.0, 1.18))
+
+
+def apply_display_gain(path, gain):
+    """Lift a finished 16-bit PNG by `gain` in display space with a soft shoulder above 0.94."""
+    im = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+    if im is None or gain <= 1.004:
+        return
+    mx = 65535.0 if im.dtype == np.uint16 else 255.0
+    x = im[..., :3].astype(np.float32) / mx * gain
+    knee = 0.94
+    x = np.where(x > knee, knee + (1.0 - knee) * np.tanh((x - knee) / (1.0 - knee)), x)
+    im[..., :3] = np.clip(x * mx + 0.5, 0, mx).astype(im.dtype)
+    cv2.imwrite(path, im, [cv2.IMWRITE_PNG_COMPRESSION, 3])
 
 
 # ============================================================================= shot table
@@ -758,6 +789,20 @@ def layout_wreath(frame, sets, P, rng):
         share = np.array([1.0 / (s_.L * s_.Wd) for s_ in sets])
         if mix == 'patches' and len(sets) > 1:
             assign = _patch_assign(sets, ext, float(P.get('patch', 0.22)) * frame.W, rng)
+        elif mix == 'sectors' and len(sets) > 1:
+            # one ingredient per sector around the window (equal arc of the PERIMETER band), a slightly
+            # ragged border where two meet
+            nsec = len(sets)
+            a0 = math.radians(float(P.get('sector_start', 200.0)))
+            order_ = list(P.get('sector_order', range(nsec)))
+            blur = float(P.get('sector_blur', 0.035))
+
+            def assign(x, y, nsec=nsec, a0=a0, order_=order_, blur=blur):
+                # angle measured on the frame-normalised ellipse so that sectors have similar areas
+                t = np.arctan2((np.asarray(y) - wy) / frame.H, (np.asarray(x) - wx) / frame.W)
+                t = (t - a0) / (2 * math.pi) + rng.normal(0, blur / nsec, np.shape(x))
+                idx = np.floor((t % 1.0) * nsec).astype(int) % nsec
+                return np.asarray(order_)[idx]
         mix = share
     fns = [F0, F1, F2][:max(1, int(math.ceil(layers)))]
     pl = _scatter_passes(ext, sets, mix, fns, rng, keep=keep, assign=assign)
@@ -1788,6 +1833,13 @@ def main(argv=None):
     # ---- render
     speed_tweaks(scene, cli.speed, args)
     r = C.render(args)
+    gcol_ = shot.get('ground', {}).get('colour')
+    if gcol_ is not None and shot.get('ground', {}).get('type', 'paper') == 'paper':
+        gain = display_gain(gcol_, exposure) * float(shot.get('gain', 1.0))
+        if gain > 1.004:
+            apply_display_gain(args.out, gain)
+            print('[gain] display x%.3f (paper paler than an 0.90 albedo at exposure %.2f)' % (gain, exposure))
+        meta['display_gain'] = round(gain, 4)
     meta['render_seconds'] = round(r['seconds'], 1)
     meta['resolution'] = list(args.q['res'])
     for f in tmp_files:

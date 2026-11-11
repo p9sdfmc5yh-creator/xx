@@ -19,7 +19,10 @@ How it works
    arrived or was re-rendered since the last build (missing stills = grey placeholder domes) -
    then concatenates all segments by stream copy, muxes the ORIGINAL audio by stream copy and
    writes the mp4 with +faststart.  So "new stills arrived" = run the same command again.
- * An interrupted build loses at most the segment in progress.
+ * An interrupted build loses at most the segment in progress.  A worker killed by the OOM
+   killer is detected (BrokenProcessPool) and the segment is retried with a fresh pool.
+ * Memory at 4K: ~0.7 GB per worker + ~0.2 GB per worker of queued frames + ~1.5 GB x264.
+   Use --workers 2 while the render queue is busy.
 """
 import argparse
 import collections
@@ -29,6 +32,8 @@ import os
 import subprocess
 import sys
 import time
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures.process import BrokenProcessPool
 from multiprocessing import get_context
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -121,14 +126,14 @@ def render_segment(pool, seg, path, args):
     n = 0
     try:
         while True:
-            while len(pending) < args.workers + 1:          # bounded look-ahead (memory)
+            while len(pending) < args.workers:              # bounded look-ahead (memory)
                 j = next(it, None)
                 if j is None:
                     break
-                pending.append(pool.apply_async(_render_chunk, (j,)))
+                pending.append(pool.submit(_render_chunk, j))
             if not pending:
                 break
-            for buf in pending.popleft().get():
+            for buf in pending.popleft().result():
                 proc.stdin.write(buf)
                 n += 1
         proc.stdin.close()
@@ -196,15 +201,28 @@ def main(argv=None):
         return 0
     t0 = time.time()
     if todo:
-        ctx = get_context('fork')
-        with ctx.Pool(args.workers, initializer=_init) as pool:
+        def new_pool():
+            return ProcessPoolExecutor(args.workers, mp_context=get_context('fork'), initializer=_init)
+        pool = new_pool()
+        try:
             for seg, path, sig in todo:
                 t = time.time()
-                render_segment(pool, seg, path, args)
+                for attempt in range(3):
+                    try:
+                        render_segment(pool, seg, path, args)
+                        break
+                    except BrokenProcessPool:           # a worker was killed (OOM killer ...): new pool, retry
+                        print('  worker died on %s (attempt %d) - restarting the pool' % (seg[0], attempt + 1), flush=True)
+                        pool.shutdown(wait=False, cancel_futures=True)
+                        pool = new_pool()
+                        if attempt == 2:
+                            raise
                 json.dump(dict(sig=sig, a=seg[1], b=seg[2], scene=seg[3]), open(path + '.json', 'w'))
                 dt = time.time() - t
                 print('  %-28s %3d frames  %6.1f s  %.2f s/frame' % (seg[0], seg[2] - seg[1], dt, dt / (seg[2] - seg[1])),
                       flush=True)
+        finally:
+            pool.shutdown(wait=False, cancel_futures=True)
     # concat (stream copy) + original audio (stream copy)
     lst = os.path.join(segdir, 'concat_%04d_%04d.txt' % (args.start, args.end))
     with open(lst, 'w') as f:
