@@ -1,0 +1,32 @@
+{
+ "shot": "b14_fengmi",
+ "layout": "wreath",
+ "frame_width_m": 0.649520113224559,
+ "frame_height_m": 0.3653550636888145,
+ "items": [
+  "m10_fengmi"
+ ],
+ "seed": 29,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.365782379552778,
+  0.365782379552778,
+  -0.2236998547849057,
+  0.2236998547849057
+ ],
+ "n_items": 371,
+ "layers_max": 3,
+ "heap_top_mm": 51.627620697021484,
+ "display_gain": 1.0773,
+ "render_seconds": 135.2,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

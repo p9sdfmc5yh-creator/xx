@@ -1,0 +1,40 @@
+{
+ "shot": "b25_shaji",
+ "layout": "glyph",
+ "frame_width_m": 0.6761995471063644,
+ "frame_height_m": 0.38036224524733003,
+ "items": [
+  "k11_shaji"
+ ],
+ "seed": 50,
+ "empty": false,
+ "text": "同",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.1,
+ "engine": "packed",
+ "px_per_m": 2852.8991736010166,
+ "stroke_width_m": 0.031546856206067474,
+ "stroke_items_wide": 4.6,
+ "block_m": [
+  0.2688493190005973,
+  0.2814680614830242
+ ],
+ "char_boxes": [
+  [
+   0.30121,
+   0.09,
+   0.69879,
+   0.82908
+  ]
+ ],
+ "align": 0.16107549259100493,
+ "n_items": 1051,
+ "layers_max": 3,
+ "heap_top_mm": 23.48255157470703,
+ "display_gain": 1.0584,
+ "render_seconds": 55.7,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

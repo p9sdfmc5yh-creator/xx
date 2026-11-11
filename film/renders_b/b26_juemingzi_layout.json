@@ -1,0 +1,40 @@
+{
+ "shot": "b26_juemingzi",
+ "layout": "glyph",
+ "frame_width_m": 0.4072642960857875,
+ "frame_height_m": 0.22908616654825548,
+ "items": [
+  "k12_juemingzi"
+ ],
+ "seed": 51,
+ "empty": false,
+ "text": "同",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.1,
+ "engine": "packed",
+ "px_per_m": 4736.799045902052,
+ "stroke_width_m": 0.019000172717451823,
+ "stroke_items_wide": 8.0,
+ "block_m": [
+  0.16192369415872832,
+  0.16952376324570906
+ ],
+ "char_boxes": [
+  [
+   0.30121,
+   0.09,
+   0.69879,
+   0.82908
+  ]
+ ],
+ "align": 0.92,
+ "n_items": 1828,
+ "layers_max": 4,
+ "heap_top_mm": 8.376904487609863,
+ "display_gain": 1.1246,
+ "render_seconds": 40.4,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
