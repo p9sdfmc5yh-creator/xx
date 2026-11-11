@@ -542,7 +542,7 @@ def wood_material():
                    m.math('ADD', 0.30, m.math('MULTIPLY', early, 0.70)))
     fn = m.noise(scale=1.0, detail=3.0, roughness=0.6, vector=m.mapping(q, scale=(5.0, 420.0, 420.0)))
     bn = m.noise(scale=9.0, detail=3.0, roughness=0.55, vector=q)
-    c_late, c_early = (0.300, 0.118, 0.040), (0.070, 0.026, 0.011)
+    c_late, c_early = (0.200, 0.072, 0.024), (0.045, 0.016, 0.007)
     col = m.mix(c_early, c_late, m.math('MULTIPLY', tone, m.map_range(fn, 0.25, 0.75, 0.62, 1.0)))
     col = m.mix(col, (0.018, 0.009, 0.005), m.math('MULTIPLY', pores, 0.80))
     col = m.hsv(col, m.map_range(bn, 0.3, 0.7, 0.492, 0.510), m.map_range(bn, 0.3, 0.7, 1.08, 0.90),
@@ -672,8 +672,8 @@ def build_cabinet(cam, seed=1):
         for i in cols:
             O, R = cell_frame(tc, i * dphi)
             inset = rng.uniform(0.0002, 0.0016)
-            if rng.random() < 0.030 and t1 < cam['t_limb'] - 0.1:
-                inset = -rng.uniform(0.004, 0.013)                    # a drawer left slightly ajar
+            if rng.random() < 0.022 and t1 < cam['t_limb'] - 0.1:
+                inset = -rng.uniform(0.002, 0.006)                    # a drawer left slightly ajar
                 ajar.add((i, j))
             Rd = R @ rot_z(rng.normal(0, 0.0030)) @ rot_x(rng.normal(0, 0.0035)) @ rot_y(rng.normal(0, 0.0030))
             Of = O - R[:, 2] * inset + R[:, 0] * rng.normal(0, 0.00025) - R[:, 1] * rng.uniform(0.0002, 0.0008)
@@ -836,9 +836,9 @@ def lights(cam):
     def at(d, dist):
         d = np.array(d, float)
         return T + d / np.linalg.norm(d) * dist
-    area_light('key', at((-0.66, 0.02, 0.75), 5.2), T, 2.2, 3300.0, (1.0, 0.80, 0.56))
-    area_light('kick', at((0.48, 0.80, 0.36), 5.5), T + [0.0, 0.2, 0.25], 2.6, 2100.0, (1.0, 0.66, 0.36), size_y=0.9)
-    area_light('fill', at((0.55, -0.80, 0.25), 5.0), T, 4.0, 300.0, (0.80, 0.74, 0.70))
+    area_light('key', at((-0.66, 0.02, 0.75), 5.2), T, 2.2, 1100.0, (1.0, 0.80, 0.56))
+    area_light('kick', at((0.48, 0.80, 0.36), 5.5), T + [0.0, 0.2, 0.25], 2.6, 1100.0, (1.0, 0.66, 0.36), size_y=0.9)
+    area_light('fill', at((0.55, -0.80, 0.25), 5.0), T, 4.0, 90.0, (0.80, 0.74, 0.70))
     C.world_gradient(horizon=(0.030, 0.017, 0.007), zenith=(0.020, 0.013, 0.008), ground=(0.004, 0.003, 0.002))
 
 

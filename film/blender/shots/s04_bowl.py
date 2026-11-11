@@ -226,8 +226,8 @@ def make_cobalt_texture(path, seed=0, W=8192, H=704, tile_mm=268.0):
         n = gaussian_filter(rng.normal(size=(H, W)).astype(np.float32), sig, mode='wrap')
         return n / n.std()
     n1, n2, n3 = noise(22), noise(3.2), noise(0.9)
-    D = m * ld * np.clip(1 + 0.24 * n1 + 0.15 * n2 + 0.07 * n3, 0.3, 2.0)
-    spk = ((n2 > 1.7) & (m > 0.6)).astype(np.float32)                       # iron-rust / heaped specks
+    D = m * ld * np.clip(1 + 0.24 * n1 + 0.11 * n2 + 0.06 * n3, 0.3, 2.0)
+    spk = ((n2 > 2.0) & (m > 0.6)).astype(np.float32)                       # iron-rust / heaped specks
     D += 0.55 * gaussian_filter(spk, 1.3)
     D = 0.70 * gaussian_filter(D, 1.25) + 0.30 * gaussian_filter(D, 3.6)    # bleed under the glaze
     D += 0.05 * gaussian_filter(m, 9.0)                                     # faint blue halo
@@ -240,7 +240,7 @@ def make_cobalt_texture(path, seed=0, W=8192, H=704, tile_mm=268.0):
 
 
 def porcelain_material(seed=0):
-    tex_path = os.path.join(TMP, 'cobalt_band_%d.png' % seed)
+    tex_path = os.path.join(TMP, 'cobalt_band_v2_%d.png' % seed)
     if not os.path.exists(tex_path):
         make_cobalt_texture(tex_path, seed)
     img = bpy.data.images.load(tex_path)
@@ -288,11 +288,10 @@ def porcelain_material(seed=0):
     w1 = m.noise(scale=95, detail=2, roughness=0.45)
     w2 = m.noise(scale=420, detail=2)
     hgt = m.math('ADD', w1, m.math('MULTIPLY', w2, 0.10))
-    nrm = m.bump(hgt, strength=1.0, distance=0.000028)
+    nrm = m.bump(hgt, strength=1.0, distance=0.00006)
     nrm = m.bump(spot, strength=0.6, distance=0.00003, normal=nrm, invert=True)
     rough = m.map_range(m.noise(scale=160, detail=3), 0.3, 0.75, 0.022, 0.060)
-    m.set(base_color=col, roughness=rough, ior=1.52, sss=1.0, sss_radius=(1.0, 0.92, 0.80), sss_scale=0.0011,
-          normal=nrm)
+    m.set(base_color=col, roughness=rough, ior=1.52, normal=nrm)       # (Burley SSS on the body: 2x cost, invisible)
     return m
 
 
@@ -317,7 +316,7 @@ def make_soaked_goji(seed, nu=150, nv=92):
     X = (S - 0.5) * L
     # position on the undeformed surface (for noise lookups)
     q = np.stack([X, R0 * np.cos(PH), R0 * np.sin(PH)], -1)
-    wr = rng.uniform(0.25, 1.0)                                                      # how wrinkled this one stayed
+    wr = rng.uniform(0.40, 1.0)                                                      # how wrinkled this one stayed
     qq = np.stack([q[..., 0] * 110.0, np.cos(PH) * 1.7, np.sin(PH) * 1.7], -1)
     warp = C.fbm3(q * 160.0, octaves=2, seed=seed * 7 + 1)[..., None] * 0.55
     bil = np.abs(C.perlin3(qq * np.array([1.0, 1.55, 1.55]) + warp, seed=seed * 7 + 2)) ** 0.6
@@ -326,8 +325,8 @@ def make_soaked_goji(seed, nu=150, nv=92):
     env = (0.30 + 0.70 * (1 - S) ** 1.3) * prof ** 0.6 * wr * (0.25 + 0.75 * how)
     crease = np.clip(1.0 - bil / 0.55, 0, 1) ** 1.6                                  # narrow valleys
     crease2 = np.clip(1.0 - bil2 / 0.45, 0, 1) ** 1.6
-    disp = -(crease * 0.00042 + crease2 * 0.00013) * env
-    lumps = C.fbm3(q * 330.0 + 1.7, octaves=2, seed=seed * 7 + 5) * 0.00016 * prof ** 0.5   # seeds under the skin
+    disp = -(crease * 0.00058 + crease2 * 0.00018) * env
+    lumps = C.fbm3(q * 300.0 + 1.7, octaves=2, seed=seed * 7 + 5) * 0.00034 * prof ** 0.5   # seeds under the skin
     dent = -0.0005 * rng.uniform(0, 1) * np.exp(-(((S - rng.uniform(0.3, 0.7)) / 0.16) ** 2 +
                                                  ((np.angle(np.exp(1j * (PH - rng.uniform(0, 6.28))))) / 0.7) ** 2))
     R = np.maximum(R0 + disp + lumps + dent * prof, 2e-5)
@@ -355,12 +354,14 @@ def soaked_goji_material():
     col = m.mix(col, (0.20, 0.005, 0.004), m.math('MULTIPLY', m.attr('furrow'), 0.65))
     col = m.jitter(col, hue=0.012, saturation=0.07, value=0.16)
     col = m.mix(col, (0.80, 0.66, 0.40), m.map_range(m.attr('scar'), 0.25, 0.8, 0.0, 0.95, smooth=True))
-    rough = m.math('ADD', m.map_range(n_fine, 0.3, 0.7, 0.10, 0.24), m.math('MULTIPLY', m.attr('furrow'), 0.15))
-    stretch = m.mapping(oc, scale=(0.25, 1.0, 1.0))
-    nrm = m.bump(m.noise(scale=2400, detail=3, vector=stretch), strength=0.45, distance=0.00007)
-    nrm = m.bump(m.noise(scale=9000, detail=2, vector=oc), strength=0.3, distance=0.00002, normal=nrm)
-    m.set(base_color=col, roughness=rough, sss=0.7, sss_radius=(1.0, 0.16, 0.06), sss_scale=0.0015,
-          sss_anisotropy=0.4, ior=1.42, coat=0.75, coat_roughness=0.035, coat_ior=1.34, normal=nrm)
+    rough = m.math('ADD', m.map_range(n_fine, 0.3, 0.7, 0.20, 0.40), m.math('MULTIPLY', m.attr('furrow'), 0.15))
+    stretch = m.mapping(oc, scale=(0.22, 1.0, 1.0))
+    nrm = m.bump(m.noise(scale=760, detail=3, vector=stretch), strength=0.55, distance=0.00022)
+    nrm = m.bump(m.noise(scale=2600, detail=3, vector=stretch), strength=0.6, distance=0.00010, normal=nrm)
+    nrm = m.bump(m.noise(scale=9000, detail=2, vector=oc), strength=0.35, distance=0.00002, normal=nrm)
+    wet = m.map_range(m.noise(scale=220, detail=2, vector=oc), 0.35, 0.65, 0.25, 0.60)      # uneven water film
+    m.set(base_color=col, roughness=rough, sss=0.7, sss_radius=(1.0, 0.16, 0.06), sss_scale=0.0016,
+          sss_anisotropy=0.4, ior=1.42, coat=wet, coat_roughness=0.05, coat_ior=1.34, normal=nrm)
     return m
 
 
@@ -386,7 +387,7 @@ def broth_material():
     vol = nt.nodes.new('ShaderNodeVolumeAbsorption')
     # amber-brown herbal broth: transmittance over 5 cm ~ (0.66, 0.36, 0.085)
     vol.inputs['Color'].default_value = (0.849, 0.629, 0.104, 1)
-    vol.inputs['Density'].default_value = 55.0
+    vol.inputs['Density'].default_value = 100.0
     nt.links.new(vol.outputs[0], out.inputs['Volume'])
     return mat
 
@@ -716,7 +717,7 @@ def build_scene(args):
     rect_light('key', -38.0, 50.0, 1.05, T, 0.80, 0.60, 70.0, (1.0, 0.955, 0.88))
     rect_light('top', 10.0, 80.0, 1.00, T, 0.60, 0.45, 17.0, (1.0, 0.975, 0.94))
     rect_light('front', -150.0, 52.0, 1.25, T, 0.50, 0.42, 10.0, (0.94, 0.97, 1.0))      # gleam on the flared lip
-    rect_light('sheen', 163.0, 23.0, 1.35, T, 1.50, 0.15, 5.0, (1.0, 0.97, 0.93))        # sheen under the band
+    rect_light('sheen', 163.0, 17.5, 1.35, T, 1.50, 0.11, 4.0, (1.0, 0.97, 0.93))        # sheen under the band
     rect_light('strip', 64.0, 36.0, 1.0, T, 0.22, 0.70, 9.0, (1.0, 0.90, 0.78))
     C.world_gradient(horizon=(0.030, 0.021, 0.014), zenith=(0.060, 0.048, 0.038), ground=(0.012, 0.008, 0.005))
     return info
@@ -730,9 +731,10 @@ def main():
         args.q['thr'] = 0.012
     C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
     sc = bpy.context.scene
-    sc.cycles.transmission_bounces = 8
-    sc.cycles.glossy_bounces = 5
-    sc.cycles.max_bounces = 10
+    sc.cycles.transmission_bounces = 6
+    sc.cycles.glossy_bounces = 3
+    sc.cycles.diffuse_bounces = 2
+    sc.cycles.max_bounces = 8
     build_scene(args)
     res = C.render(args)
     if not args.region:
