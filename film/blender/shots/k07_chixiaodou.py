@@ -106,17 +106,17 @@ def bean_material():
     col = m.mix(col, (0.330, 0.230, 0.140), m.math('MULTIPLY', A('line'), 0.75))
     # roughness: semi-gloss testa broken up at two scales; hilum matte
     rn = m.noise(scale=1300, detail=3, roughness=0.6, vector=P)
-    rough = m.mixf(m.map_range(A('rvar'), 0, 1, 0.20, 0.36), m.map_range(rn, 0.3, 0.7, 0.18, 0.42), 0.5)
+    rough = m.mixf(m.map_range(A('rvar'), 0, 1, 0.27, 0.44), m.map_range(rn, 0.3, 0.7, 0.24, 0.48), 0.5)
     rough = m.math('ADD', rough, m.map_range(t3, 0, 1, -0.04, 0.10))
     rough = m.mixf(rough, 0.55, A('wr'))
     hilm = m.map_range(A('hil'), 0.15, 0.7, smooth=True)
     rough = m.mixf(rough, 0.80, hilm)
     peel = m.noise(scale=2600, detail=2, roughness=0.5, vector=P)
-    nrm = m.bump(peel, strength=0.35, distance=0.000022)
+    nrm = m.bump(peel, strength=0.45, distance=0.000030)
     nrm = m.micro_bump(scale=10000, strength=0.35, distance=0.000010, vector=P, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.50, specular=0.45,
           sss=m.mixf(0.22, 0.45, hilm), sss_radius=(1.0, 0.25, 0.12), sss_scale=0.0005,
-          coat=m.mixf(0.25, 0.0, hilm), coat_roughness=0.16, normal=nrm)
+          coat=m.mixf(0.10, 0.0, hilm), coat_roughness=0.22, normal=nrm)
     return m
 
 

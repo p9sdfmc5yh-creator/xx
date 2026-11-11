@@ -175,12 +175,12 @@ def leaf_material():
     mott = m.noise(scale=0.22, detail=3, roughness=0.6, vector=uv)   # ~5 mm blotches
     fine = m.noise(scale=2.4, detail=3, roughness=0.6, vector=uv)
     # upper side
-    top = m.mix((0.036, 0.125, 0.012), (0.085, 0.250, 0.022), m.map_range(puff, 0.15, 0.95))
-    top = m.mix(top, (0.125, 0.310, 0.028), m.math('MULTIPLY', m.map_range(mott, 0.40, 0.75), 0.55))
-    top = m.mix(top, (0.020, 0.078, 0.010), m.map_range(groove, 0.35, 1.0, 0.0, 0.62, smooth=True))
-    top = m.mix(top, (0.190, 0.360, 0.060), m.map_range(vein, 0.60, 0.97, 0.0, 0.55, smooth=True))
-    top = m.mix(top, (0.140, 0.330, 0.022), m.math('MULTIPLY', m.map_range(tone, 0.0, 0.45, 1.0, 0.0), 0.45))
-    top = m.mix(top, (0.026, 0.100, 0.020), m.math('MULTIPLY', m.map_range(tone, 0.6, 1.0), 0.50))
+    top = m.mix((0.040, 0.160, 0.012), (0.095, 0.320, 0.022), m.map_range(puff, 0.15, 0.95))
+    top = m.mix(top, (0.140, 0.380, 0.028), m.math('MULTIPLY', m.map_range(mott, 0.40, 0.75), 0.55))
+    top = m.mix(top, (0.022, 0.095, 0.010), m.map_range(groove, 0.35, 1.0, 0.0, 0.62, smooth=True))
+    top = m.mix(top, (0.220, 0.420, 0.065), m.map_range(vein, 0.60, 0.97, 0.0, 0.55, smooth=True))
+    top = m.mix(top, (0.170, 0.400, 0.025), m.math('MULTIPLY', m.map_range(tone, 0.0, 0.45, 1.0, 0.0), 0.45))
+    top = m.mix(top, (0.030, 0.120, 0.020), m.math('MULTIPLY', m.map_range(tone, 0.6, 1.0), 0.50))
     top = m.mix(top, m.mix(top, (0.6, 0.6, 0.6), 1.0, blend='MULTIPLY'), m.map_range(fine, 0.35, 0.75))
     gl = m.voronoi(scale=2.9, feature='F1', vector=uv)               # oil glands: tiny pale dots
     gdot = m.map_range(gl, 0.07, 0.13, 1.0, 0.0, smooth=True)
@@ -203,13 +203,13 @@ def leaf_material():
     nrm = m.bump(gdot, strength=0.6, distance=0.000015, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.30, normal=nrm)
     # light through the blade: bright yellow-green, darker under veins
-    tc = m.mix((0.080, 0.250, 0.010), (0.170, 0.400, 0.026), m.map_range(puff, 0.1, 0.9))
+    tc = m.mix((0.095, 0.300, 0.012), (0.200, 0.470, 0.030), m.map_range(puff, 0.1, 0.9))
     tc = m.mix(tc, (0.030, 0.105, 0.006), m.map_range(vein, 0.3, 0.9, 0.0, 0.85))
     tc = m.mix(tc, (0.045, 0.150, 0.008), m.map_range(groove, 0.4, 1.0, 0.0, 0.55))
     tc = m.mix(tc, (0.07, 0.24, 0.012), m.math('MULTIPLY', m.map_range(tone, 0.5, 1.0), 0.5))
     tc = m.jitter(tc, hue=0.010, saturation=0.08, value=0.12)
     tr = m.node('ShaderNodeBsdfTranslucent', {'Color': tc, 'Normal': nrm})
-    mix = m.node('ShaderNodeMixShader', {0: m.mixf(0.36, 0.25, hair), 1: m.bsdf.outputs[0], 2: tr.outputs[0]})
+    mix = m.node('ShaderNodeMixShader', {0: m.mixf(0.40, 0.25, hair), 1: m.bsdf.outputs[0], 2: tr.outputs[0]})
     m.nt.links.new(mix.outputs[0], m.out.inputs['Surface'])
     return m
 
@@ -219,7 +219,7 @@ def base_material():
     m = C.Mat('mint_base')
     n = m.noise(scale=55, detail=4, roughness=0.6)
     v = m.voronoi(scale=420, feature='DISTANCE_TO_EDGE')
-    col = m.mix((0.010, 0.036, 0.006), (0.024, 0.075, 0.010), n)
+    col = m.mix((0.022, 0.078, 0.010), (0.050, 0.155, 0.018), n)
     m.set(base_color=col, roughness=0.75, specular=0.2, normal=m.bump(m.map_range(v, 0.0, 0.25), 0.6, 0.00015))
     return m.mat
 
@@ -276,7 +276,7 @@ def main():
 
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.56, edge=0.685, top_margin=0.03)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=SKY_TINT, key=0.85, fill=0.70, rim=1.0, world=0.85, key_size=1.0)
+    C.studio_lights(info, tint=SKY_TINT, key=0.85, fill=0.80, rim=1.0, world=1.0, key_size=1.0)
     finish(args, SHOT)
 
 

@@ -19,7 +19,7 @@ import common as C                                                              
 import _fruits as F                                                                   # noqa: E402
 
 SHOT = 'k11_shaji'
-R_DOME = 0.150
+R_DOME = 0.185
 N_PLAIN, N_STALK = 8, 2
 
 
@@ -29,7 +29,7 @@ def make_berry(seed, stalk=False, nu=124, nv=156):
     rng = np.random.default_rng(9000 + seed)
     sd = seed * 31 + 7
     L = rng.uniform(0.0062, 0.0092)
-    Wd = L * rng.uniform(0.76, 0.95)
+    Wd = L * rng.uniform(0.70, 0.92)
     a, b = 0.5 * L, 0.5 * Wd
     c = b * rng.uniform(0.93, 1.0)
     U, s, ph = F.sphere_grid(nu, nv)
@@ -52,7 +52,7 @@ def make_berry(seed, stalk=False, nu=124, nv=156):
     P = P + U * (-0.00024 * np.exp(-(d0 / 0.00075) ** 2) + 0.00013 * np.exp(-(d1 / 0.00034) ** 2))[..., None]
     verts = P.reshape(-1, 3)
     faces = C.grid_faces(nu, nv, wrap_v=True)
-    attrs = dict(base=np.exp(-(d0 / 0.00080) ** 2).ravel(), tip=np.exp(-(d1 / 0.00040) ** 2).ravel(),
+    attrs = dict(base=np.exp(-(d0 / 0.00080) ** 2).ravel(), tip=np.exp(-(d1 / 0.00030) ** 2).ravel(),
                  ends=np.maximum(np.exp(-(d0 / 0.0027) ** 2), 0.8 * np.exp(-(d1 / 0.0022) ** 2)).ravel())
     parts = [(verts, faces, 0)]
     if stalk:
@@ -95,8 +95,8 @@ def make_leaf(seed, L, W, c0, up, d, items, under=False, nu=170, nv=24):
         if near.any():
             env[k] = (u[near] + 0.98 * rad[near]).max()
     ok = np.isfinite(env)
-    A = np.polyfit(ks[ok], env[ok], 1)
-    A[1] += (env[ok] - np.polyval(A, ks[ok])).max() + 0.00025
+    A = np.polyfit(ks[ok], env[ok], 2)                              # gently arched, rests on the highest berries
+    A[-1] += (env[ok] - np.polyval(A, ks[ok])).max() + 0.00025
     sign = -1.0 if under else 1.0                                     # upper side: shallow channel; underside: keel
     hloc = sign * 0.20 * wid * np.abs(w) ** 1.3 + lat * rng.normal(0, 0.18) * (t - 0.5) * 2.0
     hloc = hloc + 0.00015 * F.noise3(C.fbm3, np.stack([pos + 0 * w, lat, 0 * lat], -1) / 0.004, 2, seed=seed)
@@ -115,16 +115,16 @@ def berry_material(sss_method='RANDOM_WALK'):
     hue = m.attr('hue', 'INSTANCER')                                  # 0 yellow-orange ... 1 red-orange
     ends, tip, base = m.attr('ends'), m.attr('tip'), m.attr('base')
     n_mid = m.noise(scale=380, detail=3, roughness=0.55, vector=P)
-    col = m.mix((0.640, 0.250, 0.0090), (0.560, 0.082, 0.0045), hue)
+    col = m.mix((0.720, 0.370, 0.0140), (0.620, 0.125, 0.0060), hue)
     col = m.mix(col, m.hsv(col, 0.5, 1.03, 0.80), m.map_range(n_mid, 0.38, 0.70))          # faint mottle
     col = m.mix(col, (0.700, 0.340, 0.030), m.math('MULTIPLY', m.attr('base'), 0.0))        # (placeholder, off)
     col = m.jitter(col, hue=0.008, saturation=0.05, value=0.12)
     # peltate scale dots: minute, brownish or silvery, denser towards both ends
-    vd = m.voronoi(scale=2300, feature='F1', vector=P, output='Distance')
-    vc = m.node('ShaderNodeSeparateColor', {0: m.voronoi(scale=2300, feature='F1', vector=P, output='Color')})
+    vd = m.voronoi(scale=1900, feature='F1', vector=P, output='Distance')
+    vc = m.node('ShaderNodeSeparateColor', {0: m.voronoi(scale=1900, feature='F1', vector=P, output='Color')})
     rad = m.map_range(vc.outputs[1], 0.0, 1.0, 0.06, 0.15)
     dot = m.map_range(vd, m.math('MULTIPLY', rad, 0.5), rad, 1.0, 0.0)
-    dot = m.math('MULTIPLY', dot, m.math('GREATER_THAN', vc.outputs[0], m.map_range(ends, 0.0, 1.0, 0.60, 0.22)))
+    dot = m.math('MULTIPLY', dot, m.math('GREATER_THAN', vc.outputs[0], m.map_range(ends, 0.0, 1.0, 0.50, 0.15)))
     dcol = m.mix((0.170, 0.070, 0.022), (0.600, 0.520, 0.400), m.math('GREATER_THAN', vc.outputs[2], 0.62))
     col = m.mix(col, dcol, m.math('MULTIPLY', dot, 0.80))
     tipm = m.map_range(tip, 0.30, 0.80, smooth=True)
@@ -132,17 +132,17 @@ def berry_material(sss_method='RANDOM_WALK'):
     col = m.mix(col, (0.028, 0.013, 0.008), tipm)                     # stigma remnant: dark brown point
     col = m.mix(col, (0.150, 0.070, 0.028), basem)                    # stem scar
     rn = m.noise(scale=900, detail=3, roughness=0.6, vector=P)
-    rough = m.map_range(rn, 0.30, 0.70, 0.15, 0.30)
+    rough = m.map_range(rn, 0.30, 0.70, 0.22, 0.38)
     matte = m.math('MAXIMUM', dot, m.math('MAXIMUM', tipm, basem))
     rough = m.mixf(rough, 0.70, matte)
     rough = m.math('ADD', rough, m.map_range(m.attr('inst_rand', 'INSTANCER'), 0, 1, -0.03, 0.08))
-    coat = m.map_range(matte, 0.0, 1.0, 0.40, 0.0)
+    coat = m.map_range(matte, 0.0, 1.0, 0.22, 0.0)
     nrm = m.bump(dot, strength=0.5, distance=0.000012)
     skin = m.noise(scale=3600, detail=2, roughness=0.5, vector=P)
     nrm = m.bump(skin, strength=0.14, distance=0.00003, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.50,
-          sss=0.88, sss_radius=(1.0, 0.30, 0.035), sss_scale=0.0021, sss_anisotropy=0.0,
-          coat=coat, coat_roughness=0.07, normal=nrm)
+          sss=0.88, sss_radius=(1.0, 0.42, 0.040), sss_scale=0.0021, sss_anisotropy=0.0,
+          coat=coat, coat_roughness=0.10, normal=nrm)
     return m
 
 
@@ -162,8 +162,8 @@ def leaf_material():
     under, mid = m.attr('under'), m.attr('mid')
     n1 = m.noise(scale=700, detail=4, roughness=0.6, vector=m.mapping(P, scale=(0.35, 1, 1)))
     sc = m.noise(scale=6000, detail=2, roughness=0.5, vector=P)
-    up_col = m.mix((0.055, 0.095, 0.040), (0.105, 0.160, 0.075), m.map_range(n1, 0.3, 0.7))
-    up_col = m.mix(up_col, (0.420, 0.470, 0.400), m.map_range(sc, 0.56, 0.72, 0.0, 0.55))  # silvery scales
+    up_col = m.mix((0.030, 0.062, 0.024), (0.066, 0.115, 0.045), m.map_range(n1, 0.3, 0.7))
+    up_col = m.mix(up_col, (0.300, 0.360, 0.290), m.map_range(sc, 0.60, 0.74, 0.0, 0.32))  # silvery scales
     up_col = m.mix(up_col, (0.150, 0.200, 0.090), m.math('MULTIPLY', mid, 0.6))
     un_col = m.mix((0.400, 0.430, 0.350), (0.560, 0.580, 0.500), m.map_range(n1, 0.3, 0.7))
     un_col = m.mix(un_col, (0.300, 0.165, 0.060), m.map_range(sc, 0.66, 0.76, 0.0, 0.70))  # rusty scales
@@ -172,7 +172,7 @@ def leaf_material():
     midh = m.math('MULTIPLY', mid, m.map_range(under, 0.0, 1.0, -1.0, 1.0))                # groove above, rib below
     nrm = m.bump(midh, strength=0.8, distance=0.00025)
     nrm = m.bump(m.math('ADD', n1, m.math('MULTIPLY', sc, 0.5)), strength=0.5, distance=0.00005, normal=nrm)
-    m.set(base_color=col, roughness=m.map_range(sc, 0.3, 0.7, 0.45, 0.65), specular=0.35, sheen=0.5,
+    m.set(base_color=col, roughness=m.map_range(sc, 0.3, 0.7, 0.42, 0.62), specular=0.35, sheen=0.22,
           sheen_roughness=0.45, sss=0.15, sss_radius=(0.4, 1.0, 0.2), sss_scale=0.0004, normal=nrm)
     return m
 
@@ -213,13 +213,13 @@ def main():
         shapes.append(half)
     weights = [1.0] * N_PLAIN + [0.30] * N_STALK
 
-    sol = C.planet_solve(R_DOME + 0.013)                              # camera is fitted to the heap top
+    sol = C.planet_solve(R_DOME + 0.020)                              # camera is fitted to the heap top
     x0, x1, y0, y1 = sol['patch']
-    patch = (x0 * 1.08, x1 * 1.08, y0 * 1.08, y1 * 1.08)
+    patch = (x0 * 1.14, x1 * 1.14, y0 * 1.12, y1 * 1.12)
     heap = C.pack_heap(R_DOME, patch, shapes, layers=3.0, coverage=0.74, weights=weights, seed=args.seed,
                        scale_range=(0.84, 1.12), tilt_deg=40, roll_deg=180, candidates=10, sink=0.10, rough=0.0012)
     n = len(heap.loc)
-    hue = np.clip(rng.normal(0.42, 0.22, n), 0, 1)
+    hue = np.clip(rng.normal(0.38, 0.20, n), 0, 1)
     odd = rng.random(n)
     hue = np.where(odd < 0.12, rng.uniform(0.0, 0.12, n), np.where(odd > 0.88, rng.uniform(0.85, 1.0, n), hue))
     C.instance_on_points('heap', variants, heap, attrs={'hue': hue})
@@ -230,8 +230,7 @@ def main():
     sc = np.asarray(heap.scale, float).reshape(n, -1).mean(1)
     rad = np.array([np.mean(shapes[int(k)]) for k in heap.var]) * sc
     lmat = leaf_material()
-    for j, (fx, fy, yaw, L, W, under) in enumerate([(-0.22, 0.40, 16.0, 0.036, 0.0052, False),
-                                                    (0.50, 0.10, -38.0, 0.027, 0.0044, True)]):
+    for j, (fx, fy, yaw, L, W, under) in enumerate([(0.36, 0.34, -22.0, 0.031, 0.0066, False)]):
         px, py = fx * x1, fy * y0
         c0 = np.array([px, py, math.sqrt(R_DOME ** 2 - px * px - py * py)])
         d = np.array([math.cos(math.radians(yaw)), math.sin(math.radians(yaw)), 0.0])
@@ -240,7 +239,7 @@ def main():
 
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=(0.94, 1.0, 0.92), key=0.85, fill=0.70, rim=1.1, world=0.9, key_size=0.9)
+    C.studio_lights(info, tint=(0.94, 1.0, 0.92), key=0.90, fill=0.60, rim=1.4, world=0.9, key_size=0.9)
     F.finish(args, SHOT)
 
 

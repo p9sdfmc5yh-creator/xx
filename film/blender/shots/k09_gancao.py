@@ -51,7 +51,8 @@ def make_fields(ol):
         camb = np.exp(-(e / 0.00008) ** 2)
         xyl = 1.0 - C.smoothstep(-0.00006, 0.00006, e)
         fib = C.fbm3(np.stack([sn * 90.0, cs * 90.0, rn * 4.0], -1), 2, seed=seed + 43)     # radial fibre streaks
-        h = 1.6e-5 * fib
+        fib2 = C.fbm3(np.stack([sn * 260.0, cs * 260.0, rn * 9.0], -1), 2, seed=seed + 44)   # fine raised fibres
+        h = 2.4e-5 * fib + 1.3e-5 * fib2
         h += 3.0e-5 * C.fbm3(p * 150.0, 2, seed=seed + 1)
         h += 0.8e-5 * C.fbm3(p * 5000.0, 2, seed=seed + 2)
         h -= ray * (1.8e-5 * xyl + 3.0e-5 * (1.0 - xyl))                    # soft ray parenchyma shrank on drying
@@ -67,8 +68,8 @@ def make_fields(ol):
         pore, pid, q = D.dots(x, y, cand[keep], (0.000018, 0.000055), soft=0.45, seed=seed + 5)
         h -= pore * (1.5e-5 + 3.0e-5 * pid)
         # radial drying fissures (real geometry)
-        crack = D.radial_cracks(x, y, n=20, seed=seed + 50, r_in=0.30, r_out=0.985, r0=ol.r0, width=0.00013, wobble=0.035)
-        h -= crack ** 0.8 * 0.00032
+        crack = D.radial_cracks(x, y, n=20, seed=seed + 50, r_in=0.30, r_out=0.985, r0=ol.r0, width=0.00011, wobble=0.035, rag=0.6)
+        h -= crack ** 0.7 * 0.00040
         # cork: stands a little proud and is ragged
         lipn = C.fbm3(D.P3(th * ro / 0.0006, np.zeros_like(th), 3.3), 3, seed=seed + 6)
         h += np.exp(-(d / 0.00035) ** 2) * (1.5e-5 + 4.0e-5 * lipn)
@@ -94,6 +95,14 @@ def face_material():
     bark = m.mix((0.68, 0.49, 0.12), (0.77, 0.60, 0.21), mott)              # paler phloem
     flesh = m.mix(bark, wood, xyl)
     flesh = m.mix(flesh, (0.84, 0.70, 0.29), m.math('MULTIPLY', ray, 0.85)) # pale medullary rays
+    # radial fibre streaks in polar coordinates (arc length at the rim, radius)
+    sep = m.node('ShaderNodeSeparateXYZ', {0: P})
+    ang = m.math('ARCTAN2', sep.outputs[0], sep.outputs[1])
+    rad = m.node('ShaderNodeVectorMath', {0: P}, operation='LENGTH').outputs['Value']
+    polar = m.node('ShaderNodeCombineXYZ', {0: m.math('MULTIPLY', ang, R0), 1: rad, 2: 0.0}).outputs[0]
+    fibn = m.noise(scale=1.0, detail=3, roughness=0.65, vector=m.mapping(polar, scale=(14000.0, 450.0, 1.0)))
+    flesh = m.mix(flesh, (0.47, 0.26, 0.02), m.map_range(fibn, 0.28, 0.46, 0.45, 0.0))
+    flesh = m.mix(flesh, (0.88, 0.75, 0.36), m.map_range(fibn, 0.58, 0.74, 0.0, 0.5))
     grain = m.noise(scale=24000, detail=2, roughness=0.6, vector=P)
     flesh = m.mix(flesh, (0.90, 0.80, 0.48), m.map_range(grain, 0.62, 0.80, 0.0, 0.38))   # starch powder specks
     flesh = m.mix(flesh, (0.40, 0.24, 0.035), m.map_range(grain, 0.18, 0.32, 0.35, 0.0))
@@ -106,8 +115,8 @@ def face_material():
     cork = m.mix(cork, (0.10, 0.065, 0.045), m.map_range(din, 0.0, 0.10, 0.6, 0.0))      # grey-brown outer film
     col = m.mix(flesh, cork, is_skin)
     rough = m.mixf(m.map_range(grain, 0.3, 0.7, 0.72, 0.90), 0.88, is_skin)
-    nrm = m.bump(m.noise(scale=7000, detail=2, roughness=0.6, vector=P), strength=0.55, distance=0.000022)
-    nrm = m.bump(grain, strength=0.6, distance=0.000010, normal=nrm)
+    nrm = m.bump(fibn, strength=0.9, distance=0.000045)
+    nrm = m.bump(grain, strength=0.7, distance=0.000020, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.25, normal=nrm, sheen=m.mixf(0.10, 0.0, is_skin), sheen_roughness=0.5,
           sss=m.mixf(0.3, 0.1, is_skin), sss_radius=(1.0, 0.60, 0.20), sss_scale=0.0003)
     _MATS['face'] = m

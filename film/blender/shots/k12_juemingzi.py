@@ -30,7 +30,7 @@ def cassia_arrays(seed, nu=170, nv=168):
     d, T, PH = S.sphere_dirs(nu, nv)
     dx = d[..., 0]
     sT = np.sin(T)
-    L = rng.uniform(0.0038, 0.0064)
+    L = rng.uniform(0.0036, 0.0056)
     Wd = rng.uniform(0.0023, 0.0031)
     Th = Wd * rng.uniform(0.82, 0.98)
     a, b, c = L / 2, Wd / 2, Th / 2
@@ -80,7 +80,7 @@ def cassia_material():
     t1, t2, t3 = S.inst_rand3(m)
     A = m.attr
     # item-to-item: yellowish green-brown ... olive brown ... coffee ... near black-brown
-    body = m.ramp(t1, [(0.00, (0.215, 0.160, 0.046)), (0.18, (0.135, 0.098, 0.030)), (0.55, (0.085, 0.055, 0.019)),
+    body = m.ramp(t1, [(0.00, (0.215, 0.160, 0.046)), (0.18, (0.140, 0.094, 0.028)), (0.55, (0.090, 0.053, 0.018)),
                        (0.86, (0.052, 0.029, 0.012)), (1.00, (0.030, 0.016, 0.008))])
     col = m.hsv(body, m.map_range(t2, 0, 1, 0.488, 0.512), m.map_range(A('mott'), 0, 1, 1.06, 0.94),
                 m.map_range(A('mott'), 0, 1, 0.72, 1.22))
@@ -92,8 +92,7 @@ def cassia_material():
     col = m.mix(col, (0.250, 0.180, 0.060), m.math('MULTIPLY', A('ridge'), 0.22))
     ln = m.map_range(A('line'), 0.30, 0.80, smooth=True)
     col = m.mix(col, m.mix((0.330, 0.240, 0.090), (0.230, 0.150, 0.050), spk), m.math('MULTIPLY', ln, 0.85))
-    col = m.mix(col, (0.035, 0.020, 0.010), m.math('MULTIPLY', A('ends'), 0.35))
-    col = m.jitter(col, hue=0.012, saturation=0.10, value=0.16)
+        col = m.jitter(col, hue=0.012, saturation=0.10, value=0.16)
     # hard glossy testa, gloss broken up at two scales; lines dull
     rn = m.noise(scale=1100, detail=3, roughness=0.6, vector=P)
     rough = m.mixf(m.map_range(A('rvar'), 0, 1, 0.12, 0.28), m.map_range(rn, 0.3, 0.7, 0.10, 0.32), 0.5)

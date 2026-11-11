@@ -128,7 +128,7 @@ def dots(x, y, pts, rad, soft=0.5, seed=0):
     return 1.0 - C.smoothstep(soft, 1.0, q), rv, q
 
 
-def radial_cracks(x, y, n=14, seed=0, r_in=0.2, r_out=0.9, r0=1.0, width=0.00012, wobble=0.05):
+def radial_cracks(x, y, n=14, seed=0, r_in=0.2, r_out=0.9, r0=1.0, width=0.00012, wobble=0.05, rag=0.0):
     """Radial drying fissures: n cracks at random angles, each spanning a random part of [r_in, r_out] * r0,
     widest in the middle, tapering to hairlines, slightly wandering.  Returns depth mask 0-1."""
     rng = np.random.default_rng(seed)
@@ -148,6 +148,8 @@ def radial_cracks(x, y, n=14, seed=0, r_in=0.2, r_out=0.9, r0=1.0, width=0.00012
         s = (rho[sel] - a) / (b - a)
         w = width * rng.uniform(0.5, 1.4) * (np.sin(np.pi * s) ** 0.8 + 0.05)
         dist = np.abs(dth[sel]) * rho[sel]
+        if rag:
+            dist = dist * (1.0 + rag * C.fbm3(P3(x[sel], y[sel]) * 7000.0, 2, seed=seed + 90 + i))
         out[sel] = np.maximum(out[sel], 1.0 - C.smoothstep(0.35, 1.0, dist / w))
     return out
 

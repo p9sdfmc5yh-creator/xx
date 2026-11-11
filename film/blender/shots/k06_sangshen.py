@@ -30,9 +30,9 @@ def make_mulberry(seed, stalk=False, nu=250, nv=216):
     """One mulberry, long axis X (stalk end at -X).  -> (parts, attrs, half_sizes)."""
     rng = np.random.default_rng(11000 + seed)
     sd = seed * 41 + 11
-    L = rng.uniform(0.0150, 0.0250)
-    Wd = float(np.clip(L * rng.uniform(0.46, 0.62), 0.0082, 0.0125))
-    dsp = rng.uniform(0.0021, 0.0027)                                 # drupelet spacing
+    L = rng.uniform(0.0160, 0.0260)
+    Wd = float(np.clip(L * rng.uniform(0.42, 0.56), 0.0080, 0.0118))
+    dsp = rng.uniform(0.0018, 0.0023)                                 # drupelet spacing
     Hd = 0.42 * dsp                                                   # bulge height
     a, b = 0.5 * L - 0.8 * Hd, 0.5 * Wd - 0.8 * Hd
     s = np.linspace(0.0, 1.0, nu)[:, None]
@@ -184,14 +184,14 @@ def main():
         shapes.append(half)
     weights = [1.0] * N_PLAIN + [0.45] * N_STALK
 
-    sol = C.planet_solve(R_DOME + 0.022)                              # camera is fitted to the heap top
+    sol = C.planet_solve(R_DOME + 0.035)                              # camera is fitted to the heap top
     x0, x1, y0, y1 = sol['patch']
-    patch = (x0 * 1.08, x1 * 1.08, y0 * 1.08, y1 * 1.08)
+    patch = (x0 * 1.16, x1 * 1.16, y0 * 1.12, y1 * 1.12)
     heap = C.pack_heap(R_DOME, patch, shapes, layers=3.0, coverage=0.74, weights=weights, seed=args.seed,
-                       scale_range=(0.86, 1.10), tilt_deg=14, roll_deg=180, candidates=10, sink=0.12, rough=0.002)
+                       scale_range=(0.86, 1.10), tilt_deg=14, roll_deg=180, candidates=14, sink=0.12, rough=0.002)
     n = len(heap.loc)
     k = rng.random(n)
-    unripe = np.where(k < 0.70, rng.uniform(0.0, 0.12, n), np.where(k < 0.89, rng.uniform(0.25, 0.50, n),
+    unripe = np.where(k < 0.76, rng.uniform(0.0, 0.12, n), np.where(k < 0.92, rng.uniform(0.25, 0.50, n),
                                                                      rng.uniform(0.65, 1.0, n)))
     C.instance_on_points('heap', variants, heap, attrs={'unripe': unripe})
     C.dome_base(R_DOME - 0.002, C.simple_material('base', (0.006, 0.002, 0.006), 0.9))
