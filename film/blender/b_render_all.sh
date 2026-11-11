@@ -61,7 +61,9 @@ render_one() {   # id key sources name extra...
   fi
   echo "$(date +%H:%M:%S) START $name" >> $LOG/queue.log
   local t0=$(date +%s)
-  if (cd $R/blender && flock $LOCK $PY flatlay.py --shot $id $OPTS "$@" --out $OUT/.tmp_$name.png --jpg $LOG/$name.jpg) > $LOG/$name.log 2>&1 \
+  # the lock is taken by flatlay itself (flock(2) on the same file) around the Cycles render only: the
+  # single-threaded scene build (10-60 s) does not block version A's queue
+  if (cd $R/blender && $PY flatlay.py --shot $id $OPTS --lock $LOCK "$@" --out $OUT/.tmp_$name.png --jpg $LOG/$name.jpg) > $LOG/$name.log 2>&1 \
        && [ -f $OUT/.tmp_$name.png ]; then
     mv -f $OUT/.tmp_$name.png $png
     [ -f $OUT/.tmp_${name}_layout.json ] && mv -f $OUT/.tmp_${name}_layout.json $OUT/${name}_layout.json

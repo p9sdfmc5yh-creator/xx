@@ -1697,6 +1697,8 @@ def parse_cli(argv=None):
     p.add_argument('--text', default=None, help='override the glyph string of a glyph/landing shot')
     p.add_argument('--ground', default=None, help="override the ground: a type name (paper|slate|walnut|linen) or a JSON dict")
     p.add_argument('--set', action='append', default=[], help='override a layout parameter: key=json (repeatable)')
+    p.add_argument('--lock', default=None, help='flock this file around the RENDER only (the scene is built outside the '
+                                                'machine-wide render lock, so the lock is held for the Cycles time only)')
     p.add_argument('--speed', default=os.environ.get('YSTY_B_SPEED', 'fast'),
                    help="render economy: 'fast' (default: Burley SSS, 2 diffuse / 3 glossy / 6 transmission bounces, "
                         "adaptive threshold 0.04) | 'full' (the settings of common.setup_scene)")
@@ -1857,7 +1859,19 @@ def main(argv=None):
 
     # ---- render
     speed_tweaks(scene, cli.speed, args)
-    r = C.render(args)
+    lock_f = None
+    if cli.lock:
+        import fcntl
+        lock_f = open(cli.lock, 'a')
+        t_lock = time.time()
+        fcntl.flock(lock_f, fcntl.LOCK_EX)
+        print('[lock] waited %.0f s for %s' % (time.time() - t_lock, cli.lock), flush=True)
+    try:
+        r = C.render(args)
+    finally:
+        if lock_f is not None:
+            fcntl.flock(lock_f, fcntl.LOCK_UN)
+            lock_f.close()
     gcol_ = shot.get('ground', {}).get('colour')
     if gcol_ is not None and shot.get('ground', {}).get('type', 'paper') == 'paper':
         gain = display_gain(gcol_, exposure) * float(shot.get('gain', 1.0))
