@@ -79,20 +79,21 @@ def face_material():
     din, dot, dotid, wet = m.attr('din'), m.attr('dot'), m.attr('dotid'), m.attr('wet')
     ring, stele = m.attr('ring'), m.attr('stele')
     mott = m.map_range(m.noise(scale=170, detail=2, roughness=0.55, vector=P), 0.3, 0.7)
-    cortex_c = m.mix((0.80, 0.655, 0.29), (0.86, 0.735, 0.39), mott)        # pale cream-yellow
-    stele_c = m.mix((0.77, 0.585, 0.185), (0.83, 0.665, 0.26), mott)        # a little deeper yellow
+    cortex_c = m.mix((0.80, 0.63, 0.19), (0.86, 0.71, 0.28), mott)        # pale cream-yellow
+    stele_c = m.mix((0.78, 0.565, 0.115), (0.84, 0.64, 0.17), mott)        # a little deeper yellow
     flesh = m.mix(cortex_c, stele_c, stele)
     celld = m.voronoi(scale=9500, feature='F1', vector=P)                   # juicy parenchyma cells
     flesh = m.mix(flesh, (0.62, 0.44, 0.11), m.map_range(celld, 0.36, 0.62, 0.0, 0.5))
     grain = m.noise(scale=26000, detail=2, roughness=0.6, vector=P)
     flesh = m.mix(flesh, (0.80, 0.48, 0.05), m.map_range(grain, 0.70, 0.80, 0.0, 0.75))   # oleoresin cells
-    flesh = m.mix(flesh, (0.93, 0.86, 0.60), m.map_range(grain, 0.20, 0.32, 0.5, 0.0))    # starch-pale specks
+    flesh = m.mix(flesh, (0.93, 0.84, 0.50), m.map_range(grain, 0.20, 0.32, 0.45, 0.0))    # starch-pale specks
     flesh = m.mix(flesh, (0.60, 0.50, 0.19), m.math('MULTIPLY', m.map_range(din, 0.2, 1.0, 1.0, 0.0, smooth=True), 0.5))
     flesh = m.mix(flesh, (0.47, 0.33, 0.08), m.math('MULTIPLY', ring, 0.8))
     flesh = m.mix(flesh, (0.50, 0.34, 0.09), m.math('MULTIPLY', dot, m.map_range(dotid, 0, 1, 0.5, 0.95)))
-    is_skin = D.skin_mask(m, P, din, thick=(0.10, 0.26))
+    is_skin = D.skin_mask(m, P, din, thick=(0.12, 0.30))
     skin_col = m.ramp(m.noise(scale=2600, detail=3, roughness=0.7, vector=P),
-                      [(0.25, (0.15, 0.095, 0.045)), (0.55, (0.36, 0.26, 0.14)), (0.80, (0.52, 0.41, 0.25))])
+                      [(0.25, (0.085, 0.050, 0.024)), (0.55, (0.22, 0.145, 0.07)), (0.80, (0.36, 0.26, 0.14))])
+    skin_col = m.mix(skin_col, (0.05, 0.03, 0.015), m.map_range(din, 0.0, 0.07, 0.7, 0.0))
     col = m.mix(flesh, skin_col, is_skin)
     r_fl = m.map_range(m.noise(scale=900, detail=2, vector=P), 0.3, 0.7, 0.38, 0.58)
     rough = m.mixf(m.mixf(r_fl, 0.72, dot), 0.85, is_skin)
@@ -110,9 +111,9 @@ def flake_material():
     m = C.Mat('ginger_skin_flake')
     P = m.coords('Object')
     n = m.noise(scale=2400, detail=4, roughness=0.65, vector=m.mapping(P, scale=(1.0, 1.0, 0.35)))
-    col = m.ramp(n, [(0.25, (0.20, 0.13, 0.06)), (0.55, (0.42, 0.31, 0.17)), (0.82, (0.58, 0.47, 0.30))])
+    col = m.ramp(n, [(0.25, (0.24, 0.16, 0.08)), (0.55, (0.46, 0.35, 0.20)), (0.82, (0.62, 0.52, 0.34))])
     m.set(base_color=col, roughness=0.75, normal=m.bump(n, 0.7, 0.00002))
-    D.translucent_sheet(m, (0.55, 0.38, 0.18), 0.35)
+    D.translucent_sheet(m, (0.70, 0.50, 0.24), 0.5)
     _MATS['flake'] = m
     return m
 
@@ -159,17 +160,17 @@ def main():
     b = F['bounds']
     tp = np.arctan2(pts[:, 0], pts[:, 1])
     ok = ((pts[:, 0] > b[0]) & (pts[:, 0] < b[1]) & (pts[:, 1] > b[2]) &
-          (np.hypot(pts[:, 0], pts[:, 1]) < ol.r(tp) - 0.0012) & (rng.random(len(pts)) < 0.16))
+          (np.hypot(pts[:, 0], pts[:, 1]) < ol.r(tp) - 0.0012) & (rng.random(len(pts)) < 0.12))
     fp = pts[ok]
     base = np.stack([fp[:, 0], fp[:, 1], F['height'](fp[:, 0], fp[:, 1]) - 4e-6], 1)
-    D.fibres('ginger_fibres', base, fibre_material(), length=(0.00015, 0.0009), radius=(0.000009, 0.000018),
+    D.fibres('ginger_fibres', base, fibre_material(), length=(0.00012, 0.0007), radius=(0.000008, 0.000016),
              lean=0.7, curl=0.6, seed=args.seed + 31)
-    D.flakes('ginger_flakes', ol, info, flake_material(), n=20, th_range=(-0.85, 0.85), width=(0.0004, 0.0016),
-             length=(0.0004, 0.0020), lift=(0.15, 1.1), curl=(-0.4, 1.5), z0=-0.00004, seed=args.seed + 9)
-    D.flakes('ginger_fray', ol, info, flake_material(), n=30, th_range=(-0.85, 0.85), width=(0.00008, 0.0003),
-             length=(0.0001, 0.0005), lift=(0.3, 1.4), curl=(-0.6, 1.2), z0=-0.00003, seed=args.seed + 19)
+    D.flakes('ginger_flakes', ol, info, flake_material(), n=12, th_range=(-0.85, 0.85), width=(0.0003, 0.0010),
+             length=(0.0004, 0.0013), lift=(-0.1, 0.45), curl=(-0.2, 0.9), z0=-0.00004, seed=args.seed + 9)
+    D.flakes('ginger_fray', ol, info, flake_material(), n=24, th_range=(-0.85, 0.85), width=(0.00006, 0.00022),
+             length=(0.0001, 0.0004), lift=(0.2, 1.2), curl=(-0.6, 1.2), z0=-0.00003, seed=args.seed + 19)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.2)
-    D.lights(info, tint=(0.80, 0.90, 1.0), key=0.42, fill=0.50, rim=0.9, top=0.15, sheen=1.2, sheen_size=0.6,
+    D.lights(info, tint=(0.90, 0.95, 1.0), key=0.42, fill=0.50, rim=0.9, top=0.15, sheen=1.2, sheen_size=0.6,
              sheen_az=-9, sheen_el=28)
     D.finish(args, SHOT)
 

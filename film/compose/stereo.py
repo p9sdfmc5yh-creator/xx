@@ -60,7 +60,10 @@ Cycles' Z pass is one un-filtered sample per pixel: hard, aliased edges that are
 the depth-of-field blur and sprinkled with single-pixel misses.  Before use the disparity is
     1. extended into pixels without depth (nearest valid neighbour) - the anti-aliased / defocused
        alpha fringe of a foreground layer travels with its own object;
-    2. despeckled (5x5 median passes);
+    2. averaged where it is dithered (= out of focus): the mean of the dither is a soft ramp just
+       as wide as the blur of the colour image, so a defocused edge is stretched / compressed
+       instead of being cut inside its own blur (no ghost contours); stray pixels are removed
+       elsewhere (conditional median: thin stems survive);
     3. edge-preservingly smoothed (self-guided filter): steps smaller than `soft_step` px become
        gentle ramps (a sub-pixel "rubber sheet", invisible, and it averages the DOF dither into
        the soft ramp the colour image has), bigger steps stay perfectly hard;
@@ -112,7 +115,9 @@ DEFAULTS = dict(
     pct=(0.2, 99.8),    # near / far depth percentiles that define the range
     knee=0.15,          # soft-clip of the outliers beyond the percentiles (fraction of the range)
     # --- conditioning ---------------------------------------------------------------------
-    despeckle=2,        # 5x5 median passes
+    defocus_win=1 / 427.0,   # window (9 px at 4K) in which Z-pass dither is detected
+    defocus_sigma=1 / 1100.0,   # gaussian sigma (3.5 px at 4K) of the mean taken in dithered zones
+    despeckle=2,        # stray-pixel removal passes
     soft_step=0.0008,   # steps below ~3 px (4K) become ramps
     soft_radius=1 / 640.0,   # radius of that smoothing (6 px at 4K)
     dilate=1 / 1920.0,  # foreground dilation at hard steps (2 px at 4K)
@@ -216,6 +221,66 @@ def _fill_invalid(d, valid):
     return lut[lab]
 
 
+def _isolated(d, tau):
+    """Pixels that are strict local extrema against all 4 neighbours by more than tau - the
+    signature of a single-sample Z pass dithered by depth of field (and of stray misses)."""
+    H, W = d.shape
+    c = d[1:-1, 1:-1]
+    l, r = c - d[1:-1, :-2], c - d[1:-1, 2:]
+    u, b = c - d[:-2, 1:-1], c - d[2:, 1:-1]
+    mn = np.minimum(np.minimum(l, r), np.minimum(u, b))
+    mx = np.maximum(np.maximum(l, r), np.maximum(u, b))
+    iso = np.zeros((H, W), bool)
+    iso[1:-1, 1:-1] = (mn > tau) | (mx < -tau)
+    return iso
+
+
+def _despeckle(d, tau, passes=1):
+    """Remove stray pixels: a pixel that differs from the 5x5 median by more than tau AND has at
+    most one 8-neighbour like itself is replaced by the median.  Thin lines (>= 2 like
+    neighbours) survive, unlike with a plain median."""
+    H, W = d.shape
+    for _ in range(max(0, passes)):
+        med = cv2.medianBlur(d, 5)
+        ys, xs = np.nonzero(np.abs(d - med)[1:-1, 1:-1] > tau)
+        if ys.size == 0:
+            break
+        ys += 1
+        xs += 1
+        c = d[ys, xs]
+        sup = np.zeros(ys.size, np.int32)
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if dy or dx:
+                    sup += np.abs(d[ys + dy, xs + dx] - c) <= tau
+        k = sup <= 1
+        if not k.any():
+            break
+        d = d.copy()
+        d[ys[k], xs[k]] = med[ys[k], xs[k]]
+    return d
+
+
+def _defocus_soften(d, tau, win, sigma):
+    """Where the Z pass is DITHERED (out-of-focus edges: each pixel saw the scene through one
+    random point of the aperture) the right disparity is the local mean of the dither - a soft
+    ramp exactly as wide as the blur of the colour image, so the blurred edge is stretched /
+    compressed between the eyes instead of being cut inside its own blur (which would leave a
+    ghost contour).  Clean (in-focus) edges are not touched.  Returns (d, weight map)."""
+    iso = _isolated(d, tau)
+    if win < 3 or np.count_nonzero(iso) < 16:
+        return d, None
+    win |= 1
+    rho = cv2.blur(iso.astype(np.float32), (win, win))        # density of isolated pixels
+    w = np.clip((rho - 1.5 / (win * win)) / (2.5 / (win * win)), 0.0, 1.0)   # 1 speck: 0, >= 4: 1
+    if not w.any():
+        return d, None
+    w = cv2.dilate(w, np.ones((win, win), np.uint8))
+    w = cv2.GaussianBlur(w, (0, 0), sigma)
+    mean = cv2.GaussianBlur(d, (0, 0), sigma, borderType=cv2.BORDER_REPLICATE)
+    return d + w * (mean - d), w
+
+
 def _soften_small_steps(d, radius, step):
     """Self-guided (edge-preserving) smoothing: steps << `step` px are blurred into ramps of
     ~2*radius px, steps >> `step` stay hard."""
@@ -292,8 +357,9 @@ def _dilate_near(d, radius, thr):
 
 def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
                          sky_px=None, far_px=None, near_px=None, fg_share=None,
-                         pct=None, knee=None, despeckle=None, soft_step=None, soft_radius=None,
-                         dilate=None, cut=None, sky_max=None, near_max=None, return_info=False):
+                         pct=None, knee=None, defocus=True, despeckle=None, soft_step=None,
+                         soft_radius=None, dilate=None, cut=None, sky_max=None, near_max=None,
+                         return_info=False):
     """Camera-space depth (metres, 0 / nan / inf = no geometry) -> signed disparity in pixels.
 
     disparity = x_right - x_left = k * (1/z_conv - 1/z): 0 on the screen plane, > 0 behind it,
@@ -321,7 +387,8 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
     max_px, sky_px, far_px, near_px   parallaxes in pixels of THIS image (defaults scale with
               the width; near_px is negative for "in front").
     pct, knee robust range: depth percentiles (0.2, 99.8) and the soft-clip of what lies beyond.
-    despeckle, soft_step, soft_radius, dilate, cut    conditioning, see the module docstring.
+    defocus, despeckle, soft_step, soft_radius, dilate, cut    conditioning, see the module
+              docstring (defocus=False skips the dither -> soft ramp step).
 
     Returns float32 (H, W); with return_info=True also a dict:
         sky_px, near_px, far_px (farthest foreground / ground), k (px*m), conv (m), z_near,
@@ -339,6 +406,8 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
     soft_step = _px(soft_step, Dd['soft_step'], W)
     soft_radius = int(round(_px(soft_radius, Dd['soft_radius'], W)))
     dil = int(np.ceil(_px(dilate, Dd['dilate'], W) - 1e-6))
+    dwin = int(round(Dd['defocus_win'] * W))
+    dsig = max(1.0, Dd['defocus_sigma'] * W)
     sky_max = _px(sky_max, Dd['sky_max'], W)
     near_max = _px(near_max, Dd['near_max'], W)
 
@@ -423,8 +492,8 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
         d[hi_m] = far + kn_far * np.tanh((d[hi_m] - far) / max(kn_far, 1e-6)) if kn_far > 0 else far
 
     d = _fill_invalid(d, valid)
-    for _ in range(max(0, despeckle)):
-        d = cv2.medianBlur(d, 5)
+    d, wdef = _defocus_soften(d, 0.5 * cut, dwin, dsig) if defocus else (d, None)
+    d = _despeckle(d, 0.5 * cut, despeckle)
     d = _soften_small_steps(d, soft_radius, soft_step)
     d = _dilate_near(d, dil, cut)
     d = np.ascontiguousarray(d, np.float32)

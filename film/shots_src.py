@@ -40,10 +40,12 @@ SHOTS = [
            "with irregular longitudinal wrinkles and shrivel folds (real displacement), semi-gloss waxy sheen with broken highlights along wrinkle crests, flesh slightly translucent (warm SSS glow at thin edges). "
            "One end carries a small pale yellowish-white stem scar (果梗痕) dot ~1 mm; a few berries keep a short brown stem. Colour varies berry to berry (crimson, orange-red, a few darker brownish). "
            "Faint bumps where the flat seeds press under the skin."),
- dict(id='m03_dazao', cn='大枣', en='dried red jujube (Chinese date)', start=480, end=496, kind='surface', text='dark', label_big='大枣',
-      look="Macro across real dried red jujubes: the top of a big hero jujube forms the horizon arc (other jujubes may sit beside/behind, soft). Skin: deep maroon / wine red-brown, thin glossy cuticle with sharp but broken specular highlights, "
-           "strongly wrinkled: broad irregular shrivel folds plus fine secondary crinkles, slightly paler red-orange on fold crests, almost black-red in creases, tiny pale lenticel specks, a little dust. "
-           "Thin skin shows slight translucency at grazing light. If an end is visible: sunken stem cavity with a short woody stem. It must NOT look like red cloth/leather sheet."),
+ dict(id='m03_dazao', cn='大枣', en='whole dried red jujubes (Chinese dates)', start=480, end=496, kind='pile', text='dark', label_big='大枣', item_mm=38,
+      look="A mound of WHOLE dried red jujubes (红枣), exactly as everyone knows them from the kitchen - individual fruits must be clearly readable (the user rejected an abstract wrinkled macro surface as looking 'like a monkey brain'). "
+           "Each fruit a plump oval / oblong 3-4.5 cm long and 2-2.8 cm thick, slightly irregular and a little flattened where it rests. Skin deep red to maroon-red with a thin glossy cuticle; "
+           "shrivelled into BROAD, SHALLOW, smooth-rounded wrinkles and dimples like a slightly deflated skin (never dense brain-like convolutions, no deep narrow grooves), slightly paler orange-red on the ridges, darker in the hollows, "
+           "soft broad highlights broken up by the wrinkles, a few tiny pale specks and a little dust. One end has a sunken stem cavity (some keep a short woody brown stem), the other a tiny pointed style scar. "
+           "Fruit-to-fruit variation in size, shape and redness; one or two fruits split open showing tan spongy flesh. Whole jujubes form the bumpy horizon against the cream sky."),
  dict(id='m04_shengjiang', cn='生姜', en='fresh ginger (cut cross-section)', start=496, end=512, kind='disc', text='light', label_big='生姜',
       look="Macro across the freshly cut face of a ginger rhizome. Flesh: pale yellow to cream-yellow, juicy/moist with wet glints, visibly fibrous: many tiny vascular bundle dots and short fibre ends (slightly darker yellow), "
            "a distinct thin ring (endodermis) at ~75-80% radius separating cortex from the denser-dotted central stele. Thin corky skin at the far rim: beige-tan, papery, slightly peeling flakes. "

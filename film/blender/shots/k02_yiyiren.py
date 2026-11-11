@@ -43,11 +43,11 @@ def coix_arrays(seed, broken=False, nu=150, nv=210):
     Z = c * dz * r * k
     Z = np.where(Z < 0, Z * rng.uniform(0.62, 0.78), Z)              # flatter ventral side
     # wide deep ventral groove, widest at the base, dying out before the apex, slightly meandering
-    gw = rng.uniform(0.17, 0.24) * Wd * (1.0 + 0.30 * np.clip(-X / a, -1, 1))
+    gw = rng.uniform(0.15, 0.19) * Wd * (1.0 + 0.25 * np.clip(-X / a, -1, 1))
     yc = 0.06 * Wd * np.sin(X / a * rng.uniform(1.0, 2.2) + rng.uniform(0, 6)) + rng.normal(0, 0.03) * Wd
     win = C.smoothstep(rng.uniform(0.70, 0.88) * a, 0.35 * a, X)
-    g = np.exp(-((Y - yc) / gw) ** 2) * win * C.smoothstep(0.05, -0.25, dz)
-    gd = rng.uniform(0.30, 0.44) * Th
+    g = np.exp(-((Y - yc) / gw) ** 4) * win * C.smoothstep(0.05, -0.25, dz)      # U-shaped furrow
+    gd = rng.uniform(0.22, 0.32) * Th
     Z = Z + gd * g
     floor = C.smoothstep(0.30, 0.75, g)
     # hilum: brown dot at the base, just ventral of the pole, slightly sunken
@@ -62,7 +62,7 @@ def coix_arrays(seed, broken=False, nu=150, nv=210):
         verts, frac = S.clip_plane(verts, n, rng.uniform(-0.1, 0.3) * a, rough=1.2e-4, freq=1400.0, seed=seed)
     verts, hs = S.finish(verts, 0.97)
     # yellow-brown seed-coat remnants: thin flakes, mostly beside the groove and at the base
-    amt = rng.choice([0.0, 0.15, 0.3, 0.6], p=[0.35, 0.3, 0.2, 0.15])
+    amt = rng.choice([0.0, 0.15, 0.3, 0.6], p=[0.50, 0.28, 0.16, 0.06])
     cn = S.norm01(C.fbm3(d * 3.2 + off + 40.0, 3, seed=seed + 40))
     near = np.clip(1.6 * np.exp(-((np.abs(Y - yc) - 1.5 * gw) / (1.2 * gw)) ** 2) * (dz < 0.2) * win + 0.6 * np.exp(-(ah / 0.6) ** 2), 0, 1)
     coat = C.smoothstep(0.80 - 0.30 * amt, 0.90 - 0.30 * amt, cn * (0.55 + 0.45 * near)) * (amt > 0)
@@ -97,7 +97,7 @@ def coix_material():
     # seed-coat remnants, hilum, chalky fracture
     cn = m.noise(scale=2400, detail=3, roughness=0.6, vector=P)
     coat = m.math('MULTIPLY', A('coat'), m.map_range(cn, 0.30, 0.55, 0.45, 1.0))
-    col = m.mix(col, m.mix((0.430, 0.250, 0.085), (0.250, 0.120, 0.040), cn), m.math('MULTIPLY', coat, 0.85))
+    col = m.mix(col, m.mix((0.520, 0.350, 0.150), (0.330, 0.180, 0.060), cn), m.math('MULTIPLY', coat, 0.60))
     col = m.mix(col, (0.150, 0.070, 0.030), A('hil'))
     frac = A('frac')
     col = m.mix(col, m.mix((0.720, 0.700, 0.640), (0.800, 0.790, 0.750), dn), frac)
@@ -107,8 +107,8 @@ def coix_material():
     rough = m.mixf(rough, 0.70, A('groove'))
     rough = m.mixf(rough, 0.92, frac)
     nrm = m.bump(gs, strength=m.mixf(0.0, 0.8, A('groove')), distance=0.00006)
-    mic = m.noise(scale=6500, detail=3, roughness=0.62, vector=P)
-    nrm = m.bump(mic, strength=m.mixf(0.55, 1.0, frac), distance=m.mixf(0.000016, 0.00006, frac), normal=nrm)
+    mic = m.noise(scale=5200, detail=4, roughness=0.66, vector=P)
+    nrm = m.bump(mic, strength=m.mixf(0.75, 1.0, frac), distance=m.mixf(0.000028, 0.00006, frac), normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.50, specular=0.36,
           sss=m.mixf(0.62, 0.25, m.math('MAXIMUM', coat, A('groove'))), sss_radius=(1.0, 0.82, 0.60), sss_scale=0.0010,
           sheen=0.10, sheen_roughness=0.5, normal=nrm)
