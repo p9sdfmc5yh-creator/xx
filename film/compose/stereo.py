@@ -666,7 +666,7 @@ def _warp_map_right(D, cut):
         u[hidx] = um
         # A THIN near object (a stem, a petal edge) with a farther surface on its other side
         # (pixel `xo`): its narrow hole gets a smooth fill instead of a mirrored one (see
-        # _hole_base_correction).  beta = 1 for objects up to 4x as wide as the hole (measured
+        # _fill_holes).  beta = 1 for objects up to 4x as wide as the hole (measured
         # along the row, so a slanted stem counts with its horizontal extent), 0 from 8x.
         jn = np.where(useR, jl, jr).astype(np.int64)          # near neighbour's source pixel
         hasN = np.where(useR, hasL, hasR)
@@ -680,11 +680,11 @@ def _warp_map_right(D, cut):
         span = np.abs(jb - xo).astype(f32)
         hlen = (fe - fs + 1).astype(f32)
         beta = np.where(okb, np.clip((8.0 * hlen - span) / (4.0 * hlen), 0.0, 1.0), 0.0).astype(f32)
-        tau = np.clip(t / np.maximum(span[rid], 1.0), 0.0, 1.0).astype(f32)
         holes = dict(idx=hidx, row0=row0[rid], c0=np.rint(ub[rid]).astype(np.int64),
                      cm=np.rint(um).astype(np.int64), lo=lo[rid].astype(np.int64),
                      hi=hi[rid].astype(np.int64), t=t, xo=xo[rid].astype(np.int64),
-                     sg=np.where(useR, 1, -1).astype(np.int64)[rid], beta=beta[rid], tau=tau)
+                     sg=np.where(useR, 1, -1).astype(np.int64)[rid], beta=beta[rid],
+                     hl=hlen[rid])
     return u.reshape(H, W), holes
 
 
@@ -758,16 +758,20 @@ def _fill_holes(out, src, D, u, holes, radius, cut, structure=True, min_t=1.5):
             hole = hole.reshape(H, W)
             ui = np.clip(np.rint(u), 0, W - 1).astype(np.int64)
             Dt = np.take_along_axis(D, ui, 1)                 # disparity of what each target pixel shows
-            R = int(min(float(holes['t'][use].max()), 96.0)) + 3
-            q = 4
-            Hq, Wq = (H + q - 1) // q, (W + q - 1) // q
-            dh = np.full((Hq * q, Wq * q), -1e9, np.float32)
-            dh[:H, :W] = np.where(hole, Dt, np.float32(-1e9))
-            dh = dh.reshape(Hq, q, Wq, q).max(axis=(1, 3))    # far-side disparity of the holes nearby
-            k = 2 * ((R + q - 1) // q + 1) + 1
-            dh = cv2.dilate(dh, np.ones((k, k), np.uint8), borderType=cv2.BORDER_REPLICATE)
-            dh = np.repeat(np.repeat(dh, q, 0), q, 1)[:H, :W]
-            mask = (hole | (Dt < dh - np.float32(cut))).astype(np.uint8)
+            # every pixel -> its nearest hole pixel (distance, that hole's width and far disparity)
+            dist, lab = cv2.distanceTransformWithLabels((~hole).astype(np.uint8), cv2.DIST_L2, 3,
+                                                        labelType=cv2.DIST_LABEL_PIXEL)
+            hl = np.zeros(H * W, np.float32)
+            hl[idx] = holes['hl']
+            n_lab = int(lab.max()) + 1
+            lut_h = np.zeros(n_lab, np.float32)
+            lut_d = np.zeros(n_lab, np.float32)
+            lh = lab[hole]
+            lut_h[lh] = hl.reshape(H, W)[hole]
+            lut_d[lh] = Dt[hole]
+            # mask what is NEARER than that hole's far side and close enough to reach it first
+            near = (dist <= lut_h[lab] + 3.0) & (Dt < lut_d[lab] - np.float32(cut))
+            mask = (hole | near).astype(np.uint8)
             base = np.empty((int(use.sum()), C), np.float32)
             src_v = out if C > 1 else out[..., None]
             for c in range(C):
