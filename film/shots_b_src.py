@@ -155,7 +155,7 @@ for i, (bid, src, label, col, nlen) in enumerate(WREATHS):
 THIN_CH = {'药': 0.16, '食': 0.24, '同': 0.10, '源': 0.24}
 #   id, source, small label, glyph, ground, strokes in item widths, item scale, extra params
 GLYPHS = [
- ('b15', 'k01_fuling',     '茯苓',   '药', TERRACOTTA, 3.4, 1.0, 'flat'),
+ ('b15', 'k01_fuling',     '茯苓',   '药', TERRACOTTA, 4.3, 1.0, 'flat'),
  ('b16', 'k02_yiyiren',    '薏苡仁', '药', TEAL,       5.0, 1.0, 'seed'),
  ('b17', 'k03_guiyuan',    '桂圆',   '药', CREAM,      3.3, 1.0, 'ball'),
  ('b18', 'k04_heizhima',   '黑芝麻', '药', PEACH,      9.0, 1.0, 'seed'),
@@ -167,10 +167,10 @@ GLYPHS = [
  ('b24', 'k10_jianghuang', '姜黄',   '同', DEEP_TEAL,  3.3, 1.0, 'flat'),
  ('b25', 'k11_shaji',      '沙棘',   '同', MINT,       4.6, 1.0, 'seed'),
  ('b26', 'k12_juemingzi',  '决明子', '同', CREAM,      8.0, 1.0, 'seed'),
- ('b27', 'k13_luohanguo',  '罗汉果', '源', PALE_BLUE,  3.0, 1.0, 'ball'),
- ('b28', 'k14_rougui',     '肉桂',   '源', PALE_SAGE,  3.0, 1.0, 'ball'),
+ ('b27', 'k13_luohanguo',  '罗汉果', '源', PALE_BLUE,  3.3, 1.0, 'ball'),
+ ('b28', 'k14_rougui',     '肉桂',   '源', PALE_SAGE,  4.4, 0.75, 'ball'),
  ('b29', 'k15_qianshi',    '芡实',   '源', MAUVE,      5.0, 1.0, 'seed'),
- ('b30', 'k16_lingzhi',    '灵芝',   '源', OCHRE,      2.6, 1.0, 'flat'),
+ ('b30', 'k16_lingzhi',    '灵芝',   '源', OCHRE,      3.0, 1.0, 'flat'),
 ]
 # pouring passes per kind of item: 'seed' = small grains (a real little mound), 'ball' = big thick items
 # (ONE clean layer + a few on top: a second layer of whole fruits only blurs the strokes), 'flat' = slices / leaves
@@ -200,7 +200,7 @@ SCENES.append(dict(
     ground=paper(WHITE, grid=dict(type='square', pitch_m=0.0281, line_m=0.00065, colour=GRID_INK, opacity=0.30, major=0),
                  fibres=1.0, cloud=0.035),
     frame_width_m=0.90, lock_width=True, seed=77, text_mode='dark', exposure=EXPO,
-    params=dict(centre=[0.50, 0.40], width=0.80, font=FONT, thin=0.18, tracking=0.10, strays=0.004, stroke_items=3.6,
+    params=dict(centre=[0.50, 0.40], width=0.80, font=FONT, thin=0.18, tracking=0.10, strays=0.004, stroke_items=3.0,
                 edge_tol=0.12, engine='packed', passes=PASSES['seed']),
     reveal=dict(per_char_frames=8, order='药食同源', empty_variant='--empty  ->  renders_b/b31_empty.png'),
     note='the four characters poured from dried goji berries (vermilion on warm white paper with a faint ruled grid, '

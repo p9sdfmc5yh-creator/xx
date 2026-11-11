@@ -1,0 +1,32 @@
+{
+ "shot": "b06_gouqi",
+ "layout": "wreath",
+ "frame_width_m": 0.26368801055412316,
+ "frame_height_m": 0.1483245059366943,
+ "items": [
+  "m02_gouqi"
+ ],
+ "seed": 21,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.14691189159444004,
+  0.14691189159444004,
+  -0.08923013928572562,
+  0.08923013928572562
+ ],
+ "n_items": 595,
+ "layers_max": 2,
+ "heap_top_mm": 9.648063659667969,
+ "display_gain": 1.1246,
+ "render_seconds": 351.9,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

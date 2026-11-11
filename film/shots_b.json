@@ -666,7 +666,7 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 1.389,
+   "frame_width_m": 1.756,
    "lock_width": true,
    "seed": 40,
    "text_mode": "light",
@@ -681,7 +681,7 @@
     "thin": 0.2,
     "strays": 0.008,
     "stray_reach": 2.5,
-    "stroke_items": 3.4,
+    "stroke_items": 4.3,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
@@ -1281,7 +1281,7 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 4.532,
+   "frame_width_m": 4.986,
    "lock_width": true,
    "seed": 52,
    "text_mode": "dark",
@@ -1296,7 +1296,7 @@
     "thin": 0.27999999999999997,
     "strays": 0.008,
     "stray_reach": 2.5,
-    "stroke_items": 3.0,
+    "stroke_items": 3.3,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
@@ -1333,7 +1333,7 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 2.389,
+   "frame_width_m": 2.628,
    "lock_width": true,
    "seed": 53,
    "text_mode": "dark",
@@ -1348,7 +1348,7 @@
     "thin": 0.27999999999999997,
     "strays": 0.008,
     "stray_reach": 2.5,
-    "stroke_items": 3.0,
+    "stroke_items": 4.4,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
@@ -1363,7 +1363,8 @@
       "fill": 0.12
      }
     ]
-   }
+   },
+   "item_scale": 0.75
   },
   {
    "id": "b29_qianshi",
@@ -1436,7 +1437,7 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 4.476,
+   "frame_width_m": 5.165,
    "lock_width": true,
    "seed": 55,
    "text_mode": "dark",
@@ -1451,7 +1452,7 @@
     "thin": 0.27999999999999997,
     "strays": 0.008,
     "stray_reach": 2.5,
-    "stroke_items": 2.6,
+    "stroke_items": 3.0,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
@@ -1514,7 +1515,7 @@
     "thin": 0.18,
     "tracking": 0.1,
     "strays": 0.004,
-    "stroke_items": 3.6,
+    "stroke_items": 3.0,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
