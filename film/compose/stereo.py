@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Stereoscopic 3D synthesis for the 《药食同源》 films (numpy / scipy-free core / cv2).
+"""Stereoscopic 3D synthesis for the 《药食同源》 films (numpy + cv2 only).
 
 Both films are built from layers whose depth is known exactly, so a clean left / right pair is
 synthesised from ONE render per shot (depth-image-based rendering, DIBR):
@@ -8,39 +8,57 @@ synthesised from ONE render per shot (depth-image-based rendering, DIBR):
     Version A frame = sky plate (infinity) + 3D foreground still (RGBA + camera depth) + text
     Version B frame = one opaque top-down still with a full-frame depth map            + text
 
-Public API (all images float32 sRGB 0..1 unless noted; uint8 / uint16 inputs are normalised)
----------------------------------------------------------------------------------------------
+Public API (all images float32 sRGB 0..1; uint8 / uint16 inputs are normalised)
+-------------------------------------------------------------------------------
     disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A'|'B', ...)
         -> signed disparity map in pixels, float32 (H, W)   [+ info dict with return_info=True]
            disparity = x_right - x_left.  0 = screen plane, > 0 behind the screen, < 0 in front.
     synth_view(img, disparity, eye=-1|+1, ...)
         -> the layer re-projected for the left (-1) / right (+1) eye: every pixel moves by
            eye * disparity / 2 (symmetric pair).  Occlusion-correct, hole-free.
-    synth_pair(img, disparity, ...)            -> (left, right)   (two synth_view calls, threaded)
+    synth_pair(img, disparity, ...)            -> (left, right)
+
     stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, ...)  -> (left_rgb, right_rgb)
     stereo_pair_B(rgb, depth, text_rgba=None, ...)                  -> (left_rgb, right_rgb)
+      ... which are just   compose_A(sky, prepare_A(fg_rgba, fg_depth), text)
+                           compose_B(prepare_B(rgb, depth), text)
+      prepare_* = the expensive, per-SHOT part (disparity + the two warped views; the still does
+      not change during a shot), compose_* = the cheap per-FRAME part (sky, text, window).
+      zoom_prep(prep, zoom) applies the film's 2D push-in to a prepared pair.
+
     pack_sbs(left, right, mode='half'|'full')  -> side-by-side frame (left eye on the left)
     pack_anaglyph(left, right, method='dubois'|'gray')              -> red-cyan anaglyph
-    floating_window(left, right, disparity, alpha=None)  -> pair with the frame edges masked where
-           content in front of the screen is cut by the left / right frame edge
-    safe_text_disparity(text_alpha, disparity, ...)      -> disparity that keeps text in front of
+    floating_window(left, right, disparity, alpha=None)  -> the pair with the lateral frame edges
+           masked where content in front of the screen is cut by the frame
+    safe_text_disparity(text_alpha, disparity, ...)      -> parallax that keeps a text in front of
            whatever it covers
-    shift_x(img, dx)                           -> layer shifted horizontally (uniform disparity)
+    shift_x(img, dx)                           -> layer shifted horizontally (uniform parallax)
+    disparity_preview(disparity, ...)          -> colour-coded QC picture
+
+Typical use
+-----------
+    import stereo
+    prep = stereo.prepare_A(fg_rgba, fg_depth)                 # once per shot (~2 s at 4K)
+    for f in frames:                                            # ~0.5 s per frame at 4K
+        p = stereo.zoom_prep(prep, zoom[f])                     # optional push-in
+        L, R = stereo.compose_A(sky[f], p, text_layer[f])
+        frame = stereo.pack_sbs(L, R, 'half')                   # 3840x2160 half-SBS
 
 Sign / geometry conventions
 ---------------------------
     x_left  = x - d/2          x_right = x + d/2          d = k * (1/z_conv - 1/z)
-    (a parallel-axis stereo camera with sensor shift: disparity is exactly linear in 1/z, there
-    is no vertical parallax and no keystone.)  Far things have d > 0 and appear behind the
-    screen, near things d < 0 and float in front of it.
+    This is exactly what a parallel-axis stereo camera with sensor shift records (base
+    b = k / focal_px, screen plane at z_conv): disparity linear in 1/z, no vertical parallax, no
+    keystone.  Far things have d > 0 and appear behind the screen, near things d < 0 and float in
+    front of it.  (Checked against true Cycles left / right renders, see the report.)
 
 How a view is synthesised (synth_view)
 --------------------------------------
-Rows are independent (pure horizontal parallax).  For the right eye a source pixel centre j of a
-row lands at g_j = j + d_j/2.  Neighbouring pixels whose disparity differs by <= `cut` px form a
-connected surface segment; a bigger jump is a depth discontinuity (the two pixels are separate
-surfaces, each owning its own +-0.5 px footprint).  Every target pixel is covered by zero, one or
-several such pieces:
+Rows are independent (pure horizontal parallax).  For the right eye the centre of source pixel j
+lands at g_j = j + d_j/2.  Neighbouring pixels form a connected surface segment unless the step
+between them is a depth discontinuity (`_jumps`: larger than `cut` px AND not part of a slope);
+at a discontinuity the two pixels are separate surfaces, each owning its own +-0.5 px.
+Every target pixel is covered by zero, one or several such pieces:
     several -> the nearest wins.  For a horizontal-parallax warp "nearest" is exactly "rightmost
                in the source" for the right eye (McMillan's occlusion-compatible order), so the
                z-buffer is one scatter-max of the source index;
@@ -51,8 +69,8 @@ several such pieces:
                the hole edge (so a contact-shadow gradient is extended, not reflected into a
                bright halo).
 The image itself is then sampled ONCE at the fractional source coordinates with a Lanczos-4 (or
-bicubic) kernel by cv2.remap, so there are no splat cracks, no stair-steps and no double
-resampling.  The left eye is the same algorithm on the mirrored row.
+bicubic) kernel by cv2.remap: no splat cracks, no stair-steps, no double resampling.  The left
+eye is the same algorithm on the mirrored row.  RGBA layers are warped premultiplied.
 
 Depth conditioning (disparity_from_depth)
 -----------------------------------------
@@ -65,14 +83,11 @@ the depth-of-field blur and sprinkled with single-pixel misses.  Before use the 
        instead of being cut inside its own blur (no ghost contours); stray pixels are removed
        elsewhere (conditional median: thin stems survive);
     3. edge-preservingly smoothed (self-guided filter): steps smaller than `soft_step` px become
-       gentle ramps (a sub-pixel "rubber sheet", invisible, and it averages the DOF dither into
-       the soft ramp the colour image has), bigger steps stay perfectly hard;
+       gentle ramps (a sub-pixel "rubber sheet", invisible), bigger steps stay perfectly hard;
     4. foreground-dilated by `dilate` px at the remaining hard steps, so the mixed (anti-aliased)
        edge pixels and a thin ring of background ride with the near object: every seam created
        by the warp is then background-against-background, i.e. invisible, and no ghost contour
        is left behind on the far side.
-
-Performance (3840x2160, 2 threads on a loaded 4-core box): see `stereo.py bench`.
 
 CLI
 ---
@@ -81,6 +96,7 @@ CLI
     stereo.py selftest                 brute-force check of the warp engine + synthetic B scene
     stereo.py pair-a --fg F.png --depth F_depth.npy [--sky S.png] [--text T.png] --out O.jpg
     stereo.py pair-b --rgb F.png --depth F_depth.npy [--text T.png] --out O.jpg
+                     [--format half|full|anaglyph|pair]
 """
 import os
 import sys
@@ -92,8 +108,9 @@ import numpy as np
 import cv2
 
 __all__ = ['disparity_from_depth', 'synth_view', 'synth_pair', 'stereo_pair_A', 'stereo_pair_B',
-           'prepare_A', 'compose_A', 'prepare_B', 'compose_B', 'zoom_prep', 'pack_sbs', 'pack_anaglyph', 'floating_window', 'safe_text_disparity', 'shift_x',
-           'srgb_to_linear', 'linear_to_srgb', 'to_float', 'disparity_preview', 'DEFAULTS']
+           'prepare_A', 'compose_A', 'prepare_B', 'compose_B', 'zoom_prep', 'pack_sbs',
+           'pack_anaglyph', 'floating_window', 'safe_text_disparity', 'shift_x', 'srgb_to_linear',
+           'linear_to_srgb', 'to_float', 'disparity_preview', 'DEFAULTS']
 
 # ----------------------------------------------------------------------------------------------
 # Defaults.  Every length is a FRACTION OF THE FRAME WIDTH so that 1920-px drafts and 3840-px
@@ -400,7 +417,8 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
 
     Returns float32 (H, W); with return_info=True also a dict:
         sky_px, near_px, far_px (farthest foreground / ground), k (px*m), conv (m), z_near,
-        z_far, min_px, max_px (actual range on valid pixels), width, mode, valid (bool mask).
+        z_far, min_px, max_px (actual range on valid pixels), fg_share, width, mode, valid
+        (bool mask), defocus_frac (share of the geometry whose Z pass was found dithered).
     """
     Dd = DEFAULTS
     z = np.asarray(depth, np.float32)
@@ -522,11 +540,14 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
         return d
     dv = d[stat]
     conv_inv = inv_near + near / k
+    dfrac = float(np.count_nonzero((wdef > 0.5) & stat)) / max(1, int(np.count_nonzero(stat))) \
+        if wdef is not None else 0.0
     info = dict(sky_px=float(sky), near_px=float(near), far_px=float(far), k=float(k),
                 conv=float(1.0 / conv_inv) if conv_inv > 1e-9 else float('inf'),
                 z_near=float(1.0 / inv_near), z_far=float(1.0 / inv_far),
                 min_px=float(dv.min()), max_px=float(dv.max()), width=W, mode=mode, valid=valid,
-                fg_share=float((far - near) / max(sky - near, 1e-9)) if mode == 'A' else 1.0)
+                fg_share=float((far - near) / max(sky - near, 1e-9)) if mode == 'A' else 1.0,
+                defocus_frac=dfrac)
     return d, info
 
 
@@ -848,34 +869,129 @@ def floating_window(left, right, disparity, alpha=None, *, margin=1.15, band=Non
 # ==============================================================================================
 # stereo pairs
 # ==============================================================================================
-def _over_text(rgb, text, linear):
-    """rgb (H, W, 3) sRGB, text (H, W, 4) straight-alpha sRGB -> rgb with the text 'over'."""
-    if text is None:
-        return rgb
-    a = text[..., 3]
-    ys, xs = np.nonzero(a.max(axis=1))[0], np.nonzero(a.max(axis=0))[0]
-    if ys.size == 0:
-        return rgb
-    y0, y1, x0, x1 = ys[0], ys[-1] + 1, xs[0], xs[-1] + 1
-    dst = rgb[y0:y1, x0:x1]
-    t = text[y0:y1, x0:x1]
+def _over_tile(rgb, tile, x0, y0, linear):
+    """'over' a straight-alpha sRGB RGBA tile onto rgb (H, W, 3) at integer (x0, y0), in place."""
+    H, W = rgb.shape[:2]
+    h, w = tile.shape[:2]
+    sx0, sy0 = max(0, -x0), max(0, -y0)
+    sx1, sy1 = min(w, W - x0), min(h, H - y0)
+    if sx1 <= sx0 or sy1 <= sy0:
+        return
+    t = tile[sy0:sy1, sx0:sx1]
+    dst = rgb[y0 + sy0:y0 + sy1, x0 + sx0:x0 + sx1]
     ta = t[..., 3:4]
     if linear:
         dst[...] = linear_to_srgb(srgb_to_linear(dst) * (1.0 - ta) + srgb_to_linear(t[..., :3]) * ta)
     else:
         dst[...] = dst * (1.0 - ta) + t[..., :3] * ta
-    return rgb
 
 
-def _text_views(text, text_px, snap):
-    if text is None:
-        return None, None, 0.0
-    if snap:
-        text_px = _snap_even(text_px)
-    if abs(text_px) < 1e-6:
-        return text, text, 0.0
-    return (shift_x(text, -0.5 * text_px, cv2.BORDER_CONSTANT),
-            shift_x(text, 0.5 * text_px, cv2.BORDER_CONSTANT), text_px)
+def _text_blocks(text):
+    """Split a full-frame straight-alpha text layer into blocks (one per line / group of glyphs):
+    list of (tile RGBA, x0, y0).  Glyphs closer than ~3 % of the width horizontally and ~0.6 %
+    vertically belong to one block, so a title and a caption get their own depth."""
+    H, W = text.shape[:2]
+    m = (text[..., 3] > 1.0 / 1024.0).astype(np.uint8)
+    if not m.any():
+        return []
+    q = 8
+    Hq, Wq = (H + q - 1) // q, (W + q - 1) // q
+    mp = np.zeros((Hq * q, Wq * q), np.uint8)
+    mp[:H, :W] = m
+    small = mp.reshape(Hq, q, Wq, q).max(axis=(1, 3))
+    kx, ky = int(0.03 * W / q) | 1, int(0.006 * W / q) | 1
+    n, lab = cv2.connectedComponents(cv2.dilate(small, np.ones((ky, kx), np.uint8)))
+    out = []
+    for i in range(1, n):
+        ys, xs = np.nonzero((lab == i) & (small > 0))
+        if ys.size == 0:
+            continue
+        y0, y1 = int(ys.min()) * q, min(H, (int(ys.max()) + 1) * q)
+        x0, x1 = int(xs.min()) * q, min(W, (int(xs.max()) + 1) * q)
+        tile = text[y0:y1, x0:x1].copy()
+        if n > 2:                                             # blank what belongs to other blocks
+            own = np.repeat(np.repeat(lab[y0 // q:(y1 + q - 1) // q, x0 // q:(x1 + q - 1) // q] == i, q, 0), q, 1)
+            tile[..., 3] *= own[:y1 - y0, :x1 - x0]
+        out.append((tile, x0, y0))
+    return out
+
+
+def _text_items(text_rgba, H, W):
+    """Normalise the `text_rgba` argument to a list of [tile, x0, y0, px-or-None].
+    Accepted: None; a full-frame (H, W, 4) layer (split into blocks); or a list whose items are
+    full-frame layers, (layer, px), (tile, x0, y0), (tile, x0, y0, px) or dicts with keys
+    rgba, x, y, px.  px = that item's parallax in pixels (None = automatic)."""
+    if text_rgba is None:
+        return []
+    items = []
+
+    def add(rgba, x0=None, y0=None, px=None):
+        rgba = to_float(rgba)
+        assert rgba.ndim == 3 and rgba.shape[2] == 4, 'text layers must be RGBA'
+        if x0 is None:
+            if rgba.shape[:2] != (H, W):
+                raise ValueError('a text layer without a position must be full-frame')
+            for tile, tx, ty in _text_blocks(rgba):
+                items.append([tile, tx, ty, px])
+        else:
+            items.append([rgba, int(x0), int(y0), px])
+
+    if isinstance(text_rgba, np.ndarray):
+        add(text_rgba)
+        return items
+    for it in text_rgba:
+        if isinstance(it, dict):
+            add(it['rgba'], it.get('x'), it.get('y'), it.get('px'))
+        elif isinstance(it, np.ndarray):
+            add(it)
+        elif len(it) == 2:
+            add(it[0], None, None, it[1])
+        elif len(it) == 3:
+            add(it[0], it[1], it[2])
+        else:
+            add(it[0], it[1], it[2], it[3])
+    return items
+
+
+def _draw_text(L, R, text_rgba, disparity, alpha, base_px, safe, snap, linear, margin=None):
+    """Draw every text item on both eyes (in place).  An item's parallax is its own px if given,
+    else base_px, moved in front of whatever scene content it covers when safe=True.
+    Returns [(x0, y0, w, h, px), ...]."""
+    H, W = L.shape[:2]
+    margin = 0.001 * W if margin is None else margin
+    done = []
+    for tile, x0, y0, px in _text_items(text_rgba, H, W):
+        h, w = tile.shape[:2]
+        if px is None:
+            px = float(base_px)
+            if safe and disparity is not None:
+                pad = max(2, int(W / 320))
+                ya, yb, xa, xb = max(0, y0 - pad), min(H, y0 + h + pad), max(0, x0 - pad), min(W, x0 + w + pad)
+                if yb > ya and xb > xa:
+                    cov = np.zeros((yb - ya, xb - xa), np.uint8)
+                    ty0, tx0 = max(0, ya - y0), max(0, xa - x0)
+                    sub = tile[ty0:ty0 + (yb - ya), tx0:tx0 + (xb - xa), 3] > 1.0 / 1024.0
+                    oy, ox = max(0, y0 - ya), max(0, x0 - xa)
+                    cov[oy:oy + sub.shape[0], ox:ox + sub.shape[1]] = sub
+                    k = 2 * pad + 1
+                    cov = cv2.dilate(cov, np.ones((k, k), np.uint8)) > 0
+                    if alpha is not None:
+                        cov &= alpha[ya:yb, xa:xb] > 0.05
+                    if cov.any():
+                        px = min(px, float(disparity[ya:yb, xa:xb][cov].min()) - margin)
+        if snap:
+            px = _snap_even(px)
+            hs = int(round(0.5 * px))
+            _over_tile(L, tile, x0 - hs, y0, linear)
+            _over_tile(R, tile, x0 + hs, y0, linear)
+        else:
+            sh = 0.5 * px
+            padx = int(np.ceil(abs(sh))) + 2
+            big = cv2.copyMakeBorder(tile, 0, 0, padx, padx, cv2.BORDER_CONSTANT, value=0)
+            _over_tile(L, shift_x(big, -sh, cv2.BORDER_CONSTANT), x0 - padx, y0, linear)
+            _over_tile(R, shift_x(big, sh, cv2.BORDER_CONSTANT), x0 - padx, y0, linear)
+        done.append((x0, y0, w, h, float(px)))
+    return done
 
 
 def _fg_over(bg, v, linear):
@@ -945,7 +1061,7 @@ def prepare_A(fg_rgba, fg_depth, *, disparity=None, info=None, conv=None, max_px
     return out
 
 
-def compose_A(sky_rgb, prep, text_rgba=None, *, text_px=0.0, text_safe=False, text_snap=True,
+def compose_A(sky_rgb, prep, text_rgba=None, *, text_px=0.0, text_safe=True, text_snap=True,
               float_window=True, linear=True, text_linear=False, threads=2, return_info=False):
     """The per-FRAME part of a version A pair: sky (shifted to its parallax) + prepared foreground
     views + text -> (left_rgb, right_rgb) float32 sRGB.  See stereo_pair_A for the arguments."""
@@ -955,35 +1071,34 @@ def compose_A(sky_rgb, prep, text_rgba=None, *, text_px=0.0, text_safe=False, te
     if sky.ndim != 3 or sky.shape[:2] != (H, W):
         sky = np.ascontiguousarray(np.broadcast_to(np.asarray(sky, np.float32).reshape(1, 1, 3), (H, W, 3)))
     sky = sky[..., :3]
-    text = to_float(text_rgba)
     sky_d = prep['sky_px']
-    if text is not None and text_safe:
-        text_px = safe_text_disparity(text, prep['disparity'], base=text_px, alpha=prep['alpha'])
-    tL, tR, text_px = _text_views(text, text_px, text_snap)
 
-    def finish(v, eye, txt):
+    def finish(v, eye):
         out = shift_x(sky, 0.5 * eye * sky_d)
         if out is sky or not out.flags.writeable or not out.flags.c_contiguous:
             out = np.array(out, np.float32, order='C')
         _fg_over(out, v, linear)
-        _over_text(out, txt, text_linear)
-        np.clip(out, 0.0, 1.0, out=out)
         return out
 
-    L, R = _parallel(finish, [(L4, -1, tL), (R4, 1, tR)], threads)
+    L, R = _parallel(finish, [(L4, -1), (R4, 1)], threads)
+    blocks = _draw_text(L, R, text_rgba, prep['disparity'], prep['alpha'], text_px, text_safe,
+                        text_snap, text_linear)
+    np.clip(L, 0.0, 1.0, out=L)
+    np.clip(R, 0.0, 1.0, out=R)
     win = None
     if float_window:
         L, R, win = floating_window(L, R, prep['disparity'], prep['alpha'], copy=False)
     if not return_info:
         return L, R
     out = {k: v for k, v in prep.items() if k not in ('left', 'right')}
-    out.update(text_px=float(text_px), window=win)
+    out.update(text_blocks=blocks, text_px=min([b[4] for b in blocks]) if blocks else float(text_px),
+               window=win)
     return L, R, out
 
 
 def stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, *, disparity=None, info=None,
                   conv=None, max_px=None, sky_px=None, near_px=None, fg_share=None,
-                  text_px=0.0, text_safe=False, text_snap=True, float_window=True,
+                  text_px=0.0, text_safe=True, text_snap=True, float_window=True,
                   linear=True, text_linear=False, interp='lanczos', cut=None, threads=2,
                   return_info=False, **disp_kw):
     """Version A frame -> (left_rgb, right_rgb), float32 sRGB (H, W, 3).
@@ -995,9 +1110,15 @@ def stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, *, disparity=None,
     fg_rgba    (H, W, 4) foreground still, STRAIGHT alpha, display-referred sRGB (the Cycles PNG).
     fg_depth   (H, W) camera depth in metres, 0 = no geometry.
     text_rgba  (H, W, 4) straight-alpha text layer or None; drawn last, at parallax text_px
-               (default 0 = on the screen plane, identical in both eyes).  text_safe=True moves
-               it in front of whatever foreground it overlaps (see safe_text_disparity);
-               text_snap rounds the parallax to an even px count so the glyphs are not resampled.
+               (default 0 = on the screen plane, identical in both eyes).  The layer is split
+               into blocks (title, caption, ...) and with text_safe=True (default) every block
+               that covers foreground is moved just in front of it - text on the screen plane
+               drawn over a heap that floats in front of the screen would be a depth conflict.
+               So the title in the sky stays at 0 and a caption over the heap comes forward.
+               text_snap rounds each parallax to an even px count: glyphs are copied, never
+               resampled.  For full control pass a LIST of items instead: full-frame layers,
+               (layer, px), (tile, x0, y0) or (tile, x0, y0, px) with px = that item's parallax
+               (use this to keep a caption's depth constant during a push-in).
     disparity, info   pre-computed result of disparity_from_depth(..., mode='A', return_info=True).
     linear     'over' of foreground on sky in linear light (True) or on the gamma values (False).
     text_linear  text 'over' in linear light; default False = gamma space, which is what
@@ -1005,8 +1126,9 @@ def stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, *, disparity=None,
     float_window  mask the lateral frame edges where the heap comes out of the screen.
     Other keywords go to disparity_from_depth (pct, knee, soft_step, dilate, ...).
 
-    With return_info=True a third value is returned: dict(disparity, sky_px, text_px, near_px,
-    far_px, min_px, max_px, hole_frac_left, hole_frac_right, window, ...).
+    With return_info=True a third value is returned: dict(disparity, sky_px, near_px, far_px,
+    min_px, max_px, hole_frac_left, hole_frac_right, window, text_blocks [(x0, y0, w, h, px)],
+    text_px (the most forward block), ...).
     """
     prep = prepare_A(fg_rgba, fg_depth, disparity=disparity, info=info, conv=conv, max_px=max_px,
                      sky_px=sky_px, near_px=near_px, fg_share=fg_share, interp=interp, cut=cut,
@@ -1039,24 +1161,21 @@ def compose_B(prep, text_rgba=None, *, text_px=None, text_safe=True, text_snap=T
               float_window=True, text_linear=False, return_info=False):
     """The per-FRAME part of a version B pair: prepared views + text -> (left_rgb, right_rgb)."""
     H, W = prep['left'].shape[:2]
-    text = to_float(text_rgba)
     if text_px is None:
         text_px = DEFAULTS['B_text'] * W
-    if text is not None and text_safe:
-        text_px = safe_text_disparity(text, prep['disparity'], base=text_px)
-    tL, tR, text_px = _text_views(text, text_px, text_snap)
     L, R = prep['left'], prep['right']
-    if text is not None or float_window:
+    if text_rgba is not None or float_window:
         L, R = L.copy(), R.copy()
-    _over_text(L, tL, text_linear)
-    _over_text(R, tR, text_linear)
+    blocks = _draw_text(L, R, text_rgba, prep['disparity'], None, text_px, text_safe, text_snap,
+                        text_linear)
     win = None
     if float_window:
         L, R, win = floating_window(L, R, prep['disparity'], copy=False)
     if not return_info:
         return L, R
     out = {k: v for k, v in prep.items() if k not in ('left', 'right')}
-    out.update(text_px=float(text_px), window=win)
+    out.update(text_blocks=blocks, text_px=min([b[4] for b in blocks]) if blocks else float(text_px),
+               window=win)
     return L, R, out
 
 
@@ -1106,7 +1225,8 @@ def stereo_pair_B(rgb, depth, text_rgba=None, *, disparity=None, info=None, conv
     depth      (H, W) camera depth in metres covering the frame (ground + items).
     text_rgba  (H, W, 4) straight-alpha text or None, drawn last at parallax text_px (default
                -0.2 % of the width = slightly in front of the screen).  text_safe=True (default)
-               pushes it further forward when it covers something nearer than that.
+               pushes each text block further forward when it covers something nearer than
+               that.  A list of items with explicit parallaxes is accepted as in stereo_pair_A.
     disparity, info   pre-computed disparity_from_depth(..., mode='B', return_info=True).
     float_window  mask the lateral frame edges where an item in front of the screen is cut off.
     The still is warped in gamma space (it is opaque: nothing is blended except the text).
@@ -1274,13 +1394,13 @@ def cmd_demo(args):
     title = demo_title(H, W)
     t_load = time.perf_counter() - t0
 
-    t0 = time.perf_counter()
+    t0, c0 = time.perf_counter(), time.process_time()
     D, info = disparity_from_depth(depth, fg[..., 3], mode='A', return_info=True)
-    t_disp = time.perf_counter() - t0
-    t0 = time.perf_counter()
+    t_disp, c_disp = time.perf_counter() - t0, time.process_time() - c0
+    t0, c0 = time.perf_counter(), time.process_time()
     L, R, inf = stereo_pair_A(sky, fg, depth, title, disparity=D, info=info, return_info=True,
                               threads=args.threads, interp=args.interp)
-    t_pair = time.perf_counter() - t0
+    t_pair, c_pair = time.perf_counter() - t0, time.process_time() - c0
     t0 = time.perf_counter()
     half = pack_sbs(L, R, 'half')
     t_half = time.perf_counter() - t0
@@ -1327,8 +1447,10 @@ def cmd_demo(args):
     if inf['window'] is not None:
         print('floating window             left edge up to %.1f px, right edge up to %.1f px'
               % (inf['window'][0].max(), inf['window'][1].max()))
-    print('timings: load %.2f s | disparity_from_depth %.2f s | stereo_pair_A (cached disparity) %.2f s | '
-          'pack half %.2f s | anaglyph %.2f s' % (t_load, t_disp, t_pair, t_half, t_ana))
+    print('defocused (dithered Z) share of the foreground: %.1f %%' % (100 * info.get('defocus_frac', 0.0)))
+    print('timings (wall / cpu): disparity_from_depth %.2f / %.2f s | stereo_pair_A with cached disparity '
+          '%.2f / %.2f s | pack half %.2f s | anaglyph %.2f s | load %.2f s'
+          % (t_disp, c_disp, t_pair, c_pair, t_half, t_ana, t_load))
     print('written to', out_dir)
     return L, R, inf
 
@@ -1472,15 +1594,17 @@ def cmd_bench(args):
     H, W = args.h, args.w
 
     def tm(label, fn, n=args.repeat):
-        best = 1e9
+        best, bestc = 1e9, 1e9
         for _ in range(n):
-            t0 = time.perf_counter()
+            t0, c0 = time.perf_counter(), time.process_time()
             r = fn()
             best = min(best, time.perf_counter() - t0)
-        print('  %-52s %7.2f s' % (label, best))
+            bestc = min(bestc, time.process_time() - c0)
+        print('  %-52s wall %6.2f s   cpu %6.2f s' % (label, best, bestc))
         return r
 
-    print('bench %dx%d, cv2 threads %d' % (W, H, args.threads))
+    print('bench %dx%d, threads %d  (cpu = CPU seconds summed over threads: the load-independent cost)'
+          % (W, H, args.threads))
     if os.path.exists(args.fg) and os.path.exists(args.depth):
         fg = _read_image(args.fg)
         depth = np.load(args.depth)
@@ -1498,7 +1622,10 @@ def cmd_bench(args):
         tm('_warp_map only, one eye', lambda: _warp_map(D, 1, 1.0))
         tm('stereo_pair_A, cached disparity, lanczos', lambda: stereo_pair_A(sky, fg, depth, title, disparity=D, info=info, threads=args.threads))
         tm('stereo_pair_A, cached disparity, cubic', lambda: stereo_pair_A(sky, fg, depth, title, disparity=D, info=info, threads=args.threads, interp='cubic'))
-        L, R = stereo_pair_A(sky, fg, depth, title, disparity=D, info=info, threads=args.threads)
+        prep = tm('prepare_A (per shot), cached disparity', lambda: prepare_A(fg, depth, disparity=D, info=info, threads=args.threads))
+        tm('compose_A (per frame)', lambda: compose_A(sky, prep, title, threads=args.threads))
+        tm('zoom_prep 1.05 (per frame, optional)', lambda: zoom_prep(prep, 1.05))
+        L, R = compose_A(sky, prep, title, threads=args.threads)
         tm('pack_sbs half', lambda: pack_sbs(L, R, 'half'))
         tm('pack_anaglyph dubois', lambda: pack_anaglyph(L, R))
     img, depth = synthetic_plate(H, W)
@@ -1506,6 +1633,8 @@ def cmd_bench(args):
     D, info = tm('disparity_from_depth (once per shot)', lambda: disparity_from_depth(depth, mode='B', return_info=True))
     tm('stereo_pair_B, cached disparity, lanczos', lambda: stereo_pair_B(img, depth, None, disparity=D, info=info, threads=args.threads))
     tm('stereo_pair_B, cached disparity, cubic', lambda: stereo_pair_B(img, depth, None, disparity=D, info=info, threads=args.threads, interp='cubic'))
+    prep = prepare_B(img, depth, disparity=D, info=info, threads=args.threads)
+    tm('compose_B (per frame, no text)', lambda: compose_B(prep, None))
     return 0
 
 

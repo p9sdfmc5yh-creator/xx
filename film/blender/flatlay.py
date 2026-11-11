@@ -50,6 +50,7 @@ LENS_MM = 135.0
 _LUT_LIN = np.array([0.0, 0.0025, 0.005, 0.01, 0.02, 0.04, 0.08, 0.12, 0.18, 0.25, 0.35, 0.5, 0.7, 1.0, 1.4, 2.0, 3.0, 4.5, 7.0])
 _LUT_DISP = np.array([0.0, 0.0023, 0.0039, 0.01, 0.0395, 0.1086, 0.2034, 0.271, 0.3463, 0.4129, 0.4865, 0.5632,
                       0.6296, 0.6923, 0.7449, 0.7938, 0.8422, 0.885, 0.93])
+VEIL = 0.012           # scene-linear light a dark matte ground reflects besides its diffuse colour (measured)
 LIGHT_E = 2.0          # scene-linear value of a white diffuse card at the frame centre under the rig (exposure 0)
 
 
@@ -58,8 +59,9 @@ def albedo_for_display(srgb255, exposure=0.0):
     ground under the flat-lay rig with AgX Punchy at the given exposure (stops).  Per-channel
     inversion of the measured tone curve (good to a few % for the muted paper colours used here)."""
     d = np.clip(np.asarray(srgb255, float) / 255.0, 0.0, 0.93)
-    lin = np.interp(d, _LUT_DISP, _LUT_LIN)
-    return np.clip(lin / (LIGHT_E * 2.0 ** exposure), 0.0005, 0.92)
+    lin = np.interp(d, _LUT_DISP, _LUT_LIN) * 2.0 ** (-exposure)
+    lin = np.maximum(lin - VEIL, 0.25 * lin)                         # the paper's own sheen / specular adds ~VEIL
+    return np.clip(lin / LIGHT_E, 0.0005, 0.92)
 
 
 # ============================================================================= shot table
@@ -1349,7 +1351,7 @@ def build_ground(frame, G_, exposure, seed, tex_px, margin, tag):
         fleck = tuple(float(c * 0.22 + 0.006) for c in (col[0] * 1.2, col[1] * 0.9, col[2] * 0.7))
         cl = float(G_.get('cloud', 0.07))
         base = m.hsv(col, 0.5, m.map_range(cB, 0, 1, 1.0 + 0.5 * cl, 1.0 - 0.5 * cl), m.map_range(cB, 0, 1, 1 - cl, 1 + cl))
-        base = m.mix(base, pale, m.map_range(cG, 0.5, 1.0, 0.0, float(G_.get('fibre_contrast', 0.55))))
+        base = m.mix(base, pale, m.map_range(cG, 0.5, 1.0, 0.0, float(G_.get('fibre_contrast', 0.65))))
         base = m.mix(base, fleck, m.map_range(cG, 0.5, 0.0, 0.0, 0.85))
         if ink_img is not None:
             gi = G_['grid']
@@ -1414,43 +1416,46 @@ def topdown_camera(frame):
 
 
 def window_light(frame, P=None):
-    """One large soft window from the upper-left (soft directional shadows towards the lower-right,
-    clear contact shadows), a very large dim fill from the opposite side, a faint even ambient.
-    Powers scale with frame.W^2, so exposure is the same for a 6 cm and a 1.5 m wide plate.
-    P (shot 'light' dict, optional): key, fill, ambient multipliers; az (deg, 135 = upper-left),
-    el (deg), size (window width / frame width), dist (/ frame width), key_color."""
+    """Top-down product light.  Irradiance budget on a white card at the frame centre (scene-linear,
+    sums to LIGHT_E = 2.0):
+      key     1.46  soft window from the upper-left (az 135 deg, el 42 deg), 16 x 11.5 deg seen from the
+                    plate: soft directional shadows towards the lower-right, wrinkles still read
+      kicker  0.22  small hard source next to the window: crisp glints on waxy / glossy crests and a
+                    defined core in the contact shadows (too weak to make a hotspot on the paper)
+      fill    0.26  very large, from the opposite side, DIFFUSE ONLY (invisible to glossy rays): opens
+                    the shadows without a veiling reflection on dark paper or waxy skins
+      ambient 0.06  even world
+    Powers scale with frame.W^2, so exposure is the same for a 6 cm and a 1.5 m wide plate; the falloff
+    across the frame is about +-9 %.  P (the shot's optional 'light' dict): key, kicker, fill, ambient
+    multipliers; az, el (deg); size, dist (window width / distance in frame widths); key_color."""
     P = P or {}
     s = frame.W
     az = math.radians(float(P.get('az', 135.0)))
-    el = math.radians(float(P.get('el', 44.0)))
+    el = math.radians(float(P.get('el', 42.0)))
     dist = float(P.get('dist', 10.0)) * s
-    size = float(P.get('size', 4.4)) * s
-    d = np.array([math.cos(az) * math.cos(el), math.sin(az) * math.cos(el), math.sin(el)])
+    size = float(P.get('size', 2.8)) * s
+    kcol = P.get('key_color', (1.0, 0.965, 0.915))
+
+    def direction(a, e):
+        return np.array([math.cos(a) * math.cos(e), math.sin(a) * math.cos(e), math.sin(e)])
+
     k = float(P.get('key', 1.0))
-    key = C._area_light('key', tuple(d * dist), (0, 0, 0), size, 1.0, P.get('key_color', (1.0, 0.965, 0.915)),
-                        shape='RECTANGLE')
+    key = C._area_light('key', tuple(direction(az, el) * dist), (0, 0, 0), size, 1.0, kcol, shape='RECTANGLE')
     key.data.size_y = size * 0.72
-    key.data.energy = 25.3 * 0.875 * k * dist * dist                 # W; calibrated: key 1.42 + kicker 0.20 + fill 0.30
-    #                                                                 + ambient 0.08 = LIGHT_E on a white card
+    key.data.energy = 15.64 * 1.36 * k * dist * dist * math.sin(math.radians(44.0)) / math.sin(el)
     kk = float(P.get('kicker', 1.0))
     if kk > 0:
-        # small hard source next to the window: crisp glints on waxy / glossy crests and a defined core in
-        # the contact shadows; only ~10 % of the light, so the paper shows no hotspot
-        az2, el2 = az + math.radians(float(P.get('kicker_daz', -14.0))), math.radians(float(P.get('kicker_el', 52.0)))
-        d2 = np.array([math.cos(az2) * math.cos(el2), math.sin(az2) * math.cos(el2), math.sin(el2)])
-        kl = C._area_light('kicker', tuple(d2 * dist), (0, 0, 0), float(P.get('kicker_size', 0.42)) * s, 1.0,
-                           P.get('key_color', (1.0, 0.965, 0.915)), shape='DISK')
-        kl.data.energy = 25.3 * 0.125 * kk * dist * dist * (math.sin(el) / math.sin(el2))
+        az2, el2 = az + math.radians(float(P.get('kicker_daz', -16.0))), math.radians(float(P.get('kicker_el', 50.0)))
+        kl = C._area_light('kicker', tuple(direction(az2, el2) * dist), (0, 0, 0), float(P.get('kicker_size', 0.35)) * s, 1.0,
+                           kcol, shape='DISK')
+        kl.data.energy = 15.64 * 0.22 * kk * dist * dist * math.sin(math.radians(44.0)) / math.sin(el2)
     f = float(P.get('fill', 1.0))
     if f > 0:
-        df = np.array([math.cos(az + math.pi) * math.cos(math.radians(62)), math.sin(az + math.pi) * math.cos(math.radians(62)),
-                       math.sin(math.radians(62))])
-        fl = C._area_light('fill', tuple(df * 6.0 * s), (0, 0, 0), 7.0 * s, 1.0, P.get('fill_color', (0.90, 0.95, 1.0)),
-                           shape='DISK')
-        fl.data.energy = 4.70 * f * (6.0 * s) ** 2
-        fl.visible_glossy = bool(P.get('fill_glossy', False))        # diffuse fill only: no veiling reflection on dark
-        #                                                             paper or on waxy skins (the "polariser")
-    a = 0.096 * float(P.get('ambient', 1.0))
+        fl = C._area_light('fill', tuple(direction(az + math.pi, math.radians(62.0)) * 6.0 * s), (0, 0, 0), 7.0 * s, 1.0,
+                           P.get('fill_color', (0.90, 0.95, 1.0)), shape='DISK')
+        fl.data.energy = 15.67 * 0.26 * f * (6.0 * s) ** 2
+        fl.visible_glossy = bool(P.get('fill_glossy', False))
+    a = 1.2 * 0.06 * float(P.get('ambient', 1.0))
     C.world_gradient(horizon=(a * 0.6,) * 3, zenith=(a,) * 3, ground=(a * 0.3,) * 3)
     return key
 
@@ -1537,6 +1542,7 @@ def parse_cli(argv=None):
     p.add_argument('--plan-only', action='store_true', help='stop after the plan (no render)')
     p.add_argument('--jpg', default=None, help='also write an 8-bit JPEG preview (<= 1920 px wide)')
     p.add_argument('--text', default=None, help='override the glyph string of a glyph/landing shot')
+    p.add_argument('--ground', default=None, help="override the ground: a type name (paper|slate|walnut|linen) or a JSON dict")
     p.add_argument('--set', action='append', default=[], help='override a layout parameter: key=json (repeatable)')
     a, rest = p.parse_known_args(argv)
     return a, rest
@@ -1553,6 +1559,9 @@ def main(argv=None):
     for kv in cli.set:
         k, v = kv.split('=', 1)
         P[k] = json.loads(v)
+    if cli.ground:
+        g = json.loads(cli.ground) if cli.ground.strip().startswith('{') else dict(type=cli.ground)
+        shot['ground'] = dict(shot.get('ground', {}), **g)
     exposure = float(shot.get('exposure', 0.0))
     scene = C.setup_scene(args, look=shot.get('look', 'AgX - Punchy'), exposure=exposure)
     scene.render.film_transparent = False
@@ -1563,6 +1572,9 @@ def main(argv=None):
         # hook for b02_cabinet / b04_bowl: a small separate script builds the whole scene and renders;
         # it gets (cli, args, shot) and may use Frame / build_ground / window_light / topdown_camera.
         path = os.path.join(HERE, shot['script'])
+        if not os.path.exists(path):
+            raise SystemExit('%s is a bespoke scene and %s is not written yet (hook: build_and_render(cli, args, shot, '
+                             'flatlay_module))' % (shot['id'], path))
         spec = importlib.util.spec_from_file_location('ysty_bespoke', path)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
