@@ -6,7 +6,7 @@ export const FONT_FILES = [
   { family: 'GJ XiaoWei', file: 'ZCOOLXiaoWei.ttf', desc: {}, required: true },                   // 站酷小薇
   { family: 'GJ Cao', file: 'LiuJianMaoCao.ttf', desc: {}, required: true },                      // 刘建毛草
   { family: 'GJ Latin', file: 'CormorantGaramond.ttf', desc: { weight: '300 700' }, required: true },
-  { family: 'GJ WenKai', file: 'LXGWWenKai-Medium.ttf', desc: {}, required: false },              // 霞鹜文楷
+  { family: 'GJ WenKai', file: 'LXGWWenKai-Medium.ttf', desc: {}, required: true },              // 霞鹜文楷
   { family: 'GJ WenKaiLight', file: 'LXGWWenKai-Light.ttf', desc: {}, required: false },
   { family: 'GJ WenKaiRegular', file: 'LXGWWenKai-Regular.ttf', desc: {}, required: false },
   { family: 'GJ LongCang', file: 'LongCang.ttf', desc: {}, required: false },                     // 龙藏体 (行书)

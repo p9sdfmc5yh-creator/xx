@@ -5,19 +5,20 @@ export { FPS };
 
 // Tagline beats (the reference's "There's / more to / discover" structure)
 export const BEATS = {
-  1: {"text":"一枚圆钱","size":80,"gap":30,"weight":700,"spacing":9,"stroke":1,"kern":[-6]},
-  2: {"text":"藏着","size":112,"gap":30,"weight":600,"spacing":12,"stroke":1},
-  3: {"text":"千年","size":160,"sizeEnd":200,"gap":32,"weight":700,"spacing":14,"stroke":0.8},
+  1: {"text":"方圆之间","size":92,"gap":30,"weight":400,"spacing":12,"stroke":1.8},
+  2: {"text":"阅尽","size":122,"gap":30,"weight":400,"spacing":18,"stroke":2},
+  3: {"text":"兴衰","size":164,"sizeEnd":204,"gap":32,"weight":400,"spacing":20,"stroke":2.2},
 };
 
 // Typography. `font` is the tagline face (see FONTS in lib/core.js); `title` styles the closing card.
 export const STYLE = {
-  font: 'serif',
-  title: { font: 'serif' },
+  font: '"GJ WenKai"',                                   // 霞鹜文楷 Medium (SIL OFL 1.1) — 楷体，有书卷气，快切里仍然好读
+  title: { font: '"GJ WenKai"', titleWeight: 400, titleSize: 104, titleSpacing: 30, ctaWeights: [400, 400], ctaSize: 58, ctaSpacing: 9,
+    brand: { font: '"GJ WenKai"', weight: 400, size: 120, spacing: 48 } },
 };
 
 // The closing card
-export const TITLE = { title: "中国古钱币", seal: "通宝", cta: ["千年通宝","等你发现"], brand: "志和诚" };
+export const TITLE = { title: "中国古钱币", seal: "通宝", cta: ["物有来处","人有所守"], brand: "志和诚" };
 
 // 37 scene modules (src/films/coins/scenes/<name>.js), in cut order; arcs follow DEFAULT_ARCS in cuts.js unless overridden here
 export const { SHOTS, TOTAL_FRAMES, shotAt } = buildTimeline([
