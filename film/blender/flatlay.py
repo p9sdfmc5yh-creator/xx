@@ -334,17 +334,19 @@ class HeightField(object):
         return iy * self.nx + ix
 
 
-def settle(place, sets, extent, rng, base=None, candidates=1, jitter=0.6, allowed=None, tilt=True,
+def settle(place, sets, extent, rng, base=None, roll=1.6, roll0=True, allowed=None, tilt=True,
            max_tilt_deg=38.0, sink=0.05, res=None, verbose=True):
     """Drop the items of `place` one after another (pass 0 first) onto a height field.
 
     Every item is represented by a point cloud sampled from its REAL mesh.  For a pose (position,
     yaw, tilt) the resting height is max(height_field - cloud_z): the item comes down until its
     first point touches.  Items that land on bare ground keep the template's own resting pose.
-    Items that land on others (i) may try `candidates` nearby positions and keep the lowest
-    ("roll into the hollow"; positions rejected by allowed(x, y) are skipped), then (ii) lower
-    their centre of mass by tilting (pattern search over the two tilt angles, <= max_tilt) - a
-    berry lying across another ends up with one end on the paper and the other on its neighbour.
+    Items that land on others (i) slide / roll downhill (pattern search in x, y, at most `roll`
+    item half-lengths away, never to a position rejected by allowed(x, y); roll0=False keeps the
+    items of pass 0 where the layout put them), then (ii) lower their centre of mass by tilting
+    (pattern search over the two tilt angles, <= max_tilt) - a berry lying across another ends up
+    with one end on the paper and the other on its neighbour; a sphere dropped on spheres ends up
+    in the hollow between them or on the ground.
     Finally the cloud is stamped into the height field (upper envelope).
 
     Returns dict(loc (N,3) template origin, rot (N,3,3), scale (N,), layer (N,), zc (N,), hf)."""
@@ -365,7 +367,7 @@ def settle(place, sets, extent, rng, base=None, candidates=1, jitter=0.6, allowe
     half = 0.5 * res
     offs = ((-half, -half), (half, half), (-half, half), (half, -half))
     t0 = time.time()
-    n_tilt = 0
+    n_tilt = n_roll = 0
     for i in order:
         S = sets[place.iset[i]]
         k = place.var[i]
@@ -376,25 +378,38 @@ def settle(place, sets, extent, rng, base=None, candidates=1, jitter=0.6, allowe
         Pr = P0 - c0                                             # relative to the centre of mass
         zflat = -float(Pr[:, 2].min())                           # COM height when lying on bare ground
         x, y = place.x[i], place.y[i]
-        # ---- (i) position: original first, then jittered candidates; keep the lowest
-        best = None
-        ncand = candidates if place.order[i] > 0 else 1
-        jit = jitter * S.a[k] * s
-        for j in range(max(1, ncand)):
-            xj = x + (rng.uniform(-jit, jit) if j else 0.0)
-            yj = y + (rng.uniform(-jit, jit) if j else 0.0)
-            if j and allowed is not None and not allowed(xj, yj):
-                continue
-            zc = float(np.max(Hr[hf.idx(xj + c0[0] + Pr[:, 0], yj + c0[1] + Pr[:, 1])] - Pr[:, 2]))
-            if best is None or zc < best[0] - 1e-6:
-                best = (zc, xj, yj)
-            if zc <= zflat + 1e-6:
-                break
-        zc, x, y = best
+        # ---- (i) position: an item that lands on others slides / rolls downhill (pattern search in
+        #      x, y; never further than `roll` item half-lengths, never where allowed() says no)
+        zc = float(np.max(Hr[hf.idx(x + c0[0] + Pr[:, 0], y + c0[1] + Pr[:, 1])] - Pr[:, 2]))
+        eps = 0.02 * S.c[k] * s
+        if zc > zflat + eps and roll > 0 and (place.order[i] > 0 or roll0) and not place.stray[i]:
+            a_i = S.a[k] * s
+            x0_, y0_ = x, y
+            step = 0.40 * a_i
+            for it in range(10):
+                bz, bx, by = zc, x, y
+                for d in dirs:
+                    xj, yj = x + step * d[0], y + step * d[1]
+                    if (xj - x0_) ** 2 + (yj - y0_) ** 2 > (roll * a_i) ** 2:
+                        continue
+                    if allowed is not None and not allowed(xj, yj):
+                        continue
+                    z1 = float(np.max(Hr[hf.idx(xj + c0[0] + Pr[:, 0], yj + c0[1] + Pr[:, 1])] - Pr[:, 2]))
+                    if z1 < bz - 1e-5:
+                        bz, bx, by = z1, xj, yj
+                if bz < zc - 1e-5:
+                    zc, x, y = bz, bx, by
+                    n_roll += 1
+                    if zc <= zflat + eps:
+                        break
+                else:
+                    step *= 0.5
+                    if step < 0.08 * a_i:
+                        break
         cx, cy = x + c0[0], y + c0[1]
         Rt = np.eye(3)
         Pt = Pr
-        if zc > zflat + 0.02 * S.c[k] * s:
+        if zc > zflat + eps:
             # ---- (ii) tilt: minimise the height of the centre of mass
             if tilt and (S.a[k] > 1.25 * S.c[k]):
                 n_tilt += 1
@@ -431,8 +446,9 @@ def settle(place, sets, extent, rng, base=None, candidates=1, jitter=0.6, allowe
         zcs[i] = zc
         layer[i] = int(round((zc - zflat) / max(1.6 * S.c[k] * s, 1e-9)))
     if verbose:
-        print('[settle] %d items, grid %dx%d @ %.2f mm, %d tilted, max layer %d, top %.1f mm, %.1f s' % (
-            N, hf.nx, hf.ny, res * 1e3, n_tilt, int(layer.max()) if N else 0, float(hf.H.max()) * 1e3, time.time() - t0))
+        print('[settle] %d items, grid %dx%d @ %.2f mm, %d tilted, %d roll steps, top %.1f mm (%.1f item thicknesses), %.1f s' % (
+            N, hf.nx, hf.ny, res * 1e3, n_tilt, n_roll, float(hf.H.max()) * 1e3,
+            float(hf.H.max()) / max(max(s_.T for s_ in sets), 1e-9), time.time() - t0))
     return dict(loc=loc, rot=rot, scale=place.scale.copy(), layer=layer, zc=zcs, hf=hf)
 
 
@@ -764,7 +780,7 @@ def layout_wreath(frame, sets, P, rng):
         st.stray[:] = True
         pl = Placement.cat([pl, st])
     info = dict(window=[wu, wv, ww, wh], extent=list(ext))
-    return pl, dict(extent=ext, allowed=None, candidates=4, info=info)
+    return pl, dict(extent=ext, allowed=None, info=info)
 
 
 def stroke_width_robust(mask):
@@ -1010,7 +1026,7 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
     print('[glyph] %r (%s): block %.0f x %.0f mm, stroke %.1f mm = %.1f item widths / %.1f item lengths, align %.2f, %d items' % (
         text, engine, mw / px_per_m * 1e3, mh / px_per_m * 1e3, sw / px_per_m * 1e3, sw / px_per_m / S.Wd,
         sw / px_per_m / S.L, align, len(pl)))
-    return pl, dict(extent=ext, allowed=allowed, candidates=int(P.get('candidates', 4)), info=info)
+    return pl, dict(extent=ext, allowed=allowed, roll0=(engine == 'glyph_layout'), info=info)
 
 
 def layout_taiji(frame, sets, P, rng):
@@ -1044,7 +1060,7 @@ def layout_taiji(frame, sets, P, rng):
         pl.group[:] = si
         parts.append(pl)
     pl = Placement.cat(parts)
-    return pl, dict(extent=frame.extent(0.02), allowed=None, candidates=1, info=info)
+    return pl, dict(extent=frame.extent(0.02), allowed=None, roll0=False, info=info)
 
 
 def _fill_mask(mask, ext, sets, si, layers, rng, pack=0.90, tag=''):
@@ -1151,7 +1167,7 @@ def layout_dishes(frame, sets, P, rng):
         parts.append(pl)
     pl = Placement.cat(parts)
     info = dict(centres=[[float(a), float(b)] for a, b in centres], dish_radius_m=Rd, kinds=kinds[:n])
-    return pl, dict(extent=frame.extent(0.02), allowed=None, candidates=3, info=info, base=base,
+    return pl, dict(extent=frame.extent(0.02), allowed=None, info=info, base=base,
                     dishes=(centres, profs, kinds))
 
 
@@ -1688,8 +1704,9 @@ def main(argv=None):
             place, extra = layout_dishes(frame, sets, P, rng)
         else:
             raise SystemExit('unknown layout %r' % layout)
-        res = settle(place, sets, extra['extent'], rng, base=extra.get('base'), candidates=extra.get('candidates', 1),
-                     allowed=extra.get('allowed'), tilt=bool(P.get('tilt', True)), sink=float(P.get('sink', 0.05)))
+        res = settle(place, sets, extra['extent'], rng, base=extra.get('base'), roll=float(P.get('roll', 1.6)),
+                     roll0=bool(extra.get('roll0', True)), allowed=extra.get('allowed'), tilt=bool(P.get('tilt', True)),
+                     sink=float(P.get('sink', 0.05)))
         meta.update(extra.get('info', {}))
         meta['n_items'] = int(len(place))
         meta['layers_max'] = int(res['layer'].max()) if len(place) else 0

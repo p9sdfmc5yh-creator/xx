@@ -664,11 +664,10 @@ def _warp_map_right(D, cut):
         sgn = np.where(useR, 1.0, -1.0).astype(f32)[rid]
         um = ub[rid] + sgn * refl
         u[hidx] = um
-        # A THIN near object (a stem, a petal edge) hides a strip no wider than itself, and the
-        # surface behind it reappears on its other side: note that side's pixel `xo`; the hidden
-        # strip is then BRIDGED (colour run from the hole edge to the far side of the object)
-        # instead of mirrored.  beta = 1 for objects up to 4x as wide as the hole (measured along
-        # the row, so a slanted stem counts with its horizontal extent), 0 from 8x.
+        # A THIN near object (a stem, a petal edge) with a farther surface on its other side
+        # (pixel `xo`): its narrow hole gets a smooth fill instead of a mirrored one (see
+        # _hole_base_correction).  beta = 1 for objects up to 4x as wide as the hole (measured
+        # along the row, so a slanted stem counts with its horizontal extent), 0 from 8x.
         jn = np.where(useR, jl, jr).astype(np.int64)          # near neighbour's source pixel
         hasN = np.where(useR, hasL, hasR)
         posn = np.searchsorted(cflat, row0 + jn, side='left')
@@ -709,52 +708,78 @@ def _warp_map(D, eye, cut):
     return np.ascontiguousarray(u), holes
 
 
-def _hole_base_correction(out, src, holes, radius, min_t=1.5):
-    """Photometric part of the disocclusion fill (in place).
-    * The mirrored texture keeps its detail, but its low frequencies are replaced by those at the
-      hole edge: a contact shadow is extended, not mirrored into a bright rim.
-    * Behind a THIN near object the fill is instead a bridge from the pixel at the hole edge to
-      the pixel on the other side of the object (what was hidden is continuous with both)."""
+def _fill_holes(out, src, D, u, holes, radius, cut, structure=True, min_t=1.5):
+    """Photometric part of the disocclusion fill (in place on `out`, the remapped view whose
+    holes already hold the texture of the far side mirrored about the hole edge).
+
+    The mirrored texture is split, along the row, into detail (mirror - its low-pass) and base.
+    The detail (grain) is kept.  The base is replaced:
+      structure=True   by a 2D inpainting (Telea fast marching) that grows the FAR surroundings
+                       of the hole into it - lines, shadow edges and shading continue in their
+                       own direction, consistently from row to row.  Everything nearer than the
+                       hole's far side within reach is masked out first, so the near object can
+                       never bleed in;
+      structure=False  by the low-pass at the hole edge of the same row (fast; a contact shadow
+                       is still extended instead of being mirrored into a bright rim).
+    Behind a THIN near object (a stem crossing a textured fruit) the detail is dropped: a
+    mirrored texture would kink every line that runs under the object."""
     if holes is None:
         return
     H, W = src.shape[:2]
     C = 1 if src.ndim == 2 else src.shape[2]
     s2 = src.reshape(H * W, C)
     o2 = out.reshape(H * W, C)
-    if radius >= 1:
-        sel = holes['t'] >= min_t
-        if sel.any():
-            idx = holes['idx'][sel]
-            row0 = holes['row0'][sel]
-            lo = holes['lo'][sel]
-            hi = np.maximum(holes['hi'][sel], lo)
-            c0 = np.clip(holes['c0'][sel], lo, hi)
-            cm = np.clip(holes['cm'][sel], lo, hi)
-            acc = np.zeros((idx.size, C), np.float32)
-            for o in range(-radius, radius + 1):
-                acc += s2[row0 + np.clip(c0 + o, lo, hi)]
-                acc -= s2[row0 + np.clip(cm + o, lo, hi)]
-            acc *= np.float32(1.0 / (2 * radius + 1))
-            o2[idx] += acc
-    br = holes['beta'] > 0
-    if br.any():
-        idx = holes['idx'][br]
-        row0 = holes['row0'][br]
-        beta = holes['beta'][br][:, None]
-        tau = holes['tau'][br][:, None]
-        lo = holes['lo'][br]
-        hi = np.maximum(holes['hi'][br], lo)
-        c0 = np.clip(holes['c0'][br], lo, hi)
-        xo, sg = holes['xo'][br], holes['sg'][br]
-        n = max(1, radius) + 1                                # short one-sided means: no streaks
-        edge = np.zeros((idx.size, C), np.float32)
-        other = np.zeros((idx.size, C), np.float32)
-        for o in range(n):
-            edge += s2[row0 + np.clip(c0 + sg * o, lo, hi)]
-            other += s2[row0 + np.clip(xo - sg * o, 0, W - 1)]
-        edge *= np.float32(1.0 / n)
-        other *= np.float32(1.0 / n)
-        o2[idx] = o2[idx] * (1.0 - beta) + (edge + tau * (other - edge)) * beta
+    idx = holes['idx']
+    row0 = holes['row0']
+    lo = holes['lo']
+    hi = np.maximum(holes['hi'], lo)
+    c0 = np.clip(holes['c0'], lo, hi)
+    cm = np.clip(holes['cm'], lo, hi)
+    beta = holes['beta'][:, None]
+    r = max(1, int(radius))
+    lp_edge = np.zeros((idx.size, C), np.float32)
+    lp_mirr = np.zeros((idx.size, C), np.float32)
+    for o in range(-r, r + 1):
+        lp_edge += s2[row0 + np.clip(c0 + o, lo, hi)]
+        lp_mirr += s2[row0 + np.clip(cm + o, lo, hi)]
+    inv = np.float32(1.0 / (2 * r + 1))
+    lp_edge *= inv
+    lp_mirr *= inv
+    detail = (o2[idx] - lp_mirr) * (1.0 - beta)
+    detail[holes['t'] < min_t] = 0.0
+    base = None
+    if structure:
+        use = np.ones(idx.size, bool)
+        if C == 4:                                            # nothing to do where the layer is empty
+            use = (o2[idx, 3] > 1e-4) | (lp_edge[:, 3] > 1e-4)
+        if use.any():
+            hole = np.zeros(H * W, bool)
+            hole[idx[use]] = True
+            hole = hole.reshape(H, W)
+            ui = np.clip(np.rint(u), 0, W - 1).astype(np.int64)
+            Dt = np.take_along_axis(D, ui, 1)                 # disparity of what each target pixel shows
+            R = int(min(float(holes['t'][use].max()), 96.0)) + 3
+            q = 4
+            Hq, Wq = (H + q - 1) // q, (W + q - 1) // q
+            dh = np.full((Hq * q, Wq * q), -1e9, np.float32)
+            dh[:H, :W] = np.where(hole, Dt, np.float32(-1e9))
+            dh = dh.reshape(Hq, q, Wq, q).max(axis=(1, 3))    # far-side disparity of the holes nearby
+            k = 2 * ((R + q - 1) // q + 1) + 1
+            dh = cv2.dilate(dh, np.ones((k, k), np.uint8), borderType=cv2.BORDER_REPLICATE)
+            dh = np.repeat(np.repeat(dh, q, 0), q, 1)[:H, :W]
+            mask = (hole | (Dt < dh - np.float32(cut))).astype(np.uint8)
+            base = np.empty((int(use.sum()), C), np.float32)
+            src_v = out if C > 1 else out[..., None]
+            for c in range(C):
+                ch = cv2.inpaint(np.ascontiguousarray(src_v[..., c]), mask, 4, cv2.INPAINT_TELEA)
+                base[:, c] = ch.reshape(-1)[idx[use]]
+            if not use.all():
+                full = lp_edge.copy()
+                full[use] = base
+                base = full
+    if base is None:
+        base = lp_edge
+    o2[idx] = base + detail
 
 
 _INTERP = {'lanczos': cv2.INTER_LANCZOS4, 'cubic': cv2.INTER_CUBIC, 'linear': cv2.INTER_LINEAR,
@@ -762,7 +787,7 @@ _INTERP = {'lanczos': cv2.INTER_LANCZOS4, 'cubic': cv2.INTER_CUBIC, 'linear': cv
 
 
 def synth_view(img, disparity, eye, *, cut=None, interp='lanczos', premultiplied=False,
-               base_radius=None, return_info=False):
+               base_radius=None, fill='structure', return_info=False):
     """Re-project a layer for one eye.
 
     img          (H, W), (H, W, 3) or (H, W, 4) image; uint8/uint16 are normalised to float32.
@@ -773,7 +798,9 @@ def synth_view(img, disparity, eye, *, cut=None, interp='lanczos', premultiplied
     cut          px of disparity between neighbouring pixels above which they are separate
                  surfaces (default 1.0), unless the step is part of a steady slope (_jumps).
     interp       'lanczos' (default, sharpest, ~4x slower), 'cubic', 'linear'.
-    base_radius  half window (px) of the low-pass in the disocclusion fill; 0 = plain mirror.
+    fill         disocclusion fill: 'structure' (default; 2D inpainting of the far surroundings +
+                 mirrored grain, see _fill_holes) or 'mirror' (row-wise only, faster).
+    base_radius  half window (px) of the row low-pass that separates grain from base in the fill.
     return_info  -> (view, {'hole_mask': bool (H, W) of filled target pixels, 'u': inverse map}).
 
     Occlusions: nearest surface wins.  Disocclusions: filled from the farther neighbour only.
@@ -794,7 +821,7 @@ def synth_view(img, disparity, eye, *, cut=None, interp='lanczos', premultiplied
         src[..., :3] *= src[..., 3:4]
     u, holes = _warp_map(D, eye, cut)
     out = cv2.remap(src, u, _ymap(H, W), _INTERP[interp], borderMode=cv2.BORDER_REFLECT_101)
-    _hole_base_correction(out, src, holes, radius)
+    _fill_holes(out, src, D, u, holes, radius, cut, structure=(fill == 'structure'))
     if rgba:
         np.clip(out[..., 3], 0.0, 1.0, out=out[..., 3])
         np.maximum(out[..., :3], 0.0, out=out[..., :3])
@@ -1084,7 +1111,8 @@ def _fg_over(bg, v, linear):
 
 
 def prepare_A(fg_rgba, fg_depth, *, disparity=None, info=None, conv=None, max_px=None, sky_px=None,
-              near_px=None, fg_share=None, interp='lanczos', cut=None, threads=2, **disp_kw):
+              near_px=None, fg_share=None, interp='lanczos', fill='structure', cut=None, threads=2,
+              **disp_kw):
     """The per-SHOT part of a version A pair: disparity + the two re-projected foreground views.
     The still does not change during a shot, so call this once per shot and compose_A per frame.
 
@@ -1114,8 +1142,8 @@ def prepare_A(fg_rgba, fg_depth, *, disparity=None, info=None, conv=None, max_px
         pm = fg[y0:y1].copy()
         pm[..., :3] *= pm[..., 3:4]                           # premultiplied, gamma space
         Ds = np.ascontiguousarray(disparity[y0:y1])
-        res = synth_pair(pm, Ds, threads=threads, cut=cut, interp=interp, premultiplied=True,
-                         return_info=True)
+        res = synth_pair(pm, Ds, threads=threads, cut=cut, interp=interp, fill=fill,
+                         premultiplied=True, return_info=True)
         for i, (v, vi) in enumerate(res):
             views[i][y0:y1] = v
             hf[i] = float(np.count_nonzero(vi['hole_mask'] & (v[..., 3] > 0.02))) / float(H * W)
@@ -1162,8 +1190,8 @@ def compose_A(sky_rgb, prep, text_rgba=None, *, text_px=0.0, text_safe=True, tex
 def stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, *, disparity=None, info=None,
                   conv=None, max_px=None, sky_px=None, near_px=None, fg_share=None,
                   text_px=0.0, text_safe=True, text_snap=True, float_window=True,
-                  linear=True, text_linear=False, interp='lanczos', cut=None, threads=2,
-                  return_info=False, **disp_kw):
+                  linear=True, text_linear=False, interp='lanczos', fill='structure', cut=None,
+                  threads=2, return_info=False, **disp_kw):
     """Version A frame -> (left_rgb, right_rgb), float32 sRGB (H, W, 3).
     (= compose_A(sky, prepare_A(fg, depth), text); use those two when a shot has many frames.)
 
@@ -1194,15 +1222,15 @@ def stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, *, disparity=None,
     text_px (the most forward block), ...).
     """
     prep = prepare_A(fg_rgba, fg_depth, disparity=disparity, info=info, conv=conv, max_px=max_px,
-                     sky_px=sky_px, near_px=near_px, fg_share=fg_share, interp=interp, cut=cut,
-                     threads=threads, **disp_kw)
+                     sky_px=sky_px, near_px=near_px, fg_share=fg_share, interp=interp, fill=fill,
+                     cut=cut, threads=threads, **disp_kw)
     return compose_A(sky_rgb, prep, text_rgba, text_px=text_px, text_safe=text_safe,
                      text_snap=text_snap, float_window=float_window, linear=linear,
                      text_linear=text_linear, threads=threads, return_info=return_info)
 
 
 def prepare_B(rgb, depth, *, disparity=None, info=None, conv=None, max_px=None, far_px=None,
-              near_px=None, interp='lanczos', cut=None, threads=2, **disp_kw):
+              near_px=None, interp='lanczos', fill='structure', cut=None, threads=2, **disp_kw):
     """The per-SHOT part of a version B pair -> dict(left, right (H, W, 3) float32 sRGB views,
     disparity, hole_frac_left / right, + the disparity_from_depth info)."""
     img = to_float(rgb)
@@ -1212,7 +1240,8 @@ def prepare_B(rgb, depth, *, disparity=None, info=None, conv=None, max_px=None, 
     if disparity is None or info is None:
         disparity, info = disparity_from_depth(depth, None, conv, max_px, 'B', far_px=far_px,
                                                near_px=near_px, cut=cut, return_info=True, **disp_kw)
-    res = synth_pair(img, disparity, threads=threads, cut=cut, interp=interp, return_info=True)
+    res = synth_pair(img, disparity, threads=threads, cut=cut, interp=interp, fill=fill,
+                     return_info=True)
     out = dict(info)
     out.update(left=res[0][0], right=res[1][0], disparity=disparity,
                hole_frac_left=float(np.count_nonzero(res[0][1]['hole_mask'])) / float(H * W),
@@ -1279,8 +1308,8 @@ def zoom_prep(prep, zoom, center=None, interp='lanczos'):
 
 def stereo_pair_B(rgb, depth, text_rgba=None, *, disparity=None, info=None, conv=None, max_px=None,
                   far_px=None, near_px=None, text_px=None, text_safe=True, text_snap=True,
-                  float_window=True, text_linear=False, interp='lanczos', cut=None, threads=2,
-                  return_info=False, **disp_kw):
+                  float_window=True, text_linear=False, interp='lanczos', fill='structure', cut=None,
+                  threads=2, return_info=False, **disp_kw):
     """Version B frame -> (left_rgb, right_rgb), float32 sRGB (H, W, 3).
     (= compose_B(prepare_B(rgb, depth), text).)
 
@@ -1296,7 +1325,8 @@ def stereo_pair_B(rgb, depth, text_rgba=None, *, disparity=None, info=None, conv
     With return_info=True a third value is returned (see stereo_pair_A).
     """
     prep = prepare_B(rgb, depth, disparity=disparity, info=info, conv=conv, max_px=max_px,
-                     far_px=far_px, near_px=near_px, interp=interp, cut=cut, threads=threads, **disp_kw)
+                     far_px=far_px, near_px=near_px, interp=interp, fill=fill, cut=cut, threads=threads,
+                     **disp_kw)
     return compose_B(prep, text_rgba, text_px=text_px, text_safe=text_safe, text_snap=text_snap,
                      float_window=float_window, text_linear=text_linear, return_info=return_info)
 

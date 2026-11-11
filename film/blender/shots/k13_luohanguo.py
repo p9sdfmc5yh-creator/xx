@@ -24,12 +24,12 @@ SEED = 2
 R_FRUIT = 0.0285
 N_HAIR = 13000
 SKY_TINT = (1.0, 0.92, 0.70)      # golden-yellow sky of the shot
-_p = np.array([-0.10, -math.sin(math.radians(37)), math.cos(math.radians(37))])
-POLE = _p / np.linalg.norm(_p)    # stem pole: 37 deg from the top towards the camera = just below the frame
+_p = np.array([-0.07, -math.sin(math.radians(33.5)), math.cos(math.radians(33.5))])
+POLE = _p / np.linalg.norm(_p)    # stem pole: 33.5 deg from the top towards the camera = just below the frame
 
 
 # ----------------------------------------------------------------------------- 1. geometry
-def shell_relief(d, R, pole, seed, n_lines=9, fine=True):
+def shell_relief(d, R, pole, seed, n_lines=11, fine=True):
     """Radial offset h (m) of the dried shell for unit directions d (..., 3) on a fruit of radius R
     whose stem pole is `pole`, + shader attrs 'lg' = (longitudinal line, pit, stem scar)."""
     rng = np.random.default_rng(300 + seed)
@@ -43,12 +43,12 @@ def shell_relief(d, R, pole, seed, n_lines=9, fine=True):
     th = np.arccos(ct)
     lam = np.arctan2(d @ e2, d @ e1) + 0.07 * C.fbm3(p / 0.007 + 3.0, 3, seed=seed + 1)
     lk = (np.arange(n_lines) + rng.uniform(-0.22, 0.22, n_lines)) * 2 * np.pi / n_lines + rng.uniform(0, 6.28)
-    sk = rng.uniform(0.45, 1.0, n_lines)
+    sk = rng.uniform(0.60, 1.0, n_lines)
     dl = np.angle(np.exp(1j * (lam[..., None] - lk)))                        # (..., n_lines)
     k = np.abs(dl).argmin(-1)
     dist = R * np.sin(th) * np.abs(np.take_along_axis(dl, k[..., None], -1)[..., 0])
-    fadeL = 0.55 + 0.45 * np.clip(0.5 + 1.2 * C.perlin3(p / 0.008 + 11.0, seed + 2), 0, 1)
-    line = sk[k] * fadeL * (0.60 * np.exp(-(dist / 0.00040) ** 2) + 0.40 * np.exp(-(dist / 0.0013) ** 2))
+    fadeL = 0.70 + 0.30 * np.clip(0.5 + 1.2 * C.perlin3(p / 0.008 + 11.0, seed + 2), 0, 1)
+    line = sk[k] * fadeL * (0.72 * np.exp(-(dist / 0.00030) ** 2) + 0.28 * np.exp(-(dist / 0.0010) ** 2))
     scar = C.smoothstep(0.085, 0.060, th)
     h = 0.00030 * C.fbm3(p / 0.009, 3, seed=seed + 3) - 0.00035 * C.smoothstep(0.15, 0.55, C.perlin3(p / 0.013 + 5.0, seed + 4))
     h = h - 0.000070 * line + 0.00012 * scar * (0.5 + C.perlin3(p / 0.0006, seed + 5))
@@ -60,7 +60,7 @@ def shell_relief(d, R, pole, seed, n_lines=9, fine=True):
         wr2 = np.abs(C.perlin3(q / 0.00030 + 9.0, seed + 7)).reshape(shp) ** 0.7
         how = 0.45 + 0.55 * C.smoothstep(-0.25, 0.25, C.fbm3(q / 0.004 + 2.0, 2, seed=seed + 8)).reshape(shp)
         F1, F2, _ = C.cellular3(q / 0.00030 + 4.0, seed + 9)
-        sel = (C.perlin3(q / 0.0011 + 6.0, seed + 10) > 0.02).reshape(shp)
+        sel = (C.perlin3(q / 0.0011 + 6.0, seed + 10) > 0.16).reshape(shp)
         pit = np.where(sel, 1.0 - C.smoothstep(0.10, 0.30, F1.reshape(shp)), 0.0)
         G1, G2, _ = C.cellular3(q / 0.00095 + 14.0, seed + 11)
         selw = (C.perlin3(q / 0.0027 + 16.0, seed + 12) > 0.10).reshape(shp)
@@ -81,13 +81,13 @@ def shell_material():
     big = m.noise(scale=105, detail=4, roughness=0.6, vector=P)                 # ~1 cm patches
     med = m.noise(scale=560, detail=4, roughness=0.65, vector=P)                # ~2 mm blotches
     fine = m.noise(scale=5200, detail=3, roughness=0.6, vector=P)               # 0.2 mm speckle
-    col = m.ramp(big, [(0.30, (0.070, 0.034, 0.012)), (0.46, (0.160, 0.082, 0.025)), (0.60, (0.215, 0.122, 0.034)),
-                       (0.76, (0.130, 0.104, 0.030))])
-    col = m.mix(col, (0.048, 0.023, 0.010), m.map_range(med, 0.56, 0.78, 0.0, 0.70, smooth=True))
-    col = m.mix(col, (0.270, 0.165, 0.052), m.map_range(med, 0.44, 0.22, 0.0, 0.45, smooth=True))
+    col = m.ramp(big, [(0.30, (0.060, 0.027, 0.009)), (0.45, (0.135, 0.062, 0.016)), (0.58, (0.200, 0.105, 0.024)),
+                       (0.74, (0.115, 0.092, 0.022))])
+    col = m.mix(col, (0.040, 0.018, 0.008), m.map_range(med, 0.54, 0.74, 0.0, 0.80, smooth=True))
+    col = m.mix(col, (0.250, 0.140, 0.036), m.map_range(med, 0.44, 0.22, 0.0, 0.45, smooth=True))
     col = m.mix(col, (0.66, 0.62, 0.58), m.map_range(fine, 0.40, 0.72), blend='MULTIPLY')
     col = m.mix(col, (0.040, 0.019, 0.009), m.math('MULTIPLY', line, 0.88))
-    col = m.mix(col, (0.028, 0.014, 0.008), m.math('MULTIPLY', pit, 0.75))
+    col = m.mix(col, (0.032, 0.016, 0.008), m.math('MULTIPLY', pit, 0.45))
     sp = m.map_range(m.voronoi(scale=2500, feature='F1', vector=P), 0.05, 0.11, 1.0, 0.0, smooth=True)
     col = m.mix(col, (0.36, 0.25, 0.10), m.math('MULTIPLY', sp, 0.45))
     col = m.mix(col, (0.34, 0.25, 0.13), scar)
@@ -97,7 +97,7 @@ def shell_material():
     nrm = m.bump(m.noise(scale=9500, detail=3, roughness=0.6, vector=P), strength=0.5, distance=0.000012)
     nrm = m.bump(fine, strength=0.35, distance=0.00002, normal=nrm)
     nrm = m.bump(sp, strength=0.4, distance=0.000012, normal=nrm)
-    m.set(base_color=col, roughness=rough, ior=1.5, specular=0.22, sheen=0.14, sheen_roughness=0.45, normal=nrm)
+    m.set(base_color=col, roughness=rough, ior=1.5, specular=0.12, sheen=0.06, sheen_roughness=0.45, normal=nrm)
     try:
         m.set(**{'Sheen Tint': (1.0, 0.86, 0.58, 1.0)})
     except Exception:
@@ -201,7 +201,9 @@ def main():
 
     cam, info = C.planet_camera(R_FRUIT + float(np.percentile(h, 99)) * 0.7, apex=0.535, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.5)
-    C.studio_lights(info, tint=SKY_TINT, key=0.85, fill=0.60, rim=1.0, world=0.7, key_size=1.0)
+    # side key (not the usual back key): at these grazing view angles a back light turns the matte shell into a
+    # pale glare veil; from the side it models the pits and wrinkles and keeps the browns saturated
+    C.studio_lights(info, tint=SKY_TINT, key=1.0, fill=0.55, rim=0.45, world=0.55, key_az=-108, key_el=46, key_size=1.0)
     finish(args, SHOT)
 
 
