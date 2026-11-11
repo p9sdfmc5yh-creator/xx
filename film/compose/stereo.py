@@ -222,16 +222,19 @@ def _fill_invalid(d, valid):
 
 
 def _isolated(d, tau):
-    """Pixels that are strict local extrema against all 4 neighbours by more than tau - the
-    signature of a single-sample Z pass dithered by depth of field (and of stray misses)."""
+    """Pixels that stick out from at least 3 of their 4 neighbours by more than tau, all in the
+    same direction (single pixels and one-pixel spurs) - the signature of a single-sample Z pass
+    dithered by depth of field.  Clean edges, corners and thin lines do not qualify."""
     H, W = d.shape
     c = d[1:-1, 1:-1]
-    l, r = c - d[1:-1, :-2], c - d[1:-1, 2:]
-    u, b = c - d[:-2, 1:-1], c - d[2:, 1:-1]
-    mn = np.minimum(np.minimum(l, r), np.minimum(u, b))
-    mx = np.maximum(np.maximum(l, r), np.maximum(u, b))
+    diffs = (c - d[1:-1, :-2], c - d[1:-1, 2:], c - d[:-2, 1:-1], c - d[2:, 1:-1])
+    pos = np.zeros(c.shape, np.int8)
+    neg = np.zeros(c.shape, np.int8)
+    for x in diffs:
+        pos += x > tau
+        neg += x < -tau
     iso = np.zeros((H, W), bool)
-    iso[1:-1, 1:-1] = (mn > tau) | (mx < -tau)
+    iso[1:-1, 1:-1] = (pos >= 3) | (neg >= 3)
     return iso
 
 
@@ -275,7 +278,8 @@ def _defocus_soften(d, tau, win, sigma):
     w = np.clip((rho - 1.5 / (win * win)) / (2.5 / (win * win)), 0.0, 1.0)   # 1 speck: 0, >= 4: 1
     if not w.any():
         return d, None
-    w = cv2.dilate(w, np.ones((win, win), np.uint8))
+    k = 2 * (win // 2 + win // 4) + 1
+    w = cv2.dilate(w, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
     w = cv2.GaussianBlur(w, (0, 0), sigma)
     mean = cv2.GaussianBlur(d, (0, 0), sigma, borderType=cv2.BORDER_REPLICATE)
     return d + w * (mean - d), w

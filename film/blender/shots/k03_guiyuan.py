@@ -127,7 +127,7 @@ def longan_material():
     base = m.mix(base, m.hsv(base, 0.5, 1.0, 0.80), m.map_range(cid, 0.55, 1.0))          # plate-to-plate variation
     base = m.jitter(base, hue=0.016, saturation=0.14, value=0.26)
     base = m.mix(base, (0.180, 0.082, 0.030), m.math('MULTIPLY', m.attr('dark', 'INSTANCER'), 0.65))
-    col = m.mix(base, (0.105, 0.050, 0.020), m.map_range(groove, 0.25, 0.95, 0.0, 0.72, smooth=True))
+    col = m.mix(base, (0.120, 0.056, 0.022), m.map_range(groove, 0.35, 0.95, 0.0, 0.50, smooth=True))
     sp = m.noise(scale=5200, detail=2, roughness=0.5, vector=P)
     col = m.mix(col, (0.075, 0.038, 0.017), m.map_range(sp, 0.66, 0.78, 0.0, 0.50))        # dark specks
     dust = m.math('MULTIPLY', m.map_range(m.noise(scale=190, detail=3, roughness=0.6, vector=P), 0.42, 0.72),
@@ -152,7 +152,7 @@ def longan_material():
     nrm = m.bump(grit, strength=m.math('MULTIPLY', shell_w, 0.55), distance=0.00003, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.46, specular=0.35,
           sss=sss, sss_radius=(1.0, 0.42, 0.16), sss_scale=0.0013,
-          coat=coat, coat_roughness=0.06, sheen=m.map_range(opn, 0.0, 1.0, 0.25, 0.0), sheen_roughness=0.5,
+          coat=coat, coat_roughness=0.06, sheen=m.map_range(opn, 0.0, 1.0, 0.10, 0.0), sheen_roughness=0.5,
           normal=nrm)
     return m
 
@@ -222,7 +222,7 @@ def main():
 
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=(1.0, 0.90, 0.78), key=0.9, fill=0.75, rim=1.1, world=1.0, key_size=0.9)
+    C.studio_lights(info, tint=(1.0, 0.90, 0.80), key=1.05, fill=0.65, rim=1.3, world=0.9, key_size=0.8)
     F.finish(args, SHOT)
 
 

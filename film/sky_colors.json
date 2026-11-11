@@ -1,0 +1,672 @@
+{
+ "_about": "Per-shot sky colours of the rebuilt plates (film/compose/backdrops.py): sRGB 0-255 on the centre column at the top of the frame (zenith), half-way to the old horizon (mid) and 16 px above the old horizon (horizon). old_horizon_y = y of the ORIGINAL foreground silhouette at the centre in 1080p pixels (the plate continues smoothly below it).",
+ "shots": {
+  "s02_cabinet": {
+   "zenith": [
+    5.9,
+    4.7,
+    1.1
+   ],
+   "mid": [
+    22.1,
+    11.8,
+    4.5
+   ],
+   "horizon": [
+    55.3,
+    32.9,
+    15.2
+   ],
+   "zenith_hex": "#060501",
+   "mid_hex": "#160c04",
+   "horizon_hex": "#37210f",
+   "old_horizon_y": 581.0,
+   "old_horizon_y_min": 581.0,
+   "n_stars": 236
+  },
+  "s03_millet": {
+   "zenith": [
+    5.9,
+    4.9,
+    2.1
+   ],
+   "mid": [
+    18.7,
+    11.2,
+    2.0
+   ],
+   "horizon": [
+    61.5,
+    39.3,
+    9.8
+   ],
+   "zenith_hex": "#060502",
+   "mid_hex": "#130b02",
+   "horizon_hex": "#3e270a",
+   "old_horizon_y": 559.0,
+   "old_horizon_y_min": 555.0,
+   "n_stars": 459
+  },
+  "s04_bowl": {
+   "zenith": [
+    8.9,
+    4.9,
+    3.9
+   ],
+   "mid": [
+    22.0,
+    14.1,
+    8.3
+   ],
+   "horizon": [
+    50.1,
+    33.6,
+    20.9
+   ],
+   "zenith_hex": "#090504",
+   "mid_hex": "#160e08",
+   "horizon_hex": "#322215",
+   "old_horizon_y": 576.0,
+   "old_horizon_y_min": 576.0,
+   "n_stars": 198
+  },
+  "m01_shanyao": {
+   "zenith": [
+    8.4,
+    42.7,
+    41.8
+   ],
+   "mid": [
+    16.1,
+    67.9,
+    65.7
+   ],
+   "horizon": [
+    33.3,
+    102.0,
+    98.9
+   ],
+   "zenith_hex": "#082b2a",
+   "mid_hex": "#104442",
+   "horizon_hex": "#216663",
+   "old_horizon_y": 575.0,
+   "old_horizon_y_min": 572.0,
+   "n_stars": 103
+  },
+  "m02_gouqi": {
+   "zenith": [
+    5.8,
+    4.9,
+    3.0
+   ],
+   "mid": [
+    16.9,
+    6.5,
+    4.5
+   ],
+   "horizon": [
+    50.8,
+    17.1,
+    11.1
+   ],
+   "zenith_hex": "#060503",
+   "mid_hex": "#110604",
+   "horizon_hex": "#33110b",
+   "old_horizon_y": 560.0,
+   "old_horizon_y_min": 543.0,
+   "n_stars": 232
+  },
+  "m03_dazao": {
+   "zenith": [
+    221.1,
+    209.2,
+    185.3
+   ],
+   "mid": [
+    234.8,
+    220.5,
+    194.0
+   ],
+   "horizon": [
+    186.9,
+    175.3,
+    151.5
+   ],
+   "zenith_hex": "#ddd1b9",
+   "mid_hex": "#ebdcc2",
+   "horizon_hex": "#bbaf98",
+   "old_horizon_y": 576.0,
+   "old_horizon_y_min": 575.0,
+   "n_stars": 0
+  },
+  "m04_shengjiang": {
+   "zenith": [
+    17.8,
+    40.0,
+    63.8
+   ],
+   "mid": [
+    31.8,
+    61.5,
+    96.2
+   ],
+   "horizon": [
+    46.3,
+    88.9,
+    129.7
+   ],
+   "zenith_hex": "#122840",
+   "mid_hex": "#203e60",
+   "horizon_hex": "#2e5982",
+   "old_horizon_y": 565.0,
+   "old_horizon_y_min": 562.0,
+   "n_stars": 79
+  },
+  "m05_jupi": {
+   "zenith": [
+    3.3,
+    3.3,
+    3.3
+   ],
+   "mid": [
+    8.7,
+    7.6,
+    4.3
+   ],
+   "horizon": [
+    38.2,
+    21.2,
+    9.8
+   ],
+   "zenith_hex": "#030303",
+   "mid_hex": "#090804",
+   "horizon_hex": "#26150a",
+   "old_horizon_y": 575.0,
+   "old_horizon_y_min": 575.0,
+   "n_stars": 284
+  },
+  "m06_lianzi": {
+   "zenith": [
+    86.5,
+    38.7,
+    60.7
+   ],
+   "mid": [
+    125.7,
+    65.0,
+    92.3
+   ],
+   "horizon": [
+    167.1,
+    93.1,
+    127.9
+   ],
+   "zenith_hex": "#56273d",
+   "mid_hex": "#7e415c",
+   "horizon_hex": "#a75d80",
+   "old_horizon_y": 546.0,
+   "old_horizon_y_min": 527.0,
+   "n_stars": 83
+  },
+  "m07_baihe": {
+   "zenith": [
+    21.4,
+    11.4,
+    36.1
+   ],
+   "mid": [
+    37.4,
+    21.4,
+    58.3
+   ],
+   "horizon": [
+    55.6,
+    36.6,
+    81.5
+   ],
+   "zenith_hex": "#150b24",
+   "mid_hex": "#25153a",
+   "horizon_hex": "#382552",
+   "old_horizon_y": 537.0,
+   "old_horizon_y_min": 522.0,
+   "n_stars": 138
+  },
+  "m08_shanzha": {
+   "zenith": [
+    5.0,
+    21.7,
+    14.0
+   ],
+   "mid": [
+    10.6,
+    38.6,
+    23.6
+   ],
+   "horizon": [
+    28.3,
+    55.3,
+    34.0
+   ],
+   "zenith_hex": "#05160e",
+   "mid_hex": "#0b2718",
+   "horizon_hex": "#1c3722",
+   "old_horizon_y": 541.0,
+   "old_horizon_y_min": 520.0,
+   "n_stars": 122
+  },
+  "m09_juhua": {
+   "zenith": [
+    9.7,
+    11.9,
+    38.6
+   ],
+   "mid": [
+    19.1,
+    25.0,
+    59.2
+   ],
+   "horizon": [
+    33.7,
+    40.1,
+    74.6
+   ],
+   "zenith_hex": "#0a0c27",
+   "mid_hex": "#13193b",
+   "horizon_hex": "#22284b",
+   "old_horizon_y": 541.0,
+   "old_horizon_y_min": 500.0,
+   "n_stars": 119
+  },
+  "m10_fengmi": {
+   "zenith": [
+    5.8,
+    4.8,
+    2.9
+   ],
+   "mid": [
+    20.9,
+    11.6,
+    2.8
+   ],
+   "horizon": [
+    78.6,
+    50.3,
+    10.8
+   ],
+   "zenith_hex": "#060503",
+   "mid_hex": "#150c03",
+   "horizon_hex": "#4f320b",
+   "old_horizon_y": 611.0,
+   "old_horizon_y_min": 611.0,
+   "n_stars": 228
+  },
+  "k01_fuling": {
+   "zenith": [
+    17.4,
+    18.4,
+    20.2
+   ],
+   "mid": [
+    31.3,
+    32.3,
+    36.3
+   ],
+   "horizon": [
+    51.1,
+    52.1,
+    56.8
+   ],
+   "zenith_hex": "#111214",
+   "mid_hex": "#1f2024",
+   "horizon_hex": "#333439",
+   "old_horizon_y": 577.0,
+   "old_horizon_y_min": 577.0,
+   "n_stars": 130
+  },
+  "k02_yiyiren": {
+   "zenith": [
+    8.4,
+    42.1,
+    44.1
+   ],
+   "mid": [
+    15.3,
+    67.7,
+    70.2
+   ],
+   "horizon": [
+    29.8,
+    99.8,
+    104.1
+   ],
+   "zenith_hex": "#082a2c",
+   "mid_hex": "#0f4446",
+   "horizon_hex": "#1e6468",
+   "old_horizon_y": 553.0,
+   "old_horizon_y_min": 543.0,
+   "n_stars": 100
+  },
+  "k03_guiyuan": {
+   "zenith": [
+    22.7,
+    6.9,
+    6.7
+   ],
+   "mid": [
+    42.2,
+    13.8,
+    9.8
+   ],
+   "horizon": [
+    70.2,
+    29.8,
+    17.3
+   ],
+   "zenith_hex": "#170707",
+   "mid_hex": "#2a0e0a",
+   "horizon_hex": "#461e11",
+   "old_horizon_y": 554.0,
+   "old_horizon_y_min": 538.0,
+   "n_stars": 97
+  },
+  "k04_heizhima": {
+   "zenith": [
+    219.3,
+    210.4,
+    193.5
+   ],
+   "mid": [
+    241.7,
+    230.3,
+    205.9
+   ],
+   "horizon": [
+    195.2,
+    184.3,
+    161.6
+   ],
+   "zenith_hex": "#dbd2c2",
+   "mid_hex": "#f2e6ce",
+   "horizon_hex": "#c3b8a2",
+   "old_horizon_y": 557.0,
+   "old_horizon_y_min": 557.0,
+   "n_stars": 0
+  },
+  "k05_bohe": {
+   "zenith": [
+    217.2,
+    221.2,
+    206.2
+   ],
+   "mid": [
+    232.0,
+    240.1,
+    217.6
+   ],
+   "horizon": [
+    189.1,
+    199.1,
+    175.2
+   ],
+   "zenith_hex": "#d9ddce",
+   "mid_hex": "#e8f0da",
+   "horizon_hex": "#bdc7af",
+   "old_horizon_y": 560.0,
+   "old_horizon_y_min": 559.0,
+   "n_stars": 0
+  },
+  "k06_sangshen": {
+   "zenith": [
+    213.6,
+    186.2,
+    206.8
+   ],
+   "mid": [
+    219.0,
+    186.4,
+    210.7
+   ],
+   "horizon": [
+    165.6,
+    132.6,
+    157.7
+   ],
+   "zenith_hex": "#d6bacf",
+   "mid_hex": "#dbbad3",
+   "horizon_hex": "#a6859e",
+   "old_horizon_y": 574.0,
+   "old_horizon_y_min": 570.0,
+   "n_stars": 0
+  },
+  "k07_chixiaodou": {
+   "zenith": [
+    3.2,
+    3.1,
+    3.1
+   ],
+   "mid": [
+    10.5,
+    5.5,
+    5.0
+   ],
+   "horizon": [
+    27.6,
+    9.6,
+    10.6
+   ],
+   "zenith_hex": "#030303",
+   "mid_hex": "#0a0605",
+   "horizon_hex": "#1c0a0b",
+   "old_horizon_y": 552.0,
+   "old_horizon_y_min": 512.0,
+   "n_stars": 211
+  },
+  "k08_heye": {
+   "zenith": [
+    0.1,
+    4.0,
+    3.0
+   ],
+   "mid": [
+    3.5,
+    15.2,
+    11.2
+   ],
+   "horizon": [
+    12.8,
+    35.1,
+    25.5
+   ],
+   "zenith_hex": "#000403",
+   "mid_hex": "#040f0b",
+   "horizon_hex": "#0d231a",
+   "old_horizon_y": 566.0,
+   "old_horizon_y_min": 566.0,
+   "n_stars": 151
+  },
+  "k09_gancao": {
+   "zenith": [
+    54.5,
+    15.1,
+    10.5
+   ],
+   "mid": [
+    90.0,
+    25.0,
+    18.4
+   ],
+   "horizon": [
+    129.0,
+    44.6,
+    34.0
+   ],
+   "zenith_hex": "#360f0a",
+   "mid_hex": "#5a1912",
+   "horizon_hex": "#812d22",
+   "old_horizon_y": 575.0,
+   "old_horizon_y_min": 561.0,
+   "n_stars": 125
+  },
+  "k10_jianghuang": {
+   "zenith": [
+    6.0,
+    20.0,
+    46.8
+   ],
+   "mid": [
+    12.7,
+    33.6,
+    76.3
+   ],
+   "horizon": [
+    28.6,
+    54.6,
+    115.0
+   ],
+   "zenith_hex": "#06142f",
+   "mid_hex": "#0d224c",
+   "horizon_hex": "#1d3773",
+   "old_horizon_y": 566.0,
+   "old_horizon_y_min": 565.0,
+   "n_stars": 123
+  },
+  "k11_shaji": {
+   "zenith": [
+    26.8,
+    39.8,
+    30.8
+   ],
+   "mid": [
+    42.7,
+    59.5,
+    48.1
+   ],
+   "horizon": [
+    65.3,
+    82.3,
+    62.9
+   ],
+   "zenith_hex": "#1b281f",
+   "mid_hex": "#2b3c30",
+   "horizon_hex": "#41523f",
+   "old_horizon_y": 530.0,
+   "old_horizon_y_min": 528.0,
+   "n_stars": 82
+  },
+  "k12_juemingzi": {
+   "zenith": [
+    202.8,
+    209.8,
+    193.8
+   ],
+   "mid": [
+    217.3,
+    226.3,
+    205.3
+   ],
+   "horizon": [
+    175.9,
+    184.9,
+    165.2
+   ],
+   "zenith_hex": "#cbd2c2",
+   "mid_hex": "#d9e2cd",
+   "horizon_hex": "#b0b9a5",
+   "old_horizon_y": 540.0,
+   "old_horizon_y_min": 540.0,
+   "n_stars": 0
+  },
+  "k13_luohanguo": {
+   "zenith": [
+    204.7,
+    170.7,
+    74.3
+   ],
+   "mid": [
+    217.4,
+    173.5,
+    61.8
+   ],
+   "horizon": [
+    159.8,
+    120.6,
+    33.7
+   ],
+   "zenith_hex": "#cdab4a",
+   "mid_hex": "#d9ae3e",
+   "horizon_hex": "#a07922",
+   "old_horizon_y": 577.0,
+   "old_horizon_y_min": 577.0,
+   "n_stars": 0
+  },
+  "k14_rougui": {
+   "zenith": [
+    5.0,
+    5.9,
+    10.9
+   ],
+   "mid": [
+    9.1,
+    12.1,
+    17.8
+   ],
+   "horizon": [
+    30.4,
+    28.2,
+    31.6
+   ],
+   "zenith_hex": "#05060b",
+   "mid_hex": "#090c12",
+   "horizon_hex": "#1e1c20",
+   "old_horizon_y": 576.0,
+   "old_horizon_y_min": 576.0,
+   "n_stars": 213
+  },
+  "k15_qianshi": {
+   "zenith": [
+    19.0,
+    27.6,
+    44.7
+   ],
+   "mid": [
+    29.2,
+    43.2,
+    69.8
+   ],
+   "horizon": [
+    46.5,
+    66.4,
+    99.4
+   ],
+   "zenith_hex": "#131c2d",
+   "mid_hex": "#1d2b46",
+   "horizon_hex": "#2e4263",
+   "old_horizon_y": 543.0,
+   "old_horizon_y_min": 537.0,
+   "n_stars": 116
+  },
+  "k16_lingzhi": {
+   "zenith": [
+    3.0,
+    3.0,
+    3.0
+   ],
+   "mid": [
+    7.3,
+    6.1,
+    4.6
+   ],
+   "horizon": [
+    30.5,
+    17.5,
+    11.1
+   ],
+   "zenith_hex": "#030303",
+   "mid_hex": "#070605",
+   "horizon_hex": "#1e120b",
+   "old_horizon_y": 575.0,
+   "old_horizon_y_min": 575.0,
+   "n_stars": 181
+  }
+ }
+}
