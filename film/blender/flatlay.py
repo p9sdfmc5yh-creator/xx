@@ -651,6 +651,9 @@ def _scatter_passes(extent, sets, mix, dens_fns, rng, k=(0.94, 0.88, 0.85), over
     them as oriented footprints (pack_pass).  keep(x, y, a) -> bool mask can veto candidates."""
     xmin, xmax, ymin, ymax = extent
     area = (xmax - xmin) * (ymax - ymin)
+    if len(mix) != len(sets):                                        # a single ingredient picked by assign()
+        probe = assign(np.zeros(1), np.zeros(1))
+        mix = [1.0 if i == int(probe[0]) else 0.0 for i in range(len(sets))]
     mixn = np.asarray(mix, float) / np.sum(mix)
     foot = float(np.sum(mixn * np.array([math.pi * s.L * s.Wd / 4.0 * s.fullness for s in sets])))
     parts = []
@@ -1037,15 +1040,46 @@ def layout_taiji(frame, sets, P, rng):
     parts = []
     info = dict(centre=[cu, cv_], radius_m=R)
     for si, m in ((0, yin), (1, yang)):
-        S = sets[si]
-        dt = ndi.distance_transform_edt(m) * px
-        fns = [Field2((dt > (0.45 + 0.95 * p) * S.Wd * 0.5 + 0.9 * p * S.Wd).astype(np.float32), ext) for p in range(layers)]
-        pl = _scatter_passes(ext, [S], [1.0], fns, rng, k=(0.94, 0.90, 0.88), oversample=3.0, rounds=4)
-        pl.iset[:] = si
+        pl = _fill_mask(m, ext, sets, si, layers, rng, tag='taiji %d' % si)
         pl.group[:] = si
         parts.append(pl)
     pl = Placement.cat(parts)
     return pl, dict(extent=frame.extent(0.02), allowed=None, candidates=1, info=info)
+
+
+def _fill_mask(mask, ext, sets, si, layers, rng, pack=0.90, tag=''):
+    """Fill a boolean raster region (row 0 = top, covering `ext`) with ingredient `si`: a relaxed, dense
+    ground layer whose items hug the outline (relax_pack) + (layers - 1) inset upper layers."""
+    S = sets[si]
+    h, w = mask.shape
+    px = (ext[1] - ext[0]) / (w - 1)
+    dt_in = ndi.distance_transform_edt(mask) * px
+    sd = (dt_in - ndi.distance_transform_edt(~mask) * px).astype(np.float32)
+    gy, gx = np.gradient(ndi.gaussian_filter(sd, 1.5))
+    gn = np.hypot(gx, gy) + 1e-12
+    Fs, Fx, Fy = Field2(sd, ext), Field2(gx / gn, ext), Field2(-gy / gn, ext)      # raster rows run downwards
+
+    def signed(x, y):
+        return Fs(x, y), Fx(x, y), Fy(x, y)
+
+    ys_, xs_ = np.where(dt_in > 0.4 * S.Wd)
+    area = float(mask.sum()) * px * px
+    foot = math.pi * S.L * S.Wd / 4.0 * S.fullness
+    n = int(pack * area / foot)
+    j = rng.integers(0, len(ys_), n)
+    x = ext[0] + (xs_[j] + rng.random(n) - 0.5) * px
+    y = ext[3] - (ys_[j] + rng.random(n) - 0.5) * px
+    c = _candidates(sets, None, x, y, rng, assign=lambda x_, y_: np.full(len(x_), si))
+    c['ang'] = rng.uniform(0, 2 * math.pi, n)
+    c = relax_pack(c, signed, rng, tol=0.1 * S.Wd, verbose=tag)
+    parts = [_to_placement(c, sets, 0)]
+    if layers > 1:
+        fns = [Field2((dt_in > (0.5 + 0.9 * p) * S.Wd).astype(np.float32), ext) for p in range(1, layers)]
+        up = _scatter_passes(ext, sets, [1.0], fns, rng, k=(0.92, 0.9), oversample=3.0, rounds=4,
+                             assign=lambda x_, y_: np.full(len(x_), si))
+        up.order += 1
+        parts.append(up)
+    return Placement.cat(parts)
 
 
 def _dish_profile(R, kind):
