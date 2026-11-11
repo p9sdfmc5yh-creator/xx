@@ -351,15 +351,15 @@ def soaked_goji_material():
     fur = m.attr('furrow')
     n_patch = m.noise(scale=150, detail=2, vector=oc)
     n_fine = m.noise(scale=1500, detail=3, vector=oc)
-    col = m.ramp(n_patch, [(0.22, (0.205, 0.0055, 0.0035)), (0.50, (0.315, 0.015, 0.004)), (0.80, (0.41, 0.043, 0.006))])
+    col = m.ramp(n_patch, [(0.22, (0.115, 0.0030, 0.0020)), (0.50, (0.190, 0.0080, 0.0026)), (0.80, (0.265, 0.024, 0.0036))])
     vor = m.voronoi(scale=560, vector=oc, feature='SMOOTH_F1', smoothness=0.4)
     seedm = m.map_range(vor, 0.10, 0.50, 1.0, 0.0, smooth=True)                 # seeds showing through
-    col = m.mix(col, (0.50, 0.105, 0.012), m.math('MULTIPLY', seedm, 0.20))
-    col = m.mix(col, (0.46, 0.070, 0.008), m.map_range(m.attr('ax'), 0.02, 0.26, 0.42, 0.0, smooth=True))   # paler shoulder
-    col = m.mix(col, (0.105, 0.003, 0.003), m.math('MULTIPLY', fur, 0.78))
+    col = m.mix(col, (0.34, 0.066, 0.008), m.math('MULTIPLY', seedm, 0.20))
+    col = m.mix(col, (0.30, 0.046, 0.006), m.map_range(m.attr('ax'), 0.02, 0.26, 0.42, 0.0, smooth=True))   # paler shoulder
+    col = m.mix(col, (0.055, 0.0016, 0.0016), m.math('MULTIPLY', fur, 0.80))
     col = m.jitter(col, hue=0.014, saturation=0.08, value=0.30)
     dark = m.map_range(m.math('FRACT', m.math('MULTIPLY', m.obj_random(), 13.37)), 0.80, 1.0, 0.0, 0.55)   # a few older, browner
-    col = m.mix(col, (0.100, 0.012, 0.007), dark)
+    col = m.mix(col, (0.060, 0.007, 0.004), dark)
     col = m.mix(col, (0.74, 0.60, 0.36), m.map_range(m.attr('scar'), 0.25, 0.8, 0.0, 0.95, smooth=True))
     rough = m.math('ADD', m.map_range(n_fine, 0.3, 0.7, 0.30, 0.52), m.math('MULTIPLY', fur, 0.22))
     stretch = m.mapping(oc, scale=(0.22, 1.0, 1.0))
@@ -368,12 +368,13 @@ def soaked_goji_material():
     nrm = m.bump(m.noise(scale=2600, detail=3, vector=stretch), strength=0.7, distance=0.00010, normal=nrm)
     nrm = m.bump(m.noise(scale=9000, detail=2, vector=oc), strength=0.4, distance=0.00002, normal=nrm)
     wn = m.noise(scale=240, detail=2, vector=oc)
-    wet = m.math('MULTIPLY', m.map_range(wn, 0.32, 0.68, 0.10, 0.52, smooth=True),
+    wet = m.math('MULTIPLY', m.map_range(wn, 0.32, 0.68, 0.05, 0.36, smooth=True),
                  m.math('SUBTRACT', 1.0, m.math('MULTIPLY', fur, 0.5)))                     # uneven water film
-    cn = m.bump(h1, strength=0.45, distance=0.00018)                                        # the film follows the skin, softened
+    cn = m.bump(h1, strength=0.75, distance=0.00020)                                        # the film follows the skin, softened
+    cn = m.bump(m.noise(scale=2600, detail=3, vector=stretch), strength=0.5, distance=0.00007, normal=cn)
     m.set(base_color=col, roughness=rough, sss=0.65, sss_radius=(1.0, 0.13, 0.05), sss_scale=0.0014,
-          sss_anisotropy=0.3, ior=1.42, specular=0.40, coat=wet, coat_ior=1.34, normal=nrm,
-          coat_roughness=m.map_range(n_fine, 0.3, 0.7, 0.06, 0.16))
+          sss_anisotropy=0.3, ior=1.42, specular=0.30, coat=wet, coat_ior=1.34, normal=nrm,
+          coat_roughness=m.map_range(n_fine, 0.3, 0.7, 0.04, 0.11))
     m.bsdf.inputs['Coat Normal'].default_value = (0, 0, 0)
     m.nt.links.new(cn, m.bsdf.inputs['Coat Normal'])
     return m
@@ -757,8 +758,6 @@ def main():
     args = C.parse_args()
     if args.quality == 'final' and not args.res:
         args.q['res'] = FINAL_RES
-        args.q['spp'] = args.spp or 48
-        args.q['thr'] = 0.02
     C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
     sc = bpy.context.scene
     sc.cycles.transmission_bounces = 6

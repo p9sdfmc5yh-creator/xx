@@ -31,17 +31,17 @@ def make_outline(seed=0, r0=R0):
 # ----------------------------------------------------------------------------- 1. cut-face relief + masks
 def fields(x, y, d, ro, th, seed=0):
     p = D.P3(x, y)
-    h = D.knife_marks(x, y, angle_deg=KNIFE, seed=seed, amp=3.5e-6)
-    h += 1.8e-5 * C.fbm3(p * 130.0, 2, seed=seed + 1)                     # the blade never cuts dead flat
-    h += 6e-6 * C.fbm3(p * 3000.0, 3, seed=seed + 2)                      # granular starch lumps (0.3 mm)
+    h = D.knife_marks(x, y, angle_deg=KNIFE, seed=seed, amp=7e-6)
+    h += 4.0e-5 * C.fbm3(p * 130.0, 2, seed=seed + 1)                     # the blade never cuts dead flat
+    h += 1.2e-5 * C.fbm3(p * 3000.0, 3, seed=seed + 2)                      # granular starch lumps (0.3 mm)
     bounds = (x.min(), x.max(), y.min(), y.max())
-    pts = D.scatter(bounds, 0.0012, seed + 3, density=lambda a, b: 0.6)   # scattered vascular bundles
+    pts = D.scatter(bounds, 0.0012, seed + 3, density=lambda a, b: 0.75)   # scattered vascular bundles
     dot, dotid, q = D.dots(x, y, pts, (0.00005, 0.00012), soft=0.35, seed=seed + 4)
     dot = dot * (d > 0.0007)
     h += dot * (dotid - 0.45) * 1.6e-5                                    # some are pits, some ooze a bead
     lipn = C.fbm3(D.P3(th * ro / 0.0005, np.zeros_like(th), 3.3), 3, seed=seed + 6)
     h += np.exp(-(d / 0.00016) ** 2) * (1.0e-5 + 2.2e-5 * lipn)           # tough skin leaves a tiny burr
-    h -= 0.9e-5 * np.exp(-((d - 0.0006) / 0.0004) ** 2)                   # cortex sinks a little
+    h -= 1.4e-5 * np.exp(-((d - 0.0008) / 0.0005) ** 2)                   # cortex sinks a little
     wet = C.smoothstep(-0.30, 0.25, C.fbm3(p * 260.0, 3, seed=seed + 7))  # mucilage film is patchy
     return h, dict(dot=dot, dotid=dotid, wet=wet)
 
@@ -60,15 +60,17 @@ def face_material(dry=False):
     # flesh: ivory white, slow cream mottling, cell walls a hair darker, starch grains brighter
     mott = m.noise(scale=150, detail=3, roughness=0.55, vector=P)
     flesh = m.mix((0.76, 0.725, 0.61), (0.84, 0.82, 0.74), m.map_range(mott, 0.30, 0.72))
+    moist = m.noise(scale=520, detail=3, roughness=0.6, distortion=0.4, vector=P)
+    flesh = m.mix(flesh, (0.64, 0.61, 0.50), m.math('MULTIPLY', m.map_range(moist, 0.45, 0.75), 0.55))
     cell = m.voronoi(scale=8500, feature='DISTANCE_TO_EDGE', vector=P)
     flesh = m.mix(flesh, (0.63, 0.59, 0.47), m.map_range(cell, 0.0, 0.10, 0.32, 0.0))
     grain = m.noise(scale=30000, detail=2, roughness=0.6, vector=P)
     flesh = m.mix(flesh, (0.90, 0.89, 0.84), m.map_range(grain, 0.60, 0.80, 0.0, 0.55))
-    band = m.map_range(din, 0.22, 1.5, 1.0, 0.0, smooth=True)             # translucent cortex under the skin
-    flesh = m.mix(flesh, (0.62, 0.53, 0.31), m.math('MULTIPLY', band, 0.55))
+    band = m.map_range(din, 0.35, 2.0, 1.0, 0.0, smooth=True)             # translucent cortex under the skin
+    flesh = m.mix(flesh, (0.58, 0.47, 0.24), m.math('MULTIPLY', band, 0.70))
     flesh = m.mix(flesh, (0.47, 0.40, 0.26), m.math('MULTIPLY', dot, m.map_range(dotid, 0, 1, 0.30, 0.75)))
     # skin in cross-section (noisy thickness 0.15-0.4 mm) and on the outer wall (din < 0)
-    thick = m.map_range(m.noise(scale=2200, detail=3, vector=P), 0.2, 0.8, 0.13, 0.38)
+    thick = m.map_range(m.noise(scale=2200, detail=3, vector=P), 0.2, 0.8, 0.28, 0.55)
     is_skin = m.math('SUBTRACT', 1.0, m.map_range(din, m.math('MULTIPLY', thick, 0.55), thick, 0.0, 1.0, smooth=True))
     skin_col = m.ramp(m.noise(scale=1300, detail=4, roughness=0.6, vector=P),
                       [(0.25, (0.075, 0.040, 0.020)), (0.55, (0.22, 0.135, 0.065)), (0.85, (0.34, 0.235, 0.12))])
@@ -92,7 +94,7 @@ def face_material(dry=False):
         cn = m.bump(m.noise(scale=21000, detail=2, roughness=0.6, vector=P), strength=0.35, distance=0.000005)
         cn = m.bump(bead, strength=0.9, distance=0.000022, normal=cn)
         kw = dict(coat=m.math('MULTIPLY', film, 0.85), coat_ior=1.36, coat_normal=cn,
-                  coat_roughness=m.map_range(streak, 0.2, 0.8, 0.10, 0.24))
+                  coat_roughness=m.map_range(streak, 0.2, 0.8, 0.16, 0.36))
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.45, normal=nrm,
           sss=m.mixf(0.9, 0.25, is_skin), sss_radius=(1.0, 0.80, 0.52), sss_scale=0.0011, **kw)
     _MATS[key] = m
@@ -133,11 +135,11 @@ def main():
     C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
     cam, info = C.disc_camera(R0, elevation_deg=ELEV, lens_mm=85, apex=0.535, edge=0.68)
     ol = make_outline(args.seed)
-    D.hero_face('yam_face', ol, info, fields, face_material(), n_max=D.n_max_for(args), fillet=0.00010, seed=args.seed)
-    D.rootlets('yam_rootlets', ol, info, rootlet_material(), n=30, th_range=(-0.85, 0.85), length=(0.003, 0.009),
-               radius=(0.00006, 0.00013), depth=(0.0002, 0.0016), rise=(-0.10, 0.50), seed=args.seed + 5)
+    D.hero_face('yam_face', ol, info, fields, face_material(), n_max=D.n_max_for(args), fillet=0.00006, seed=args.seed)
+    D.rootlets('yam_rootlets', ol, info, rootlet_material(), n=24, th_range=(-0.85, 0.85), length=(0.002, 0.009),
+               radius=(0.00004, 0.00011), depth=(0.0002, 0.0016), rise=(-0.10, 0.50), seed=args.seed + 5)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    D.lights(info, tint=(0.82, 1.0, 0.93), key=0.70, fill=0.70, rim=0.9, top=0.35, sheen=0.40)
+    D.lights(info, tint=(0.82, 1.0, 0.93), key=0.50, fill=0.60, rim=0.9, top=0.25, sheen=0.6, sheen_size=0.6, sheen_az=-9, sheen_el=28)
     D.finish(args, SHOT)
 
 
