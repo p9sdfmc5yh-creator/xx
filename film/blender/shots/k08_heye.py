@@ -158,6 +158,9 @@ def leaf_material(tex_path=None, dried=False):
         col = m.hsv(col, 0.5, 1.0, m.map_range(n_mid, 0.25, 0.75, 0.84, 1.14))
         vcol, acol, bcol = (0.150, 0.262, 0.082), (0.050, 0.135, 0.052), (0.046, 0.128, 0.047)
     col = m.mix(col, bcol, m.math('MULTIPLY', broad, 0.55))
+    bloom = m.map_range(m.noise(scale=130, detail=3, roughness=0.65, vector=lp), 0.42, 0.72, 0.0, 1.0, smooth=True)
+    if not dried:
+        col = m.mix(col, (0.070, 0.150, 0.115), m.math('MULTIPLY', bloom, 0.30))                  # waxy bloom, rubbed off in places
     col = m.mix(col, acol, m.math('ADD', m.math('MULTIPLY', are, 0.40), m.math('MULTIPLY', are2, 0.12)))
     vmask = m.map_range(vein, 0.18, 0.75, 0.0, 1.0, smooth=True)
     col = m.mix(col, m.hsv(vcol, 0.5, 1.0, m.map_range(n_mid, 0.25, 0.75, 0.80, 1.15)), m.math('MULTIPLY', vmask, 0.84))
@@ -217,7 +220,7 @@ def _bead(a, seed, nu=72, nv=128):
     """Sessile water bead of horizontal radius a: sphere when tiny, flattened by gravity when big
     (height -> ~5 mm), sitting on a small contact disc (contact angle ~150 deg).  Base at z = 0."""
     rng = np.random.default_rng(seed)
-    c = a / math.sqrt(1.0 + (a / 0.0027) ** 2)
+    c = a / math.sqrt(1.0 + (a / 0.0040) ** 2)
     th = np.linspace(0, math.pi, nu)[:, None]
     ph = np.linspace(0, 2 * math.pi, nv, endpoint=False)[None, :]
     ell = 1.0 + rng.uniform(0.0, 0.035) * np.cos(2 * ph + rng.uniform(0, 6))          # never a perfect circle
@@ -241,9 +244,9 @@ def add_droplets(pos, nrm, h, X, Y, sol, rng, caustics):
     idx = np.flatnonzero(zone)
     idx = idx[rng.choice(len(idx), size=min(90000, len(idx)), replace=False)]
     # composition (leaf-plane x, y, bead radius); every bead then rolls into the nearest hollow
-    targets = [(-0.020, -0.062, 0.0062), (0.034, -0.047, 0.0046), (-0.050, -0.028, 0.0034), (0.013, -0.021, 0.0026),
-               (0.060, -0.079, 0.0038), (-0.056, -0.086, 0.0044), (0.041, -0.010, 0.0020), (-0.027, -0.006, 0.0017),
-               (0.004, -0.045, 0.0015)]
+    targets = [(-0.020, -0.062, 0.0042), (0.034, -0.047, 0.0033), (-0.050, -0.030, 0.0026), (0.013, -0.024, 0.0021),
+               (0.060, -0.079, 0.0029), (-0.056, -0.086, 0.0036), (0.043, -0.026, 0.0017), (-0.027, -0.034, 0.0015),
+               (0.004, -0.050, 0.0013)]
     radii, chosen = [], []
     for tx, ty, a in targets:
         near = idx[np.hypot(px[idx] - tx, py[idx] - ty) < 0.008]
@@ -361,8 +364,10 @@ def main():
     nrm = np.stack([np.sin(th) * X / rho, np.sin(th) * Y / rho, np.cos(th)], -1)
     d, hw = vein_field(r, phi)
     P3 = np.stack([X, Y, np.zeros_like(X)], -1)
-    und = 0.0024 * C.fbm3(P3 * 7.0 + 1.3, 2, seed=args.seed + 1) + 0.0005 * C.fbm3(P3 * 26.0, 2, seed=args.seed + 2)
     edge = C.smoothstep(0.80, 1.0, t)
+    inner = 1.0 - C.smoothstep(0.50, 0.95, t)                           # the silhouette must stay calm, the lamina need not
+    und = (0.0024 + 0.0020 * inner) * C.fbm3(P3 * 7.0 + 1.3, 2, seed=args.seed + 1) + 0.0005 * C.fbm3(P3 * 26.0, 2, seed=args.seed + 2)
+    und = und + 0.0010 * (0.25 + 0.75 * inner) * np.cos(N_MAIN * phi) * (1.0 - edge)                 # shallow radial pleats
     arc = phi * R_LEAF
     ruf = (0.0026 * np.sin(arc * (2 * math.pi / 0.082) + 0.6 + 1.3 * np.sin(arc * (2 * math.pi / 0.23)))
            + 0.0005 * np.sin(arc * (2 * math.pi / 0.033) + 1.9)) * edge ** 2 - 0.0010 * edge ** 2
@@ -390,7 +395,7 @@ def main():
     tc = wn.nodes.new('ShaderNodeTexCoord')
     sx = wn.nodes.new('ShaderNodeSeparateXYZ')
     rmp = wn.nodes.new('ShaderNodeValToRGB')
-    rmp.color_ramp.elements[0].position, rmp.color_ramp.elements[0].color = 0.40, (0.020, 0.040, 0.030, 1)
+    rmp.color_ramp.elements[0].position, rmp.color_ramp.elements[0].color = 0.32, (0.055, 0.100, 0.075, 1)
     rmp.color_ramp.elements[1].position, rmp.color_ramp.elements[1].color = 0.95, (0.50, 0.66, 0.60, 1)
     mr = wn.nodes.new('ShaderNodeMapRange')
     mr.inputs[1].default_value, mr.inputs[2].default_value = -1.0, 1.0

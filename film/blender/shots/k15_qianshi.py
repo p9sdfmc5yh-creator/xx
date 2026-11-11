@@ -105,7 +105,7 @@ def qian_material():
     fc = m.hsv(fc, 0.5, m.map_range(t3, 0, 1, 0.7, 1.5), m.map_range(A('mott'), 0, 1, 0.94, 1.03))
     col = m.mix(m.mix(wc, cc, coat), fc, frac)
     col = m.jitter(col, hue=0.008, saturation=0.08, value=0.10)
-    rough = m.mixf(0.72, m.map_range(A('rvar'), 0, 1, 0.50, 0.72), coat)
+    rough = m.mixf(0.72, m.map_range(A('rvar'), 0, 1, 0.56, 0.78), coat)
     rough = m.mixf(rough, 0.86, m.math('MULTIPLY', dust, coat))
     rough = m.mixf(rough, 0.93, frac)
     nrm = m.bump(vein, strength=m.math('MULTIPLY', coat, 0.25), distance=0.00003)

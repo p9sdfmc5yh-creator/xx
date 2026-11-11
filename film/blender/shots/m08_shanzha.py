@@ -360,14 +360,14 @@ def shanzha_material(sss_method='BURLEY'):
     fl = m.mix(fl, (0.58, 0.37, 0.165), m.math('MULTIPLY', m.map_range(rad, 0.66, 0.30), 0.55))
     stain = m.math('MULTIPLY', m.map_range(rad, 0.66, 0.985, smooth=True), m.map_range(mott2, 0.2, 0.8, 0.40, 1.0))
     fl = m.mix(fl, (0.25, 0.050, 0.026), m.math('MULTIPLY', stain, 0.85))
-    fl = m.mix(fl, (0.19, 0.070, 0.032), m.map_range(cav, 0.15, 0.9, 0.0, 0.70, smooth=True))
+    fl = m.mix(fl, (0.20, 0.075, 0.034), m.map_range(cav, 0.10, 1.0, 0.0, 0.42, smooth=True))
     fl = m.mix(fl, (0.115, 0.038, 0.020), m.map_range(wall, 0.30, 1.0, 0.0, 0.85, smooth=True))
     fl = m.mix(fl, (0.19, 0.078, 0.036), m.math('MULTIPLY', m.attr('dark', 'INSTANCER'), 0.65))
     sp = m.noise(scale=5200, detail=2, roughness=0.7, vector=P)                # stone-cell speckle
     fl = m.hsv(fl, 0.5, 1.0, m.map_range(sp, 0.30, 0.70, 0.84, 1.14))
     # --- skin: deep red to maroon, dark creases, pale lenticel dots
     sn = m.noise(scale=330, detail=3, roughness=0.6, vector=P)
-    sk = m.mix((0.34, 0.017, 0.012), (0.12, 0.008, 0.008), m.map_range(sn, 0.30, 0.70))
+    sk = m.mix((0.29, 0.014, 0.011), (0.105, 0.007, 0.007), m.map_range(sn, 0.30, 0.70))
     sk = m.mix(sk, (0.050, 0.005, 0.005), m.map_range(cav, 0.2, 0.9, 0.0, 0.80, smooth=True))
     vd = m.voronoi(scale=820, vector=P)
     vc = m.node('ShaderNodeSeparateColor', {0: m.voronoi(scale=820, vector=P, output='Color')}).outputs[0]

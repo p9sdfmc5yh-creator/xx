@@ -22,7 +22,7 @@ from _botanicals import C, rot, merge_parts, hair_tubes, settle, finish         
 SHOT = 'k13_luohanguo'
 SEED = 2
 R_FRUIT = 0.0285
-N_HAIR = 13000
+N_HAIR = 70000
 SKY_TINT = (1.0, 0.92, 0.70)      # golden-yellow sky of the shot
 _p = np.array([-0.07, -math.sin(math.radians(33.5)), math.cos(math.radians(33.5))])
 POLE = _p / np.linalg.norm(_p)    # stem pole: 33.5 deg from the top towards the camera = just below the frame
@@ -65,7 +65,8 @@ def shell_relief(d, R, pole, seed, n_lines=11, fine=True):
         G1, G2, _ = C.cellular3(q / 0.00095 + 14.0, seed + 11)
         selw = (C.perlin3(q / 0.0027 + 16.0, seed + 12) > 0.10).reshape(shp)
         wart = np.where(selw, 1.0 - C.smoothstep(0.08, 0.34, G1.reshape(shp)), 0.0)
-        h = (h + 0.000022 * how * (wr - 0.55) + 0.000009 * (wr2 - 0.5) - 0.000020 * pit + 0.000030 * wart
+        crk = 1.0 - C.smoothstep(0.0, 0.10, (G2 - G1).reshape(shp))                               # fine fissures between warts
+        h = (h + 0.000040 * how * (wr - 0.55) + 0.000016 * (wr2 - 0.5) - 0.000030 * pit + 0.000040 * wart - 0.000014 * crk
              + 0.000004 * C.perlin3(q / 0.00009, seed + 13).reshape(shp))
     return h, dict(lg=np.stack([np.clip(line, 0, 1), pit, scar], -1))
 
@@ -97,7 +98,7 @@ def shell_material():
     col = m.jitter(col, hue=0.01, saturation=0.08, value=0.10)
     rough = m.map_range(med, 0.3, 0.7, 0.50, 0.68)
     rough = m.mixf(rough, 0.85, m.math('MAXIMUM', pit, scar))
-    nrm = m.bump(m.noise(scale=9500, detail=3, roughness=0.6, vector=P), strength=0.5, distance=0.000012)
+    nrm = m.bump(m.noise(scale=9500, detail=3, roughness=0.6, vector=P), strength=0.6, distance=0.00002)
     nrm = m.bump(fine, strength=0.35, distance=0.00002, normal=nrm)
     nrm = m.bump(sp, strength=0.4, distance=0.000012, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.5, specular=0.12, sheen=0.06, sheen_roughness=0.45, normal=nrm)
@@ -113,7 +114,7 @@ def fuzz_material():
     m = C.Mat('lhg_fuzz')
     tv = m.attr('tv')
     r = m.attr('hr')
-    col = m.mix((0.30, 0.19, 0.07), (0.56, 0.41, 0.17), tv)
+    col = m.mix((0.40, 0.27, 0.10), (0.70, 0.55, 0.26), tv)
     col = m.mix(col, (0.16, 0.09, 0.035), m.map_range(r, 0.6, 1.0, 0.0, 0.8))
     m.set(base_color=col, roughness=0.5, specular=0.3)
     tr = m.node('ShaderNodeBsdfTranslucent', {'Color': m.mix(col, (1.0, 0.82, 0.45), 1.0, blend='MULTIPLY')})
@@ -199,15 +200,20 @@ def main():
     w = 0.25 + 0.75 * C.smoothstep(-0.2, 0.3, C.fbm3(v[cand] / 0.004 + 40.0, 3, seed=args.seed + 20))
     idx = rng.choice(cand, N_HAIR, p=w / w.sum())
     nn = n[idx]
+    vv = verts[idx]
     tang = np.cross(nn, rng.normal(size=(N_HAIR, 3)))
     tang /= np.linalg.norm(tang, axis=1, keepdims=True)
-    dirs = nn * rng.uniform(0.25, 1.1, N_HAIR)[:, None] + tang
-    ln = rng.uniform(0.00007, 0.00024, N_HAIR)
-    ln = np.where(rng.random(N_HAIR) < 0.05, ln * 1.6, ln)
-    hv, hf, tv = hair_tubes(rng, verts[idx] - nn * 0.000008, dirs, ln, rng.uniform(0.0000032, 0.0000052, N_HAIR),
-                            bend=0.45, nr=5, nseg=3)
+    g = np.stack([C.fbm3(vv / 0.003 + 1.0, 2, seed=args.seed + 21), C.fbm3(vv / 0.003 + 6.0, 2, seed=args.seed + 22),
+                  C.fbm3(vv / 0.003 + 11.0, 2, seed=args.seed + 23)], 1)
+    g = g - nn * np.sum(g * nn, axis=1, keepdims=True)              # smooth lean field in the tangent plane
+    g /= np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-9)
+    dirs = nn + 0.65 * g + 0.45 * tang
+    ln = rng.uniform(0.000030, 0.000110, N_HAIR)                    # velvet: 0.03-0.11 mm, a few longer
+    ln = np.where(rng.random(N_HAIR) < 0.04, ln * 1.8, ln)
+    hv, hf, tv = hair_tubes(rng, vv - nn * 0.000004, dirs, ln, rng.uniform(0.0000017, 0.0000028, N_HAIR),
+                            bend=0.5, nr=3, nseg=3)
     C.mesh_from_arrays('fuzz', hv, hf, material=fuzz_material(),
-                       attrs=dict(tv=tv, hr=np.repeat(rng.random(N_HAIR), 15)))
+                       attrs=dict(tv=tv, hr=np.repeat(rng.random(N_HAIR), 9)))
 
     cam, info = C.planet_camera(R_FRUIT + float(np.percentile(h, 99)) * 0.7, apex=0.535, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.5)
