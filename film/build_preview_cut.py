@@ -8,7 +8,7 @@ sys.path.insert(0, R+'/compose')
 import text as T
 W,H=1920,1080
 SH=json.load(open(R+'/shots.json'))['shots']
-SKIP={'m03_dazao'}          # user rejected the current jujube render; placeholder until the redesign lands
+SKIP=set(os.environ.get('WIP_SKIP','').split(','))          # user rejected the current jujube render; placeholder until the redesign lands
 
 def srgb2lin(c): return np.where(c<=0.04045, c/12.92, ((c+0.055)/1.055)**2.4)
 def lin2srgb(c): return np.where(c<=0.0031308, c*12.92, 1.055*np.clip(c,0,None)**(1/2.4)-0.055)
@@ -21,13 +21,19 @@ def framing_ok(a):
     return 0.47<=apex<=0.60 and a[-1].mean()>0.97 and a[:int(0.45*h), int(0.2*w):int(0.8*w)].max()<0.05
 
 def pick_still(sid):
-    cands=[R+f'/renders/{sid}.png']+sorted(glob.glob(f'{S}/tmp_{sid}/*.png'), key=os.path.getmtime, reverse=True)+sorted(glob.glob(f'{S}/previews/{sid}*.png'), key=os.path.getmtime, reverse=True)
+    allc=sorted(set(glob.glob(f'{S}/tmp_{sid}/*.png')+glob.glob(f'{S}/previews/{sid}*.png')), key=os.path.getmtime, reverse=True)
+    def _w(p):
+        try:
+            from PIL import Image; return Image.open(p).size[0]
+        except Exception: return 0
+    big=[p for p in allc if _w(p)>=1280]; small=[p for p in allc if 960<=_w(p)<1280]
+    cands=[R+f'/renders/{sid}.png']+big+small
     for p in cands:
         if not os.path.exists(p): continue
         im=cv2.imread(p, cv2.IMREAD_UNCHANGED)
         if im is None or im.ndim!=3 or im.shape[2]!=4: continue
         h,w=im.shape[:2]
-        if w<1280 or abs(w/h-16/9)>0.01: continue
+        if w<960 or abs(w/h-16/9)>0.01: continue
         mx=65535.0 if im.dtype==np.uint16 else 255.0
         a=im[...,3].astype(np.float32)/mx
         if not framing_ok(a): continue
@@ -171,6 +177,15 @@ if __name__=='__main__':
     if mode=='scan':
         for s in SH:
             p,_,_=pick_still(s['id']); print(s['id'], 'SKIP' if s['id'] in SKIP else (p.replace(S,'S') if p else '-- original'))
+    elif mode=='shots':
+        tiles=[]
+        for s_ in SH:
+            fr=frame_raw((s_['start']+s_['end'])//2); t=cv2.resize(fr,(480,270),interpolation=cv2.INTER_AREA)
+            A=shot_assets(s_); tag=s_['id']+(' NEW '+os.path.basename(A[0])[:14] if A else ' (orig)')
+            cv2.putText(t,tag,(5,262),cv2.FONT_HERSHEY_SIMPLEX,0.45,(255,255,0),1); tiles.append(t)
+        while len(tiles)%6: tiles.append(np.zeros((270,480,3),np.uint8))
+        sh=np.vstack([np.hstack(tiles[i:i+6]) for i in range(0,len(tiles),6)])
+        cv2.imwrite(S+'/wip/shots_sheet.jpg', sh[...,::-1], [cv2.IMWRITE_JPEG_QUALITY,86]); print('shots sheet ok')
     elif mode=='test':
         fs=[60,170,230,290,416,472,536,584,644,800,1000,1200]
         tiles=[cv2.resize(frame(f),(640,360),interpolation=cv2.INTER_AREA) for f in fs]

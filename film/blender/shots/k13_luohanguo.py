@@ -83,7 +83,10 @@ def shell_material():
     fine = m.noise(scale=5200, detail=3, roughness=0.6, vector=P)               # 0.2 mm speckle
     col = m.ramp(big, [(0.30, (0.060, 0.027, 0.009)), (0.45, (0.135, 0.062, 0.016)), (0.58, (0.200, 0.105, 0.024)),
                        (0.74, (0.115, 0.092, 0.022))])
-    col = m.mix(col, (0.040, 0.018, 0.008), m.map_range(med, 0.54, 0.74, 0.0, 0.80, smooth=True))
+    mid = m.noise(scale=230, detail=4, roughness=0.6, vector=m.mapping(P, location=(0.31, 0.17, 0.53)))      # 4-5 mm
+    col = m.mix(col, (0.082, 0.078, 0.020), m.map_range(mid, 0.56, 0.74, 0.0, 0.75, smooth=True))       # olive-green-brown
+    col = m.mix(col, (0.036, 0.017, 0.007), m.map_range(mid, 0.44, 0.26, 0.0, 0.80, smooth=True))       # dark brown blotches
+    col = m.mix(col, (0.040, 0.018, 0.008), m.map_range(med, 0.52, 0.70, 0.0, 0.80, smooth=True))
     col = m.mix(col, (0.250, 0.140, 0.036), m.map_range(med, 0.44, 0.22, 0.0, 0.45, smooth=True))
     col = m.mix(col, (0.66, 0.62, 0.58), m.map_range(fine, 0.40, 0.72), blend='MULTIPLY')
     col = m.mix(col, (0.040, 0.019, 0.009), m.math('MULTIPLY', line, 0.88))
@@ -179,15 +182,22 @@ def main():
     hi = sc.render.resolution_x >= 2500
     rng = np.random.default_rng(args.seed)
     sol = C.planet_solve(R_FRUIT, apex=0.535)
-    v, f, n, (ny, nx) = C.patch_grid(sol['patch'], R=R_FRUIT, n_max=1800 if hi else 800)
-    h, attrs = shell_relief(n, R_FRUIT, POLE, args.seed, fine=True)
+    v, f, n, (ny, nx) = C.patch_grid(sol['patch'], R=R_FRUIT, n_max=1450 if hi else 800)
+    hs, lgs = [], []                                   # in chunks: keeps the peak memory of the noise stack low
+    for i0 in range(0, len(n), 250000):
+        hc, ac = shell_relief(n[i0:i0 + 250000], R_FRUIT, POLE, args.seed, fine=True)
+        hs.append(hc.astype(np.float32))
+        lgs.append(ac['lg'].astype(np.float32))
+    h, attrs = np.concatenate(hs), dict(lg=np.concatenate(lgs))
+    del hs, lgs
     verts = v + n * h[:, None]
     C.mesh_from_arrays('shell', verts, f, attrs=attrs, material=shell_material())
     print('[shell] %d x %d verts, cell %.4f mm' % (nx, ny, 1000 * (sol['patch'][1] - sol['patch'][0]) / (nx - 1)))
 
     # fuzz: real hairs, patchy (partly rubbed off), semi-appressed in random directions
-    w = 0.25 + 0.75 * C.smoothstep(-0.2, 0.3, C.fbm3(v / 0.004 + 40.0, 3, seed=args.seed + 20))
-    idx = rng.choice(len(v), N_HAIR, p=w / w.sum())
+    cand = rng.integers(0, len(v), N_HAIR * 3)
+    w = 0.25 + 0.75 * C.smoothstep(-0.2, 0.3, C.fbm3(v[cand] / 0.004 + 40.0, 3, seed=args.seed + 20))
+    idx = rng.choice(cand, N_HAIR, p=w / w.sum())
     nn = n[idx]
     tang = np.cross(nn, rng.normal(size=(N_HAIR, 3)))
     tang /= np.linalg.norm(tang, axis=1, keepdims=True)
