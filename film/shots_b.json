@@ -98,7 +98,7 @@
     "fibres": 1.0,
     "cloud": 0.03
    },
-   "frame_width_m": 0.4,
+   "frame_width_m": 0.6,
    "lock_width": true,
    "seed": 12,
    "text_mode": "light",
@@ -106,9 +106,9 @@
    "params": {
     "centre": [
      0.5,
-     0.715
+     0.71
     ],
-    "diameter": 0.5,
+    "diameter": 0.52,
     "dot": 0.2,
     "layers": 3
    },
@@ -160,7 +160,45 @@
     "mix": "patches",
     "patch": 0.2
    },
-   "note": "herbs & spices of the four natures / five flavours (liquorice, ginger, hawthorn, chrysanthemum, mint, turmeric, cinnamon, tangerine peel) in organic patches on cream paper"
+   "note": "herbs & spices of the four natures / five flavours (liquorice, ginger, hawthorn, chrysanthemum, mint, turmeric, cinnamon, tangerine peel) in organic patches on cream paper",
+   "variation": {
+    "k09_gancao": {
+     "inst": 0.1,
+     "hue": 0.012,
+     "sat": 0.12,
+     "mott": 0.07,
+     "mott_mm": 7.0,
+     "speck": 0.07,
+     "speck_mm": 0.9
+    },
+    "m04_shengjiang": {
+     "inst": 0.1,
+     "hue": 0.012,
+     "sat": 0.12,
+     "mott": 0.07,
+     "mott_mm": 7.0,
+     "speck": 0.07,
+     "speck_mm": 0.9
+    },
+    "m08_shanzha": {
+     "inst": 0.1,
+     "hue": 0.012,
+     "sat": 0.12,
+     "mott": 0.07,
+     "mott_mm": 7.0,
+     "speck": 0.07,
+     "speck_mm": 0.9
+    },
+    "k10_jianghuang": {
+     "inst": 0.1,
+     "hue": 0.012,
+     "sat": 0.12,
+     "mott": 0.07,
+     "mott_mm": 7.0,
+     "speck": 0.07,
+     "speck_mm": 0.9
+    }
+   }
   },
   {
    "id": "b03_grains",
@@ -254,7 +292,18 @@
     "mix": "patches",
     "patch": 0.18
    },
-   "note": "goji + jujube + chrysanthemum + lotus seed + longan + yam on slate-blue card"
+   "note": "goji + jujube + chrysanthemum + lotus seed + longan + yam on slate-blue card",
+   "variation": {
+    "m01_shanyao": {
+     "inst": 0.05,
+     "hue": 0.004,
+     "sat": 0.1,
+     "mott": 0.04,
+     "mott_mm": 6.0,
+     "speck": 0.03,
+     "speck_mm": 1.0
+    }
+   }
   },
   {
    "id": "b05_shanyao",
@@ -293,6 +342,15 @@
     "rough": 0.16,
     "strays": 8,
     "lengths_across": 20
+   },
+   "variation": {
+    "inst": 0.05,
+    "hue": 0.004,
+    "sat": 0.1,
+    "mott": 0.04,
+    "mott_mm": 6.0,
+    "speck": 0.03,
+    "speck_mm": 1.0
    }
   },
   {
@@ -410,6 +468,15 @@
     "rough": 0.16,
     "strays": 8,
     "lengths_across": 20
+   },
+   "variation": {
+    "inst": 0.1,
+    "hue": 0.012,
+    "sat": 0.12,
+    "mott": 0.07,
+    "mott_mm": 7.0,
+    "speck": 0.07,
+    "speck_mm": 0.9
    }
   },
   {
@@ -566,6 +633,15 @@
     "rough": 0.16,
     "strays": 8,
     "lengths_across": 20
+   },
+   "variation": {
+    "inst": 0.1,
+    "hue": 0.012,
+    "sat": 0.12,
+    "mott": 0.07,
+    "mott_mm": 7.0,
+    "speck": 0.07,
+    "speck_mm": 0.9
    }
   },
   {
@@ -695,6 +771,15 @@
       "fill": 0.3
      }
     ]
+   },
+   "variation": {
+    "inst": 0.05,
+    "hue": 0.004,
+    "sat": 0.1,
+    "mott": 0.04,
+    "mott_mm": 6.0,
+    "speck": 0.03,
+    "speck_mm": 1.0
    }
   },
   {
@@ -761,17 +846,17 @@
    "ground": {
     "type": "paper",
     "colour": [
-     238,
-     228,
-     206
+     100,
+     124,
+     164
     ],
     "fibres": 1.0,
-    "cloud": 0.05
+    "cloud": 0.03
    },
-   "frame_width_m": 1.765,
+   "frame_width_m": 1.926,
    "lock_width": true,
    "seed": 42,
-   "text_mode": "dark",
+   "text_mode": "light",
    "exposure": 0.6,
    "params": {
     "centre": [
@@ -783,7 +868,7 @@
     "thin": 0.2,
     "strays": 0.008,
     "stray_reach": 2.5,
-    "stroke_items": 3.3,
+    "stroke_items": 3.6,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
@@ -1106,6 +1191,15 @@
       "fill": 0.3
      }
     ]
+   },
+   "variation": {
+    "inst": 0.1,
+    "hue": 0.012,
+    "sat": 0.12,
+    "mott": 0.07,
+    "mott_mm": 7.0,
+    "speck": 0.07,
+    "speck_mm": 0.9
    }
   },
   {
@@ -1157,6 +1251,15 @@
       "fill": 0.3
      }
     ]
+   },
+   "variation": {
+    "inst": 0.1,
+    "hue": 0.012,
+    "sat": 0.12,
+    "mott": 0.07,
+    "mott_mm": 7.0,
+    "speck": 0.07,
+    "speck_mm": 0.9
    }
   },
   {
@@ -1466,6 +1569,15 @@
       "fill": 0.3
      }
     ]
+   },
+   "variation": {
+    "inst": 0.1,
+    "hue": 0.012,
+    "sat": 0.1,
+    "mott": 0.07,
+    "mott_mm": 18.0,
+    "speck": 0.05,
+    "speck_mm": 3.0
    }
   },
   {
@@ -1515,7 +1627,7 @@
     "thin": 0.18,
     "tracking": 0.1,
     "strays": 0.004,
-    "stroke_items": 3.0,
+    "stroke_items": 3.4,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [

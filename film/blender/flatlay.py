@@ -1852,7 +1852,8 @@ def main(argv=None):
             S = ItemSet(sid, seed=0, scale=float(shot.get('item_scale', 1.0)))
             V_ = shot.get('variation')
             if V_:
-                V_ = V_.get(sid, V_) if any(isinstance(v_, dict) for v_ in V_.values()) else V_
+                if any(isinstance(v_, dict) for v_ in V_.values()):     # {source id: preset} on mixed plates
+                    V_ = V_.get(sid)
                 if V_ and not V_.get('off'):
                     print('[variation] %s: %d material(s)' % (sid, macro_variation(S.objects, V_)))
             cache[sid] = S

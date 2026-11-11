@@ -1,0 +1,26 @@
+{
+ "shot": "b01_yinyang",
+ "layout": "taiji",
+ "frame_width_m": 0.4,
+ "frame_height_m": 0.22500000000000003,
+ "items": [
+  "k04_heizhima",
+  "k02_yiyiren"
+ ],
+ "seed": 12,
+ "empty": false,
+ "centre": [
+  0.5,
+  0.715
+ ],
+ "radius_m": 0.05625000000000001,
+ "n_items": 2262,
+ "layers_max": 9,
+ "heap_top_mm": 10.655487060546875,
+ "display_gain": 1.0,
+ "render_seconds": 174.9,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

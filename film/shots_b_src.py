@@ -85,6 +85,14 @@ def tmode(col):
     return 'dark' if 0.299 * col[0] + 0.587 * col[1] + 0.114 * col[2] > 175 else 'light'
 
 
+# plate-scale colour variation (flatlay.macro_variation) for ingredients whose shading detail is finer than a
+# pixel from above: cut slices look like paper cut-outs without it
+VAR_SLICE = dict(inst=0.10, hue=0.012, sat=0.12, mott=0.07, mott_mm=7.0, speck=0.07, speck_mm=0.9)
+VAR_BIG = dict(inst=0.10, hue=0.012, sat=0.10, mott=0.07, mott_mm=18.0, speck=0.05, speck_mm=3.0)
+VAR_WHITE = dict(inst=0.05, hue=0.004, sat=0.10, mott=0.04, mott_mm=6.0, speck=0.03, speck_mm=1.0)
+VARIATION = {'m01_shanyao': VAR_WHITE, 'm04_shengjiang': VAR_SLICE, 'k09_gancao': VAR_SLICE, 'k10_jianghuang': VAR_SLICE,
+             'm08_shanzha': VAR_SLICE, 'k16_lingzhi': VAR_BIG, 'k01_fuling': VAR_WHITE}
+
 SCENES = []
 
 # ----------------------------------------------------------------------------- long scenes
@@ -102,8 +110,8 @@ SCENES += [
  dict(id='b01_yinyang', start=192, end=256, layout='taiji', text=None, label='阴阳平衡 (white, above)',
       source=['k04_heizhima', 'k02_yiyiren'],
       ground=paper(TERRACOTTA),
-      frame_width_m=0.40, lock_width=True, seed=12, text_mode='light', exposure=EXPO,
-      params=dict(centre=[0.50, 0.715], diameter=0.50, dot=0.20, layers=3),
+      frame_width_m=0.60, lock_width=True, seed=12, text_mode='light', exposure=EXPO,
+      params=dict(centre=[0.50, 0.71], diameter=0.52, dot=0.20, layers=3),
       note='yin = black sesame, yang = white coix seed, two opposite eyes, on terracotta card; the text zone above '
            'y 0.46 H is bare paper'),
  dict(id='b02_cabinet', start=256, end=320, layout='wreath', text=None, label='四气 · 五味 (upper-centre window)',
@@ -130,6 +138,11 @@ SCENES += [
       note='goji + jujube + chrysanthemum + lotus seed + longan + yam on slate-blue card'),
 ]
 
+for sc_ in SCENES[2:5]:                                              # the mixed plates: per-source presets
+    v_ = {sid: VARIATION[sid] for sid in sc_['source'] if sid in VARIATION}
+    if v_:
+        sc_['variation'] = v_
+
 # ----------------------------------------------------------------------------- 16-frame wreaths
 #   id, source, label, ground, item lengths across the frame
 WREATHS = [
@@ -150,6 +163,8 @@ for i, (bid, src, label, col, nlen) in enumerate(WREATHS):
         source=[src], ground=paper(col),
         frame_width_m=round(nlen * SIZE[src][0] * 1e-3, 3), lock_width=True, seed=20 + i, text_mode=tmode(col), exposure=EXPO,
         params=dict(window=[0.50, 0.42, 0.46, 0.30], layers=2.0, reach=0.55, rough=0.16, strays=8, lengths_across=nlen)))
+    if src in VARIATION and bid != 'b00':
+        SCENES[-1]['variation'] = VARIATION[src]
 
 # ----------------------------------------------------------------------------- 8-frame glyphs
 # stroke erosion per character (fraction of the stroke width): opens the counters; 食 and 源 need most
@@ -158,7 +173,7 @@ THIN_CH = {'药': 0.16, '食': 0.24, '同': 0.10, '源': 0.24}
 GLYPHS = [
  ('b15', 'k01_fuling',     '茯苓',   '药', TERRACOTTA, 5.2, 1.0, 'flat'),
  ('b16', 'k02_yiyiren',    '薏苡仁', '药', TEAL,       5.0, 1.0, 'seed'),
- ('b17', 'k03_guiyuan',    '桂圆',   '药', CREAM,      3.3, 1.0, 'ball'),
+ ('b17', 'k03_guiyuan',    '桂圆',   '药', INDIGO,     3.6, 1.0, 'ball'),
  ('b18', 'k04_heizhima',   '黑芝麻', '药', PEACH,      9.0, 1.0, 'seed'),
  ('b19', 'k05_bohe',       '薄荷',   '食', PALE_ROSE,  2.8, 1.0, 'flat'),
  ('b20', 'k06_sangshen',   '桑椹',   '食', BUTTER,     3.8, 1.0, 'ball'),
@@ -192,6 +207,8 @@ for i, (bid, src, label, ch, col, n, isc, kind) in enumerate(GLYPHS):
         frame_width_m=wm, lock_width=True, seed=40 + i, text_mode=tmode(col), exposure=EXPO, params=P)
     if isc != 1.0:
         sc['item_scale'] = isc
+    if src in VARIATION:
+        sc['variation'] = VARIATION[src]
     SCENES.append(sc)
 
 # ----------------------------------------------------------------------------- landing
@@ -201,7 +218,7 @@ SCENES.append(dict(
     ground=paper(WHITE, grid=dict(type='square', pitch_m=0.0281, line_m=0.00065, colour=GRID_INK, opacity=0.30, major=0),
                  fibres=1.0, cloud=0.035),
     frame_width_m=0.90, lock_width=True, seed=77, text_mode='dark', exposure=EXPO,
-    params=dict(centre=[0.50, 0.40], width=0.80, font=FONT, thin=0.18, tracking=0.10, strays=0.004, stroke_items=3.0,
+    params=dict(centre=[0.50, 0.40], width=0.80, font=FONT, thin=0.18, tracking=0.10, strays=0.004, stroke_items=3.4,
                 edge_tol=0.12, engine='packed', passes=PASSES['seed']),
     reveal=dict(per_char_frames=8, order='药食同源', empty_variant='--empty  ->  renders_b/b31_empty.png'),
     note='the four characters poured from dried goji berries (vermilion on warm white paper with a faint ruled grid, '
