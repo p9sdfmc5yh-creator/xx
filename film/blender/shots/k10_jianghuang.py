@@ -41,7 +41,7 @@ def make_fields(ol):
         ring = np.exp(-(e / 0.00010) ** 2)
         stele = 1.0 - C.smoothstep(-0.00008, 0.00008, e)
         core = 1.0 - C.smoothstep(0.22, 0.60, rn)
-        h = D.knife_marks(x, y, angle_deg=KNIFE, seed=seed, amp=1.0e-5, wl=(0.00009, 0.0003, 0.0011), weights=(0.6, 1.0, 0.8))
+        h = D.knife_marks(x, y, angle_deg=KNIFE, seed=seed, amp=6e-6, wl=(0.00009, 0.0003, 0.0011), weights=(0.6, 1.0, 0.8))
         h += 3.0e-5 * C.fbm3(p * 150.0, 2, seed=seed + 1)
         h += 5e-6 * C.fbm3(p * 6000.0, 2, seed=seed + 2)
         h += ring * 8e-6
@@ -57,7 +57,7 @@ def make_fields(ol):
         q = q * (1.0 + 0.5 * C.fbm3(p * 9000.0, 2, seed=seed + 12))
         dot = 1.0 - C.smoothstep(0.30, 1.0, q)
         h -= dot * (4e-6 + 1.0e-5 * dotid)
-        crack = D.radial_cracks(x, y, n=8, seed=seed + 50, r_in=0.25, r_out=0.96, r0=ol.r0, width=0.00004, wobble=0.07, rag=0.5)
+        crack = D.radial_cracks(x, y, n=5, seed=seed + 50, r_in=0.25, r_out=0.96, r0=ol.r0, width=0.000035, wobble=0.025, rag=0.6)
         h -= crack ** 0.7 * 0.00010
         pw = C.fbm3(p * 420.0, 3, seed=seed + 8) + 0.5 * C.fbm3(p * 2600.0, 2, seed=seed + 9)
         powder = C.smoothstep(0.08, 0.50, pw)
@@ -82,30 +82,30 @@ def face_material():
     din, dot, dotid, ring = m.attr('din'), m.attr('dot'), m.attr('dotid'), m.attr('ring')
     stele, core, crack, powder = m.attr('stele'), m.attr('core'), m.attr('crack'), m.attr('powder')
     mott = m.map_range(m.noise(scale=180, detail=2, roughness=0.55, vector=P), 0.3, 0.7)
-    cortex_c = m.mix((0.60, 0.20, 0.010), (0.71, 0.28, 0.018), mott)        # golden orange
-    stele_c = m.mix((0.54, 0.155, 0.007), (0.65, 0.22, 0.012), mott)        # deeper orange
+    cortex_c = m.mix((0.56, 0.175, 0.006), (0.67, 0.245, 0.011), mott)        # golden orange
+    stele_c = m.mix((0.50, 0.135, 0.004), (0.61, 0.195, 0.008), mott)        # deeper orange
     flesh = m.mix(cortex_c, stele_c, stele)
-    flesh = m.mix(flesh, (0.40, 0.095, 0.004), m.math('MULTIPLY', core, 0.6))
+    flesh = m.mix(flesh, (0.36, 0.080, 0.003), m.math('MULTIPLY', core, 0.6))
     grain = m.noise(scale=22000, detail=2, roughness=0.6, vector=P)
-    flesh = m.mix(flesh, (0.80, 0.40, 0.03), m.map_range(grain, 0.62, 0.80, 0.0, 0.5))    # resin cells
+    flesh = m.mix(flesh, (0.76, 0.34, 0.02), m.map_range(grain, 0.62, 0.80, 0.0, 0.45))    # resin cells
     flesh = m.mix(flesh, (0.34, 0.085, 0.004), m.map_range(grain, 0.20, 0.34, 0.4, 0.0))
-    flesh = m.mix(flesh, (0.86, 0.52, 0.06), m.math('MULTIPLY', ring, 0.9))               # paler endodermis
-    flesh = m.mix(flesh, (0.82, 0.47, 0.05), m.math('MULTIPLY', dot, m.map_range(dotid, 0, 1, 0.45, 0.9)))
+    flesh = m.mix(flesh, (0.84, 0.47, 0.04), m.math('MULTIPLY', ring, 0.9))               # paler endodermis
+    flesh = m.mix(flesh, (0.80, 0.42, 0.035), m.math('MULTIPLY', dot, m.map_range(dotid, 0, 1, 0.45, 0.9)))
     flesh = m.mix(flesh, (0.16, 0.04, 0.003), m.map_range(crack, 0.1, 0.7))
     pgrain = m.noise(scale=9000, detail=2, roughness=0.6, vector=P)
     pmask = m.math('MULTIPLY', powder, m.map_range(pgrain, 0.38, 0.62))
-    powc = m.mix((0.76, 0.44, 0.025), (0.86, 0.57, 0.07), pgrain)
+    powc = m.mix((0.72, 0.36, 0.012), (0.82, 0.48, 0.03), pgrain)
     flesh = m.mix(flesh, powc, m.math('MULTIPLY', pmask, 0.85))
     is_skin = D.skin_mask(m, P, din, thick=(0.18, 0.42), scale=1800.0)
     skin_col = m.ramp(m.noise(scale=2400, detail=3, roughness=0.7, vector=P),
                       [(0.25, (0.075, 0.042, 0.014)), (0.55, (0.22, 0.14, 0.05)), (0.82, (0.36, 0.26, 0.11))])
     col = m.mix(flesh, skin_col, is_skin)
     dull = m.math('MAXIMUM', pmask, is_skin)
-    rough = m.mixf(m.map_range(m.noise(scale=1200, detail=2, vector=P), 0.3, 0.7, 0.28, 0.46), 0.88, dull)
+    rough = m.mixf(m.map_range(m.noise(scale=1200, detail=2, vector=P), 0.3, 0.7, 0.36, 0.54), 0.88, dull)
     nrm = m.bump(m.noise(scale=6500, detail=2, roughness=0.6, vector=P), strength=0.5, distance=0.000012)
     nrm = m.bump(grain, strength=0.6, distance=m.mixf(0.000006, 0.000022, dull), normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.50, specular=0.5, normal=nrm,
-          coat=m.math('MULTIPLY', m.math('SUBTRACT', 1.0, dull), 0.30), coat_roughness=0.22, coat_normal=nrm,
+          coat=m.math('MULTIPLY', m.math('SUBTRACT', 1.0, dull), 0.18), coat_roughness=0.30, coat_normal=nrm,
           sss=m.mixf(0.75, 0.15, is_skin), sss_radius=(1.0, 0.33, 0.04), sss_scale=0.0009)
     _MATS['face'] = m
     return m
@@ -115,7 +115,7 @@ def powder_material():
     if 'powder' in _MATS:
         return _MATS['powder']
     m = C.Mat('jianghuang_powder')
-    m.set(base_color=m.jitter((0.82, 0.50, 0.04), hue=0.012, saturation=0.1, value=0.18), roughness=0.9,
+    m.set(base_color=m.jitter((0.78, 0.42, 0.02), hue=0.012, saturation=0.1, value=0.18), roughness=0.9,
           sss=0.3, sss_radius=(1.0, 0.4, 0.05), sss_scale=0.00004)
     _MATS['powder'] = m
     return m
@@ -161,11 +161,11 @@ def main():
     sz = np.random.default_rng(args.seed + 61).uniform(0.000007, 0.000026, len(cp))
     cp[:, 2] += sz * 0.35
     D.crumbs('jianghuang_powder', cp, sz, powder_material(), seed=args.seed + 62)
-    D.rootlets('jianghuang_stubs', ol, info, stub_material(), n=12, th_range=(-0.85, 0.85), length=(0.0006, 0.0022),
-               radius=(0.00010, 0.00022), depth=(0.0001, 0.0008), rise=(0.0, 0.6), wander=0.25, droop=0.1,
+    D.rootlets('jianghuang_stubs', ol, info, stub_material(), n=9, th_range=(-0.85, 0.85), length=(0.0003, 0.0010),
+               radius=(0.00007, 0.00014), depth=(0.0001, 0.0005), rise=(0.0, 0.5), wander=0.25, droop=0.1,
                seed=args.seed + 5, nseg=12)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.2)
-    D.lights(info, tint=(0.92, 0.95, 1.0), key=0.95, fill=0.70, rim=1.0, top=0.2, sheen=0.8, sheen_size=0.8,
+    D.lights(info, tint=(0.92, 0.95, 1.0), key=0.62, fill=0.48, rim=0.9, top=0.15, sheen=0.22, sheen_size=0.7,
              sheen_az=-9, sheen_el=28)
     D.finish(args, SHOT)
 

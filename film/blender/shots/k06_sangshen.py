@@ -175,7 +175,7 @@ def make_items(seed=0):
 
 # ----------------------------------------------------------------------------- build + render
 def main():
-    args = C.parse_args()
+    args = C.parse_args(seed=3)                                       # seed 3: silhouette well inside the framing contract
     C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
     rng = np.random.default_rng(args.seed)
     mats = _materials()

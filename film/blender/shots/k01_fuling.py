@@ -35,9 +35,12 @@ def flesh_masks(x, y, z, seed):
     w0 = 0.004 * C.fbm3(p * 60.0 + 3.1, 2, seed=seed + 78)
     w1 = 0.004 * C.fbm3(p * 60.0 + 7.7, 2, seed=seed + 79)
     v1 = np.abs(C.perlin3(np.stack([x + w0, y + w1, z], -1) * 150.0, seed + 80))
-    vmask = C.smoothstep(-0.10, 0.25, C.fbm3(p * 45.0, 2, seed=seed + 81))
-    vein = (1.0 - C.smoothstep(0.0, 0.05, v1)) * vmask
-    veinsoft = (1.0 - C.smoothstep(0.0, 0.24, v1)) * vmask
+    vmask = C.smoothstep(0.0, 0.30, C.fbm3(p * 45.0, 2, seed=seed + 81))
+    brk = C.smoothstep(-0.15, 0.25, C.fbm3(p * 520.0 + 2.0, 2, seed=seed + 84))       # veins break up into dashes
+    wv = 0.015 + 0.06 * C.smoothstep(-0.3, 0.3, C.fbm3(p * 200.0, 2, seed=seed + 85))    # and vary in width
+    vein = (1.0 - C.smoothstep(0.0, 1.0, v1 / wv)) * vmask * brk
+    cloud = C.smoothstep(0.02, 0.50, C.fbm3(p * 110.0, 3, seed=seed + 86))                # cloudy marbling
+    veinsoft = np.maximum(0.6 * (1.0 - C.smoothstep(0.0, 0.30, v1)) * vmask, 0.9 * cloud)
     v2 = np.abs(C.perlin3(np.stack([x + 2 * w0, y - w1, z], -1) * 85.0 + 9.0, seed + 82))
     cmask = C.smoothstep(0.16, 0.38, C.fbm3(p * 38.0 + 5.0, 2, seed=seed + 83))
     crack = (1.0 - C.smoothstep(0.0, 0.007, v2)) * cmask
@@ -48,14 +51,14 @@ def flesh_masks(x, y, z, seed):
 def fields(x, y, d, ro, th, seed=0):
     p = D.P3(x, y)
     vein, veinsoft, crack, powder = flesh_masks(x, y, np.zeros_like(x), seed)
-    h = D.facets(x, y, seed=seed + 70, n=4, tilt=0.010)
-    h += D.knife_marks(x, y, angle_deg=KNIFE, seed=seed, amp=1.3e-5, wl=(0.0002, 0.0007, 0.0025))
+    h = D.facets(x, y, seed=seed + 70, n=5, tilt=0.045)
+    h += D.knife_marks(x, y, angle_deg=KNIFE, seed=seed, amp=2.6e-5, wl=(0.0002, 0.0007, 0.0025))
     h += 4.0e-5 * C.fbm3(p * 90.0, 2, seed=seed + 1) + 1.6e-5 * C.fbm3(p * 2500.0, 3, seed=seed + 2)
     h -= crack * 8e-5
     h -= vein * 6e-6
     bounds = (x.min(), x.max(), y.min(), y.max())
-    pts = D.scatter(bounds, 0.0021, seed + 3, density=lambda a, b: 0.5)
-    pit, pid, q = D.dots(x, y, pts, (0.00006, 0.00022), soft=0.3, seed=seed + 5)
+    pts = D.scatter(bounds, 0.0016, seed + 3, density=lambda a, b: 0.55)
+    pit, pid, q = D.dots(x, y, pts, (0.00007, 0.00032), soft=0.3, seed=seed + 5)
     q = q * (1.0 + 0.5 * C.fbm3(p * 5000.0, 2, seed=seed + 12))
     pit = 1.0 - C.smoothstep(0.30, 1.0, q)
     h -= pit * (3e-5 + 9e-5 * pid)
@@ -87,12 +90,12 @@ def face_material():
     grain = m.noise(scale=16000, detail=2, roughness=0.6, vector=P)
     white = m.mix(white, (0.90, 0.89, 0.86), m.map_range(grain, 0.60, 0.80, 0.0, 0.6))
     white = m.mix(white, (0.58, 0.52, 0.46), m.map_range(grain, 0.20, 0.34, 0.38, 0.0))
-    white = m.mix(white, (0.66, 0.50, 0.40), m.math('MULTIPLY', veinsoft, 0.28))
-    white = m.mix(white, (0.50, 0.31, 0.22), m.math('MULTIPLY', vein, 0.55))
+    white = m.mix(white, (0.68, 0.53, 0.44), m.math('MULTIPLY', veinsoft, 0.32))
+    white = m.mix(white, (0.52, 0.35, 0.26), m.math('MULTIPLY', vein, 0.32))
     white = m.mix(white, (0.58, 0.31, 0.20), m.math('MULTIPLY', redz, 0.6))                # 赤茯苓 zone
     white = m.mix(white, (0.92, 0.91, 0.89), m.math('MULTIPLY', powder, m.map_range(m.noise(scale=7000, detail=2, vector=P), 0.4, 0.65, 0.0, 0.6)))
     white = m.mix(white, (0.22, 0.15, 0.11), m.map_range(crack, 0.1, 0.7))
-    white = m.mix(white, (0.40, 0.33, 0.28), m.math('MULTIPLY', pit, 0.5))
+    white = m.mix(white, (0.36, 0.29, 0.24), m.math('MULTIPLY', pit, 0.6))
     barkc = m.ramp(m.noise(scale=900, detail=4, roughness=0.7, vector=P),
                    [(0.25, (0.010, 0.006, 0.0035)), (0.55, (0.045, 0.025, 0.013)), (0.80, (0.12, 0.068, 0.036))])
     col = m.mix(white, barkc, bark)
@@ -169,12 +172,12 @@ def main():
     cp[:, 2] += sz * 0.35
     D.crumbs('fuling_powder', cp, sz, bits_material(False), seed=args.seed + 62)
     near_rim = (F['d'] > 0.0) & (F['d'] < 0.006)
-    bp = D.face_points(F, 260, seed=args.seed + 65, weight=near_rim * np.exp(-F['d'] / 0.002), margin=0.0)
-    bs = rng.uniform(0.00003, 0.00013, len(bp))
+    bp = D.face_points(F, 70, seed=args.seed + 65, weight=near_rim * np.exp(-F['d'] / 0.002), margin=0.0)
+    bs = rng.uniform(0.00002, 0.00008, len(bp))
     bp[:, 2] += bs * 0.35
     D.crumbs('fuling_barkbits', bp, bs, bits_material(True), seed=args.seed + 66)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.2)
-    D.lights(info, tint=(0.95, 0.97, 1.0), key=0.55, fill=0.50, rim=0.9, top=0.2, key_az=-52, key_el=28, sheen=0.0)
+    D.lights(info, tint=(0.95, 0.97, 1.0), key=0.46, fill=0.36, rim=0.9, top=0.12, key_az=-55, key_el=24, sheen=0.0)
     D.finish(args, SHOT)
 
 
