@@ -12,11 +12,15 @@ case "$FILM" in
   coins) NAME="zhongguo-guqianbi" ;;
   antiques) NAME="zhongguo-guwan" ;;
   tcm) NAME="zhongyi" ;;
+  coins2) NAME="zhongguo-guqianbi-tuban" ;;
   *) NAME="$FILM" ;;
 esac
 OUT="${3:-out/$NAME.mp4}"
 mkdir -p "$(dirname "$OUT")"
-[ -s "build/$FILM/soundtrack.wav" ] || python3 tools/audio.py --film "$FILM" >/dev/null
+# square plate films (those with src/films/<film>/PLAYER) have their own arrangement in tools/audio2.py
+if [ ! -s "build/$FILM/soundtrack.wav" ]; then
+  if [ -f "src/films/$FILM/PLAYER" ]; then python3 tools/audio2.py --film "$FILM" >/dev/null; else python3 tools/audio.py --film "$FILM" >/dev/null; fi
+fi
 # bring every film to the same loudness with one static gain (no dynamics processing): target −16 LUFS, true peak kept under −1 dBTP
 TARGET_LUFS="${TARGET_LUFS:--16}"
 read -r LUFS PEAK < <(ffmpeg -hide_banner -nostats -i "build/$FILM/soundtrack.wav" -af ebur128=peak=true -f null - 2>&1 | awk '/Integrated loudness:/{f=1} f&&/ I:/{i=$2} /True peak:/{g=1} g&&/Peak:/{p=$2} END{print i, p}')
