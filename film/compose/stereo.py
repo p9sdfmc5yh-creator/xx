@@ -89,7 +89,7 @@ import numpy as np
 import cv2
 
 __all__ = ['disparity_from_depth', 'synth_view', 'synth_pair', 'stereo_pair_A', 'stereo_pair_B',
-           'pack_sbs', 'pack_anaglyph', 'floating_window', 'safe_text_disparity', 'shift_x',
+           'prepare_A', 'compose_A', 'prepare_B', 'compose_B', 'pack_sbs', 'pack_anaglyph', 'floating_window', 'safe_text_disparity', 'shift_x',
            'srgb_to_linear', 'linear_to_srgb', 'to_float', 'disparity_preview', 'DEFAULTS']
 
 # ----------------------------------------------------------------------------------------------
@@ -232,17 +232,47 @@ def _soften_small_steps(d, radius, step):
     return _box(a, radius) * x + _box(b, radius) + off
 
 
+def _jumps(d, thr, axis=1):
+    """Depth DISCONTINUITIES between neighbours along `axis`: bool array shaped like d, True at
+    index j when the step d[j+1] - d[j] is a jump (the last index is always True = frame edge).
+
+    A step is a jump when it exceeds `thr` AND is not part of a steady slope (a step whose two
+    neighbouring steps are both within `thr` of it): a steep but continuous surface - the side
+    of a heap, a bowl wall - stays one surface however steep it is, a real edge is cut."""
+    if axis == 0:
+        return np.ascontiguousarray(_jumps(np.ascontiguousarray(d.T), thr, 1).T)
+    H, W = d.shape
+    dD = np.empty_like(d)
+    np.subtract(d[:, 1:], d[:, :-1], out=dD[:, :-1])
+    dD[:, -1] = np.inf
+    big = np.abs(dD) > np.float32(thr)
+    with np.errstate(invalid='ignore'):
+        sim = np.abs(dD[:, 1:] - dD[:, :-1]) <= np.float32(thr)   # step j ~ step j+1
+    steady = np.zeros((H, W), bool)
+    steady[:, 1:-1] = sim[:, :-1] & sim[:, 1:]
+    return big & ~steady
+
+
 def _dilate_near(d, radius, thr):
-    """Grow the NEAR side (smaller disparity) of every hard step by `radius` px."""
+    """Grow the NEAR side (smaller disparity) of every depth discontinuity by `radius` px, so the
+    mixed (anti-aliased) edge pixels and a thin ring of background ride with the near object.
+    Slopes are left alone."""
     if radius < 1:
+        return d
+    jx = _jumps(d, thr, 1)
+    jx[:, -1] = False
+    jy = _jumps(d, thr, 0)
+    jy[-1, :] = False
+    m = jx | jy
+    m[:, 1:] |= jx[:, :-1]
+    m[1:, :] |= jy[:-1, :]
+    if not m.any():
         return d
     k = 2 * int(radius) + 1
     ker = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
+    zone = cv2.dilate(m.astype(np.uint8), ker) > 0
     lo = cv2.erode(d, ker, borderType=cv2.BORDER_REPLICATE)
-    hi = cv2.dilate(d, ker, borderType=cv2.BORDER_REPLICATE)
-    w = np.clip(((hi - lo) - 0.5 * thr) / thr, 0.0, 1.0)      # 0 below thr/2, 1 above 1.5 thr
-    w = w * w * (3.0 - 2.0 * w)
-    return d + w * (lo - d)
+    return np.where(zone, lo, d)
 
 
 def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
@@ -414,7 +444,7 @@ def _warp_map_right(D, cut):
     dD = np.empty_like(sD)
     np.subtract(sD[:, 1:], sD[:, :-1], out=dD[:, :-1])
     dD[:, -1] = np.inf                                        # frame edge = cut
-    conn = np.abs(dD) <= f32(0.5 * cut)                       # segment (j, j+1) is one surface
+    conn = ~_jumps(sD, 0.5 * cut)                             # segment (j, j+1) is one surface
     jj = np.arange(W, dtype=np.int32)[None, :]
     g = sD + jj.astype(f32)
     A = np.ceil(g)
@@ -429,11 +459,21 @@ def _warp_map_right(D, cut):
     ok = (f < rlen) & (A >= 0) & (A < W)
     tgt = np.where(ok, rows + A, N).ravel()
     np.maximum.at(best, tgt, jfull)
-    # second integer (stretched connected segments only)
-    ok = (f + f32(1.0) < rlen) & (A + 1 >= 0) & (A + 1 < W)
-    sel = np.flatnonzero(ok.ravel())
+    # further integers (stretched connected segments only)
+    sel = np.flatnonzero((f + f32(1.0) < rlen).ravel())
     if sel.size:
-        np.maximum.at(best, (rows + A + 1).ravel()[sel], jfull[sel])
+        fs_, rl_, js_ = f.ravel()[sel], rlen.ravel()[sel], jfull[sel]
+        As_ = A.ravel()[sel].astype(np.int64)
+        base_ = (sel // W) * W
+        k = 1
+        while sel.size and k < 4096:
+            n_ = As_ + k
+            okk = (n_ >= 0) & (n_ < W)
+            np.maximum.at(best, (base_ + n_)[okk], js_[okk])
+            k += 1
+            keep = fs_ + f32(k) < rl_
+            if not keep.all():
+                fs_, rl_, js_, As_, base_, sel = fs_[keep], rl_[keep], js_[keep], As_[keep], base_[keep], sel[keep]
     # the half pixel to the LEFT of a run start
     start = np.empty((H, W), bool)
     start[:, 0] = True
@@ -449,7 +489,8 @@ def _warp_map_right(D, cut):
     j = np.maximum(best, 0)
     src_flat = (rows + j.reshape(H, W)).ravel()
     p = (jfull - j).astype(f32) - sD.ravel()[src_flat]        # n - g_j, in [-0.5, rlen)
-    inv = np.where(conn, f32(1.0) / (f32(1.0) + dD), f32(1.0)).astype(f32)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        inv = np.where(conn & (dD > f32(-0.999)), f32(1.0) / (f32(1.0) + dD), f32(1.0)).astype(f32)
     u = j.astype(f32) + np.where(p > 0, p * inv.ravel()[src_flat], p)
     del p, inv, src_flat
 
@@ -556,7 +597,7 @@ def synth_view(img, disparity, eye, *, cut=None, interp='lanczos', premultiplied
     disparity    (H, W) float32, px, from disparity_from_depth (x_right - x_left).
     eye          -1 = left (pixels move by -disparity/2), +1 = right (+disparity/2).
     cut          px of disparity between neighbouring pixels above which they are separate
-                 surfaces (default 1.0; must be <= 2).
+                 surfaces (default 1.0), unless the step is part of a steady slope (_jumps).
     interp       'lanczos' (default, sharpest, ~4x slower), 'cubic', 'linear'.
     base_radius  half window (px) of the low-pass in the disocclusion fill; 0 = plain mirror.
     return_info  -> (view, {'hole_mask': bool (H, W) of filled target pixels, 'u': inverse map}).
@@ -571,7 +612,7 @@ def synth_view(img, disparity, eye, *, cut=None, interp='lanczos', premultiplied
     H, W = D.shape
     assert src.shape[:2] == (H, W), (src.shape, D.shape)
     cut = DEFAULTS['cut'] if cut is None else float(cut)
-    assert 0 < cut <= 2.0, 'cut must be in (0, 2]'
+    assert cut > 0, 'cut must be positive'
     radius = int(round(_px(base_radius, DEFAULTS['base_radius'], W)))
     rgba = src.ndim == 3 and src.shape[2] == 4
     if rgba and not premultiplied:
@@ -729,7 +770,111 @@ def _text_views(text, text_px, snap):
         text_px = _snap_even(text_px)
     if abs(text_px) < 1e-6:
         return text, text, 0.0
-    return shift_x(text, -0.5 * text_px, cv2.BORDER_CONSTANT), shift_x(text, 0.5 * text_px, cv2.BORDER_CONSTANT), text_px
+    return (shift_x(text, -0.5 * text_px, cv2.BORDER_CONSTANT),
+            shift_x(text, 0.5 * text_px, cv2.BORDER_CONSTANT), text_px)
+
+
+def _fg_over(bg, v, linear):
+    """Premultiplied (gamma) RGBA view `v` over the sRGB plate `bg`, IN PLACE on bg.  Only the
+    partly transparent pixels need the linear-light maths; opaque ones are copied."""
+    a = v[..., 3]
+    rows = np.flatnonzero(a.max(axis=1) > 0)
+    if rows.size == 0:
+        return bg
+    y0, y1 = rows[0], rows[-1] + 1
+    a = a[y0:y1]
+    dst = bg[y0:y1]
+    src = v[y0:y1, :, :3]
+    opaque = a >= 0.9995
+    np.copyto(dst, src, where=opaque[..., None])
+    ys, xs = np.nonzero((a > 0.0005) & ~opaque)
+    if ys.size:
+        af = a[ys, xs][:, None]
+        c = src[ys, xs]
+        b = dst[ys, xs]
+        if linear:
+            c = np.clip(c / af, 0.0, 1.0)
+            dst[ys, xs] = linear_to_srgb(srgb_to_linear(c) * af + srgb_to_linear(b) * (1.0 - af))
+        else:
+            dst[ys, xs] = c + b * (1.0 - af)
+    return bg
+
+
+def prepare_A(fg_rgba, fg_depth, *, disparity=None, info=None, conv=None, max_px=None, sky_px=None,
+              near_px=None, fg_share=None, interp='lanczos', cut=None, threads=2, **disp_kw):
+    """The per-SHOT part of a version A pair: disparity + the two re-projected foreground views.
+    The still does not change during a shot, so call this once per shot and compose_A per frame.
+
+    Returns a dict:
+        left, right   (H, W, 4) float32 foreground views, PREMULTIPLIED alpha, gamma (sRGB) values
+        disparity     (H, W) foreground disparity, px          alpha   the centre view's alpha
+        sky_px        sky parallax, snapped to an even number of px
+        near_px, far_px, min_px, max_px, k, conv, z_near, z_far ...   (see disparity_from_depth)
+        hole_frac_left / hole_frac_right   disoccluded + filled pixels / frame pixels
+    If you animate the views afterwards (push-in), apply the SAME 2D transform to both eyes: a
+    zoom by s about the frame centre scales every parallax by s (keep s * max parallax in budget).
+    """
+    fg = to_float(fg_rgba)
+    H, W = fg.shape[:2]
+    assert fg.ndim == 3 and fg.shape[2] == 4, 'fg_rgba must be RGBA'
+    alpha = fg[..., 3]
+    if disparity is None or info is None:
+        disparity, info = disparity_from_depth(fg_depth, alpha, conv, max_px, 'A', sky_px=sky_px,
+                                               near_px=near_px, fg_share=fg_share, cut=cut,
+                                               return_info=True, **disp_kw)
+    rows = np.flatnonzero(alpha.max(axis=1) > 0)
+    out = dict(info)
+    views = [np.zeros((H, W, 4), np.float32), np.zeros((H, W, 4), np.float32)]
+    hf = [0.0, 0.0]
+    if rows.size:
+        y0, y1 = int(rows[0]), int(rows[-1]) + 1              # rows are independent: skip the empty ones
+        pm = fg[y0:y1].copy()
+        pm[..., :3] *= pm[..., 3:4]                           # premultiplied, gamma space
+        Ds = np.ascontiguousarray(disparity[y0:y1])
+        res = synth_pair(pm, Ds, threads=threads, cut=cut, interp=interp, premultiplied=True,
+                         return_info=True)
+        for i, (v, vi) in enumerate(res):
+            views[i][y0:y1] = v
+            hf[i] = float(np.count_nonzero(vi['hole_mask'] & (v[..., 3] > 0.02))) / float(H * W)
+    out.update(left=views[0], right=views[1], disparity=disparity, alpha=alpha,
+               sky_px=float(_snap_even(info['sky_px'])), hole_frac_left=hf[0], hole_frac_right=hf[1])
+    return out
+
+
+def compose_A(sky_rgb, prep, text_rgba=None, *, text_px=0.0, text_safe=False, text_snap=True,
+              float_window=True, linear=True, text_linear=False, threads=2, return_info=False):
+    """The per-FRAME part of a version A pair: sky (shifted to its parallax) + prepared foreground
+    views + text -> (left_rgb, right_rgb) float32 sRGB.  See stereo_pair_A for the arguments."""
+    L4, R4 = prep['left'], prep['right']
+    H, W = L4.shape[:2]
+    sky = to_float(sky_rgb)
+    if sky.ndim != 3 or sky.shape[:2] != (H, W):
+        sky = np.ascontiguousarray(np.broadcast_to(np.asarray(sky, np.float32).reshape(1, 1, 3), (H, W, 3)))
+    sky = sky[..., :3]
+    text = to_float(text_rgba)
+    sky_d = prep['sky_px']
+    if text is not None and text_safe:
+        text_px = safe_text_disparity(text, prep['disparity'], base=text_px, alpha=prep['alpha'])
+    tL, tR, text_px = _text_views(text, text_px, text_snap)
+
+    def finish(v, eye, txt):
+        out = shift_x(sky, 0.5 * eye * sky_d)
+        if out is sky or not out.flags.writeable or not out.flags.c_contiguous:
+            out = np.array(out, np.float32, order='C')
+        _fg_over(out, v, linear)
+        _over_text(out, txt, text_linear)
+        np.clip(out, 0.0, 1.0, out=out)
+        return out
+
+    L, R = _parallel(finish, [(L4, -1, tL), (R4, 1, tR)], threads)
+    win = None
+    if float_window:
+        L, R, win = floating_window(L, R, prep['disparity'], prep['alpha'], copy=False)
+    if not return_info:
+        return L, R
+    out = {k: v for k, v in prep.items() if k not in ('left', 'right')}
+    out.update(text_px=float(text_px), window=win)
+    return L, R, out
 
 
 def stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, *, disparity=None, info=None,
@@ -738,6 +883,7 @@ def stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, *, disparity=None,
                   linear=True, text_linear=False, interp='lanczos', cut=None, threads=2,
                   return_info=False, **disp_kw):
     """Version A frame -> (left_rgb, right_rgb), float32 sRGB (H, W, 3).
+    (= compose_A(sky, prepare_A(fg, depth), text); use those two when a shot has many frames.)
 
     sky_rgb    (H, W, 3) sky plate (at infinity): moved as a whole by -/+ sky_px/2.  The sky
                parallax is snapped to an even number of px so the plate is copied, not resampled.
@@ -746,9 +892,9 @@ def stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, *, disparity=None,
     fg_depth   (H, W) camera depth in metres, 0 = no geometry.
     text_rgba  (H, W, 4) straight-alpha text layer or None; drawn last, at parallax text_px
                (default 0 = on the screen plane, identical in both eyes).  text_safe=True moves
-               it in front of whatever foreground it overlaps (see safe_text_disparity).
-    disparity, info   pre-computed result of disparity_from_depth(..., mode='A', return_info=True)
-               (cache it per shot: the still does not change from frame to frame).
+               it in front of whatever foreground it overlaps (see safe_text_disparity);
+               text_snap rounds the parallax to an even px count so the glyphs are not resampled.
+    disparity, info   pre-computed result of disparity_from_depth(..., mode='A', return_info=True).
     linear     'over' of foreground on sky in linear light (True) or on the gamma values (False).
     text_linear  text 'over' in linear light; default False = gamma space, which is what
                compose/text.py prescribes (the original film blended its text that way).
@@ -758,55 +904,55 @@ def stereo_pair_A(sky_rgb, fg_rgba, fg_depth, text_rgba=None, *, disparity=None,
     With return_info=True a third value is returned: dict(disparity, sky_px, text_px, near_px,
     far_px, min_px, max_px, hole_frac_left, hole_frac_right, window, ...).
     """
-    fg = to_float(fg_rgba)
-    H, W = fg.shape[:2]
-    assert fg.shape[2] == 4, 'fg_rgba must be RGBA'
-    sky = to_float(sky_rgb)
-    if sky.ndim != 3 or sky.shape[:2] != (H, W):
-        sky = np.ascontiguousarray(np.broadcast_to(np.asarray(sky, np.float32).reshape(1, 1, 3), (H, W, 3)))
-    text = to_float(text_rgba)
-    alpha = fg[..., 3]
+    prep = prepare_A(fg_rgba, fg_depth, disparity=disparity, info=info, conv=conv, max_px=max_px,
+                     sky_px=sky_px, near_px=near_px, fg_share=fg_share, interp=interp, cut=cut,
+                     threads=threads, **disp_kw)
+    return compose_A(sky_rgb, prep, text_rgba, text_px=text_px, text_safe=text_safe,
+                     text_snap=text_snap, float_window=float_window, linear=linear,
+                     text_linear=text_linear, threads=threads, return_info=return_info)
+
+
+def prepare_B(rgb, depth, *, disparity=None, info=None, conv=None, max_px=None, far_px=None,
+              near_px=None, interp='lanczos', cut=None, threads=2, **disp_kw):
+    """The per-SHOT part of a version B pair -> dict(left, right (H, W, 3) float32 sRGB views,
+    disparity, hole_frac_left / right, + the disparity_from_depth info)."""
+    img = to_float(rgb)
+    if img.ndim == 3 and img.shape[2] == 4:
+        img = np.ascontiguousarray(img[..., :3])
+    H, W = img.shape[:2]
     if disparity is None or info is None:
-        disparity, info = disparity_from_depth(fg_depth, alpha, conv, max_px, 'A', sky_px=sky_px,
-                                               near_px=near_px, fg_share=fg_share, cut=cut,
-                                               return_info=True, **disp_kw)
-    sky_d = _snap_even(info['sky_px'])
+        disparity, info = disparity_from_depth(depth, None, conv, max_px, 'B', far_px=far_px,
+                                               near_px=near_px, cut=cut, return_info=True, **disp_kw)
+    res = synth_pair(img, disparity, threads=threads, cut=cut, interp=interp, return_info=True)
+    out = dict(info)
+    out.update(left=res[0][0], right=res[1][0], disparity=disparity,
+               hole_frac_left=float(np.count_nonzero(res[0][1]['hole_mask'])) / float(H * W),
+               hole_frac_right=float(np.count_nonzero(res[1][1]['hole_mask'])) / float(H * W))
+    return out
+
+
+def compose_B(prep, text_rgba=None, *, text_px=None, text_safe=True, text_snap=True,
+              float_window=True, text_linear=False, return_info=False):
+    """The per-FRAME part of a version B pair: prepared views + text -> (left_rgb, right_rgb)."""
+    H, W = prep['left'].shape[:2]
+    text = to_float(text_rgba)
+    if text_px is None:
+        text_px = DEFAULTS['B_text'] * W
     if text is not None and text_safe:
-        text_px = safe_text_disparity(text, disparity, base=text_px, alpha=alpha)
+        text_px = safe_text_disparity(text, prep['disparity'], base=text_px)
     tL, tR, text_px = _text_views(text, text_px, text_snap)
-
-    pm = fg.copy()
-    pm[..., :3] *= pm[..., 3:4]                               # premultiplied, gamma space
-    views = synth_pair(pm, disparity, threads=threads, cut=cut, interp=interp, premultiplied=True,
-                       return_info=True)
-
-    def finish(view, eye, txt):
-        v, vi = view
-        a = v[..., 3:4]
-        s = shift_x(sky, 0.5 * eye * sky_d)
-        if linear:
-            c = np.where(a > 1e-5, v[..., :3] / np.maximum(a, 1e-5), 0.0)
-            np.clip(c, 0.0, 1.0, out=c)
-            out = linear_to_srgb(srgb_to_linear(c) * a + srgb_to_linear(s) * (1.0 - a))
-        else:
-            out = v[..., :3] + s * (1.0 - a)
-        out = np.ascontiguousarray(out, np.float32)
-        _over_text(out, txt, text_linear)
-        np.clip(out, 0.0, 1.0, out=out)
-        hf = float(np.count_nonzero(vi['hole_mask'] & (v[..., 3] > 0.02))) / float(H * W)
-        return out, hf
-
-    (L, hl), (R, hr) = _parallel(finish, [(views[0], -1, tL), (views[1], 1, tR)], threads)
+    L, R = prep['left'], prep['right']
+    if text is not None or float_window:
+        L, R = L.copy(), R.copy()
+    _over_text(L, tL, text_linear)
+    _over_text(R, tR, text_linear)
     win = None
     if float_window:
-        L, R, win = floating_window(L, R, disparity, alpha, copy=False)
-        if text is not None and win is not None and max(win[0].max(), win[1].max()) > 0:
-            pass                                               # text never sits in the edge strip
+        L, R, win = floating_window(L, R, prep['disparity'], copy=False)
     if not return_info:
         return L, R
-    out = dict(info)
-    out.update(disparity=disparity, sky_px=float(sky_d), text_px=float(text_px), hole_frac_left=hl,
-               hole_frac_right=hr, window=win)
+    out = {k: v for k, v in prep.items() if k not in ('left', 'right')}
+    out.update(text_px=float(text_px), window=win)
     return L, R, out
 
 
@@ -815,6 +961,7 @@ def stereo_pair_B(rgb, depth, text_rgba=None, *, disparity=None, info=None, conv
                   float_window=True, text_linear=False, interp='lanczos', cut=None, threads=2,
                   return_info=False, **disp_kw):
     """Version B frame -> (left_rgb, right_rgb), float32 sRGB (H, W, 3).
+    (= compose_B(prepare_B(rgb, depth), text).)
 
     rgb        (H, W, 3) opaque top-down still (an alpha channel is ignored).
     depth      (H, W) camera depth in metres covering the frame (ground + items).
@@ -822,38 +969,14 @@ def stereo_pair_B(rgb, depth, text_rgba=None, *, disparity=None, info=None, conv
                -0.2 % of the width = slightly in front of the screen).  text_safe=True (default)
                pushes it further forward when it covers something nearer than that.
     disparity, info   pre-computed disparity_from_depth(..., mode='B', return_info=True).
+    float_window  mask the lateral frame edges where an item in front of the screen is cut off.
     The still is warped in gamma space (it is opaque: nothing is blended except the text).
     With return_info=True a third value is returned (see stereo_pair_A).
     """
-    img = to_float(rgb)
-    if img.ndim == 3 and img.shape[2] == 4:
-        img = np.ascontiguousarray(img[..., :3])
-    H, W = img.shape[:2]
-    text = to_float(text_rgba)
-    if disparity is None or info is None:
-        disparity, info = disparity_from_depth(depth, None, conv, max_px, 'B', far_px=far_px,
-                                               near_px=near_px, cut=cut, return_info=True, **disp_kw)
-    if text_px is None:
-        text_px = DEFAULTS['B_text'] * W
-    if text is not None and text_safe:
-        text_px = safe_text_disparity(text, disparity, base=text_px)
-    tL, tR, text_px = _text_views(text, text_px, text_snap)
-    views = synth_pair(img, disparity, threads=threads, cut=cut, interp=interp, return_info=True)
-    outs = []
-    for (v, vi), txt in zip(views, (tL, tR)):
-        _over_text(v, txt, text_linear)
-        np.clip(v, 0.0, 1.0, out=v)
-        outs.append((v, float(np.count_nonzero(vi['hole_mask'])) / float(H * W)))
-    (L, hl), (R, hr) = outs
-    win = None
-    if float_window:
-        L, R, win = floating_window(L, R, disparity, copy=False)
-    if not return_info:
-        return L, R
-    out = dict(info)
-    out.update(disparity=disparity, text_px=float(text_px), hole_frac_left=hl, hole_frac_right=hr,
-               window=win)
-    return L, R, out
+    prep = prepare_B(rgb, depth, disparity=disparity, info=info, conv=conv, max_px=max_px,
+                     far_px=far_px, near_px=near_px, interp=interp, cut=cut, threads=threads, **disp_kw)
+    return compose_B(prep, text_rgba, text_px=text_px, text_safe=text_safe, text_snap=text_snap,
+                     float_window=float_window, text_linear=text_linear, return_info=return_info)
 
 
 # ==============================================================================================
@@ -1132,14 +1255,15 @@ def cmd_selftest(args):
     ok &= e < 1e-5
     # 2. random piecewise rows against a brute-force z-buffer
     worst = 0.0
-    for trial in range(40):
+    for trial in range(60):
         H, W = 4, int(rng.integers(40, 100))
         D = np.zeros((H, W), np.float32)
         for y in range(H):
             x = 0
             while x < W:
                 w = int(rng.integers(1, 22))
-                D[y, x:x + w] = rng.uniform(-25, 25) + rng.uniform(-0.3, 0.3) * np.arange(min(w, W - x))
+                slope = rng.uniform(-0.3, 0.3) if rng.random() < 0.7 else rng.uniform(-6, 6)   # some steep slopes
+                D[y, x:x + w] = rng.uniform(-25, 25) + slope * np.arange(min(w, W - x))
                 x += w
         cut = float(rng.choice([0.5, 1.0, 2.0]))
         u, holes = _warp_map(D, 1, cut)
@@ -1148,8 +1272,7 @@ def cmd_selftest(args):
         for y in range(H):
             d = D[y].astype(np.float64)
             g = np.arange(W) + 0.5 * d
-            conn = np.zeros(W, bool)
-            conn[:-1] = np.abs(np.float32(0.5) * D[y, 1:] - np.float32(0.5) * D[y, :-1]) <= np.float32(0.5 * cut)
+            conn = ~_jumps(D[y:y + 1] * np.float32(0.5), 0.5 * cut)[0]
             for j in range(W):
                 c = []
                 if conn[j]:

@@ -20,7 +20,7 @@ import _fruits as F                                                             
 SHOT = 'k03_guiyuan'
 R_DOME = 0.30
 KINDS = ['whole'] * 6 + ['twig'] * 2 + ['open', 'open_seed']
-WEIGHTS = [1.0] * 6 + [0.45, 0.45, 0.42, 0.42]
+WEIGHTS = [1.0] * 6 + [0.45, 0.45, 0.24, 0.24]
 
 
 # ----------------------------------------------------------------------------- 1. geometry
@@ -82,8 +82,10 @@ def make_longan(seed, kind='whole', nu=200, nv=312):
             thr2 = 0.52 * a_h * (1.0 + 0.30 * F.noise3(C.fbm3, U * 4.0 + 9.0, 2, seed=sd + 11))
             seedm = (ang2 < thr2) & opn
             r_fl = np.where(seedm, 0.615 * (1.0 + 0.004 * F.noise3(C.fbm3, U * 3.0, 2, seed=sd + 12)), r_fl)
-        rad = np.where(opn, r_fl, rad + 0.02 * np.exp(-(np.clip(-d_in, 0, None) / 0.06) ** 2))   # rim lifts a bit
-        edge = np.exp(-(np.clip(-d_in, 0, None) / 0.030) ** 2) * (~opn)
+        wall = C.smoothstep(0.0, 0.055, d_in)                         # shell rim -> aril over ~0.6 mm (smooth inner wall)
+        rad = (rad + 0.02 * np.exp(-(np.clip(-d_in, 0, None) / 0.06) ** 2)) * (1.0 - wall) + r_fl * wall
+        edge = np.exp(-(np.clip(-d_in, 0, None) / 0.030) ** 2) * (1.0 - C.smoothstep(0.030, 0.055, d_in))
+    opn = (d_in > 0.045) if kind.startswith('open') else opn
     radius = r0 * rad + np.where(opn, 0.0, hfine + hscar)
     verts = (U * ax * radius[..., None]).reshape(-1, 3)
     faces = C.grid_faces(nu, nv, wrap_v=True)
@@ -119,11 +121,11 @@ def longan_material():
     n_big = m.noise(scale=75, detail=3, roughness=0.55, vector=P)            # ~1.5 cm weathering patches
     n_mid = m.noise(scale=430, detail=4, roughness=0.6, vector=P)            # ~2 mm mottle
     n_fine = m.noise(scale=2600, detail=3, roughness=0.6, vector=P)          # granulation
-    base = m.mix((0.300, 0.150, 0.048), (0.470, 0.275, 0.095), m.map_range(n_mid, 0.30, 0.70))
-    base = m.mix(base, (0.205, 0.095, 0.034), m.map_range(n_big, 0.52, 0.74, 0.0, 0.75, smooth=True))
+    base = m.mix((0.320, 0.150, 0.042), (0.500, 0.270, 0.082), m.map_range(n_mid, 0.30, 0.70))
+    base = m.mix(base, (0.215, 0.088, 0.028), m.map_range(n_big, 0.52, 0.74, 0.0, 0.75, smooth=True))
     base = m.mix(base, (0.540, 0.360, 0.150), m.map_range(n_big, 0.43, 0.22, 0.0, 0.55, smooth=True))
     base = m.mix(base, m.hsv(base, 0.5, 1.0, 0.80), m.map_range(cid, 0.55, 1.0))          # plate-to-plate variation
-    base = m.jitter(base, hue=0.012, saturation=0.10, value=0.20)
+    base = m.jitter(base, hue=0.016, saturation=0.14, value=0.26)
     base = m.mix(base, (0.180, 0.082, 0.030), m.math('MULTIPLY', m.attr('dark', 'INSTANCER'), 0.65))
     col = m.mix(base, (0.105, 0.050, 0.020), m.map_range(groove, 0.25, 0.95, 0.0, 0.72, smooth=True))
     sp = m.noise(scale=5200, detail=2, roughness=0.5, vector=P)
@@ -203,14 +205,16 @@ def main():
         shapes.append(half)
         holes.append(hole)
 
-    sol = C.planet_solve(R_DOME)
-    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=3.0, coverage=0.72, weights=WEIGHTS, seed=args.seed,
-                       scale_range=(0.86, 1.10), candidates=6, sink=0.07, rough=0.003)
+    sol = C.planet_solve(R_DOME + 0.050)                             # the camera is fitted to the heap TOP (+ ~5 cm)
+    x0, x1, y0, y1 = sol['patch']
+    patch = (x0 * 1.12, x1 * 1.12, y0 * 1.10, y1 * 1.10)
+    heap = C.pack_heap(R_DOME, patch, shapes, layers=2.5, coverage=0.74, weights=WEIGHTS, seed=args.seed,
+                       scale_range=(0.86, 1.10), candidates=14, sink=0.09, rough=0.002)
     n = len(heap.loc)
     quat = F.rand_quats(n, rng)                                      # spheres: any orientation rests
     var = np.asarray(heap.var).astype(int)
     for i in np.where(var >= 8)[0]:                                  # cracked ones show their opening
-        quat[i] = F.aim_quat(holes[var[i]], (0.1, -0.75, 0.65), rng, spread=0.40)
+        quat[i] = F.aim_quat(holes[var[i]], (0.1, -0.70, 0.70), rng, spread=0.60)
     dark = (rng.random(n) < 0.20) * rng.uniform(0.4, 1.0, n)
     C.instance_on_points('heap', variants, loc=heap.loc, quat=quat, scale=heap.scale, var=heap.var,
                          attrs={'dark': dark})

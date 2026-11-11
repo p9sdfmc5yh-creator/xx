@@ -754,7 +754,7 @@ def build_scene(args):
     # The 1 cm berries would mirror those metre-wide boxes as white slabs along their whole length
     # (= lacquered plastic).  They get the same light from the same directions through SMALL sources
     # instead (a little under-powered: AgX turns over-lit red into salmon): the wet film shows small sharp glints.
-    small = [rect_light('key_b', -38.0, 50.0, 1.05, T, 0.150, 0.110, 40.0, (1.0, 0.955, 0.88)),
+    small = [rect_light('key_b', -38.0, 50.0, 1.05, T, 0.150, 0.110, 47.0, (1.0, 0.955, 0.88)),
              rect_light('top_b', 0.0, 66.0, 1.00, T, 0.090, 0.070, 9.0, (1.0, 0.975, 0.94)),
              rect_light('front_b', -150.0, 52.0, 1.25, T, 0.30, 0.25, 8.0, (0.94, 0.97, 1.0))]
     try:

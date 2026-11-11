@@ -372,14 +372,11 @@ def yinyang_bg(frame_idx, scale=2, dither=1.0):
     srgb = np.array(_YY_SPACE_RGB, np.float32) / 255.0
     prgb = np.array(_YY_PLANET_RGB, np.float32) / 255.0
     out = np.empty((hh, ww, 3), np.float32)
-    # ---- planet: only rows that can contain it
+    # rows: [0, r0) space only | [r0, r1) limb band | [r1, hh) deep inside the planet
     r0 = max(0, int(math.floor((YY_YTOP - 70.0 + 0.5) * scale)))
+    y_low = cy - math.sqrt(max(R * R - max(cx, W - 1 - cx) ** 2, 0.0))       # limb at the frame edge
+    r1 = min(hh, max(r0, int(math.ceil((y_low + 80.0 + 0.5) * scale))))
     out[:r0] = space[:r0, :, None] * srgb
-    yv = ys[r0:]
-    dist = ((yv - np.float32(cy)) ** 2)[:, None] + ((xs - np.float32(cx)) ** 2)[None, :]
-    cv2.sqrt(dist, dist)
-    dist -= np.float32(R)                                   # < 0 inside the planet
-    cov = np.clip(dist * np.float32(-scale) + np.float32(0.5), 0.0, 1.0)
     # texture: rigid rotation about the planet centre + zoom (planet-fixed coordinates)
     R0 = np.polyval(_YY_R, 0.0)
     k = R / R0
@@ -395,27 +392,41 @@ def yinyang_bg(frame_idx, scale=2, dither=1.0):
     M[1, 2] -= r0
     shade = cv2.warpAffine(tex, M, (ww, hh - r0), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
     shade *= lum[r0:]
-    e = cv2.exp(np.minimum(dist, 0.0) * np.float32(0.1))    # limb shading
-    shade *= (1.0 - np.float32(0.11) * e)
-    # dot (hole) with a soft contact shadow on the paper
+    # dot: soft contact shadow on the paper now, the hole itself at the end
     dxp, dyp, dr = geo['dot']
     pad = dr + 40.0
-    j0 = max(0, int((dxp - pad + 0.5) * scale)); j1 = min(ww, int((dxp + pad + 0.5) * scale) + 1)
-    i0 = max(0, int((dyp - pad + 0.5) * scale) - r0); i1 = min(hh - r0, int((dyp + pad + 0.5) * scale) + 1 - r0)
-    if j1 > j0 and i1 > i0:
-        dd = np.sqrt(((xs[j0:j1] - np.float32(dxp)) ** 2)[None, :] + ((yv[i0:i1] - np.float32(dyp)) ** 2)[:, None]) \
-            - np.float32(dr)
-        shade[i0:i1, j0:j1] *= (1.0 - 0.07 * np.exp(-np.maximum(dd, 0.0) / 5.0))
-        cov[i0:i1, j0:j1] *= np.clip(dd * scale + 0.5, 0.0, 1.0)
-    bloom = cv2.exp(np.maximum(dist, 0.0) * np.float32(-1.0 / 14.0))
-    bloom *= np.float32(0.012 * 229.5)
-    bloom[dist < -1.0] = 0.0
-    inv = 1.0 - cov
-    a = cov * shade
-    sp = space[r0:] * inv
-    bloom *= inv
-    for c in range(3):
-        out[r0:, :, c] = sp * srgb[c] + bloom * prgb[c] + a * prgb[c]
+    dj0 = max(0, int((dxp - pad + 0.5) * scale)); dj1 = min(ww, int((dxp + pad + 0.5) * scale) + 1)
+    di0 = max(r0, int((dyp - pad + 0.5) * scale)); di1 = min(hh, int((dyp + pad + 0.5) * scale) + 1)
+    has_dot = dj1 > dj0 and di1 > di0
+    if has_dot:
+        dd = np.sqrt(((xs[dj0:dj1] - np.float32(dxp)) ** 2)[None, :]
+                     + ((ys[di0:di1] - np.float32(dyp)) ** 2)[:, None]) - np.float32(dr)
+        shade[di0 - r0:di1 - r0, dj0:dj1] *= (1.0 - 0.07 * np.exp(-np.maximum(dd, 0.0) / 5.0))
+    # ---- limb band
+    nb = r1 - r0
+    if nb > 0:
+        dist = ((ys[r0:r1] - np.float32(cy)) ** 2)[:, None] + ((xs - np.float32(cx)) ** 2)[None, :]
+        cv2.sqrt(dist, dist)
+        dist -= np.float32(R)                               # < 0 inside the planet
+        cov = np.clip(dist * np.float32(-scale) + np.float32(0.5), 0.0, 1.0)
+        sb = shade[:nb]
+        sb *= (1.0 - np.float32(0.11) * cv2.exp(np.minimum(dist, 0.0) * np.float32(0.1)))   # limb shading
+        bloom = cv2.exp(np.maximum(dist, 0.0) * np.float32(-1.0 / 14.0))
+        bloom *= np.float32(0.012 * 229.5)
+        bloom[dist < -1.0] = 0.0
+        inv = 1.0 - cov
+        a = cov * sb
+        sp = space[r0:r1] * inv
+        bloom *= inv
+        for c in range(3):
+            out[r0:r1, :, c] = sp * srgb[c] + bloom * prgb[c] + a * prgb[c]
+    if r1 < hh:
+        for c in range(3):
+            np.multiply(shade[nb:], prgb[c], out=out[r1:, :, c])
+    if has_dot:
+        hole = np.clip(dd * scale + 0.5, 0.0, 1.0)[:, :, None]          # 1 = paper, 0 = hole
+        reg = out[di0:di1, dj0:dj1]
+        reg[:] = reg * hole + (space[di0:di1, dj0:dj1, None] * srgb) * (1.0 - hole)
     # ---- moon
     mx, my, mr = geo['moon']
     pad = mr + 40.0
