@@ -47,7 +47,8 @@ FONT_DIR = os.path.join(SCRATCH, 'fonts')
 PREVIEW_DIR = os.path.join(SCRATCH, 'previews')
 
 FILM_W, FILM_H = 1920, 1080
-FINAL_W, FINAL_H = 2112, 1188          # film frame x 1.1 (compositor pushes in and downsamples)
+FINAL_W, FINAL_H = 3840, 2160          # 4K UHD master = exactly the film frame at t = 0
+DOF_REF_W = 2112                       # reference frame width for the blur-in-pixels DOF helpers (keeps the approved look)
 SENSOR_MM = 36.0
 
 # Framing contract (fractions of frame height, measured from the top)
@@ -60,7 +61,7 @@ SKY_LIMIT = 0.47
 QUALITY = {
     'draft':   dict(res=(960, 540),   spp=16,  thr=0.10, min_spp=8),
     'preview': dict(res=(1280, 720),  spp=40,  thr=0.05, min_spp=16),
-    'final':   dict(res=(FINAL_W, FINAL_H), spp=128, thr=0.015, min_spp=48),
+    'final':   dict(res=(FINAL_W, FINAL_H), spp=32,  thr=0.02,  min_spp=16),   # 4K: 32 spp ~ 128 spp per 1080p pixel
 }
 
 
@@ -570,14 +571,14 @@ def set_dof(cam, focus_dist, fstop):
     d.aperture_blades = 0
 
 
-def blur_px(cam_or_lens, focus_dist, dist, fstop, width_px=FINAL_W):
+def blur_px(cam_or_lens, focus_dist, dist, fstop, width_px=DOF_REF_W):
     """Diameter in pixels of the defocus blur disc of a point at `dist` metres when focused at
     `focus_dist` (Cycles' model: lens disc of diameter f/N, rays converge on the focus plane)."""
     f = (cam_or_lens.data.lens if hasattr(cam_or_lens, 'data') else cam_or_lens) / 1000.0
     return (f / fstop) * abs(1.0 / focus_dist - 1.0 / dist) * (width_px * f / (SENSOR_MM / 1000.0))
 
 
-def auto_dof(cam, info, near_blur_px=7.0, far_blur_px=3.0, focus_frac=None, width_px=FINAL_W):
+def auto_dof(cam, info, near_blur_px=7.0, far_blur_px=3.0, focus_frac=None, width_px=DOF_REF_W):
     """Photographic but detail-preserving DOF.  The f-stop is solved so that the defocus blur disc
     diameter is <= near_blur_px at the bottom frame edge (nearest foreground) and <= far_blur_px
     at the horizon (pixels at 2112 px width; scale-free, so drafts look the same).  Focus sits

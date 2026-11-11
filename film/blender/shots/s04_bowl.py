@@ -39,6 +39,7 @@ LENS = 100.0
 ELEV = 24.0
 APEX, EDGE = 0.52, 0.70
 N_GOJI = 8
+FSTOP = 20.0
 DX = 0.00025                             # broth sheet cell in the visible zone
 
 
@@ -67,10 +68,10 @@ def bowl_profile():
     inner (bool), r_in(z) callable for the inner wall, z_bottom(r) callable, r_top)."""
     from scipy.interpolate import CubicSpline
     ctrl = np.array([[0.0000, -0.0850], [0.0270, -0.0846], [0.0500, -0.0822], [0.0700, -0.0750],
-                     [0.0880, -0.0620], [0.1035, -0.0450], [0.1150, -0.0270], [0.1222, -0.0125],
-                     [0.1281, -0.0022]])
+                     [0.0880, -0.0620], [0.1035, -0.0450], [0.1148, -0.0270], [0.1207, -0.0130],
+                     [0.1248, -0.0060], [0.1302, -0.0020]])
     u = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(ctrl, axis=0), axis=1))])
-    cs = CubicSpline(u, ctrl, bc_type=((1, (1.0, 0.0)), (2, (0.0, 0.0))))
+    cs = CubicSpline(u, ctrl, bc_type=((1, (1.0, 0.0)), (1, (0.80, 0.60))))   # everted lip (撇口)
     uu = np.linspace(0, u[-1], 6000)
     P = cs(uu)
     P[:, 0] = np.maximum(P[:, 0], 0.0)
@@ -308,10 +309,10 @@ def make_soaked_goji(seed, nu=150, nv=92):
     ph = np.linspace(0, 2 * math.pi, nv, endpoint=False)[None, :]
     S, PH = np.broadcast_arrays(s, ph)
     k = rng.uniform(0.88, 1.12)
-    e = 0.50 + 0.20 * s
+    e = 0.40 + 0.15 * s
     sc = np.clip(s, 1e-4, 1 - 1e-4)
     prof = np.sin(math.pi * sc ** k) ** e
-    prof = prof * (1 + 0.05 * np.sin(2 * math.pi * (s + rng.uniform())))             # uneven belly
+    prof = prof * (1 + 0.07 * np.sin(2 * math.pi * (s + rng.uniform())) + 0.04 * np.sin(4 * math.pi * (s + rng.uniform())))             # uneven belly
     R0 = 0.5 * Dm * prof
     X = (S - 0.5) * L
     # position on the undeformed surface (for noise lookups)
@@ -347,18 +348,18 @@ def soaked_goji_material():
     oc = m.per_instance_coords('Object', spread=3.0)
     n_patch = m.noise(scale=150, detail=2, vector=oc)
     n_fine = m.noise(scale=1500, detail=3, vector=oc)
-    col = m.ramp(n_patch, [(0.22, (0.50, 0.030, 0.010)), (0.50, (0.72, 0.075, 0.016)), (0.80, (0.84, 0.17, 0.028))])
+    col = m.ramp(n_patch, [(0.22, (0.30, 0.010, 0.005)), (0.50, (0.45, 0.024, 0.006)), (0.80, (0.56, 0.060, 0.010))])
     vor = m.voronoi(scale=560, vector=oc, feature='SMOOTH_F1', smoothness=0.4)
     seedm = m.map_range(vor, 0.10, 0.50, 1.0, 0.0, smooth=True)                 # seeds showing through
-    col = m.mix(col, (0.92, 0.36, 0.07), m.math('MULTIPLY', seedm, 0.20))
-    col = m.mix(col, (0.36, 0.015, 0.008), m.math('MULTIPLY', m.attr('furrow'), 0.65))
+    col = m.mix(col, (0.66, 0.16, 0.02), m.math('MULTIPLY', seedm, 0.22))
+    col = m.mix(col, (0.20, 0.005, 0.004), m.math('MULTIPLY', m.attr('furrow'), 0.65))
     col = m.jitter(col, hue=0.012, saturation=0.07, value=0.16)
     col = m.mix(col, (0.80, 0.66, 0.40), m.map_range(m.attr('scar'), 0.25, 0.8, 0.0, 0.95, smooth=True))
     rough = m.math('ADD', m.map_range(n_fine, 0.3, 0.7, 0.10, 0.24), m.math('MULTIPLY', m.attr('furrow'), 0.15))
     stretch = m.mapping(oc, scale=(0.25, 1.0, 1.0))
     nrm = m.bump(m.noise(scale=2400, detail=3, vector=stretch), strength=0.45, distance=0.00007)
     nrm = m.bump(m.noise(scale=9000, detail=2, vector=oc), strength=0.3, distance=0.00002, normal=nrm)
-    m.set(base_color=col, roughness=rough, sss=1.0, sss_radius=(1.0, 0.20, 0.07), sss_scale=0.0026,
+    m.set(base_color=col, roughness=rough, sss=0.7, sss_radius=(1.0, 0.16, 0.06), sss_scale=0.0015,
           sss_anisotropy=0.4, ior=1.42, coat=0.75, coat_roughness=0.035, coat_ior=1.34, normal=nrm)
     return m
 
@@ -383,9 +384,9 @@ def broth_material():
     nt.links.new(tr.outputs[0], mix.inputs[2])
     nt.links.new(mix.outputs[0], out.inputs['Surface'])
     vol = nt.nodes.new('ShaderNodeVolumeAbsorption')
-    # amber herbal broth: transmittance over 5 cm ~ (0.80, 0.47, 0.11)
-    vol.inputs['Color'].default_value = (0.911, 0.698, 0.12, 1)
-    vol.inputs['Density'].default_value = 50.0
+    # amber-brown herbal broth: transmittance over 5 cm ~ (0.66, 0.36, 0.085)
+    vol.inputs['Color'].default_value = (0.849, 0.629, 0.104, 1)
+    vol.inputs['Density'].default_value = 55.0
     nt.links.new(vol.outputs[0], out.inputs['Volume'])
     return mat
 
@@ -702,19 +703,21 @@ def build_scene(args):
     # ---- camera
     cam, info = C.disc_camera(R_sil, elevation_deg=ELEV, lens_mm=LENS, apex=APEX, edge=EDGE)
     # focus on the main raft of berries, band slightly soft, nearest foreground softer
-    fx, fy = frame_to_plane(0.40, 0.86)
+    fx, fy = frame_to_plane(0.40, 0.84)
     focus = float((np.array([fx, fy, Z_BROTH]) - pos) @ fwd)
-    C.set_dof(cam, focus, 30.0)
+    C.set_dof(cam, focus, FSTOP)
     Wpx = 2112
     print('[dof] focus %.3f m  blur@rim %.1f px  blur@near %.1f px (of %d)' % (
-        focus, C.blur_px(cam, focus, info['limb_dist'], 30.0, Wpx),
-        C.blur_px(cam, focus, float((np.array(frame_to_plane(0.5, 1.0) + (Z_BROTH,)) - pos) @ fwd), 30.0, Wpx), Wpx))
+        focus, C.blur_px(cam, focus, info['limb_dist'], FSTOP, Wpx),
+        C.blur_px(cam, focus, float((np.array(frame_to_plane(0.5, 1.0) + (Z_BROTH,)) - pos) @ fwd), FSTOP, Wpx), Wpx))
     # ---- light: big soft box 3/4 back-left (key), window-like box over the camera (its reflection
     #      is the crisp glaze highlight on the inner wall), low strip back-right, dim warm world
     T = (0.0, 0.085, -0.015)
-    rect_light('key', -38.0, 50.0, 1.05, T, 0.80, 0.60, 62.0, (1.0, 0.955, 0.88))
-    rect_light('front', 152.0, 47.0, 1.15, T, 0.55, 0.85, 13.0, (0.93, 0.96, 1.0))
-    rect_light('strip', 64.0, 20.0, 1.0, T, 0.22, 0.70, 9.0, (1.0, 0.90, 0.78))
+    rect_light('key', -38.0, 50.0, 1.05, T, 0.80, 0.60, 70.0, (1.0, 0.955, 0.88))
+    rect_light('top', 10.0, 80.0, 1.00, T, 0.60, 0.45, 17.0, (1.0, 0.975, 0.94))
+    rect_light('front', -150.0, 52.0, 1.25, T, 0.50, 0.42, 10.0, (0.94, 0.97, 1.0))      # gleam on the flared lip
+    rect_light('sheen', 163.0, 23.0, 1.35, T, 1.50, 0.15, 5.0, (1.0, 0.97, 0.93))        # sheen under the band
+    rect_light('strip', 64.0, 36.0, 1.0, T, 0.22, 0.70, 9.0, (1.0, 0.90, 0.78))
     C.world_gradient(horizon=(0.030, 0.021, 0.014), zenith=(0.060, 0.048, 0.038), ground=(0.012, 0.008, 0.005))
     return info
 
