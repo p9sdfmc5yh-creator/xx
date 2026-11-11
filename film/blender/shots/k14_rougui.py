@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 import common as C                                                                    # noqa: E402
 
 SHOT = 'k14_rougui'
-R_DOME = 0.85
+R_DOME = 1.05
 KINDS = ['double', 'double', 'double', 'single', 'single', 'trough', 'trough', 'chunk', 'chunk',
          'chip', 'chip', 'chip']
 WEIGHTS = [1.0, 1.0, 1.0, 0.9, 0.9, 0.7, 0.7, 0.55, 0.55, 0.45, 0.45, 0.45]
@@ -127,16 +127,19 @@ def make_quill(seed, kind, res=1.0):
     d_edge = np.minimum(uj, 1 - uj) * W * np.ones_like(X)
     thick = t0 * (1 + 0.13 * C.fbm3(p * [50, 50, 1], 3, seed=sd + 7)) * (0.55 + 0.45 * C.smoothstep(0.0, 0.0045, d_edge))
     und = C.fbm3(p * [60, 60, 1] + 1.7, 3, seed=sd + 8)
-    wr = C.ridged3(p * [95, 480, 1] + 4.1, 3, seed=sd + 9) ** 2     # longitudinal wrinkle creases
-    wr2 = C.ridged3(p * [260, 1300, 1] + 8.3, 2, seed=sd + 10) ** 2
-    F1, F2, cid = C.cellular3((p * [1 / 0.0021, 1 / 0.0062, 1]).reshape(-1, 3) + [0, 0, 0.5], seed=sd + 11)
+    pw = p + np.stack([0.004 * C.fbm3(p * [45, 45, 1] + 51.0, 2, seed=sd + 30),
+                       0.0016 * C.fbm3(p * [38, 60, 1] + 77.0, 3, seed=sd + 31), np.zeros_like(X)], -1)
+    how = 0.25 + 0.75 * C.smoothstep(-0.30, 0.30, C.fbm3(p * [34, 34, 1] + 91.0, 2, seed=sd + 32))
+    wr = how * C.ridged3(pw * [70, 430, 1] + 4.1, 3, seed=sd + 9) ** 2     # longitudinal wrinkle creases
+    wr2 = how * C.ridged3(pw * [230, 1200, 1] + 8.3, 2, seed=sd + 10) ** 2
+    F1, F2, cid = C.cellular3((pw * [1 / 0.0030, 1 / 0.0080, 1]).reshape(-1, 3) + [0, 0, 0.5], seed=sd + 11)
     F1, cid = F1.reshape(X.shape), cid.reshape(X.shape)
-    lent = C.smoothstep(0.44, 0.10, F1) * (cid < 0.42)             # transverse lenticel ridges
+    lent = C.smoothstep(0.20 + 0.5 * cid, 0.06, F1) * (cid < 0.30)             # transverse lenticel ridges
     lichn = C.fbm3(p * [48, 48, 1] + 13.0, 4, seed=sd + 12)
     lich = C.smoothstep(0.12, 0.36, lichn) * rng.uniform(0.35, 1.0)
     fine = C.fbm3(p * [1500, 1500, 1], 3, seed=sd + 13)
     scal = C.smoothstep(-0.05, 0.05, C.fbm3(p * [150, 240, 1] + 31.0, 3, seed=sd + 14))   # flaky cork plates
-    h_o = (0.00026 * und - 0.00024 * wr - 0.00009 * wr2 + 0.00030 * lent * (0.5 + cid)
+    h_o = (0.00026 * und - 0.00024 * wr - 0.00009 * wr2 + 0.00026 * lent * (0.6 + 2.0 * cid)
            + 0.00007 * lich + 0.00005 * fine + 0.00010 * scal)
     h_i = (0.00014 * C.fbm3(p * [70, 70, 1] + 2.2, 3, seed=sd + 15)
            + 0.00010 * C.fbm3(p * [42, 900, 1], 3, seed=sd + 16)
@@ -233,14 +236,14 @@ def bark_material():
     Ps = m.mapping(P, scale=(0.05, 1.0, 1.0))
     # outer bark: grey-brown cork, dark wrinkle creases, tan lenticels, grey-white lichen patches
     n1 = m.noise(scale=240, detail=4, roughness=0.6, vector=P)
-    o = m.mix((0.098, 0.062, 0.040), (0.200, 0.136, 0.090), m.map_range(n1, 0.30, 0.72))
+    o = m.mix((0.150, 0.104, 0.072), (0.290, 0.215, 0.152), m.map_range(n1, 0.30, 0.72))
     n2 = m.noise(scale=1700, detail=3, roughness=0.6, vector=Pl)
-    o = m.mix(o, (0.29, 0.215, 0.150), m.math('MULTIPLY', m.map_range(n2, 0.55, 0.80), 0.40))
-    o = m.mix(o, (0.036, 0.021, 0.014), m.map_range(cav, 0.12, 0.85, 0.0, 0.85, smooth=True))
-    o = m.mix(o, (0.300, 0.190, 0.105), m.math('MULTIPLY', lent, 0.70))
+    o = m.mix(o, (0.36, 0.285, 0.210), m.math('MULTIPLY', m.map_range(n2, 0.55, 0.80), 0.40))
+    o = m.mix(o, (0.050, 0.030, 0.020), m.map_range(cav, 0.12, 0.85, 0.0, 0.80, smooth=True))
+    o = m.mix(o, (0.340, 0.225, 0.130), m.math('MULTIPLY', lent, 0.65))
     ln = m.noise(scale=800, detail=4, roughness=0.7, vector=P)
     lm = m.math('MULTIPLY', m.map_range(lich, 0.20, 0.65, smooth=True), m.map_range(ln, 0.34, 0.56))
-    o = m.mix(o, (0.360, 0.345, 0.300), m.math('MULTIPLY', lm, 0.85))
+    o = m.mix(o, (0.440, 0.425, 0.375), m.math('MULTIPLY', lm, 0.85))
     # inner surface: warm red-brown, fine longitudinal streaks, oily darker bands
     s1 = m.noise(scale=1300, detail=3, roughness=0.6, vector=Ps)
     s2 = m.noise(scale=170, detail=3, roughness=0.5, vector=P)
@@ -308,16 +311,16 @@ def main():
     print('[rougui] verts', sum(len(o.data.vertices) for o in variants))
 
     sol = C.planet_solve(R_DOME)
-    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=2.9, coverage=0.72, weights=WEIGHTS, seed=args.seed,
-                       scale_range=(0.90, 1.10), tilt_deg=7, roll_deg=40, flip=True, candidates=6, sink=0.05,
-                       rough=0.012, grid_res=0.0012)
+    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=2.6, coverage=0.72, weights=WEIGHTS, seed=args.seed,
+                       scale_range=(0.90, 1.10), tilt_deg=3.5, roll_deg=40, flip=True, candidates=8, sink=0.05,
+                       max_slope_deg=20, rough=0.010, grid_res=0.0012)
     dark = (rng.random(len(heap)) < 0.12) * rng.uniform(0.4, 1.0, len(heap))
     C.instance_on_points('heap', variants, heap, attrs={'dark': dark})
     C.dome_base(R_DOME - 0.004, C.simple_material('base', (0.030, 0.016, 0.010), 0.9))
 
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=(1.0, 0.90, 0.80), key=1.0, fill=0.85, rim=1.15, world=1.0, key_size=0.9)
+    C.studio_lights(info, tint=(1.0, 0.92, 0.82), key=1.35, fill=1.15, rim=1.2, world=1.2, key_size=1.0)
 
     C.render(args)
     if not args.region:
