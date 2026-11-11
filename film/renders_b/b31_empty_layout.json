@@ -1,0 +1,17 @@
+{
+ "shot": "b31_landing",
+ "layout": "landing",
+ "frame_width_m": 1.2678964577968141,
+ "frame_height_m": 0.713191757510708,
+ "items": [
+  "m02_gouqi"
+ ],
+ "seed": 77,
+ "empty": true,
+ "display_gain": 1.1388,
+ "render_seconds": 29.9,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

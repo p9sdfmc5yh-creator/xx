@@ -1,0 +1,32 @@
+{
+ "shot": "b05_shanyao",
+ "layout": "wreath",
+ "frame_width_m": 0.4754929973672346,
+ "frame_height_m": 0.2674648110190695,
+ "items": [
+  "m01_shanyao"
+ ],
+ "seed": 20,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.2662760785256514,
+  0.2662760785256514,
+  -0.16226198535156883,
+  0.16226198535156883
+ ],
+ "n_items": 308,
+ "layers_max": 3,
+ "heap_top_mm": 15.736663818359375,
+ "display_gain": 1.0,
+ "render_seconds": 92.5,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

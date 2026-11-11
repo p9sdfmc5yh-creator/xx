@@ -1,0 +1,40 @@
+{
+ "shot": "b22_heye",
+ "layout": "glyph",
+ "frame_width_m": 2.122856049696134,
+ "frame_height_m": 1.1941065279540755,
+ "items": [
+  "k08_heye"
+ ],
+ "seed": 47,
+ "empty": false,
+ "text": "食",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.27999999999999997,
+ "engine": "packed",
+ "px_per_m": 969.8532593171187,
+ "stroke_width_m": 0.06392719661905831,
+ "stroke_items_wide": 2.799999999999999,
+ "block_m": [
+  0.8929185850339436,
+  0.8836388306860158
+ ],
+ "char_boxes": [
+  [
+   0.2994,
+   0.10295,
+   0.69963,
+   0.81618
+  ]
+ ],
+ "align": 0.16474626559003125,
+ "n_items": 554,
+ "layers_max": 2,
+ "heap_top_mm": 15.953343391418457,
+ "display_gain": 1.0773,
+ "render_seconds": 43.5,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
