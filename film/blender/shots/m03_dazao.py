@@ -107,8 +107,8 @@ def make_jujube(seed, L=None, Dm=None, nu=440, nv=300, window=None, cell=None, s
                            C.perlin3(qa / 6.0 + 9.4, sd + 3)], -1)
     qw = qa + warp
     how = 0.52 + 0.48 * C.smoothstep(-0.28, 0.22, C.perlin3(q / 10.0 + 21.0, sd + 4))     # where it shrivelled most
-    F1 = np.abs(C.perlin3(qw / 3.7, sd + 10)) ** 0.55                 # broad taut pillows, sharp V creases
-    F2 = np.abs(C.perlin3(qw / 1.55 + 5.0, sd + 11)) ** 0.62          # secondary folds
+    F1 = np.abs(C.perlin3(qw / 8.5, sd + 10)) ** 0.70                 # broad taut pillows, sharp V creases
+    F2 = np.abs(C.perlin3(qw / 3.6 + 5.0, sd + 11)) ** 0.75          # secondary folds
     qb = q * np.array([0.85, 1.0, 1.0]) + 2.4 * warp                  # tertiary wrinkles: less stretched, patchy
     F2b = np.abs(C.perlin3(qb / 0.80 + 31.0, sd + 18)) ** 0.60
     tmask = 0.22 + 0.78 * C.smoothstep(-0.25, 0.25, C.perlin3(q / 2.6 + 40.0, sd + 19))
@@ -119,8 +119,8 @@ def make_jujube(seed, L=None, Dm=None, nu=440, nv=300, window=None, cell=None, s
     dent = C.smoothstep(0.28, 0.75, C.perlin3(q / 9.0 + 2.0, sd + 15))
     ridge = rg * rmask
     h = (0.9 * lump - 1.1 * dent
-         + shrivel * (0.95 * how * (F1 - 0.45) + 0.42 * how * (F2 - 0.42)
-                      + 0.17 * (0.35 + 0.65 * how) * (F2b - 0.45) + 0.12 * ridge))
+         + shrivel * (0.95 * how * (F1 - 0.45) + 0.30 * how * (F2 - 0.42)
+                      + 0.06 * (0.35 + 0.65 * how) * (F2b - 0.45) + 0.05 * ridge))
     cav = how * ((1.0 - C.smoothstep(0.0, 0.46, F1)) * 0.95 + (1.0 - C.smoothstep(0.0, 0.36, F2)) * 0.50)
     cav = cav + (0.35 + 0.65 * how) * (1.0 - C.smoothstep(0.0, 0.30, F2b)) * 0.22
     cav = np.clip(cav, 0.0, 1.0)
@@ -128,7 +128,7 @@ def make_jujube(seed, L=None, Dm=None, nu=440, nv=300, window=None, cell=None, s
     qf = q * np.array([0.42, 1.0, 1.0]) + 2.2 * warp
     F3 = np.abs(C.perlin3(qf / 0.72 + 13.0, sd + 16)) ** 0.6
     fmask = np.clip(0.42 + 0.8 * cav, 0.0, 1.0) * how
-    h = h + shrivel * 0.14 * fmask * (F3 - 0.5)
+    h = h + shrivel * 0.05 * fmask * (F3 - 0.5)
     if cell is not None and cell < 0.00007:                           # only the dense hero mesh can carry these
         F4 = C.perlin3(qf / 0.27 + 17.0, sd + 17)
         h = h + 0.020 * F4 * (0.35 + 0.65 * fmask)
@@ -278,7 +278,7 @@ def make_items(seed=0, n=6):
     -> dict(objects, footprint_r [m], half_height [m], name)."""
     objs, fr, hh = [], [], []
     for i in range(n):
-        ob, r, h = _item_object('dazao_item_%d' % i, 40 + seed * 17 + i, stem=(i % 3 != 2),
+        ob, r, h = _item_object('dazao_item_%d' % i, 40 + seed * 17 + i, stem=(i % 3 == 0),
                                 shrivel=(0.8, 1.0, 1.15, 0.9, 1.05, 0.7)[i % 6])
         objs.append(ob); fr.append(r); hh.append(h)
     return dict(objects=objs, footprint_r=fr, half_height=hh, name='大枣')

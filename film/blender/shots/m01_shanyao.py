@@ -137,17 +137,17 @@ def skin_material():
 
 
 # ----------------------------------------------------------------------------- loose items (pharmacy jar)
-def make_items(seed=0, n=6):
+def make_items(seed=0, n=9):
     """Dried yam slices (山药片): chalk-white, matte, slightly warped, thin tan skin at the rim.
     -> dict(objects, footprint_r [m], half_height [m], name)."""
     rng = np.random.default_rng(900 + seed)
     objs, fr, hh = [], [], []
     for i in range(n):
-        r0 = rng.uniform(0.0105, 0.0155)
-        ol = D.Outline(r0, lobes=[(2, rng.uniform(0.01, 0.05), rng.uniform(0, 6)), (3, rng.uniform(0.005, 0.025), rng.uniform(0, 6))],
-                       rough=0.00005, rough_wl=0.0005, nubs=18, nub_h=0.00018, seed=seed * 13 + i)
-        ob, r, h = D.slice_item('shanyao_item_%d' % i, ol, rng.uniform(0.0028, 0.0045), fields, face_material(dry=True),
-                                seed=seed * 13 + i, warp=rng.uniform(0.01, 0.045))
+        r0 = rng.uniform(0.0095, 0.0165)
+        ol = D.Outline(r0, lobes=[(2, rng.uniform(0.06, 0.20), rng.uniform(0, 6)), (3, rng.uniform(0.02, 0.07), rng.uniform(0, 6)), (5, rng.uniform(0.0, 0.03), rng.uniform(0, 6))],
+                       rough=0.00012, rough_wl=0.0009, nubs=0, nub_h=0.0, seed=seed * 13 + i)
+        ob, r, h = D.slice_item('shanyao_item_%d' % i, ol, rng.uniform(0.0016, 0.0030), fields, face_material(dry=True),
+                                seed=seed * 13 + i, warp=rng.uniform(0.05, 0.14))
         objs.append(ob); fr.append(r); hh.append(h)
     return dict(objects=objs, footprint_r=fr, half_height=hh, name='山药')
 

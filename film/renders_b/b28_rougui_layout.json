@@ -1,0 +1,40 @@
+{
+ "shot": "b28_rougui",
+ "layout": "glyph",
+ "frame_width_m": 2.566907014679461,
+ "frame_height_m": 1.4438851957571968,
+ "items": [
+  "k14_rougui"
+ ],
+ "seed": 53,
+ "empty": false,
+ "text": "源",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.27999999999999997,
+ "engine": "packed",
+ "px_per_m": 785.2312546145397,
+ "stroke_width_m": 0.08914571292040857,
+ "stroke_items_wide": 4.4,
+ "block_m": [
+  1.0939452485518708,
+  1.0684750448603255
+ ],
+ "char_boxes": [
+  [
+   0.29634,
+   0.10499,
+   0.70465,
+   0.82912
+  ]
+ ],
+ "align": 0.92,
+ "n_items": 382,
+ "layers_max": 30,
+ "heap_top_mm": 42.84971237182617,
+ "display_gain": 1.0206,
+ "render_seconds": 55.4,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

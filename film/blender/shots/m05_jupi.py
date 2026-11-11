@@ -255,14 +255,14 @@ def main():
         shapes.append(half)
 
     sol = C.planet_solve(R_DOME)
-    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=2.6, coverage=0.74, weights=WEIGHTS, seed=args.seed,
+    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=3.6, coverage=0.84, weights=WEIGHTS, seed=args.seed,
                        scale_range=(0.86, 1.12), tilt_deg=6, roll_deg=12, candidates=8, sink=0.25, rough=0.002,
                        max_slope_deg=30)
     dark = (rng.random(len(heap)) < 0.18) * rng.uniform(0.4, 1.0, len(heap))
     C.instance_on_points('heap', variants, heap, attrs={'dark': dark})
     C.dome_base(R_DOME - 0.002, C.simple_material('base', (0.040, 0.012, 0.005), 0.9))
 
-    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.54, edge=0.645, top_margin=0.03)
+    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.525, edge=0.645, top_margin=0.03)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
     C.studio_lights(info, tint=(1.0, 0.90, 0.80), key=0.90, fill=0.95, rim=1.1, world=1.0, key_size=0.9)
 

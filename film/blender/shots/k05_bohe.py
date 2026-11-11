@@ -276,7 +276,7 @@ def main():
 
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.56, edge=0.685, top_margin=0.03)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=SKY_TINT, key=0.85, fill=0.80, rim=1.0, world=1.0, key_size=1.0)
+    C.studio_lights(info, tint=SKY_TINT, key=0.85, fill=1.6, rim=1.0, world=2.4, key_size=1.2)
     finish(args, SHOT)
 
 

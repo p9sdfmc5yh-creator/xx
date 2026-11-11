@@ -1,0 +1,40 @@
+{
+ "shot": "b27_luohanguo",
+ "layout": "glyph",
+ "frame_width_m": 4.9005232031655215,
+ "frame_height_m": 2.756544301780606,
+ "items": [
+  "k13_luohanguo"
+ ],
+ "seed": 52,
+ "empty": false,
+ "text": "源",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.27999999999999997,
+ "engine": "packed",
+ "px_per_m": 411.30620793992296,
+ "stroke_width_m": 0.1701895051635702,
+ "stroke_items_wide": 3.3000000000000003,
+ "block_m": [
+  2.088468356221526,
+  2.0398427833176487
+ ],
+ "char_boxes": [
+  [
+   0.29634,
+   0.10499,
+   0.70465,
+   0.82912
+  ]
+ ],
+ "align": 0.0355167552918524,
+ "n_items": 503,
+ "layers_max": 2,
+ "heap_top_mm": 153.5207061767578,
+ "display_gain": 1.0584,
+ "render_seconds": 39.1,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

@@ -130,8 +130,8 @@ def lotus_material():
     sn = m.noise(scale=2600, detail=3, roughness=0.6, vector=Ps)
     skin = m.math('MULTIPLY', A('skin'), m.map_range(sn, 0.30, 0.55, 0.55, 1.0))
     col = m.mix(col, m.mix((0.240, 0.070, 0.032), (0.110, 0.030, 0.018), sn), skin)
-    col = m.mix(col, (0.150, 0.060, 0.030), m.math('MULTIPLY', A('ring'), 0.75))
-    col = m.mix(col, (0.170, 0.050, 0.026), m.map_range(A('nip'), 0.25, 0.75, smooth=True))
+    col = m.mix(col, (0.360, 0.250, 0.150), m.math('MULTIPLY', A('ring'), 0.22))
+    col = m.mix(col, (0.240, 0.130, 0.070), m.math('MULTIPLY', m.map_range(A('nip'), 0.35, 0.85, smooth=True), 0.75))
     col = m.mix(col, (0.030, 0.016, 0.008), A('hole'))
     # roughness: powdery matte, skin remnants smoother
     rough = m.map_range(A('rvar'), 0, 1, 0.58, 0.80)

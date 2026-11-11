@@ -15,7 +15,7 @@ import common as C
 
 # px = apparent item length at the horizon in a 1920 px frame; base = colour of the hidden dome under the heap
 CFG = {
-    'm03_dazao':     dict(px=250, layers=2.6, tilt=14, roll=40,  exposure=0.55, base=(0.05, 0.012, 0.008), tint=(1.0, 0.97, 0.90)),
+    'm03_dazao':     dict(px=250, layers=2.6, tilt=14, roll=40,  exposure=1.0, base=(0.05, 0.012, 0.008), tint=(1.0, 0.97, 0.90)),
     'm01_shanyao':   dict(px=215, layers=3.2, tilt=20, roll=25,  exposure=0.10, base=(0.30, 0.27, 0.22),   tint=(1.0, 0.98, 0.95)),
     'k13_luohanguo': dict(px=470, layers=1.9, tilt=12, roll=180, exposure=0.35, base=(0.05, 0.035, 0.02),  tint=(1.0, 0.97, 0.92)),
 }

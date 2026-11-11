@@ -230,7 +230,7 @@ def main():
     sc = np.asarray(heap.scale, float).reshape(n, -1).mean(1)
     rad = np.array([np.mean(shapes[int(k)]) for k in heap.var]) * sc
     lmat = leaf_material()
-    for j, (fx, fy, yaw, L, W, under) in enumerate([(0.36, 0.34, -22.0, 0.031, 0.0066, False)]):
+    for j, (fx, fy, yaw, L, W, under) in enumerate([]):          # the exposed leaf read as a blade: removed
         px, py = fx * x1, fy * y0
         c0 = np.array([px, py, math.sqrt(R_DOME ** 2 - px * px - py * py)])
         d = np.array([math.cos(math.radians(yaw)), math.sin(math.radians(yaw)), 0.0])

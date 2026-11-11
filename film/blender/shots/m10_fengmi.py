@@ -279,7 +279,7 @@ def make_items(seed=0, n=5):
 # ----------------------------------------------------------------------------- 3. scene
 def main():
     args = C.parse_args()
-    C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
+    C.setup_scene(args, look='AgX - Base Contrast', exposure=0.0)
     sc = bpy.context.scene
     sc.cycles.transmission_bounces = 6
     sc.cycles.glossy_bounces = 3
@@ -307,7 +307,7 @@ def main():
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
     # back light is the point: honey and thin wax walls glow; the key box also draws the long
     # highlight along the bulging honey tongue
-    C.studio_lights(info, tint=(1.0, 0.90, 0.74), key=0.72, fill=0.40, rim=1.3, world=0.8, key_size=1.6, key_el=40)
+    C.studio_lights(info, tint=(1.0, 0.90, 0.74), key=0.50, fill=0.45, rim=0.45, world=0.9, key_size=2.6, key_el=40)
     # tall dim panel straight behind: every honey surface mirrors a piece of it (liquid sheen), and
     # it is extra back light for the glow
     sc_w = info['scale']

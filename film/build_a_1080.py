@@ -24,22 +24,24 @@ PILE = ('m03_dazao', 'm01_shanyao', 'k13_luohanguo')              # shots rebuil
 # mid-tones, dark ingredients on pale stock; all muted and warm-leaning like old printed plates.
 CARD = {
     's02_cabinet': (0.90, 0.86, 0.78), 's03_millet': (0.70, 0.76, 0.78), 's04_bowl': (0.86, 0.74, 0.69),
-    'm01_shanyao': (0.66, 0.77, 0.74), 'm02_gouqi': (0.93, 0.89, 0.80), 'm03_dazao': (0.92, 0.88, 0.79),
+    'm01_shanyao': (0.78, 0.71, 0.63), 'm02_gouqi': (0.93, 0.89, 0.80), 'm03_dazao': (0.92, 0.88, 0.79),
     'm04_shengjiang': (0.69, 0.75, 0.81), 'm05_jupi': (0.76, 0.80, 0.70), 'm06_lianzi': (0.84, 0.70, 0.68),
     'm07_baihe': (0.74, 0.69, 0.77), 'm08_shanzha': (0.90, 0.82, 0.64), 'm09_juhua': (0.62, 0.69, 0.77),
     'm10_fengmi': (0.80, 0.84, 0.76), 'k01_fuling': (0.74, 0.68, 0.62), 'k02_yiyiren': (0.62, 0.75, 0.74),
     'k03_guiyuan': (0.86, 0.72, 0.70), 'k04_heizhima': (0.93, 0.90, 0.82), 'k05_bohe': (0.93, 0.90, 0.80),
     'k06_sangshen': (0.90, 0.80, 0.84), 'k07_chixiaodou': (0.88, 0.82, 0.70), 'k08_heye': (0.86, 0.79, 0.66),
-    'k09_gancao': (0.82, 0.60, 0.52), 'k10_jianghuang': (0.66, 0.73, 0.82), 'k11_shaji': (0.72, 0.80, 0.72),
-    'k12_juemingzi': (0.88, 0.89, 0.80), 'k13_luohanguo': (0.90, 0.80, 0.56), 'k14_rougui': (0.70, 0.75, 0.80),
+    'k09_gancao': (0.80, 0.67, 0.60), 'k10_jianghuang': (0.66, 0.73, 0.82), 'k11_shaji': (0.72, 0.80, 0.72),
+    'k12_juemingzi': (0.88, 0.89, 0.80), 'k13_luohanguo': (0.74, 0.79, 0.72), 'k14_rougui': (0.70, 0.75, 0.80),
     'k15_qianshi': (0.68, 0.74, 0.80), 'k16_lingzhi': (0.72, 0.77, 0.71),
 }
 # Per-shot finishing of the still: lift = brighten without clipping (1 = none), gamma < 1 opens shadows,
 # sat = saturation, dy = shift down in pixels (keeps the title clear of the heap).
-ADJ = {
+ADJ = {        # applied to any still of the shot
     'k06_sangshen': dict(lift=1.9, gamma=0.86), 'm09_juhua': dict(lift=1.55), 'm08_shanzha': dict(lift=1.30, sat=1.08),
-    'k05_bohe': dict(gamma=0.80, lift=1.10), 'k10_jianghuang': dict(sat=1.22), 'm05_jupi': dict(dy=38, sat=1.18, lift=1.10),
-    'm06_lianzi': dict(lift=1.15), 'k13_luohanguo': dict(lift=1.10),
+    'm06_lianzi': dict(lift=1.15), 'm05_jupi': dict(sat=1.15, lift=1.08),
+}
+ADJ_PREVIEW = {  # only while the shot still comes from an old preview render (re-rendered stills fix these in 3D)
+    'k05_bohe': dict(gamma=0.80, lift=1.10), 'm05_jupi': dict(dy=38, sat=1.18, lift=1.10), 'm03_dazao': dict(lift=1.25, sat=1.08),
 }
 
 def framing_ok(a):
@@ -82,7 +84,7 @@ def pick_still(sid):
         allc = pile_c or allc
     hd, k4 = R + f'/renders_hd/{sid}.png', R + f'/renders/{sid}.png'
     cands = [hd] if os.path.exists(hd) and os.path.getmtime(hd) >= st - 1 else []
-    if os.path.exists(k4) and not is_pile(sid) and (os.path.getmtime(k4) >= st - 1 or sid == 'm02_gouqi'): cands.append(k4)
+    if os.path.exists(k4) and not is_pile(sid) and (os.path.getmtime(k4) >= st - 1 or sid in ('m02_gouqi', 's02_cabinet')): cands.append(k4)
     if os.path.exists(hd) and hd not in cands: cands.append(hd)                    # slightly stale 1080p still beats a preview
     cands += [p for p in allc if w_of(p) >= 1280] + [p for p in allc if 960 <= w_of(p) < 1280]
     for p in cands:
@@ -94,10 +96,12 @@ def pick_still(sid):
         f = im.astype(np.float32) / mx
         a = f[..., 3]
         if not framing_ok(a): continue
-        rgb = adjust(f[..., 2::-1], a, ADJ.get(sid))
+        native = '/renders_hd/' in p or '/renders/' in p
+        adj = ADJ.get(sid) if native else (ADJ_PREVIEW.get(sid) or ADJ.get(sid))
+        rgb = adjust(f[..., 2::-1], a, adj)
         pm = np.dstack([rgb * a[..., None], a])                                      # premultiply BEFORE any resampling
         pm = cv2.resize(pm, (W, H), interpolation=cv2.INTER_AREA if w > W else cv2.INTER_LANCZOS4)
-        dy = (ADJ.get(sid) or {}).get('dy', 0)
+        dy = (adj or {}).get('dy', 0)
         if dy: pm = cv2.warpAffine(pm, np.float32([[1, 0, 0], [0, 1, dy]]), (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
         a2 = np.clip(pm[..., 3], 0, 1)
         return p, np.clip(pm[..., :3], 0, 1) * (a2[..., None] > 0), a2
@@ -125,9 +129,11 @@ def put_text(img, f):
         lum = crop[..., :3].mean(-1, keepdims=True)
         fillm = np.clip((0.75 - lum) / 0.5, 0, 1) if _FILL.get(eid) else np.clip((lum - 0.25) / 0.6, 0, 1)
         cov = crop[..., 3] * fillm[..., 0]
-        under = float((reg.mean(-1) * cov).sum() / max(float(cov.sum()), 1e-6))
+        csum = max(float(cov.sum()), 1e-6); rl = reg.mean(-1)
+        under = float((rl * cov).sum() / csum)
+        std = float(np.sqrt(((rl - under) ** 2 * cov).sum() / csum))
         small = _SMALL.get(eid)
-        if under > (0.80 if small else 0.45):                       # plain light paper -> ink
+        if (under > 0.58 and std < 0.06) if small else (under > 0.45):                       # plain light paper -> ink
             ink = np.clip(a * fillm, 0, 1) * 0.94
             reg[:] = reg * (1 - ink) + INK * ink
         else:                                                       # on the object -> light text with a soft dark backing
@@ -173,14 +179,16 @@ def frame_raw(f):
         return put_text(paper * (1 - m) + wash * m, f)
     seg0, seg1 = (0, 192) if f < 192 else (736, 1248)              # white first / last pages
     z = 1.0 + 0.035 * (f - seg0) / (seg1 - seg0)
-    pw = RT.paper_white(1)
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    rr = np.hypot((xx - W / 2) / (W / 2), (yy - H / 2) / (H / 2))
+    pw = RT.paper_white(1) + (0.075 * np.clip(rr - 0.55, 0, None) ** 2)[..., None]
     pw = np.clip(pw / pw.mean(axis=(0, 1), keepdims=True) * PAGE_WHITE, 0, 1)
     pg = cv2.warpAffine(pw, np.float32([[z, 0, W / 2 * (1 - z)], [0, z, H / 2 * (1 - z)]]), (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
     return put_text(pg, f)
 
 def frame(f):
     page = f < 192 or f >= 736
-    x = RT.retro(frame_raw(f).astype(np.float32), f, 1, strength=0.35 if page else 1.0) * float(T.global_fade(f))
+    x = RT.retro(frame_raw(f).astype(np.float32), f, 1, strength=0.22 if page else 1.0) * float(T.global_fade(f))
     return (np.clip(x, 0, 1) * 255 + 0.5).astype(np.uint8)
 
 if __name__ == '__main__':
@@ -200,7 +208,10 @@ if __name__ == '__main__':
         cv2.imwrite(S + '/wip/a_sheet.jpg', np.vstack([np.hstack(tiles[i:i + 7]) for i in range(0, len(tiles), 7)])[..., ::-1], [cv2.IMWRITE_JPEG_QUALITY, 86]); print('sheet ok')
     else:
         out = sys.argv[2]
-        ff = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', '30', '-i', '-', '-i', S + '/work/audio_orig.m4a', '-map', '0:v', '-map', '1:a', '-frames:v', '1248', '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-maxrate', '24M', '-bufsize', '48M', '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-c:a', 'copy', '-movflags', '+faststart', out], stdin=subprocess.PIPE)
+        for s_ in SH:
+            A = shot_assets(s_)
+            print('%-16s %s' % (s_['id'], A[0].replace(R, '').replace(S, 'S') if A else 'ORIGINAL FRAMES'), flush=True)
+        ff = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', '30', '-i', '-', '-i', S + '/work/audio_orig.m4a', '-map', '0:v', '-map', '1:a', '-frames:v', '1248', '-vf', 'scale=in_range=pc:out_range=tv:out_color_matrix=bt709:flags=accurate_rnd+full_chroma_int,format=yuv420p', '-color_range', 'tv', '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-maxrate', '24M', '-bufsize', '48M', '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-c:a', 'copy', '-movflags', '+faststart', out], stdin=subprocess.PIPE)
         with Pool(4) as pool:
             for i, fr in enumerate(pool.imap(frame, range(1248), chunksize=8)):
                 ff.stdin.write(fr.tobytes())
