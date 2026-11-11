@@ -61,16 +61,34 @@ def paper_tint_for(sky):
     else: s2 = min(max(s * 0.42, 0.13), 0.29)                    # muted, aged card-stock colours
     return np.array(colorsys.hsv_to_rgb(h, s2, 0.84 if v < 0.6 else 0.92), np.float32)
 
+_FILL = None
 def put_text(img, f, dark_fill=False):
-    """text as dark ink on the paper (upper part); small bottom labels keep their original style"""
-    lay = T.render_text_layer(f, scale=1)
-    lum = lay[..., :3].mean(axis=2)
-    fill = np.clip((0.75 - lum) / 0.5, 0, 1) if dark_fill else np.clip((lum - 0.25) / 0.6, 0, 1)
-    top = np.zeros((H, 1), np.float32); top[:int(0.62 * H)] = 1
-    ink = (np.clip(lay[..., 3] * fill, 0, 1) * top)[..., None] * 0.94
-    out = img * (1 - ink) + INK * ink
-    low = (lay[..., 3] * (1 - top))[..., None]
-    return out * (1 - low) + lay[..., :3] * low
+    """Every text element as dark ink where it sits on light paper, in its original white-with-halo
+    style where it sits on a dark / busy foreground (decided per element from the picture under it)."""
+    global _FILL
+    if _FILL is None:
+        _FILL = {e['id']: (sum(T.element_style(e).get('fill', [255, 255, 255])) / 3.0 < 128) for e in T.load_timeline()['elements']}
+    out = img.astype(np.float32).copy()
+    for rgba, x0, y0, op, eid in T.frame_layers(f, scale=1):
+        c = T._clip(rgba, x0, y0, W, H)
+        if c is None: continue
+        crop, cx0, cy0 = c; h, w = crop.shape[:2]
+        reg = out[cy0:cy0 + h, cx0:cx0 + w]
+        a = crop[..., 3:4] * op
+        lum = crop[..., :3].mean(-1, keepdims=True)
+        fillm = np.clip((0.75 - lum) / 0.5, 0, 1) if _FILL.get(eid) else np.clip((lum - 0.25) / 0.6, 0, 1)
+        cov = crop[..., 3] * fillm[..., 0]
+        under = float((reg.mean(-1) * cov).sum() / max(float(cov.sum()), 1e-6))
+        if under > 0.45:
+            ink = np.clip(a * fillm, 0, 1) * 0.94
+            reg[:] = reg * (1 - ink) + INK * ink
+        else:
+            if _FILL.get(eid):      # dark-fill element on a dark ground: draw it light instead
+                ink = np.clip(a * fillm, 0, 1)
+                reg[:] = reg * (1 - ink) + np.array([0.97, 0.95, 0.90], np.float32) * ink
+            else:
+                reg[:] = reg * (1 - a) + crop[..., :3] * a
+    return out
 
 _cache = {}
 def shot_assets(s):

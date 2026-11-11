@@ -558,8 +558,8 @@ def relax_pack(c, signed, rng, iters=140, k=0.96, edge=0.9, tol=0.0, dir_fn=None
     nd = 1 if asp < 1.2 else int(np.clip(2 * math.ceil(asp) - 1, 3, 9))
     ts = np.linspace(-1.0, 1.0, nd) if nd > 1 else np.zeros(1)
     rj = b[:, None] * (1.0 - (1.0 - rho_end) * ts[None, :] ** 2)
-    if nd == 1 and round_r == 'max':
-        rj = np.maximum(a, b)[:, None] * np.ones((1, 1))             # roundish THICK items: the circumscribed disc
+    if nd == 1 and round_r == 'mean':
+        rj = np.sqrt(a * b)[:, None] * np.ones((1, 1))               # roundish THICK items: the disc of equal area
     off = ts[None, :] * (a[:, None] - rj)
     amax = float(a.max())
     pairs = np.zeros((0, 2), int)
@@ -1002,11 +1002,12 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
                 # thick items (berries, nuts, whole fruits) cannot shingle: they must end up side by side,
                 # flat ones (slices, leaves, seeds lying flat) may overlap a little
                 thick = S.T / max(S.Wd, 1e-9) > 0.40
-                c = throw(int(float(ps.get('pack', 0.84 if thick else 0.90)) * area / foot))
-                c = relax_pack(c, signed, rng, iters=int(ps.get('iters', 140)), tol=tol_px / px_per_m, dir_fn=dir_fn,
-                               align_w=0.05 * align, k=float(ps.get('k', 1.03 if thick else 0.96)),
-                               max_overlap=float(ps.get('max_overlap', 0.04 if thick else 0.34)),
-                               round_r=('max' if thick else 'min'), verbose='pass %d' % p)
+                # (thrown at a density the relaxation can resolve without overlaps: discs jam at ~0.84)
+                c = throw(int(float(ps.get('pack', 0.76 if thick else 0.90)) * area / foot))
+                c = relax_pack(c, signed, rng, iters=int(ps.get('iters', 220 if thick else 140)), tol=tol_px / px_per_m,
+                               dir_fn=dir_fn, align_w=0.05 * align, k=float(ps.get('k', 1.0 if thick else 0.96)),
+                               max_overlap=float(ps.get('max_overlap', 0.10 if thick else 0.34)),
+                               round_r=('mean' if thick else 'min'), verbose='pass %d' % p)
                 c['ang'] = c['ang'] + np.where(rng.random(len(c['x'])) < 0.5, math.pi, 0.0)
             else:
                 def sample(n, throw=throw, inset=inset):
