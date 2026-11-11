@@ -1592,6 +1592,41 @@ def _unlink_templates(S):
             c.objects.unlink(ob)
 
 
+def speed_tweaks(scene, mode, args):
+    """Render economy for the top-down plates (soft light, small items): random-walk SSS is the single
+    most expensive thing in these scenes and reads the same as Christensen-Burley at 100 px per item."""
+    if mode == 'full':
+        return
+    n = 0
+    for m in bpy.data.materials:
+        if not m.node_tree:
+            continue
+        for nd in m.node_tree.nodes:
+            if nd.bl_idname == 'ShaderNodeBsdfPrincipled':
+                try:
+                    if nd.subsurface_method != 'BURLEY':
+                        nd.subsurface_method = 'BURLEY'
+                        n += 1
+                except Exception:
+                    pass
+            elif nd.bl_idname == 'ShaderNodeSubsurfaceScattering':
+                try:
+                    nd.falloff = 'BURLEY'
+                    n += 1
+                except Exception:
+                    pass
+    c = scene.cycles
+    c.max_bounces = 6
+    c.diffuse_bounces = 2
+    c.glossy_bounces = 3
+    c.transmission_bounces = 6
+    c.transparent_max_bounces = 6
+    if args.quality == 'final':
+        c.adaptive_threshold = max(c.adaptive_threshold, 0.04)
+        c.adaptive_min_samples = min(c.adaptive_min_samples, 12)
+    print('[speed] %s: %d SSS nodes -> Burley, bounces 6/2/3/6, adaptive %.3f' % (mode, n, c.adaptive_threshold))
+
+
 def parse_cli(argv=None):
     if argv is None:
         argv = sys.argv[1:]
@@ -1608,6 +1643,9 @@ def parse_cli(argv=None):
     p.add_argument('--text', default=None, help='override the glyph string of a glyph/landing shot')
     p.add_argument('--ground', default=None, help="override the ground: a type name (paper|slate|walnut|linen) or a JSON dict")
     p.add_argument('--set', action='append', default=[], help='override a layout parameter: key=json (repeatable)')
+    p.add_argument('--speed', default=os.environ.get('YSTY_B_SPEED', 'fast'),
+                   help="render economy: 'fast' (default: Burley SSS, 2 diffuse / 3 glossy / 6 transmission bounces, "
+                        "adaptive threshold 0.04) | 'full' (the settings of common.setup_scene)")
     a, rest = p.parse_known_args(argv)
     return a, rest
 
@@ -1748,6 +1786,7 @@ def main(argv=None):
     print('[build] %.1f s' % (time.time() - t_build))
 
     # ---- render
+    speed_tweaks(scene, cli.speed, args)
     r = C.render(args)
     meta['render_seconds'] = round(r['seconds'], 1)
     meta['resolution'] = list(args.q['res'])

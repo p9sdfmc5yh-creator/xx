@@ -160,13 +160,13 @@ def leaf_material(tex_path=None, dried=False):
     col = m.mix(col, bcol, m.math('MULTIPLY', broad, 0.55))
     bloom = m.map_range(m.noise(scale=130, detail=3, roughness=0.65, vector=lp), 0.42, 0.72, 0.0, 1.0, smooth=True)
     if not dried:
-        col = m.mix(col, (0.070, 0.150, 0.115), m.math('MULTIPLY', bloom, 0.30))                  # waxy bloom, rubbed off in places
+        col = m.mix(col, (0.060, 0.145, 0.105), m.math('MULTIPLY', bloom, 0.20))                  # waxy bloom, rubbed off in places
     col = m.mix(col, acol, m.math('ADD', m.math('MULTIPLY', are, 0.40), m.math('MULTIPLY', are2, 0.12)))
     vmask = m.map_range(vein, 0.18, 0.75, 0.0, 1.0, smooth=True)
     col = m.mix(col, m.hsv(vcol, 0.5, 1.0, m.map_range(n_mid, 0.25, 0.75, 0.80, 1.15)), m.math('MULTIPLY', vmask, 0.84))
     col = m.mix(col, (0.30, 0.34, 0.060) if not dried else (0.16, 0.10, 0.03), m.math('MULTIPLY', rimk, 0.62))     # thin yellow-green margin
-    speck = m.map_range(m.noise(scale=950, detail=2, vector=lp), 0.74, 0.80, 0.0, 0.5)             # dust / tiny blemishes
-    col = m.mix(col, (0.20, 0.21, 0.13), speck)
+    speck = m.map_range(m.noise(scale=2600, detail=2, vector=lp), 0.80, 0.86, 0.0, 0.30)           # a little pale dust
+    col = m.mix(col, (0.22, 0.27, 0.20), speck)
     back = m.node('ShaderNodeNewGeometry').outputs['Backfacing']
     col = m.mix(col, m.mix((0.115, 0.215, 0.115), (0.33, 0.43, 0.20), vmask), back)                # paler underside
     rough = m.map_range(n_f, 0.3, 0.7, 0.74, 0.92)
@@ -176,7 +176,7 @@ def leaf_material(tex_path=None, dried=False):
     nrm = m.bump(n_mid, strength=0.25, distance=0.00030, normal=nrm)
     nrm = m.micro_bump(scale=9000, strength=0.55, distance=0.000022, vector=lp, normal=nrm)        # papillae
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.22, sss=0.20, sss_radius=(0.35, 1.0, 0.25),
-          sss_scale=0.0004, sheen=0.0 if dried else 0.22, sheen_roughness=0.5, normal=nrm)
+          sss_scale=0.0004, sheen=0.0 if dried else 0.17, sheen_roughness=0.5, normal=nrm)
     try:
         m.set(**{'Sheen Tint': (0.55, 0.85, 0.80)})                                                # waxy bloom
     except Exception:
@@ -202,8 +202,16 @@ def water_material(shadow_transparent):
     glass.inputs['Roughness'].default_value = 0.0
     glass.inputs['IOR'].default_value = 1.333
     if shadow_transparent:
+        # light is not blocked by a bead, it is gathered: for shadow rays the bead is clear where the
+        # ray passes near its axis and dark towards its outline -> dark ring with a bright core
         tr = nt.nodes.new('ShaderNodeBsdfTransparent')
-        tr.inputs['Color'].default_value = (0.9, 0.9, 0.9, 1)
+        lw = nt.nodes.new('ShaderNodeLayerWeight')
+        lw.inputs['Blend'].default_value = 0.5
+        rp = nt.nodes.new('ShaderNodeValToRGB')
+        rp.color_ramp.elements[0].position, rp.color_ramp.elements[0].color = 0.22, (1.0, 1.0, 1.0, 1)
+        rp.color_ramp.elements[1].position, rp.color_ramp.elements[1].color = 0.62, (0.42, 0.45, 0.44, 1)
+        nt.links.new(lw.outputs['Facing'], rp.inputs[0])
+        nt.links.new(rp.outputs[0], tr.inputs['Color'])
         lp = nt.nodes.new('ShaderNodeLightPath')
         mix = nt.nodes.new('ShaderNodeMixShader')
         nt.links.new(lp.outputs['Is Shadow Ray'], mix.inputs[0])
@@ -412,10 +420,7 @@ def main():
     wn.links.new(bg.outputs[0], wo.inputs['Surface'])
     sc.world = wd
     key = L.get('key') if isinstance(L, dict) else bpy.data.objects.get('key')
-    beads = add_droplets(pos, nrm, h, X, Y, sol, rng, caustics=True)
-    if not (key is not None and enable_caustics(key, beads, leaf)):
-        for ob in beads:                                                # fall back: light passes straight through
-            ob.data.materials[0] = water_material(True)
+    add_droplets(pos, nrm, h, X, Y, sol, rng, caustics=False)       # (MNEE shadow caustics gave no visible spot under the soft key)
 
     C.render(args)
     if not args.region:

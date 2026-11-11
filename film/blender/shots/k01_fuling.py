@@ -57,11 +57,11 @@ def fields(x, y, d, ro, th, seed=0):
     h -= crack * 8e-5
     h -= vein * 6e-6
     bounds = (x.min(), x.max(), y.min(), y.max())
-    pts = D.scatter(bounds, 0.0016, seed + 3, density=lambda a, b: 0.55)
+    pts = D.scatter(bounds, 0.0016, seed + 3, density=lambda a, b: 0.38)
     pit, pid, q = D.dots(x, y, pts, (0.00007, 0.00032), soft=0.3, seed=seed + 5)
     q = q * (1.0 + 0.5 * C.fbm3(p * 5000.0, 2, seed=seed + 12))
     pit = 1.0 - C.smoothstep(0.30, 1.0, q)
-    h -= pit * (3e-5 + 9e-5 * pid)
+    h -= pit * (2e-5 + 6e-5 * pid)
     # bark: 1-3 mm thick, rough broken cross-section standing a little proud; groove at the junction
     bt = 0.0010 + 0.0019 * C.smoothstep(-0.3, 0.4, C.fbm3(D.P3(np.sin(th) * 4.0, np.cos(th) * 4.0, 0.3), 2, seed=seed + 30))
     bt = bt * (1.0 + 0.25 * C.fbm3(p * 900.0, 2, seed=seed + 31))
@@ -90,16 +90,16 @@ def face_material():
     grain = m.noise(scale=16000, detail=2, roughness=0.6, vector=P)
     white = m.mix(white, (0.90, 0.89, 0.86), m.map_range(grain, 0.60, 0.80, 0.0, 0.6))
     white = m.mix(white, (0.58, 0.52, 0.46), m.map_range(grain, 0.20, 0.34, 0.38, 0.0))
-    white = m.mix(white, (0.68, 0.53, 0.44), m.math('MULTIPLY', veinsoft, 0.32))
-    white = m.mix(white, (0.52, 0.35, 0.26), m.math('MULTIPLY', vein, 0.32))
+    white = m.mix(white, (0.68, 0.53, 0.44), m.math('MULTIPLY', veinsoft, 0.42))
+    white = m.mix(white, (0.52, 0.35, 0.26), m.math('MULTIPLY', vein, 0.42))
     white = m.mix(white, (0.58, 0.31, 0.20), m.math('MULTIPLY', redz, 0.6))                # 赤茯苓 zone
     white = m.mix(white, (0.92, 0.91, 0.89), m.math('MULTIPLY', powder, m.map_range(m.noise(scale=7000, detail=2, vector=P), 0.4, 0.65, 0.0, 0.6)))
     white = m.mix(white, (0.22, 0.15, 0.11), m.map_range(crack, 0.1, 0.7))
     white = m.mix(white, (0.36, 0.29, 0.24), m.math('MULTIPLY', pit, 0.6))
     barkc = m.ramp(m.noise(scale=900, detail=4, roughness=0.7, vector=P),
-                   [(0.25, (0.010, 0.006, 0.0035)), (0.55, (0.045, 0.025, 0.013)), (0.80, (0.12, 0.068, 0.036))])
+                   [(0.35, (0.006, 0.0035, 0.002)), (0.62, (0.026, 0.014, 0.007)), (0.88, (0.085, 0.048, 0.025))])
     col = m.mix(white, barkc, bark)
-    nrm = m.bump(m.noise(scale=5000, detail=3, roughness=0.65, vector=P), strength=0.8, distance=0.000045)
+    nrm = m.bump(m.noise(scale=5000, detail=3, roughness=0.65, vector=P), strength=0.8, distance=m.mixf(0.000045, 0.00012, bark))
     nrm = m.bump(grain, strength=0.7, distance=0.000022, normal=nrm)
     m.set(base_color=col, roughness=m.mixf(0.90, 0.80, bark), ior=1.45, specular=0.2, normal=nrm,
           sheen=m.mixf(0.12, 0.0, bark), sheen_roughness=0.5,

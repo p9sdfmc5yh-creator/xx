@@ -163,7 +163,7 @@ def wax_material():
     cap, rim, dep, wet = m.attr('cap'), m.attr('rim'), m.attr('dep'), m.attr('wet')
     n1 = m.noise(scale=170, detail=3, roughness=0.6, vector=P)
     n2 = m.noise(scale=1500, detail=3, roughness=0.6, vector=P)
-    rimc = m.mix((0.57, 0.345, 0.062), (0.70, 0.485, 0.130), m.map_range(n1, 0.3, 0.7))
+    rimc = m.mix((0.60, 0.40, 0.090), (0.75, 0.57, 0.195), m.map_range(n1, 0.3, 0.7))
     col = m.mix(rimc, (0.44, 0.205, 0.024), m.map_range(dep, 0.04, 0.55, 0.0, 0.9, smooth=True))
     col = m.hsv(col, 0.5, 1.0, m.map_range(m.attr('crnd'), 0, 1, 0.88, 1.08))
     capc = m.mix((0.62, 0.50, 0.27), (0.74, 0.65, 0.43), m.map_range(n1, 0.3, 0.7))
@@ -173,11 +173,15 @@ def wax_material():
     col = m.mix(col, (0.33, 0.165, 0.030), stain)
     col = m.hsv(col, 0.5, 1.0, m.map_range(n2, 0.3, 0.7, 0.90, 1.07))
     rough = m.map_range(n2, 0.3, 0.7, 0.36, 0.58)
-    rough = m.mixf(rough, 0.10, m.math('MULTIPLY', wet, 0.9))
-    nrm = m.bump(n2, strength=0.45, distance=0.00004)
+    rough = m.mixf(rough, 0.16, m.math('MULTIPLY', wet, 0.8))
+    flakes = m.voronoi(scale=3300, feature='F1', vector=P)                    # wax is laid down in tiny chewed flakes
+    col = m.hsv(col, 0.5, 1.0, m.map_range(flakes, 0.0, 0.6, 1.10, 0.86))
+    nrm = m.bump(flakes, strength=0.55, distance=0.00007, invert=True)
+    nrm = m.bump(m.noise(scale=420, detail=3, roughness=0.6, vector=P), strength=0.35, distance=0.00020, normal=nrm)
+    nrm = m.bump(n2, strength=0.45, distance=0.00004, normal=nrm)
     nrm = m.micro_bump(scale=6500, strength=0.4, distance=0.00002, vector=P, normal=nrm)
-    m.set(base_color=col, roughness=rough, ior=1.44, specular=0.5, sss=0.70, sss_radius=(1.0, 0.45, 0.15),
-          sss_scale=0.0016, sss_anisotropy=0.2, coat=m.math('MULTIPLY', wet, 0.85), coat_roughness=0.03,
+    m.set(base_color=col, roughness=rough, ior=1.44, specular=0.5, sss=0.70, sss_radius=(1.0, 0.60, 0.24),
+          sss_scale=0.0016, sss_anisotropy=0.2, coat=m.math('MULTIPLY', wet, 0.55), coat_roughness=0.06,
           coat_ior=1.49, normal=nrm)
     return m
 
@@ -192,7 +196,7 @@ def honey_material():
     nt.nodes.clear()
     out = nt.nodes.new('ShaderNodeOutputMaterial')
     glass = nt.nodes.new('ShaderNodeBsdfGlass')
-    glass.inputs['Roughness'].default_value = 0.0
+    glass.inputs['Roughness'].default_value = 0.015
     glass.inputs['IOR'].default_value = 1.49
     glass.inputs['Color'].default_value = (1, 1, 1, 1)
     tr = nt.nodes.new('ShaderNodeBsdfTransparent')
@@ -303,14 +307,14 @@ def main():
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
     # back light is the point: honey and thin wax walls glow; the key box also draws the long
     # highlight along the bulging honey tongue
-    C.studio_lights(info, tint=(1.0, 0.90, 0.74), key=0.70, fill=0.40, rim=1.3, world=0.8, key_size=0.6, key_el=38)
+    C.studio_lights(info, tint=(1.0, 0.90, 0.74), key=0.72, fill=0.40, rim=1.3, world=0.8, key_size=1.6, key_el=40)
     # tall dim panel straight behind: every honey surface mirrors a piece of it (liquid sheen), and
     # it is extra back light for the glow
     sc_w = info['scale']
     T = np.array(info['target'], float)
     el = math.radians(35.0)
     panel = C._area_light('sheen', T + 2.6 * sc_w * np.array([0.10, math.cos(el), math.sin(el)]), T, 2.4 * sc_w,
-                          24.0 * sc_w ** 2, (1.0, 0.84, 0.58), shape='RECTANGLE')
+                          10.0 * sc_w ** 2, (1.0, 0.82, 0.55), shape='RECTANGLE')
 
     C.render(args)
     if not args.region:

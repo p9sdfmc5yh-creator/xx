@@ -22,7 +22,7 @@ from _botanicals import C, rot, merge_parts, hair_tubes, settle, finish         
 SHOT = 'k13_luohanguo'
 SEED = 2
 R_FRUIT = 0.0285
-N_HAIR = 70000
+N_HAIR = 110000
 SKY_TINT = (1.0, 0.92, 0.70)      # golden-yellow sky of the shot
 _p = np.array([-0.07, -math.sin(math.radians(33.5)), math.cos(math.radians(33.5))])
 POLE = _p / np.linalg.norm(_p)    # stem pole: 33.5 deg from the top towards the camera = just below the frame
@@ -114,8 +114,8 @@ def fuzz_material():
     m = C.Mat('lhg_fuzz')
     tv = m.attr('tv')
     r = m.attr('hr')
-    col = m.mix((0.40, 0.27, 0.10), (0.70, 0.55, 0.26), tv)
-    col = m.mix(col, (0.16, 0.09, 0.035), m.map_range(r, 0.6, 1.0, 0.0, 0.8))
+    col = m.mix((0.20, 0.125, 0.045), (0.42, 0.30, 0.12), tv)
+    col = m.mix(col, (0.13, 0.075, 0.03), m.map_range(r, 0.6, 1.0, 0.0, 0.8))
     m.set(base_color=col, roughness=0.5, specular=0.3)
     tr = m.node('ShaderNodeBsdfTranslucent', {'Color': m.mix(col, (1.0, 0.82, 0.45), 1.0, blend='MULTIPLY')})
     mix = m.node('ShaderNodeMixShader', {0: 0.4, 1: m.bsdf.outputs[0], 2: tr.outputs[0]})
@@ -197,7 +197,7 @@ def main():
 
     # fuzz: real hairs, patchy (partly rubbed off), semi-appressed in random directions
     cand = rng.integers(0, len(v), N_HAIR * 3)
-    w = 0.25 + 0.75 * C.smoothstep(-0.2, 0.3, C.fbm3(v[cand] / 0.004 + 40.0, 3, seed=args.seed + 20))
+    w = 0.60 + 0.40 * C.smoothstep(-0.2, 0.3, C.fbm3(v[cand] / 0.004 + 40.0, 3, seed=args.seed + 20))
     idx = rng.choice(cand, N_HAIR, p=w / w.sum())
     nn = n[idx]
     vv = verts[idx]
@@ -207,10 +207,10 @@ def main():
                   C.fbm3(vv / 0.003 + 11.0, 2, seed=args.seed + 23)], 1)
     g = g - nn * np.sum(g * nn, axis=1, keepdims=True)              # smooth lean field in the tangent plane
     g /= np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-9)
-    dirs = nn + 0.65 * g + 0.45 * tang
-    ln = rng.uniform(0.000030, 0.000110, N_HAIR)                    # velvet: 0.03-0.11 mm, a few longer
-    ln = np.where(rng.random(N_HAIR) < 0.04, ln * 1.8, ln)
-    hv, hf, tv = hair_tubes(rng, vv - nn * 0.000004, dirs, ln, rng.uniform(0.0000017, 0.0000028, N_HAIR),
+    dirs = nn + 0.75 * g + 0.30 * tang
+    ln = rng.uniform(0.000025, 0.000080, N_HAIR)                    # velvet: 0.025-0.08 mm, a few longer
+    ln = np.where(rng.random(N_HAIR) < 0.03, ln * 1.6, ln)
+    hv, hf, tv = hair_tubes(rng, vv - nn * 0.000004, dirs, ln, rng.uniform(0.0000012, 0.0000020, N_HAIR),
                             bend=0.5, nr=3, nseg=3)
     C.mesh_from_arrays('fuzz', hv, hf, material=fuzz_material(),
                        attrs=dict(tv=tv, hr=np.repeat(rng.random(N_HAIR), 9)))
