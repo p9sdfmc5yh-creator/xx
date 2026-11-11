@@ -102,21 +102,24 @@ def make_jujube(seed, L=None, Dm=None, nu=440, nv=300, window=None, cell=None, s
     # ---- shrivel height field (all lengths in mm).  Sampled in 3D on the smooth body -> seamless.
     q = P0 / MM
     sd = seed * 131 + 5
-    qa = q * np.array([0.74, 1.0, 1.0])                               # folds prefer the long axis
+    qa = q * np.array([0.62, 1.0, 1.0])                               # folds prefer the long axis
     warp = 1.5 * np.stack([C.perlin3(qa / 6.0 + 7.1, sd + 1), C.perlin3(qa / 6.0 + 3.7, sd + 2),
                            C.perlin3(qa / 6.0 + 9.4, sd + 3)], -1)
     qw = qa + warp
     how = 0.30 + 0.70 * C.smoothstep(-0.28, 0.22, C.perlin3(q / 10.0 + 21.0, sd + 4))     # where it shrivelled most
-    F1 = np.abs(C.perlin3(qw / 4.4, sd + 10)) ** 0.55                 # broad taut pillows, sharp V creases
-    F2 = np.abs(C.perlin3(qw / 1.75 + 5.0, sd + 11)) ** 0.62          # secondary folds
+    F1 = np.abs(C.perlin3(qw / 3.7, sd + 10)) ** 0.55                 # broad taut pillows, sharp V creases
+    F2 = np.abs(C.perlin3(qw / 1.55 + 5.0, sd + 11)) ** 0.62          # secondary folds
+    F2b = np.abs(C.perlin3(qw / 0.80 + 31.0, sd + 18)) ** 0.70        # tertiary wrinkles (everywhere, like aged skin)
     rg = (1.0 - np.abs(C.perlin3(qw / 5.2 + 9.0, sd + 12))) ** 10     # thin pinched ridges of excess skin
     rmask = C.smoothstep(-0.05, 0.30, C.perlin3(q / 8.0 + 3.0, sd + 13))
     lump = C.fbm3(q / 13.0 + 7.0, 2, seed=sd + 14)
     dent = C.smoothstep(0.28, 0.75, C.perlin3(q / 9.0 + 2.0, sd + 15))
     ridge = rg * rmask
     h = (0.9 * lump - 1.1 * dent
-         + shrivel * (1.05 * how * (F1 - 0.45) + 0.30 * how * (F2 - 0.42) + 0.30 * ridge))
-    cav = how * ((1.0 - C.smoothstep(0.0, 0.46, F1)) * 0.95 + (1.0 - C.smoothstep(0.0, 0.36, F2)) * 0.42)
+         + shrivel * (0.95 * how * (F1 - 0.45) + 0.42 * how * (F2 - 0.42)
+                      + 0.12 * (0.35 + 0.65 * how) * (F2b - 0.45) + 0.14 * ridge))
+    cav = how * ((1.0 - C.smoothstep(0.0, 0.46, F1)) * 0.95 + (1.0 - C.smoothstep(0.0, 0.36, F2)) * 0.50)
+    cav = cav + (0.35 + 0.65 * how) * (1.0 - C.smoothstep(0.0, 0.30, F2b)) * 0.22
     cav = np.clip(cav, 0.0, 1.0)
     # fine crinkles: live on the flanks / in the creases, the pillow tops stay taut and glossy
     qf = q * np.array([0.42, 1.0, 1.0]) + 2.2 * warp
@@ -175,11 +178,11 @@ def jujube_material(sss_method='BURLEY', name='jujube_skin'):
     P = m.per_instance_coords()
     n_big = m.noise(scale=95, detail=3, roughness=0.55, vector=P)           # ~1 cm ripeness / sun patches
     n_mid = m.noise(scale=520, detail=4, roughness=0.6, vector=P)           # ~2 mm mottle
-    crest = m.mix((0.150, 0.0085, 0.0070), (0.285, 0.0230, 0.0100), m.map_range(n_mid, 0.30, 0.72))
-    crest = m.mix(crest, (0.060, 0.0050, 0.0055), m.map_range(n_big, 0.53, 0.72, 0.0, 0.80, smooth=True))
-    crest = m.mix(crest, (0.330, 0.0520, 0.0130), m.map_range(n_big, 0.42, 0.24, 0.0, 0.50, smooth=True))
-    col = m.mix(crest, (0.026, 0.0026, 0.0035), m.map_range(cav, 0.10, 0.90, 0.0, 0.92, smooth=True))
-    col = m.mix(col, (0.400, 0.0480, 0.0130), m.math('MULTIPLY', ridge, 0.42))
+    crest = m.mix((0.105, 0.0048, 0.0060), (0.215, 0.0115, 0.0085), m.map_range(n_mid, 0.30, 0.72))
+    crest = m.mix(crest, (0.042, 0.0034, 0.0050), m.map_range(n_big, 0.53, 0.72, 0.0, 0.80, smooth=True))
+    crest = m.mix(crest, (0.270, 0.0260, 0.0100), m.map_range(n_big, 0.42, 0.24, 0.0, 0.45, smooth=True))
+    col = m.mix(crest, (0.018, 0.0018, 0.0030), m.map_range(cav, 0.10, 0.90, 0.0, 0.92, smooth=True))
+    col = m.mix(col, (0.300, 0.0280, 0.0110), m.math('MULTIPLY', ridge, 0.35))
     col = m.jitter(col, hue=0.010, saturation=0.08, value=0.20)
     col = m.mix(col, (0.050, 0.0080, 0.0060), m.math('MULTIPLY', m.attr('dark', 'INSTANCER'), 0.7))
     # lenticels: sparse pale tan specks, 0.08-0.2 mm, fading in the creases
@@ -216,7 +219,7 @@ def jujube_material(sss_method='BURLEY', name='jujube_skin'):
     coat = m.math('MULTIPLY', m.map_range(crease, 0.0, 1.0, 0.70, 0.10),
                   m.math('MULTIPLY', m.map_range(dot, 0, 1, 1.0, 0.1), m.map_range(scuff, 0, 1, 1.0, 0.45)))
     coat = m.math('MULTIPLY', coat, m.map_range(m.math('MAXIMUM', scar, m.attr('halo')), 0, 1, 1.0, 0.2))
-    coat_rough = m.map_range(rn, 0.25, 0.75, 0.06, 0.17)
+    coat_rough = m.map_range(rn, 0.25, 0.75, 0.045, 0.14)
 
     # micro relief (below the mesh resolution): stretched crinkle, orange-peel dimples, raised lenticels
     Ps = m.mapping(P, scale=(0.30, 1.0, 1.0))
@@ -225,9 +228,10 @@ def jujube_material(sss_method='BURLEY', name='jujube_skin'):
     peel = m.noise(scale=7500, detail=2, roughness=0.55, vector=P)
     nrm = m.bump(peel, strength=0.40, distance=0.000014, normal=nrm)
     nrm = m.bump(m.math('ADD', dot, dust), strength=0.6, distance=0.000016, normal=nrm)
-    cnrm = m.bump(peel, strength=0.22, distance=0.000014)
+    cnrm = m.bump(crinkle, strength=m.map_range(cav, 0.0, 0.8, 0.10, 0.45), distance=0.00006)
+    cnrm = m.bump(peel, strength=0.25, distance=0.000014, normal=cnrm)
     m.set(base_color=col, roughness=rough, ior=1.46, specular=0.50,
-          sss=0.45, sss_radius=(1.0, 0.20, 0.09), sss_scale=0.0014, sss_anisotropy=0.0,
+          sss=0.45, sss_radius=(1.0, 0.11, 0.06), sss_scale=0.0012, sss_anisotropy=0.0,
           coat=coat, coat_roughness=coat_rough, coat_ior=1.5, coat_normal=cnrm, normal=nrm)
     return m
 
@@ -334,6 +338,38 @@ def fit_camera(pts, lens=LENS, apex=0.53, edge=0.69, elev_deg=7.0, aspect=16.0 /
                 target=tuple(T + np.array([0.0, -0.004, -0.003])), edges=(eL, eR))
 
 
+def frame_xy(info, pts):
+    """World points -> (x in [-1, 1], y = fraction of frame height from the top, depth) for the fitted camera."""
+    hw = 18.0 / info['lens_mm']
+    hh = hw * 9.0 / 16.0
+    f, u, p = np.array(info['cam_fwd'], float), np.array(info['cam_up'], float), np.array(info['cam_pos'], float)
+    v = pts - p
+    z = v @ f
+    return (v @ np.cross(f, u)) / z / hw, 0.5 - (v @ u) / z / hh / 2.0, z
+
+
+def place_peek(ob, info, pos, euler_deg, top_frac):
+    """Place a neighbour and slide it vertically until its highest visible point sits at top_frac of the frame."""
+    from mathutils import Euler
+    n = len(ob.data.vertices)
+    co = np.empty(n * 3)
+    ob.data.vertices.foreach_get('co', co)
+    co = co.reshape(-1, 3)[::5]
+    eul = Euler([math.radians(a) for a in euler_deg], 'XYZ')
+    Rm = np.array(eul.to_matrix())
+    pos = np.array(pos, float)
+    hh = 18.0 / info['lens_mm'] * 9.0 / 16.0
+    for _ in range(5):
+        x, y, z = frame_xy(info, co @ Rm.T + pos)
+        vis = np.abs(x) < 1.0
+        i = int(np.argmin(np.where(vis, y, 9.0)))
+        pos[2] += (y[i] - top_frac) * 2.0 * hh * z[i]
+    x, y, z = frame_xy(info, co @ Rm.T + pos)
+    print('[peek] %s top %.3f at x=%.2f  z0=%.1f mm' % (ob.name, y[np.abs(x) < 1].min(), x[i], pos[2] * 1e3))
+    ob.rotation_euler = eul
+    ob.location = pos
+
+
 def make_camera(info, name='cam'):
     bpy = C.bpy
     cd = bpy.data.cameras.new(name)
@@ -352,8 +388,8 @@ def make_camera(info, name='cam'):
 
 # neighbours: (item seed, position of the footprint centre (m), yaw deg, roll deg, tilt deg)
 NEIGHBOURS = [
-    (51, (-0.0290, 0.0400, -0.0100), 28.0, 40.0, 0.0),      # behind-left, lower: soft shoulder at the left edge
-    (52, (0.0310, 0.0440, -0.0115), -24.0, 200.0, 0.0),     # behind-right
+    (51, (-0.0250, 0.0400, -0.0030), 24.0, 40.0, 0.0, 0.632),   # behind-left: peeks over the hero's left shoulder
+    (52, (0.0300, 0.0460, -0.0040), -20.0, 200.0, 0.0, 0.655),  # behind-right: a little lower
     (53, (0.0020, 0.0700, -0.0200), 8.0, 90.0, 0.0),        # far behind, hidden: bounce only
     (54, (-0.0330, -0.0200, -0.0170), -60.0, 10.0, 0.0),    # front-left, below the frame: red bounce / reflection
     (55, (0.0340, -0.0240, -0.0180), 50.0, 120.0, 0.0),     # front-right, below the frame
@@ -369,7 +405,7 @@ def main():
     mats = _materials()
 
     # 1. hero: dense only where the camera looks
-    cell = max(2.6 * FRAME_W / W, 0.000021)
+    cell = max(2.6 * FRAME_W / W, 0.000026)
     roll, yaw = HERO['roll_deg'], HERO['yaw_deg']
     window = dict(x=(-0.0190, 0.0190), ph=(math.radians(118.0 - roll), math.radians(62.0)))
     parts, attrs, half = make_jujube(HERO['seed'] + args.seed - 1, L=HERO['L'], Dm=HERO['Dm'], window=window,
@@ -389,15 +425,19 @@ def main():
     print('[dof] focus %.1f mm  f/%.0f' % (focus * 1e3, fstop))
 
     # 3. neighbours (smaller, lower, around / behind the hero)
-    for i, (sd, pos, nyaw, nroll, ntilt) in enumerate(NEIGHBOURS):
+    for i, nb in enumerate(NEIGHBOURS):
+        sd, pos, nyaw, nroll, ntilt = nb[:5]
         ob, r, h = _item_object('nb%d' % i, sd, nu=520, nv=360, stem=True)
-        ob.rotation_euler = (math.radians(nroll), math.radians(ntilt), math.radians(nyaw))
-        ob.location = pos
+        if len(nb) > 5:
+            place_peek(ob, info, pos, (nroll, ntilt, nyaw), nb[5])
+        else:
+            ob.rotation_euler = (math.radians(nroll), math.radians(ntilt), math.radians(nyaw))
+            ob.location = pos
     # ground far below (only bounce light): dark red-brown
     g = C.dome_base(0.6, C.simple_material('ground', (0.030, 0.008, 0.006), 0.9), center=(0, 0, -0.625))
 
     # 4. light: big soft key 3/4 back-left, cream-tinted fill from the camera side, low rim back-right
-    C.studio_lights(info, tint=(1.0, 0.93, 0.80), key=0.85, fill=0.8, rim=1.0, world=1.0, key_size=1.1)
+    C.studio_lights(info, tint=(1.0, 0.955, 0.88), key=0.95, fill=0.7, rim=1.1, world=0.65, key_size=0.9)
 
     # 5. render, framing check, judging composite
     C.render(args)

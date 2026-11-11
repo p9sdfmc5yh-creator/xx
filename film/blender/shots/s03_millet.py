@@ -185,19 +185,19 @@ def millet_material():
     hull, rvar = m.attr('hull'), m.attr('rvar')
 
     # --- item-to-item: a few pale straw grains, mostly golden yellow, some deeper orange ones
-    body = m.ramp(t_tone, [(0.00, (0.740, 0.530, 0.170)), (0.09, (0.740, 0.470, 0.085)),
-                           (0.25, (0.730, 0.425, 0.042)), (0.74, (0.700, 0.375, 0.029)),
-                           (0.91, (0.620, 0.285, 0.020)), (1.00, (0.530, 0.205, 0.015))])
+    body = m.ramp(t_tone, [(0.00, (0.760, 0.590, 0.220)), (0.08, (0.760, 0.520, 0.105)),
+                           (0.24, (0.750, 0.470, 0.048)), (0.78, (0.730, 0.425, 0.034)),
+                           (0.94, (0.660, 0.330, 0.022)), (1.00, (0.560, 0.235, 0.016))])
     # --- within a grain: horny (deeper, more saturated) versus floury (paler) zones
-    col = m.hsv(body, 0.5, m.map_range(mott, 0.0, 1.0, 1.08, 0.90), m.map_range(mott, 0.0, 1.0, 0.84, 1.05))
+    col = m.hsv(body, 0.5, m.map_range(mott, 0.0, 1.0, 1.06, 0.93), m.map_range(mott, 0.0, 1.0, 0.91, 1.04))
     # --- micro: fine speckle and thin orange-brown remnants of the bran layer
     spk = m.noise(scale=9500, detail=1, roughness=0.6, vector=P)
     col = m.hsv(col, 0.5, 1.0, m.map_range(spk, 0.30, 0.72, 0.91, 1.06))
-    col = m.mix(col, (0.430, 0.180, 0.022), m.math('MULTIPLY', bran, m.map_range(spk, 0.35, 0.6, 0.15, 0.42)))
+    col = m.mix(col, (0.520, 0.250, 0.026), m.math('MULTIPLY', bran, m.map_range(spk, 0.35, 0.6, 0.05, 0.22)))
     # --- germ: pale cream dimple, its outline groove darker, knocked-out pit = chalky endosperm
-    col = m.mix(col, m.mix((0.690, 0.540, 0.250), (0.760, 0.650, 0.380), spk), m.math('MULTIPLY', germ, 0.72))
+    col = m.mix(col, m.mix((0.720, 0.570, 0.270), (0.780, 0.680, 0.420), spk), m.math('MULTIPLY', germ, 0.78))
     col = m.mix(col, (0.800, 0.730, 0.520), m.math('MULTIPLY', pit, 0.80))
-    col = m.mix(col, (0.340, 0.150, 0.022), m.math('MULTIPLY', groove, 0.36))
+    col = m.mix(col, (0.400, 0.190, 0.024), m.math('MULTIPLY', groove, 0.30))
     col = m.mix(col, (0.170, 0.070, 0.020), m.map_range(hil, 0.35, 0.85, smooth=True))
     col = m.mix(col, (0.300, 0.120, 0.022), m.math('MULTIPLY', tip, 0.50))
     # --- flour dust clinging to the surface (more on some grains, more in the groove)
@@ -350,7 +350,7 @@ def build_scene(args):
     # 4. camera on the real heap surface, deep but lens-like DOF, back-lit food lighting (warm sky)
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=(1.0, 0.90, 0.74), key=0.80, fill=0.60, rim=0.90, world=0.8, key_size=1.0)
+    C.studio_lights(info, tint=(1.0, 0.945, 0.84), key=0.80, fill=0.60, rim=0.90, world=0.8, key_size=1.0)
     return heap, info
 
 

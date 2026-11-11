@@ -369,7 +369,8 @@ def make_label_image(name, rng, W=512, H=256, ss=2):
     load = np.clip(0.92 + 0.10 * f(7.0), 0.62, 1.0)                             # ink load varies along a stroke
     inkd = ink * load * (1.0 - 0.55 * np.clip(dry * 2.0, 0, 1) * edgez) * rng.uniform(0.93, 1.0)
     inkd = np.maximum(inkd, gaussian_filter(inkd, 0.9 * ss) * 0.92)             # slight feathering into fibres
-    inkd *= 1.0 - 0.25 * np.clip(fibn / 40.0, 0, 1)                             # pale fibres lie over the ink
+    inkd *= 1.0 - 0.16 * np.clip(fibn / 40.0, 0, 1)                             # pale fibres lie over the ink
+    inkd = np.clip(inkd * 1.16, 0, 0.985)                                       # old ink is still nearly black
     ink_col = np.array([15, 13, 13.0]) * (1 - age) + np.array([36, 29, 25.0]) * age
     img = img * (1 - inkd[..., None]) + ink_col[None, None, :] * inkd[..., None]
     rgba = np.dstack([np.clip(img, 0, 255), alpha * 255.0]).astype(np.uint8)
@@ -381,7 +382,7 @@ def make_label_atlas(names, seed=1, cols=8, cell=(512, 256)):
     from PIL import Image
     import hashlib
     rows = int(math.ceil(len(names) / float(cols)))
-    key = hashlib.md5(('|'.join(names) + str(seed) + str(cell) + _font_path() + 'v6').encode('utf-8')).hexdigest()[:10]
+    key = hashlib.md5(('|'.join(names) + str(seed) + str(cell) + _font_path() + 'v7').encode('utf-8')).hexdigest()[:10]
     os.makedirs(TMP_DIR, exist_ok=True)
     path = os.path.join(TMP_DIR, 'label_atlas_%s.png' % key)
     if not os.path.exists(path):
@@ -566,7 +567,7 @@ def wood_material():
     grime = m.math('MULTIPLY', m.map_range(edge_d, 0.0010, 0.017, 1.0, 0.0, smooth=True), m.map_range(gn, 0.3, 0.7, 0.30, 0.90))
     col = m.mix(col, (0.016, 0.010, 0.007), grime)
     raw = m.mix((0.34, 0.185, 0.080), (0.46, 0.285, 0.130), fn)
-    col = m.mix(col, raw, m.math('MULTIPLY', wear, 0.70))
+    col = m.mix(col, raw, m.math('MULTIPLY', wear, 0.58))
     # --- old red-brown lacquer film: mutes the figure where it survives, worn thin in patches and on the arrises
     ln = m.noise(scale=7.0, detail=3.0, roughness=0.6, vector=blr)
     lacq = m.math('MULTIPLY', m.map_range(ln, 0.34, 0.66, 0.20, 0.74, smooth=True), m.math('SUBTRACT', 1.0, wear))
@@ -603,12 +604,15 @@ def wood_material():
     dent = m.math('MULTIPLY', m.map_range(dv, 0.02, 0.17, 1.0, 0.0, smooth=True), dmask)
     col = m.mix(col, (0.014, 0.008, 0.005), m.math('MULTIPLY', dent, 0.40))
 
-    def streak(angle, shift):
-        v = m.mapping(m.mapping(blr, rotation=(0.0, 0.0, angle), location=(shift, 0.0, 0.0)), scale=(16.0, 2400.0, 2400.0))
-        return m.map_range(m.noise(scale=1.0, detail=0.0, vector=v), 0.71, 0.76, 0.0, 1.0)
-    smask = m.map_range(m.noise(scale=38.0, detail=1.0, vector=blr), 0.50, 0.64, 0.0, 1.0)
-    scr = m.math('MULTIPLY', m.math('MAXIMUM', streak(0.45, 0.0), streak(-1.05, 3.3)), smask)
-    col = m.mix(col, raw, m.math('MULTIPLY', scr, 0.35))
+    def streak(angle, shift, k):
+        # every board has been knocked about from its own directions: no global cross-hatch
+        ang = m.math('ADD', angle, m.math('MULTIPLY', m.math('SUBTRACT', m.math('FRACT', m.math('MULTIPLY', rnd, k)), 0.5), 2.6))
+        vr = m.node('ShaderNodeVectorRotate', {'Vector': blr, 'Angle': ang}, rotation_type='Z_AXIS').outputs[0]
+        v = m.mapping(vr, scale=(9.0, 2400.0, 2400.0), location=(shift, shift * 1.7, 0.0))
+        return m.map_range(m.noise(scale=1.0, detail=0.0, vector=v), 0.742, 0.776, 0.0, 1.0)
+    smask = m.map_range(m.noise(scale=24.0, detail=1.0, vector=blr), 0.55, 0.68, 0.0, 1.0)
+    scr = m.math('MULTIPLY', m.math('MAXIMUM', streak(0.45, 0.0, 23.7), streak(-1.05, 3.3, 57.1)), smask)
+    col = m.mix(col, raw, m.math('MULTIPLY', scr, 0.17))
     # --- dust settles on whatever faces the sky
     nz = m.node('ShaderNodeSeparateXYZ', {0: m.node('ShaderNodeNewGeometry').outputs['Normal']}).outputs[2]
     dn = m.noise(scale=420.0, detail=3.0, roughness=0.7, vector=blr)
@@ -676,7 +680,7 @@ def paper_material(atlas_path):
     fib = m.noise(scale=3200.0, detail=3.0, roughness=0.7, vector=m.position())
     nrm = m.bump(bw, strength=0.35, distance=0.00006)
     nrm = m.bump(fib, strength=0.5, distance=0.00003, normal=nrm)
-    m.set(base_color=col, roughness=m.map_range(bw, 0.1, 0.8, 0.62, 0.86), specular=0.25, sheen=0.25, sheen_roughness=0.6,
+    m.set(base_color=col, roughness=m.map_range(bw, 0.1, 0.8, 0.70, 0.88), specular=0.22, sheen=0.10, sheen_roughness=0.6,
           alpha=tex.outputs['Alpha'], normal=nrm)
     return m
 

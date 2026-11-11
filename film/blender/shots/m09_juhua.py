@@ -25,7 +25,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 import common as C                                                                    # noqa: E402
 
 SHOT = 'm09_juhua'
-R_DOME = 0.40             # bare dome radius -> a 25 mm head is ~180 px (1920 frame) at the horizon
+R_DOME = 0.42             # bare dome radius -> a 25 mm head is ~170 px (1920 frame) at the horizon
+SEED = 0                  # default heap seed (chosen by a framing scan)
 N_UP, N_FLIP = 7, 2       # head mesh variants built face-up / built upside-down (involucre showing)
 SKY_TINT = (0.80, 0.87, 1.0)   # navy night sky of the shot -> cool fill / rim
 
@@ -320,13 +321,13 @@ def petal_material():
     dark = m.attr('dark', 'INSTANCER')                      # a few stale, tan heads
     P = m.per_instance_coords()
     mott = m.noise(scale=380, detail=3, roughness=0.6, vector=P)
-    col = m.mix((0.80, 0.755, 0.61), (0.74, 0.665, 0.45), m.map_range(mott, 0.30, 0.72))       # ivory <-> cream
+    col = m.mix((0.84, 0.81, 0.70), (0.78, 0.715, 0.53), m.map_range(mott, 0.30, 0.72))       # ivory <-> cream
     col = m.mix(col, (0.72, 0.60, 0.30), m.math('MULTIPLY', m.map_range(pr, 0.55, 1.0), 0.45))  # some petals creamier
     # yellowing towards the claw, stronger on yellowed heads and on the inner rows
     yb = m.map_range(pv, 0.02, 0.62, 1.0, 0.0, smooth=True)
     yb = m.math('MULTIPLY', yb, m.math('ADD', m.map_range(tone, 0, 1, 0.50, 1.0), m.math('MULTIPLY', row, 0.25)), clamp=True)
     col = m.mix(col, (0.66, 0.47, 0.13), yb)
-    col = m.mix(col, (0.70, 0.56, 0.24), m.math('MULTIPLY', tone, 0.45))
+    col = m.mix(col, (0.72, 0.60, 0.30), m.math('MULTIPLY', tone, 0.38))
     # old petals: brown tips and margins in blotches
     bn = m.noise(scale=1.0, detail=3, roughness=0.6, vector=m.mapping(uvr, scale=(1.3, 3.2, 31.0)))
     tipm = m.math('MULTIPLY', m.map_range(pv, 0.45, 1.0), m.map_range(bn, 0.42, 0.68, smooth=True))
@@ -344,7 +345,7 @@ def petal_material():
     nrm = m.bump(crinkle, strength=0.55, distance=0.00009, normal=nrm)
     nrm = m.micro_bump(scale=9000, strength=0.4, distance=0.00003, vector=P, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.30, sheen=0.30, sheen_roughness=0.5, normal=nrm)
-    tcol = m.mix(col, (1.0, 0.84, 0.52), 1.0, blend='MULTIPLY')
+    tcol = m.mix(col, (1.0, 0.89, 0.64), 1.0, blend='MULTIPLY')
     tr = m.node('ShaderNodeBsdfTranslucent', {'Color': tcol, 'Normal': nrm})
     mix = m.node('ShaderNodeMixShader', {0: 0.34, 1: m.bsdf.outputs[0], 2: tr.outputs[0]})
     m.nt.links.new(mix.outputs[0], m.out.inputs['Surface'])
@@ -464,7 +465,7 @@ def scatter_on_heap(heap, n, rng, lift=0.0004, candidates=3, lowness=1.0):
 
 
 def main():
-    args = C.parse_args()
+    args = C.parse_args(seed=SEED)
     sc = C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
     sc.cycles.diffuse_bounces = 4                    # white petals: inter-reflection keeps the crevices clean
     rng = np.random.default_rng(args.seed)
@@ -480,8 +481,8 @@ def main():
 
     # 2. heap of heads on the dome, random facing
     sol = C.planet_solve(R_DOME)
-    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=2.8, coverage=0.72, weights=weights, seed=args.seed,
-                       scale_range=(0.85, 1.12), tilt_deg=22, roll_deg=40, candidates=6, sink=0.22, rough=0.006)
+    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=2.7, coverage=0.72, weights=weights, seed=args.seed,
+                       scale_range=(0.85, 1.12), tilt_deg=22, roll_deg=40, candidates=7, sink=0.22, rough=0.0035)
     n = len(heap)
     tone = np.clip(rng.beta(1.6, 3.0, n), 0, 1)
     dark = (rng.random(n) < 0.08) * rng.uniform(0.4, 1.0, n)
@@ -499,9 +500,9 @@ def main():
                          attrs={'tone': np.clip(rng.beta(1.6, 2.2, nl), 0, 1), 'dark': (rng.random(nl) < 0.15) * 0.8})
 
     # 4. camera fitted to the real heap, lens-like DOF, back-lit food lighting in the night-sky key
-    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68, top_margin=0.03)
+    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.56, edge=0.685, top_margin=0.025)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=SKY_TINT, key=0.60, fill=0.55, rim=0.9, world=1.0, key_size=1.0)
+    C.studio_lights(info, tint=SKY_TINT, key=0.66, fill=0.50, rim=0.9, world=1.0, key_size=1.0)
 
     # 5. render, verify the framing contract, write the judging composite
     C.render(args)
