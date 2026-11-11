@@ -23,7 +23,7 @@ import bpy                                                                      
 
 SHOT = 'm10_fengmi'
 NAME = '蜂蜜'
-R_DOME = 0.100            # comb dome radius -> a cell is ~150 px at the horizon, ~210 px in the foreground (1920 frame)
+R_DOME = 0.135            # comb dome radius -> a cell is ~110 px at the horizon, ~155 px in the foreground (1920 frame)
 S_CELL = 0.0052           # cell width across flats
 DEPTH = 0.0058            # modelled cell depth (real cells are ~11 mm; the honey hides the rest)
 SLOPE = 14.0              # steepness of the cell walls in the height field
@@ -78,8 +78,8 @@ def comb_fields(u, v, seed=0, flow=None, cap_at=None, empty_at=None, cap_frac=0.
     where a patch of capped / emptied cells is wanted.  -> dict(zw, zh, attrs=dict(cap, rim, dep, wet))"""
     P = np.stack([u, v, np.zeros_like(u)], -1)
     # bees do not use a ruler: the lattice drifts, walls wander
-    x = u + 0.00050 * C.fbm3(P * 55.0 + 3.1, 2, seed=seed + 1) + 0.00011 * C.fbm3(P * 300.0 + 1.7, 2, seed=seed + 5)
-    y = v + 0.00050 * C.fbm3(P * 55.0 + 9.7, 2, seed=seed + 2) + 0.00011 * C.fbm3(P * 300.0 + 6.3, 2, seed=seed + 6)
+    x = u + 0.00062 * C.fbm3(P * 55.0 + 3.1, 2, seed=seed + 1) + 0.00011 * C.fbm3(P * 300.0 + 1.7, 2, seed=seed + 5)
+    y = v + 0.00062 * C.fbm3(P * 55.0 + 9.7, 2, seed=seed + 2) + 0.00011 * C.fbm3(P * 300.0 + 6.3, 2, seed=seed + 6)
     qi, ri, X, Y, m, rr = _hex(x, y, S_CELL)
     half = 0.5 * S_CELL
     mm = np.maximum(m, 0.905 * rr)                       # rounded interior corners, thick wall junctions
@@ -98,10 +98,10 @@ def comb_fields(u, v, seed=0, flow=None, cap_at=None, empty_at=None, cap_frac=0.
     partial = (~capped) & (~empty) & (h1 < 0.115)
     lvl = np.where(partial, 0.0012 + 0.0026 * h2, 0.00012 + 0.00070 * h2 ** 2)      # honey level below the rim
 
-    tw = 0.00031 + 0.00013 * C.fbm3(P * 420.0 + 2.2, 2, seed=seed + 7)               # wall half thickness
-    tw = np.clip(tw, 0.00020, 0.00048)
+    tw = 0.00021 + 0.00010 * C.fbm3(P * 420.0 + 2.2, 2, seed=seed + 7)               # wall half thickness
+    tw = np.clip(tw, 0.00014, 0.00036)
     zr_low = 0.00024 * C.fbm3(P * 85.0 + 4.0, 2, seed=seed + 8)                      # uneven rim height
-    zr = zr_low + 0.00009 * C.fbm3(P * 650.0, 2, seed=seed + 9) + 0.000030 * C.fbm3(P * 2600.0, 2, seed=seed + 10)
+    zr = zr_low + 0.00015 * C.fbm3(P * 650.0, 2, seed=seed + 9) + 0.000045 * C.fbm3(P * 2600.0, 2, seed=seed + 10)
     t = np.clip(e / tw, 0, 1)
     top = zr - 0.55 * tw * (1.0 - np.sqrt(1.0 - t * t))                              # rounded rim
     ei = e - tw
@@ -126,7 +126,7 @@ def comb_fields(u, v, seed=0, flow=None, cap_at=None, empty_at=None, cap_frac=0.
         dn = _flow_dn(u, v, flow) * (1.0 + 0.24 * C.fbm3(P * 60.0 + 2.0, 2, seed=seed + 30)
                                      + 0.07 * C.fbm3(P * 210.0, 2, seed=seed + 31))
         bump = np.clip(1.0 - dn * dn, 0.0, 1.0)
-        thick = 0.00045 + 0.00105 * C.smoothstep(0.006, -0.022, v)                   # thin at the limb, fat in front
+        thick = 0.00070 + 0.00135 * C.smoothstep(0.006, -0.022, v)                   # thin at the limb, fat in front
         sag = 0.00010 * C.smoothstep(0.0, 0.0012, ei) * (~capped)
         F = zr_low - 0.0010 + (0.0010 + thick) * bump ** 0.5 - sag * bump
         F = np.where(bump > 0, F, zr_low - DEPTH - 0.0030)
@@ -148,33 +148,33 @@ def comb_fields(u, v, seed=0, flow=None, cap_at=None, empty_at=None, cap_frac=0.
 def wax_material():
     """Beeswax: pale yellow rims, honey-stained golden walls, ivory cappings; soft, strongly
     scattering (walls glow when back-lit); matte-satin, glossy only where honey has smeared it."""
-    m = C.Mat('beeswax', sss_method='RANDOM_WALK')
+    m = C.Mat('beeswax', sss_method='BURLEY')
     P = m.coords('Object')
     cap, rim, dep, wet = m.attr('cap'), m.attr('rim'), m.attr('dep'), m.attr('wet')
     n1 = m.noise(scale=170, detail=3, roughness=0.6, vector=P)
     n2 = m.noise(scale=1500, detail=3, roughness=0.6, vector=P)
-    rimc = m.mix((0.66, 0.43, 0.115), (0.78, 0.58, 0.215), m.map_range(n1, 0.3, 0.7))
-    col = m.mix(rimc, (0.56, 0.285, 0.040), m.map_range(dep, 0.04, 0.55, 0.0, 0.9, smooth=True))
+    rimc = m.mix((0.52, 0.30, 0.050), (0.66, 0.44, 0.105), m.map_range(n1, 0.3, 0.7))
+    col = m.mix(rimc, (0.44, 0.205, 0.024), m.map_range(dep, 0.04, 0.55, 0.0, 0.9, smooth=True))
     col = m.hsv(col, 0.5, 1.0, m.map_range(m.attr('crnd'), 0, 1, 0.88, 1.08))
-    capc = m.mix((0.74, 0.62, 0.385), (0.83, 0.745, 0.545), m.map_range(n1, 0.3, 0.7))
+    capc = m.mix((0.62, 0.50, 0.27), (0.74, 0.65, 0.43), m.map_range(n1, 0.3, 0.7))
     capc = m.mix(capc, (0.66, 0.47, 0.20), m.map_range(m.noise(scale=420, detail=2, vector=P), 0.52, 0.78, 0.0, 0.55))   # damp, honey-touched lids
     col = m.mix(col, capc, cap)
     stain = m.map_range(m.noise(scale=38, detail=2, vector=P), 0.52, 0.78, 0.0, 0.50, smooth=True)   # older, darker comb
-    col = m.mix(col, (0.43, 0.235, 0.050), stain)
+    col = m.mix(col, (0.33, 0.165, 0.030), stain)
     col = m.hsv(col, 0.5, 1.0, m.map_range(n2, 0.3, 0.7, 0.90, 1.07))
     rough = m.map_range(n2, 0.3, 0.7, 0.36, 0.58)
     rough = m.mixf(rough, 0.10, m.math('MULTIPLY', wet, 0.9))
     nrm = m.bump(n2, strength=0.45, distance=0.00004)
     nrm = m.micro_bump(scale=6500, strength=0.4, distance=0.00002, vector=P, normal=nrm)
-    m.set(base_color=col, roughness=rough, ior=1.44, specular=0.5, sss=0.85, sss_radius=(1.0, 0.52, 0.20),
-          sss_scale=0.0024, sss_anisotropy=0.2, coat=m.math('MULTIPLY', wet, 0.85), coat_roughness=0.03,
+    m.set(base_color=col, roughness=rough, ior=1.44, specular=0.5, sss=0.70, sss_radius=(1.0, 0.45, 0.15),
+          sss_scale=0.0016, sss_anisotropy=0.2, coat=m.math('MULTIPLY', wet, 0.85), coat_roughness=0.03,
           coat_ior=1.49, normal=nrm)
     return m
 
 
 def honey_material():
     """Clear golden-amber honey: smooth dielectric (n = 1.49) + absorbing volume.  Transmittance over
-    5 mm ~ (0.93, 0.70, 0.25): shallow honey is gold, a full cell deep amber.  Shadow rays pass
+    5 mm ~ (0.86, 0.46, 0.07): shallow honey is gold, a full cell deep amber.  Shadow rays pass
     straight through (the volume still tints them) so the wax under the honey is lit."""
     mat = bpy.data.materials.new('honey')
     mat.use_nodes = True
@@ -194,8 +194,8 @@ def honey_material():
     nt.links.new(tr.outputs[0], mix.inputs[2])
     nt.links.new(mix.outputs[0], out.inputs['Surface'])
     vol = nt.nodes.new('ShaderNodeVolumeAbsorption')
-    vol.inputs['Color'].default_value = (0.964, 0.822, 0.307, 1)
-    vol.inputs['Density'].default_value = 400.0
+    vol.inputs['Color'].default_value = (0.955, 0.760, 0.200, 1)
+    vol.inputs['Density'].default_value = 650.0
     nt.links.new(vol.outputs[0], out.inputs['Volume'])
     return mat
 
@@ -267,10 +267,10 @@ def main():
     args = C.parse_args()
     C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
     sc = bpy.context.scene
-    sc.cycles.transmission_bounces = 8
-    sc.cycles.glossy_bounces = 4
+    sc.cycles.transmission_bounces = 6
+    sc.cycles.glossy_bounces = 3
     sc.cycles.diffuse_bounces = 2
-    sc.cycles.max_bounces = 10
+    sc.cycles.max_bounces = 8
     R = R_DOME
     sol = C.planet_solve(R, lens_mm=85, apex=0.54, edge=0.68)
     n_max = 1500 if sc.render.resolution_x > 2000 else 1000
@@ -279,9 +279,10 @@ def main():
     th = np.arccos(np.clip(v0[:, 2] / R, -1, 1))
     ph = np.arctan2(v0[:, 1], v0[:, 0])
     u, v = R * th * np.cos(ph), R * th * np.sin(ph)
-    flow = [(-0.024, 0.036, 0.0060), (-0.013, 0.010, 0.0068), (-0.003, -0.010, 0.0080), (0.008, -0.024, 0.0092),
-            (0.013, -0.040, 0.0105), (0.015, -0.070, 0.0110)]
-    fld = comb_fields(u, v, seed=args.seed, flow=flow, cap_at=(0.021, -0.010, 0.010), empty_at=(-0.022, -0.020, 0.006))
+    flow = [(R * x_, R * y_, R * w_) for x_, y_, w_ in ((-0.21, 0.34, 0.050), (-0.105, 0.085, 0.056), (-0.005, -0.075, 0.064),
+                                                         (0.060, -0.195, 0.072), (0.088, -0.262, 0.070))]
+    fld = comb_fields(u, v, seed=args.seed, flow=flow, cap_at=(0.235 * R, -0.10 * R, 0.10 * R),
+                      empty_at=(-0.22 * R, -0.21 * R, 0.055 * R))
     print('[comb] patch %s  grid %dx%d  cell %.3f mm' % (np.round(sol['patch'], 3), nx, ny, 1000 * (sol['patch'][1] - sol['patch'][0]) / (nx - 1)))
     C.mesh_from_arrays('comb', nrm * (R + fld['zw'])[:, None], f, attrs=fld['attrs'], material=wax_material())
     used, fh = _honey_faces(f, fld['zw'], fld['zh'])
@@ -292,7 +293,14 @@ def main():
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
     # back light is the point: honey and thin wax walls glow; the key box also draws the long
     # highlight along the bulging honey tongue
-    C.studio_lights(info, tint=(1.0, 0.90, 0.74), key=0.95, fill=0.55, rim=1.5, world=0.8, key_size=1.0, key_el=38)
+    C.studio_lights(info, tint=(1.0, 0.90, 0.74), key=0.70, fill=0.40, rim=1.3, world=0.8, key_size=0.6, key_el=38)
+    # tall dim panel straight behind: every honey surface mirrors a piece of it (liquid sheen), and
+    # it is extra back light for the glow
+    sc_w = info['scale']
+    T = np.array(info['target'], float)
+    el = math.radians(35.0)
+    panel = C._area_light('sheen', T + 2.6 * sc_w * np.array([0.10, math.cos(el), math.sin(el)]), T, 2.4 * sc_w,
+                          60.0 * sc_w ** 2, (1.0, 0.93, 0.80), shape='RECTANGLE')
 
     C.render(args)
     if not args.region:

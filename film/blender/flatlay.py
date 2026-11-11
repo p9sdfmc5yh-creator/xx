@@ -1239,20 +1239,23 @@ def make_ground_maps(kind, frame, margin, texel, seed, P):
         if grid:
             ink = _grid_ink(h, w, texel, x0, y0, grid, rng, fibf)
     elif kind == 'slate':
-        base = fbm2(h, w, 0.09 / texel, rng, 5, 0.55) / 0.6
-        warp = fbm2(h, w, 0.03 / texel, rng, 4, 0.5) / 0.6
-        t = base * 2.2 + 0.35 * warp
+        # riven slate: broad smooth cleavage planes, a few soft-edged steps running roughly one way
+        hs, ws = h // 3 + 1, w + 0
+        base = cv2.resize(fbm2(hs, ws, 0.14 / texel, rng, 4, 0.5), (w, h), interpolation=cv2.INTER_CUBIC) / 0.6   # stretched x3 in y
+        warp = fbm2(h, w, 0.04 / texel, rng, 3, 0.5) / 0.6
+        t = base * 1.7 + 0.22 * warp
         k = np.floor(t)
         fr = t - k
-        terr = k + C.smoothstep(0.78, 0.98, fr)                      # riven cleft planes with soft steps
+        terr = k + C.smoothstep(0.80, 0.97, fr)                      # steps between cleavage planes
         terr = (terr - terr.min()) / max(np.ptp(terr), 1e-6)
-        fine = fbm2(h, w, max(0.0025 / texel, 2.0), rng, 4, 0.6) / 0.6
-        relief = np.clip(0.72 * terr + 0.10 * fine + 0.14, 0, 1)
+        undul = fbm2(h, w, 0.03 / texel, rng, 3, 0.5) / 0.6
+        fine = fbm2(h, w, max(0.002 / texel, 2.0), rng, 3, 0.55) / 0.6
+        relief = np.clip(0.70 * terr + 0.07 * undul + 0.025 * fine + 0.12, 0, 1)
         speck = np.clip(0.5 + 0.5 * fbm2(h, w, max(0.0007 / texel, 1.6), rng, 3, 0.7) / 0.6, 0, 1)
         veins = np.zeros((h, w), np.uint8)
-        _draw_fibres(veins, int(60 * Wm * Hm) + 3, texel, (0.03, 0.16), (0.00015, 0.0005), 0.9, 0.10, rng,
-                     direction=rng.uniform(0, math.pi), spread=0.35, seg=10)
-        _draw_fibres(veins, int(900 * Wm * Hm), texel, (0.004, 0.03), (0.00006, 0.00016), 0.6, 0.05, rng, seg=4)
+        _draw_fibres(veins, int(25 * Wm * Hm) + 2, texel, (0.05, 0.25), (0.00015, 0.0005), 0.8, 0.06, rng,
+                     direction=rng.uniform(-0.3, 0.3), spread=0.25, seg=10)
+        _draw_fibres(veins, int(500 * Wm * Hm), texel, (0.004, 0.03), (0.00005, 0.00014), 0.5, 0.04, rng, seg=4)
         rgb = np.stack([relief, speck, cv2.GaussianBlur(veins, (0, 0), 0.8).astype(np.float32) / 255.0], -1)
     elif kind == 'walnut':
         ys = (np.arange(h)[:, None] + 0.5) * texel
@@ -1260,7 +1263,7 @@ def make_ground_maps(kind, frame, margin, texel, seed, P):
         warp = cv2.resize(rng.standard_normal((int(Hm / 0.05) + 3, int(Wm / 0.35) + 3)).astype(np.float32), (w, h),
                           interpolation=cv2.INTER_CUBIC)
         warp2 = fbm2(h, w, 0.02 / texel, rng, 3, 0.5) / 0.6
-        ringpos = (ys + 0.030 * warp + 0.0025 * warp2 + 0.02 * np.sin(xs / 0.9 + 1.0)) / float(P.get('ring_m', 0.0065))
+        ringpos = (ys + 0.013 * warp + 0.0018 * warp2 + 0.015 * np.sin(xs / 0.9 + 1.0)) / float(P.get('ring_m', 0.0065))
         fr = ringpos - np.floor(ringpos)
         ring = np.where(fr < 0.82, (fr / 0.82) ** 1.6, 1.0 - (fr - 0.82) / 0.18)        # slow early wood, sharp late wood line
         streak = cv2.resize(rng.standard_normal((int(Hm / 0.0012) + 3, int(Wm / 0.12) + 3)).astype(np.float32), (w, h),
@@ -1304,7 +1307,11 @@ def make_ground_maps(kind, frame, margin, texel, seed, P):
         tint = np.where(top_w, warp_c[iu] + 0.6 * slub_w, weft_c[iv] + 0.6 * slub_f)
         if ppx < 2.2:                                                  # threads not resolvable: keep the yarn streaks only
             relief = 0.5 + 0.0 * relief
-        rgb = np.stack([np.clip(relief, 0, 1), np.clip(0.5 + 0.17 * tint, 0, 1), np.clip(0.5 + 0.5 * slub, 0, 1)], -1)
+        streak = np.where(top_w, C.smoothstep(1.1, 2.2, slub_w), C.smoothstep(1.1, 2.2, slub_f))    # thick pale slubs
+        if ppx < 2.2:
+            streak = 0.5 * (C.smoothstep(1.1, 2.2, slub_w) + C.smoothstep(1.1, 2.2, slub_f))
+            tint = 0.7 * (warp_c[iu] + 0.6 * slub_w) + 0.7 * (weft_c[iv] + 0.6 * slub_f)
+        rgb = np.stack([np.clip(relief, 0, 1), np.clip(0.5 + 0.17 * tint + 0.04 * slub, 0, 1), np.clip(streak, 0, 1)], -1)
     else:
         raise ValueError('unknown ground type %r' % kind)
     out = dict(rgb=(np.clip(rgb, 0, 1) * 65535).astype(np.uint16), size_m=(Wm, Hm), ink=None)
@@ -1370,12 +1377,12 @@ def build_ground(frame, G_, exposure, seed, tex_px, margin, tag):
         dust = tuple(float(min(0.9, c * 1.9 + 0.012)) for c in col)
         deep = tuple(float(c * 0.55) for c in col)
         base = m.mix(deep, col, m.map_range(cR, 0.1, 0.8))
-        base = m.mix(base, dust, m.math('MULTIPLY', m.map_range(cG, 0.62, 0.95), 0.35))
-        base = m.mix(base, dust, m.math('MULTIPLY', cB, 0.5))
-        rough = m.map_range(cG, 0.2, 0.9, 0.42, 0.66)
-        nrm = m.bump(cR, strength=1.0, distance=float(G_.get('cleft_m', 0.0011)))
-        nrm = m.micro_bump(scale=2600, strength=0.6, distance=0.00006, vector=pos, normal=nrm)
-        m.set(base_color=base, roughness=rough, specular=0.40, normal=nrm)
+        base = m.mix(base, dust, m.math('MULTIPLY', m.map_range(cG, 0.66, 0.95), 0.22))
+        base = m.mix(base, dust, m.math('MULTIPLY', cB, 0.45))
+        rough = m.map_range(cG, 0.2, 0.9, 0.46, 0.62)
+        nrm = m.bump(cR, strength=1.0, distance=float(G_.get('cleft_m', 0.0012)))
+        nrm = m.micro_bump(scale=3500, strength=0.22, distance=0.00003, vector=pos, normal=nrm)
+        m.set(base_color=base, roughness=rough, specular=0.35, normal=nrm)
     elif kind == 'walnut':
         dark = tuple(float(c * 0.42) for c in col)
         lite = tuple(float(min(0.9, c * 1.55 + 0.004)) for c in (col[0], col[1] * 1.04, col[2] * 1.1))
@@ -1390,7 +1397,7 @@ def build_ground(frame, G_, exposure, seed, tex_px, margin, tag):
     elif kind == 'linen':
         base = m.hsv(col, 0.5, m.map_range(cG, 0, 1, 1.12, 0.84), m.map_range(cG, 0, 1, 0.62, 1.50))
         base = m.mix(base, tuple(float(c * 0.45) for c in col), m.map_range(cR, 0.45, 0.0, 0.0, 0.75))      # gaps between threads
-        base = m.mix(base, tuple(float(min(0.9, c * 2.2 + 0.01)) for c in col), m.map_range(cB, 0.72, 1.0, 0.0, 0.30))
+        base = m.mix(base, tuple(float(min(0.9, c * 2.0 + 0.008)) for c in col), m.math('MULTIPLY', cB, 0.45))
         nrm = m.bump(cR, strength=1.0, distance=float(G_.get('thread_m', 0.00048)) * 0.42)
         fuzz = m.noise(scale=9000, detail=3, roughness=0.7, vector=m.mapping(pos, scale=(1.0, 0.25, 1.0)))
         nrm = m.bump(fuzz, strength=0.5, distance=0.00003, normal=nrm)

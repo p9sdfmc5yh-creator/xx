@@ -89,26 +89,26 @@ def face_material():
     din, ray, camb, xyl = m.attr('din'), m.attr('ray'), m.attr('camb'), m.attr('xyl')
     pore, crack, fib = m.attr('pore'), m.attr('crack'), m.attr('fib')
     mott = m.map_range(m.noise(scale=200, detail=2, roughness=0.55, vector=P), 0.3, 0.7)
-    wood = m.mix((0.62, 0.40, 0.060), (0.74, 0.53, 0.12), mott)             # yellow wood wedges
-    wood = m.mix(wood, (0.80, 0.62, 0.20), m.map_range(fib, 0.45, 0.85, 0.0, 0.6))
-    bark = m.mix((0.72, 0.56, 0.20), (0.80, 0.66, 0.31), mott)              # paler phloem
+    wood = m.mix((0.58, 0.34, 0.030), (0.70, 0.46, 0.065), mott)             # yellow wood wedges
+    wood = m.mix(wood, (0.78, 0.57, 0.13), m.map_range(fib, 0.45, 0.85, 0.0, 0.6))
+    bark = m.mix((0.68, 0.49, 0.12), (0.77, 0.60, 0.21), mott)              # paler phloem
     flesh = m.mix(bark, wood, xyl)
-    flesh = m.mix(flesh, (0.87, 0.76, 0.42), m.math('MULTIPLY', ray, 0.85)) # pale medullary rays
+    flesh = m.mix(flesh, (0.84, 0.70, 0.29), m.math('MULTIPLY', ray, 0.85)) # pale medullary rays
     grain = m.noise(scale=24000, detail=2, roughness=0.6, vector=P)
-    flesh = m.mix(flesh, (0.92, 0.85, 0.60), m.map_range(grain, 0.60, 0.80, 0.0, 0.55))   # starch powder specks
+    flesh = m.mix(flesh, (0.90, 0.80, 0.48), m.map_range(grain, 0.62, 0.80, 0.0, 0.38))   # starch powder specks
     flesh = m.mix(flesh, (0.40, 0.24, 0.035), m.map_range(grain, 0.18, 0.32, 0.35, 0.0))
     flesh = m.mix(flesh, (0.33, 0.19, 0.05), m.math('MULTIPLY', camb, 0.9))
     flesh = m.mix(flesh, (0.17, 0.09, 0.02), pore)
     flesh = m.mix(flesh, (0.20, 0.11, 0.03), m.map_range(crack, 0.15, 0.8))
     is_skin = D.skin_mask(m, P, din, thick=(0.32, 0.75), scale=1500.0)
     cork = m.ramp(m.noise(scale=2400, detail=3, roughness=0.7, vector=P),
-                  [(0.25, (0.060, 0.020, 0.011)), (0.55, (0.20, 0.070, 0.032)), (0.82, (0.33, 0.17, 0.09))])
-    cork = m.mix(cork, (0.16, 0.115, 0.08), m.map_range(din, 0.0, 0.12, 0.75, 0.0))      # grey-brown outer film
+                  [(0.25, (0.040, 0.012, 0.007)), (0.55, (0.15, 0.045, 0.020)), (0.82, (0.27, 0.12, 0.06))])
+    cork = m.mix(cork, (0.10, 0.065, 0.045), m.map_range(din, 0.0, 0.10, 0.6, 0.0))      # grey-brown outer film
     col = m.mix(flesh, cork, is_skin)
     rough = m.mixf(m.map_range(grain, 0.3, 0.7, 0.72, 0.90), 0.88, is_skin)
     nrm = m.bump(m.noise(scale=7000, detail=2, roughness=0.6, vector=P), strength=0.55, distance=0.000022)
     nrm = m.bump(grain, strength=0.6, distance=0.000010, normal=nrm)
-    m.set(base_color=col, roughness=rough, ior=1.45, specular=0.25, normal=nrm, sheen=0.25, sheen_roughness=0.5,
+    m.set(base_color=col, roughness=rough, ior=1.45, specular=0.25, normal=nrm, sheen=m.mixf(0.10, 0.0, is_skin), sheen_roughness=0.5,
           sss=m.mixf(0.3, 0.1, is_skin), sss_radius=(1.0, 0.60, 0.20), sss_scale=0.0003)
     _MATS['face'] = m
     return m
@@ -119,7 +119,7 @@ def bits_material():
     if 'bits' in _MATS:
         return _MATS['bits']
     m = C.Mat('gancao_bits')
-    col = m.jitter((0.80, 0.63, 0.24), hue=0.012, saturation=0.15, value=0.2)
+    col = m.jitter((0.88, 0.74, 0.36), hue=0.012, saturation=0.15, value=0.12)
     m.set(base_color=col, roughness=0.8, sss=0.3, sss_radius=(1.0, 0.6, 0.2), sss_scale=0.00005)
     _MATS['bits'] = m
     return m
@@ -161,17 +161,17 @@ def main():
     face, F = D.hero_face('gancao_face', ol, info, fields, face_material(), n_max=D.n_max_for(args), fillet=0.00010,
                           seed=args.seed)
     # powder crumbs (more of them along the fissures) and raised fibre ends
-    w = 0.25 + 3.0 * (fields.crack > 0.05)
-    cp = D.face_points(F, 2600, seed=args.seed + 60, weight=w, margin=0.0002)
-    sz = np.random.default_rng(args.seed + 61).uniform(0.000012, 0.000045, len(cp)) ** 1.0
+    w = 0.10 + 4.0 * (fields.crack > 0.05)
+    cp = D.face_points(F, 1100, seed=args.seed + 60, weight=w, margin=0.0002)
+    sz = np.random.default_rng(args.seed + 61).uniform(0.000008, 0.000030, len(cp))
     cp[:, 2] += sz * 0.35
     D.crumbs('gancao_crumbs', cp, sz, bits_material(), seed=args.seed + 62)
-    fp = D.face_points(F, 420, seed=args.seed + 63, margin=0.0004)
+    fp = D.face_points(F, 240, seed=args.seed + 63, margin=0.0004)
     fp[:, 2] -= 4e-6
-    D.fibres('gancao_fibres', fp, fibre_material(), length=(0.00010, 0.00055), radius=(0.000007, 0.000014),
+    D.fibres('gancao_fibres', fp, fibre_material(), length=(0.00008, 0.00040), radius=(0.000007, 0.000013),
              lean=0.9, curl=0.7, seed=args.seed + 64)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.2)
-    D.lights(info, tint=(1.0, 0.90, 0.86), key=0.72, fill=0.60, rim=1.0, top=0.25, key_az=-48, key_el=30, sheen=0.0)
+    D.lights(info, tint=(1.0, 0.90, 0.86), key=0.58, fill=0.50, rim=0.9, top=0.2, key_az=-48, key_el=30, sheen=0.0)
     D.finish(args, SHOT)
 
 

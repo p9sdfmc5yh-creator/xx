@@ -438,10 +438,12 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
     near_max = _px(near_max, Dd['near_max'], W)
 
     valid = np.isfinite(z) & (z > 1e-6) & (z < 1e8)
-    if not valid.any():
+    if not valid.any():                                        # nothing but sky / an empty layer
         d = np.zeros((H, W), np.float32)
-        info = dict(sky_px=0.0, near_px=0.0, far_px=0.0, k=0.0, conv=float('inf'), z_near=0.0, z_far=0.0,
-                    min_px=0.0, max_px=0.0, width=W, mode=mode, valid=valid)
+        sky0 = min(_px(sky_px, Dd['A_sky'], W), sky_max) if mode == 'A' else 0.0
+        info = dict(sky_px=float(sky0), near_px=0.0, far_px=0.0, k=0.0, conv=float('inf'), z_near=0.0,
+                    z_far=0.0, min_px=0.0, max_px=0.0, width=W, mode=mode, valid=valid, fg_share=0.0,
+                    defocus_frac=0.0)
         return (d, info) if return_info else d
     stat = valid
     if alpha is not None:
@@ -518,6 +520,9 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
             k, near, far = k * s, near * s, far * s
         sky = far
 
+    if span <= 1e-4 * max(inv_near, 1e-9) and not frozen:     # no relief at all: one flat plane
+        k = 0.0
+        near = far = (0.0 if mode == 'A' else far)             # A: on the screen, B: at the ground
     d = (np.float32(near) + np.float32(k) * (np.float32(inv_near) - inv)).astype(np.float32)
     # soft-clip the outliers beyond the percentile range
     kn = max(float(knee) * (far - near), 1e-6)
@@ -539,7 +544,7 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
     if not return_info:
         return d
     dv = d[stat]
-    conv_inv = inv_near + near / k
+    conv_inv = inv_near + (near / k if k > 0 else 0.0)
     dfrac = float(np.count_nonzero((wdef > 0.5) & stat)) / max(1, int(np.count_nonzero(stat))) \
         if wdef is not None else 0.0
     info = dict(sky_px=float(sky), near_px=float(near), far_px=float(far), k=float(k),
