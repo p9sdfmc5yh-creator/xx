@@ -76,7 +76,8 @@ def zoom(d, sid, label=''):
     dr = ImageDraw.Draw(out)
     f = font(22)
     for k, (name, x, y) in enumerate(boxes):
-        out.paste(im.crop((x, y, x + 640, y + 360)), (k * 640, HEAD))
+        q = im.size[0] // 1920 or 1      # 2 for a 4K (GJ_SS=2) render: same places, still 1:1 DEVICE pixels
+        out.paste(im.crop((x * q, y * q, x * q + 640, y * q + 360)), (k * 640, HEAD))
         dr.text((k * 640 + 12, 5), f'{label}{sid} 原始像素 1:1 · {name}', font=f, fill=(235, 235, 235))
         if k:
             dr.rectangle([k * 640 - 1, 0, k * 640, out.height], fill=(255, 0, 170))

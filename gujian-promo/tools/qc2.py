@@ -15,7 +15,8 @@ mp4 = a[a.index('--mp4') + 1] if '--mp4' in a else None
 src = open(os.path.join(ROOT, 'src', 'films', film, 'timeline.js'), encoding='utf-8').read()
 rows = [(sid, int(n)) for sid, n in re.findall(r'\{ id: "([^"]+)", scene: "[^"]+", frames: (\d+)', src)]
 total = sum(n for _, n in rows)
-fdir = os.path.join(ROOT, 'build', film, 'frames'); out = os.path.join(ROOT, 'build', film, 'qc'); os.makedirs(out, exist_ok=True)
+ss = os.environ.get('GJ_SS', '1')
+fdir = os.path.join(ROOT, 'build', film, 'frames' if ss == '1' else f'frames-ss{ss}'); out = os.path.join(ROOT, 'build', film, 'qc'); os.makedirs(out, exist_ok=True)
 F = lambda n: os.path.join(fdir, 'f_%05d.png' % n)
 ok = True
 def say(flag, msg):
@@ -67,7 +68,7 @@ if mp4:
     for t in (0.6, 3.0, 9.0, 13.2, 14.0, 17.0, 19.0):
         p = os.path.join(out, 'mp4_%05.2f.jpg' % t)
         subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-ss', str(t), '-i', mp, '-frames:v', '1', '-q:v', '2', p])
-        if os.path.exists(p): tiles.append(Image.open(p).convert('RGB').crop((270, 150, 810, 690)))
+        if os.path.exists(p): im_ = Image.open(p).convert('RGB'); q_ = im_.size[0] // 1080; tiles.append(im_.crop((330 * q_, 250 * q_, 330 * q_ + 540, 250 * q_ + 540)))
     if tiles:
         sh = Image.new('RGB', (540 * 4, 540 * 2), (18, 18, 20))
         for k, tl in enumerate(tiles[:8]): sh.paste(tl, ((k % 4) * 540, (k // 4) * 540))

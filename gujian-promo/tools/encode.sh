@@ -15,7 +15,11 @@ case "$FILM" in
   coins2) NAME="zhongguo-guqianbi-tuban" ;;
   *) NAME="$FILM" ;;
 esac
-OUT="${3:-out/$NAME.mp4}"
+# GJ_SS=2: encode the supersampled frames (build/<film>/frames-ss2) as a 4K master → out/<name>-4k.mp4
+SS="${GJ_SS:-1}"
+FRAMES="build/$FILM/frames"; SUFFIX=""; LEVEL="4.2"
+if [ "$SS" != "1" ]; then FRAMES="build/$FILM/frames-ss$SS"; SUFFIX="-4k"; LEVEL="5.1"; CRF="${2:-19}"; fi
+OUT="${3:-out/$NAME$SUFFIX.mp4}"
 mkdir -p "$(dirname "$OUT")"
 # square plate films (those with src/films/<film>/PLAYER) have their own arrangement in tools/audio2.py
 if [ ! -s "build/$FILM/soundtrack.wav" ]; then
@@ -27,9 +31,9 @@ read -r LUFS PEAK < <(ffmpeg -hide_banner -nostats -i "build/$FILM/soundtrack.wa
 GAIN=$(python3 -c "import sys; l=float('$LUFS'); p=float('$PEAK'); g=float('$TARGET_LUFS')-l; print(round(min(g, -1.0-p), 2))")
 echo "soundtrack: ${LUFS} LUFS, true peak ${PEAK} dBTP → gain ${GAIN} dB"
 ffmpeg -hide_banner -loglevel error -y \
-  -framerate 25 -i "build/$FILM/frames/f_%05d.png" -i "build/$FILM/soundtrack.wav" \
+  -framerate 25 -i "$FRAMES/f_%05d.png" -i "build/$FILM/soundtrack.wav" \
   -vf "scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p" \
-  -c:v libx264 -preset slower -crf "$CRF" -profile:v high -level 4.2 -g 50 -bf 2 \
+  -c:v libx264 -preset slower -crf "$CRF" -profile:v high -level "$LEVEL" -g 50 -bf 2 \
   -x264-params "aq-mode=3:aq-strength=0.9:deblock=-1,-1" \
   -colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv \
   -af "volume=${GAIN}dB" -c:a aac -b:a 256k -ar 48000 -movflags +faststart -shortest "$OUT"

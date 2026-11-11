@@ -17,7 +17,8 @@ a = sys.argv[1:]
 film = a[a.index('--film') + 1] if '--film' in a else 'arch'
 mp4 = a[a.index('--mp4') + 1] if '--mp4' in a else None
 FR = [31, 26, 26, 11, 6, 6, 13, 15, 13, 14, 15, 13, 14, 15, 8, 10, 8, 11, 12, 8, 10, 8, 8, 11, 7, 6, 8, 8, 7, 8, 6, 7, 7, 7, 6, 5, 5, 101]
-fdir = os.path.join(ROOT, 'build', film, 'frames')
+ss = os.environ.get('GJ_SS', '1')
+fdir = os.path.join(ROOT, 'build', film, 'frames' if ss == '1' else f'frames-ss{ss}')
 out = os.path.join(ROOT, 'build', film, 'qc'); os.makedirs(out, exist_ok=True)
 BASE = 0 if os.path.exists(os.path.join(fdir, 'f_00000.png')) else 1   # frames are numbered from 0 or from 1
 f = lambda n: os.path.join(fdir, 'f_%05d.png' % (n - 1 + BASE))
@@ -30,7 +31,7 @@ def say(flag, msg):
 n = len([x for x in os.listdir(fdir) if x.endswith('.png')])
 say(n == 500 == sum(FR), f'frame count {n} (expected 500)')
 sizes = {Image.open(f(i)).size for i in (1, 250, 500)}
-say(sizes == {(1920, 1080)}, f'frame size {sizes}')
+say(sizes == {(1920 * int(ss), 1080 * int(ss))}, f'frame size {sizes}')
 # film grain differs on every frame, so compare box-averaged thumbnails, and use two neighbouring frames of the first shot as the yardstick
 _th = lambda n: Image.open(f(n)).convert('RGB').resize((160, 90), Image.BOX)
 _md = lambda x, y: sum(ImageStat.Stat(ImageChops.difference(x, y)).mean) / 3
@@ -72,7 +73,7 @@ if mp4:
     mp = os.path.join(ROOT, mp4) if not os.path.isabs(mp4) else mp4
     info = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams', '-show_format', '-of', 'json', mp]))
     v = [s for s in info['streams'] if s['codec_type'] == 'video'][0]; au = [s for s in info['streams'] if s['codec_type'] == 'audio'][0]
-    say(v['codec_name'] == 'h264' and v['width'] == 1920 and v['height'] == 1080 and v['pix_fmt'] == 'yuv420p' and v['r_frame_rate'] == '25/1',
+    say(v['codec_name'] == 'h264' and v['width'] == 1920 * int(ss) and v['height'] == 1080 * int(ss) and v['pix_fmt'] == 'yuv420p' and v['r_frame_rate'] == '25/1',
         f"video {v['codec_name']} {v['width']}x{v['height']} {v['pix_fmt']} {v['r_frame_rate']} fps, {v.get('nb_frames')} frames, colour {v.get('color_space')}/{v.get('color_range')}")
     say(v.get('nb_frames') == '500', f"encoded frame count {v.get('nb_frames')}")
     say(au['codec_name'] == 'aac' and au['sample_rate'] == '48000' and au['channels'] == 2, f"audio {au['codec_name']} {au['sample_rate']} Hz, {au['channels']} ch")
@@ -90,7 +91,7 @@ if mp4:
     for t in (0.5, 8.3, 14.0, 16.6, 18.2, 19.96):
         p = os.path.join(out, 'mp4_%05.2f.jpg' % t)
         if os.path.exists(p):
-            im = Image.open(p).convert('RGB'); tiles.append(im.crop((640, 470, 1280, 830)))
+            im = Image.open(p).convert('RGB'); q_ = im.size[0] // 1920; tiles.append(im.crop((640 * q_, 470 * q_, 640 * q_ + 640, 470 * q_ + 360)))
     if tiles:
         sheet = Image.new('RGB', (1920, 720), (18, 18, 20))
         for k, tl in enumerate(tiles[:6]): sheet.paste(tl, ((k % 3) * 640, (k // 3) * 360))

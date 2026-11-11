@@ -3,7 +3,8 @@
 
 The arrangement follows the picture, cut for cut (cut times are read from the film's timeline.js):
   slow plates      one bronze chime-bell note on every cut, climbing, over low plucked anchors and a soft drum that wakes up
-  flashes          a coin clink + wood tick on every 3-frame plate, a pentatonic run that keeps rising, a pulse every fourth plate, a noise riser
+  flashes          a coin clink + wood tick on every 3-frame plate, a pentatonic run that keeps rising, a pulse every fourth plate, a noise riser;
+                   a chime-bell marks the first plate of each character (志 → 和 → 诚)
   three holds      three big drum-and-bell hits (the pour, the plum branch, the hundred coins)
   the coins fly    a glissando and a rush of air into the title cut, with coins clinking away to the sides
   title / brand    everything stops dead; a deep bell under the film's name, a second softer bell and a spinning coin under the house name
@@ -36,7 +37,7 @@ def build(film='coins2'):
     P = A.PRESETS['coins']; PENTA = P['scale']; gl = P['gliss']; R0, R5 = P['root'], P['fifth']
     m = A.Mix(); t = np.arange(N) / SR
     slow = [c for c in C if c[0][0] == 'p']
-    flash = [c for c in C if c[0][0] in 'gr']
+    flash = [c for c in C if c[0][0] == 'f']
     t_h1, t_h2, t_h3, t_z1, t_title, t_brand = T['h1'], T['h2'], T['h3'], T['z1'], T['title'], T['brand']
     t_fly = t_z1 + 12 / FPS                       # the coins leave the page
 
@@ -67,8 +68,11 @@ def build(film='coins2'):
             m.add(A.pluck(PENTA[idx], dur=0.7, vel=db(-22 + 8 * u), bright=1.0 + 0.6 * u), tc + 0.003, pan=-0.4 + 0.8 * u, send=0.35)
         if k % 4 == 0:
             m.add(A.drum(vel=db(-16 + 6 * u), f0=62, tau=0.2, slap=0.5), tc, send=0.15)
-    m.add(A.pluck(lowf(R0), dur=3.2, vel=db(-12), bright=0.8), flash[0][1], send=0.3)
-    m.add(A.pluck(lowf(R5), dur=3.0, vel=db(-11), bright=0.8), flash[nF // 2][1], send=0.3)
+    # the three runs (志 / 和 / 诚): a low anchor and a chime-bell on the first plate of each character
+    for j, (f0, hi) in enumerate([(R0, 9), (R5, 11), (R0, 13)]):
+        t0 = flash[min(nF - 1, j * (nF // 3))][1]
+        m.add(A.pluck(lowf(f0), dur=3.0, vel=db(-12 + j), bright=0.8), t0, send=0.3)
+        m.add(A.chimebell(PENTA[hi], dur=1.6, vel=db(-15 + 1.5 * j), bright=1.1), t0 + 0.004, pan=(-0.3, 0.0, 0.3)[j], send=0.45)
     riser = np.zeros(N)
     for j, (lo, hi) in enumerate([(300, 600), (600, 1200), (1200, 2400), (2400, 4400), (4400, 7000)]):
         start = flash[0][1] + j * 0.7

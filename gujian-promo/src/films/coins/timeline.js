@@ -25,7 +25,7 @@ export const { SHOTS, TOTAL_FRAMES, shotAt } = buildTimeline([
   "s01-furnace-rim",   // 炉火映钱郭
   "s02-coin-string",   // 一串铜钱
   "s03-gold-kaiyuan",   // 金开元通宝微距
-  "s04-cowrie",   // 贝币
+  "s04-cowrie",   // 戥盘碎银（文件名沿用旧题材；贝币的齿口特写已按客户意见撤掉）
   "s05-red-patina",   // 红斑绿锈
   "s06-dragon-dollar-toning",   // 龙洋的虹彩包浆
   "s07-coin-blueprint",   // 方孔圆钱规制图
@@ -50,7 +50,7 @@ export const { SHOTS, TOTAL_FRAMES, shotAt } = buildTimeline([
   "s26-crayon-rubbing",   // 蜡笔拓钱
   "s27-horse-hoof-gold",   // 马蹄金
   "s28-silver-dollar-reeding",   // 一摞银元的边齿
-  "s29-bone-cowrie",   // 出土骨贝
+  "s29-bone-cowrie",   // 出土钱缘（文件名沿用旧题材；骨贝已按客户意见撤掉）
   "s30-yellow-silk-rubbing",   // 黄绫钱拓
   "s31-papercut-market",   // 剪纸拼贴·钱市
   "s32-bronze-metallograph",   // 青铜金相显微
