@@ -11,10 +11,9 @@ a = sys.argv[1:]
 film = a[a.index('--film') + 1] if '--film' in a else 'coins2'
 d = a[a.index('--dir') + 1]
 ids = [x for x in a if not x.startswith('--') and x not in (film, d)]
-board = {}
+slots = {}
 try:
-    sb = json.load(open(os.path.join(ROOT, 'docs', f'storyboard-{film}.json'), encoding='utf-8'))
-    board = {s['id']: s for s in sb['shots']}
+    slots = json.load(open(os.path.join(ROOT, 'docs', f'storyboard-{film}.json'), encoding='utf-8')).get('slots', {})
 except Exception:
     pass
 for i in ids:
@@ -25,10 +24,12 @@ for i in ids:
     sh = Image.new('RGB', (1080, 1080))
     for k, t in enumerate(tiles): sh.paste(t.resize((540, 540), Image.LANCZOS), ((k % 2) * 540, (k // 2) * 540))
     sh.save(P('sheet'), quality=90); print('sheet:   ' + P('sheet'))
+    W = mid.size[0]; q = W / 1080.0                       # device pixels per logical pixel (1 or 2)
     z = Image.new('RGB', (1620, 540))
-    for k, (x, y) in enumerate(((270, 130), (60, 480), (500, 300))): z.paste(mid.crop((x, y, x + 540, y + 540)), (k * 540, 0))
-    z.save(P('zoom'), quality=95); print('zoom:    ' + P('zoom'))
-    ref = board.get(i, {}).get('ref')
+    for k, (x, y) in enumerate(((400, 150), (130, 520), (560, 470))):     # logical positions; crops are 540 × 540 DEVICE pixels, shown 1:1
+        x, y = int(x * q), int(y * q); z.paste(mid.crop((x, y, x + 540, y + 540)), (k * 540, 0))
+    z.save(P('zoom'), quality=95); print('zoom:    ' + P('zoom') + ('   (1:1 device pixels of the %d px render)' % W))
+    ref = slots.get(i, {}).get('ref')
     rf = os.path.join(ROOT, 'build', 'ref2', 'f', 'f_%04d.jpg' % (round(ref * 24) + 1)) if ref is not None else None
     if rf and os.path.exists(rf):
         c = Image.new('RGB', (1620, 810), (20, 20, 22))

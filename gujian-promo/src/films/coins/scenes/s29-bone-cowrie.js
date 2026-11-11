@@ -1,11 +1,15 @@
-// s29 — 出土骨贝. Extreme macro of a bone cowrie (骨贝: animal bone ground into the shape of a sea cowrie) lying
-// half-buried in loess. The arc is the swelling outline of its back.
-// Below the arc: the ground bone face — bone-white, covered in fine grinding lines that follow the arc, pin-hole pores,
-// loess packed into every cut. Straight down from the crest runs the carved slot with its short saw-cut "teeth" on both
-// sides (the imitation of a cowrie's mouth); to the left a drilled hole for the cord. Lit from the upper left; the right
-// third falls into warm brown shadow, and the earth it lies in banks up over the two lower corners.
+// s29 — 出土钱缘. Extreme macro of a bronze cash coin just lifted out of the loess, lying where it was found. The arc is the
+// coin's outer edge.
+// Below the arc: the coin. Just inside the edge runs the raised outer rim (外郭) — a rounded shoulder that catches the light
+// as a bright line, a rubbed top, then a step down that throws its shadow onto the sunken field (肉). The metal is dark
+// brown bronze under a matte crust of malachite and grey-green earthy rust; loess (the very earth of the wall) is packed
+// into the corner under the rim, the pin-holes and the hollows, banks up over the two lower corners and lies on the face in
+// clods and crumbs, each with its shadow. Two stretches of the rim and the top of a run of spilt metal (流铜) are rubbed
+// through to dark gold; a few scratches cross the face. No inscription, and the square hole is far out of frame.
+// Lit from the upper left; the right third falls into shadow.
 // Above the arc: the ochre loess wall of the excavation square — coarse grains, gently dipping beds (土层) that break off in
-// small ledges, a soft lens of burnt-red earth in the odd bed, a few white chips — with a dark crevice shadow hugging the bone. Directly over the crest the earth is kept calm for the tagline.
+// small ledges, a soft lens of burnt-red earth in the odd bed, a few pale chips — with a dark crevice shadow hugging the
+// coin. Directly over the crest the earth is kept calm for the tagline.
 //
 // Both materials are shaded per pixel in init() from height fields (px): surface normal → raking key light from the upper
 // left, a short ray-march toward the light for cast shadows, then an illumination → colour ramp per material (so shadows turn
@@ -42,7 +46,12 @@ function lut(stops) {
   for (let i = 0; i < NL; i++) { const c = f(i / (NL - 1)); out[i * 3] = c[0]; out[i * 3 + 1] = c[1]; out[i * 3 + 2] = c[2]; }
   return out;
 }
-const BONE_STOPS = [[0, '#2a170a'], [0.16, '#553519'], [0.34, '#8a6238'], [0.5, '#b39468'], [0.66, '#cfbb97'], [0.82, '#e3d8bf'], [1, '#efe9da'], [1.2, '#f8f4e8'], [1.6, '#fffdf7']];
+const BRONZE_STOPS = [[0, '#0a0604'], [0.2, '#1e120b'], [0.45, '#352014'], [0.72, '#492e1c'], [1, '#5a3b24'], [1.25, '#77532f'], [1.6, '#a8804a']];      // the metal under its dull brown skin
+const MAL_STOPS = [[0, '#050d08'], [0.2, '#0d2116'], [0.45, '#173726'], [0.72, '#214c35'], [1, '#2b5e42'], [1.25, '#3d7756'], [1.6, '#6ba281']];         // malachite crust, matte
+const GREY_STOPS = [[0, '#0a0d09'], [0.2, '#1d241a'], [0.45, '#353f2f'], [0.72, '#4d5a44'], [1, '#647359'], [1.25, '#829075'], [1.6, '#b2bc9f']];        // grey-green earthy rust
+const GOLD_STOPS = [[0, '#120b05'], [0.2, '#33210f'], [0.45, '#5a3f1d'], [0.72, '#7c5c2c'], [1, '#97753b'], [1.25, '#bd9c5a'], [1.6, '#f1dfb0']];        // rubbed bare metal: dark brass
+const PAT_STOPS = [[0, '#080a06'], [0.2, '#191c12'], [0.45, '#2d3320'], [0.72, '#40482d'], [1, '#525b39'], [1.25, '#6e7a4e'], [1.6, '#9da778']];         // the thin olive skin between brown and green
+const CHIP_STOPS = [[0, '#2a170a'], [0.16, '#553519'], [0.34, '#8a6238'], [0.5, '#b39468'], [0.66, '#cfbb97'], [0.82, '#e3d8bf'], [1, '#efe9da'], [1.2, '#f8f4e8'], [1.6, '#fffdf7']];      // pale chips in the wall
 const SOIL_STOPS = [[0, '#170b04'], [0.2, '#3b220e'], [0.45, '#6f4a26'], [0.72, '#a6722d'], [1, '#c48d3a'], [1.25, '#e0aa4a'], [1.6, '#f5cf7e']];
 const RED_STOPS = [[0, '#1c0804'], [0.2, '#48160a'], [0.45, '#7c2a13'], [0.72, '#a23a1e'], [1, '#b4431f'], [1.25, '#c4552a'], [1.6, '#d87646']];
 
@@ -86,41 +95,95 @@ function coarse(RW, RH, CS) {
   return { cw, ch, mk, bil };
 }
 
-// the carved slot, its teeth and the drilled hole (U = px along the arc from the crest, V = px below the arc)
-const SLOT_HALF = 23, SLOT_WALL = 18, SLOT_DEPTH = 28;
-const T0 = 80, TP = 52, NT = 14;
-const HOLE = { U: -420, V: 236, r: 58, bevel: 22 };
+// the coin (U = px along the arc from the crest, V = px in from the edge)
+const RIMW = 76;       // mean width of the outer rim (外郭); it wanders ±12 along the edge
+const HR = 22;         // how far the rim stands above the field (px of relief)
+// two stretches of the rim where handling has rubbed the crust through to dark metal: [U centre, half length, strength]
+const WEAR = [[170, 150, 1], [-585, 70, 0.75]];
+// 流铜: a run of spilt metal frozen on the field, and a drop beside it: [U, V, half length, half width, heading, height]
+const BLEBS = [[-262, 236, 46, 15, 1.25, 5.2], [-232, 306, 12, 9, 0.4, 3.4]].map((b) => [...b, Math.cos(b[4]), Math.sin(b[4])]);
+// clods of loess that have dropped onto the face: [U, V, radius]
+const CLODS = [[-690, 250, 36], [-628, 292, 15], [-742, 304, 10], [-655, 203, 7], [395, 345, 30], [448, 310, 12], [352, 392, 9], [640, 119, 19], [-1010, 46, 15],
+  [-140, 150, 11], [-112, 172, 6], [60, 424, 22], [960, 250, 24], [-300, 112, 8], [820, 400, 16], [-455, 420, 13], [130, 262, 5]];
+// scratches the earth has dragged across the face: [U, V, heading (0 = along the edge, π/2 = straight in), length, width, strength, bow]
+const SCRATCHES = [[-640, 120, 0.42, 250, 1.25, 1, 0.0003], [-622, 144, 0.45, 180, 1.0, 0.7, 0.0002], [-590, 106, 0.4, 120, 0.95, 0.55, 0],
+  [205, 22, 1.05, 170, 1.2, 0.9, -0.0004], [238, 30, 1.1, 110, 0.95, 0.6, 0], [-190, 332, -0.12, 330, 1.2, 0.85, 0.0002],
+  [520, 180, 2.5, 150, 1.0, 0.6, 0], [-960, 150, 0.9, 140, 1.1, 0.7, 0], [760, 60, 0.7, 120, 1.0, 0.6, 0.0005], [-380, 402, 0.3, 160, 1.0, 0.6, 0], [40, 112, 2.2, 90, 0.95, 0.5, 0]];
 
-/** the bone: everything below the arc */
-function buildBone(env) {
+/** the coin: everything below the arc */
+function buildCoin(env, sand) {
   const a = env.arc, R = a.R, cx = a.cx, cy = a.cy;
   const X0 = -PAD, Y0 = Math.floor(a.crestY) - 3;
   const RW = W + PAD * 2, RH = H + PAD - Y0, N = RW * RH;
   const nA = L.makeNoise('s29a'), nB = L.makeNoise('s29b');
-  const BONE = lut(BONE_STOPS), SOIL = lut(SOIL_STOPS);
-
-  // teeth: hand-sawn V cuts, a little uneven
-  const rt = L.rng('s29teeth'), teeth = [[], []];
-  for (let s = 0; s < 2; s++) for (let k = 0; k < NT; k++) {
-    const v = T0 + TP * k + rt.range(-7, 7) + (s ? 13 : 0);
-    teeth[s].push({ v, len: rt.range(74, 108) * (0.6 + 0.4 * sstep(70, 260, v)), hw: rt.range(10, 14), depth: rt.range(11, 15), tilt: rt.range(-0.09, 0.09), curve: rt.range(-0.0006, 0.0006) });
-  }
+  const BRZ = lut(BRONZE_STOPS), MAL = lut(MAL_STOPS), GRY = lut(GREY_STOPS), GLD = lut(GOLD_STOPS), PAT = lut(PAT_STOPS), SOIL = lut(SOIL_STOPS);
+  const toXY = (U, V) => { const rr = R - V, th = U / rr; return [cx + rr * Math.sin(th), cy - rr * Math.cos(th)]; };
 
   // slow fields on a coarse polar grid
   const CS = 4, cg = coarse(RW, RH, CS);
-  const cPatch = cg.mk(), cIvory = cg.mk(), cCrust = cg.mk(), cPore = cg.mk(), cDust = cg.mk();
+  const cLump = cg.mk(), cCor = cg.mk(), cGrey = cg.mk(), cSoil = cg.mk(), cTint = cg.mk(), cRw = cg.mk(), cPit = cg.mk(), cFlow = cg.mk(), cDust = cg.mk(), cPatch = cg.mk();
   for (let j = 0; j < cg.ch; j++) for (let i = 0; i < cg.cw; i++) {
     const ddx = X0 + i * CS - cx, ddy = cy - (Y0 + j * CS), rr = Math.sqrt(ddx * ddx + ddy * ddy);
     const U = Math.atan2(ddx, ddy) * rr, V = R - rr, k = j * cg.cw + i;
+    cLump[k] = nA.fbm(U / 170, V / 170, 3, 2, 0.5);                       // the cast face is never quite flat
+    cCor[k] = nB.fbm(U / 230 + 31, V / 180 + 7, 3, 2, 0.5);              // where the green crust has grown
+    cGrey[k] = nA.fbm(U / 380 + 9, V / 260 - 4, 3);                       // malachite ↔ grey-green earthy rust
+    cSoil[k] = nB.fbm(U / 190 - 17, V / 150 + 41, 4, 2, 0.55);            // where loess still clings
+    cTint[k] = nA.fbm(U / 520 + 77, V / 400 - 23, 3);
+    cRw[k] = RIMW + 9 * nA.n2(U / 360, 1.7) + 3.5 * nB.n2(U / 80, 8.1);
+    cPit[k] = nB.fbm(U / 300 + 3, V / 300 - 60, 2);
+    cFlow[k] = nA.fbm(U / 420 - 40, V / 300 + 15, 2);
+    cDust[k] = nA.fbm(U / 640 + 21, V / 80 - 5, 3);
     cPatch[k] = nA.fbm(U / 420, V / 300, 2);
-    cIvory[k] = nA.fbm(U / 520 + 9, V / 260 - 4, 3);
-    cCrust[k] = nB.fbm(U / 190 + 31, V / 150 + 7, 4, 2, 0.55);
-    cPore[k] = nB.fbm(U / 260 - 17, V / 200 + 41, 3);
-    cDust[k] = nA.fbm(U / 640 + 77, V / 80 - 23, 3);
   }
 
-  const Hh = new Float32Array(N).fill(-120), Sm = new Float32Array(N), Yl = new Float32Array(N), Du = new Float32Array(N), Cv = new Float32Array(N);
-  const Ua = new Float32Array(N), Va = new Float32Array(N);
+  // scratches: fine V grooves, rasterised into a depth map (each one presses harder in the middle and fades out at both ends)
+  const Sc = new Float32Array(N);
+  const rs = L.rng('s29scratch'), nz = L.makeNoise('s29scr');
+  const list = SCRATCHES.slice();
+  for (let n = 0; n < 16; n++) list.push([rs.range(-1100, 1100), rs.range(20, 470), rs.range(0, Math.PI), rs.range(28, 80), rs.range(0.85, 1.0), rs.range(0.3, 0.5), 0]);
+  list.forEach(([U0, V0, ang, len, wid, amp, bow], n) => {
+    const du = Math.cos(ang), dv = Math.sin(ang);
+    for (let s = 0; s <= len; s += 0.5) {
+      const t = s / len, off = bow * s * s + 1.3 * nz.n2(s / 70, n * 3.7);
+      const p = toXY(U0 + du * s - dv * off, V0 + dv * s + du * off);
+      const tp = Math.sin(Math.PI * (0.03 + 0.94 * t)), am = amp * Math.pow(tp, 0.6) * (0.72 + 0.28 * nz.n2(s / 23, n * 9.1 + 4));
+      const w = wid * (0.6 + 0.4 * tp), iw = 1 / (w * w);
+      const px = p[0] - X0, py = p[1] - Y0, i0 = Math.round(px), j0 = Math.round(py);
+      for (let jj = j0 - 3; jj <= j0 + 3; jj++) for (let ii = i0 - 3; ii <= i0 + 3; ii++) {
+        if (ii < 0 || jj < 0 || ii >= RW || jj >= RH) continue;
+        const dx = ii - px, dy = jj - py, e = am * Math.exp(-(dx * dx + dy * dy) * iw), k = jj * RW + ii;
+        if (e > Sc[k]) Sc[k] = e;
+      }
+    }
+  });
+
+  // clods: broken lumps of earth — a blunt polygon in plan, steep crumbling sides, a lumpy top leaning its own way
+  const ClH = new Float32Array(N), ClM = new Float32Array(N);
+  const rcl = L.rng('s29clod');
+  CLODS.forEach(([cu, cv, cr], n) => {
+    const [px, py] = toXY(cu, cv), e0 = Math.ceil(cr * 1.2) + 3;
+    const ns = rcl.int(5, 7), rot0 = rcl.range(0, L.TAU), pl = [];
+    for (let q = 0; q < ns; q++) { const an = rot0 + (q / ns) * L.TAU + rcl.range(-0.25, 0.25); pl.push([Math.cos(an), Math.sin(an) * rcl.range(0.95, 1.35), cr * rcl.range(0.7, 1)]); }
+    const tall = cr * (0.5 + 0.2 * hash2(n, 29)), rise = 1 / (cr * 0.3), tx = rcl.range(-0.12, 0.12), ty = rcl.range(-0.12, 0.12);
+    const er0 = Math.min(1.2, cr * 0.12), er1 = Math.min(1.6, cr * 0.14);
+    for (let yy = Math.floor(py - e0); yy <= py + e0; yy++) for (let xx = Math.floor(px - e0); xx <= px + e0; xx++) {
+      const i = xx - X0, j = yy - Y0; if (i < 1 || j < 1 || i >= RW - 1 || j >= RH - 1) continue;
+      const qx = xx - px, qy = yy - py;
+      let e = 1e9;
+      for (let q = 0; q < ns; q++) { const pq = pl[q], dd = pq[2] - (qx * pq[0] + qy * pq[1]); if (dd < e) e = dd; }
+      e -= er0 + er1 * nB.n2(xx / 6 + n * 3, yy / 6) + cr * 0.08 * nA.n2(xx / (cr * 0.6) + n * 9, yy / (cr * 0.6));
+      if (e <= 0) continue;
+      const k = j * RW + i, body = 1 - Math.exp(-e * rise);
+      const hgt = tall * body * (1 + 2 * (tx * qx + ty * qy) / cr) + cr * 0.12 * nA.n2(xx / (cr * 0.45) + n * 5, yy / (cr * 0.45)) * body + 0.8 * nB.n2(xx / 5.5 + 70, yy / 5.5) * Math.min(1, e / 3);
+      const m = Math.min(1, e / 1.5);
+      if (hgt > ClH[k]) ClH[k] = hgt;
+      if (m > ClM[k]) ClM[k] = m;
+    }
+  });
+
+  const Hh = new Float32Array(N).fill(-120), Sm = new Float32Array(N), Du = new Float32Array(N), Cv = new Float32Array(N);
+  const Gw = new Float32Array(N), Mw = new Float32Array(N), Kt = new Float32Array(N), Ft = new Float32Array(N), Cr = new Float32Array(N), Va = new Float32Array(N), Ws = new Float32Array(N), Rm = new Float32Array(N);
   const In = new Uint8Array(N);
   for (let j = 0; j < RH; j++) {
     const y = Y0 + j, ddy = cy - y;
@@ -129,132 +192,161 @@ function buildBone(env) {
       if (rr > R + 2) continue;
       const k = j * RW + i; In[k] = 1;
       const U = Math.atan2(ddx, ddy) * rr, V = R - rr;
-      Ua[k] = U; Va[k] = V;
+      Va[k] = V;
       const hs = hash2(i, j) - 0.5;
-      // 1) grinding lines following the arc; two more families at a slight angle, in patches (the piece was turned on the stone)
-      const p1 = nA.n2(U / 460, V / 2.0 + 3.3), p2 = nB.n2(U / 150 + 50, V / 3.6);
-      const pa = cg.bil(cPatch, i, j), wa = sstep(-0.1, 0.35, pa), wb = sstep(-0.1, 0.35, -pa);
-      let h = 0.13 * p1 + 0.2 * p2 + hs * 0.1;
-      if (wa > 0.01) h += wa * 0.2 * nA.n2(U / 380 - 9, (V + 0.065 * U) / 2.4 + 60);
-      if (wb > 0.01) h += wb * 0.17 * nB.n2(U / 300 + 13, (V - 0.05 * U) / 2.8 - 30);
-      const q = nB.n2(U / 720 + 7, V / 6.5 + 100);
-      if (q > 0.56) h -= (q - 0.56) * 3.4;                    // the odd deeper scratch
+      const lump = cg.bil(cLump, i, j);
+      const mid = nA.n2(U / 34 + 3, V / 34 + 1.5), fine = nB.n2(U / 9 + 50, V / 9 - 7), fine2 = nA.n2(U / 4.2, V / 4.2 + 9);
+      // 1) 外郭: a rounded shoulder up from the edge, a slightly crowned top, then the step down to the field (the inner
+      //    arris is a cast edge, so it wanders a little)
+      const rw = cg.bil(cRw, i, j);
+      let rimIn = 0, foot = 0;
+      if (V < rw + 120) {
+        const wob = 2.4 * nB.n2(U / 31 + 11, 3.3) + 1.0 * nA.n2(U / 8.5, 6.6);
+        const st = (V - (rw - 5 + wob)) / 10;
+        rimIn = st <= 0 ? 1 : st >= 1 ? 0 : 1 - st * st * (3 - 2 * st);
+        if (rimIn < 1) { foot = (1 - rimIn) * Math.exp(-(V - rw) / 26); if (foot > 1) foot = 1; }      // the corner at the rim's foot
+      }
+      const e0 = V < 15 ? 1 - V / 15 : 0, rv = (V - rw * 0.5) / (rw * 0.5);
+      const hRim = HR * rimIn - 1.3 * rimIn * rv * rv - 10.5 * e0 * e0;
+      // 2) corrosion: a matte green crust over the brown metal — thinner on the rim top, thickest in the corner under it
+      const cz = cg.bil(cCor, i, j) + 0.12 * mid + 0.05 * fine + 0.015 * fine2 + 0.13 - 0.2 * rimIn + 0.2 * foot;
+      let wG = cz <= -0.05 ? 0 : cz >= 0.07 ? 1 : sstep(-0.05, 0.07, cz);
+      // 3) where the crust is rubbed through to metal: two stretches of the rim (its inner arris and the crown of the shoulder)…
+      let wM = 0;
+      if (rimIn > 0.05) {
+        let sp = 0;
+        for (let n = 0; n < WEAR.length; n++) { const w = WEAR[n], eu = (U - w[0]) / w[1]; if (eu > -2.2 && eu < 2.2) { const e = w[2] * Math.exp(-eu * eu); if (e > sp) sp = e; } }
+        if (sp > 0.05) {
+          const va = (V - (rw - 11)) / 6, vb = (V - 7) / 4;
+          const band = Math.exp(-va * va) + 0.5 * Math.exp(-vb * vb);
+          wM = sstep(0.4, 0.6, sp * band * (0.9 + 0.6 * nA.n2(U / 34 + 9, V / 7 + 4)) + 0.08 * fine) * rimIn;
+        }
+      }
+      // …and the top of the run of spilt metal on the field
+      let hBleb = 0;
+      for (let n = 0; n < BLEBS.length; n++) {
+        const bb = BLEBS[n], bu = U - bb[0], bv = V - bb[1];
+        if (bu < -70 || bu > 70 || bv < -70 || bv > 70) continue;
+        const bl = bb[2], bw = bb[3], bh = bb[5], bc = bb[6], bs = bb[7];
+        const al = bu * bc + bv * bs, ac = bv * bc - bu * bs;
+        const wd = bw * (0.62 + 0.38 * sstep(-bl, bl * 0.6, al)) * (1 + 0.14 * nA.n2(al / 21 + 7, 2.2 + bl));
+        const q = (al / bl) * (al / bl) + (ac / wd) * (ac / wd);
+        if (q < 1) {
+          hBleb = bh * (1 - q * q);
+          const m = sstep(0.66, 0.92, 1 - q + 0.22 * nB.n2(U / 11, V / 11 + 3)); if (m > wM) wM = m;
+          wG *= 1 - 0.6 * sstep(0.3, 0.7, 1 - q);
+        }
+      }
+      const sc = Sc[k];
+      wG *= (1 - wM) * (1 - 0.75 * sc);
+      // the cast skin
+      let h = hRim + hBleb + (2.6 * lump + 1.0 * mid) * (1 - 0.45 * rimIn) + (0.5 * fine + 0.26 * fine2) * (1 - 0.5 * wM) + 0.1 * hs;
+      // the crust is built of tiny rounded knobs, each its own shade
+      let kt = 0;
+      if (wG > 0.02) {
+        cell(U / 7.5 + 0.3, V / 7.5 + 0.7);
+        const kn = cD1 < 0.4 ? Math.sqrt(1 - cD1 / 0.4) : 0;
+        h += wG * (1.5 + 1.0 * kn * (0.5 + cId2));
+        kt = (cId - 0.5) * kn;
+      }
+      // 4) 流铜痕: a few low wandering wrinkles where the metal froze as it ran
+      const fl = cg.bil(cFlow, i, j);
+      if (fl > 0.12 && rimIn < 0.9) {
+        const aa = (V + 0.34 * U + 34 * nA.n2(U / 210 + 5, V / 210 - 3)) / 58;
+        const rdg = 1 - Math.abs(nB.n2(U / 380 + 40, aa));
+        if (rdg > 0.84) { const f = (rdg - 0.84) * 6.25; h += sstep(0.12, 0.4, fl) * (1 - rimIn) * 1.5 * f * f * (3 - 2 * f); }
+      }
       let soil = 0, cav = 0;
-      // 2) pores: pin-holes, slightly drawn out along the bone's long axis, packed with loess
-      const dens = 0.09 + 0.34 * cg.bil(cPore, i, j);
-      if (dens > 0.01) {
-        cell(U / 10 + 5.5, V / 17 + 9.1);
-        if (cId < dens) {
-          const rp = 0.09 + 0.24 * cId2 * cId2, qq = cD1 / (rp * rp);
-          if (qq < 1) { const f = (1 - qq) * (1 - qq); h -= 3 * f * (0.5 + cId2); soil = f * 0.8; cav = f; }
-        }
+      // 5) 砂眼: the odd pin-hole left by the sand mould, packed with loess (sparse — never a field of holes)
+      const dens = 0.03 + 0.13 * sstep(-0.1, 0.5, cg.bil(cPit, i, j));
+      cell(U / 23 + 5.5, V / 23 + 9.1);
+      if (cId < dens) {
+        const rp = 0.06 + 0.13 * cId2 * cId2, qq = cD1 / (rp * rp) * (1 + 0.4 * fine);
+        if (qq < 1) { const f = (1 - qq) * (1 - qq); h -= 2.6 * f * (0.5 + cId2); soil = f * 0.75; cav = f; }
       }
-      // 3) the carved slot and its teeth
-      if (U > -180 && U < 180 && V > 2) {
-        const u = U - 5 * nA.n2(V / 150, 7.7), au = u < 0 ? -u : u, side = u < 0 ? 0 : 1;
-        const grow = sstep(6, 96, V);
-        const wf = (SLOT_HALF + 3.5 * nB.n2(V / 80, 3.1 + side * 9)) * grow;
-        const wo = wf + 5 + (SLOT_WALL - 5) * grow + 1.0 * nA.n2(V / 13, 40 + side * 5);
-        const gd = SLOT_DEPTH * sstep(4, 76, V);
-        let hg = 0, sg = 0;
-        if (au < wo) {
-          const wall = au <= wf ? 1 : (wo - au) / (wo - wf);
-          hg = -gd * wall;
-          // loess packed in the bottom, lying a little unevenly
-          const fill = -gd + 6 + 2.4 * nA.n2(U / 30 + 3, V / 90) + 1.1 * nB.n2(U / 11 + 70, V / 11) + 0.5 * nA.n2(U / 4.3, V / 4.3 + 9) + hs * 1.0;
-          if (fill > hg) { sg = sstep(0, 2.2, fill - hg); hg = fill; }
-        }
-        const aa = au - wf + 4;
-        if (aa > 0 && aa < 120 && V > 24) {
-          const arr = teeth[side], kk = Math.round((V - T0 - (side ? 13 : 0)) / TP);
-          for (let n = kk - 1; n <= kk + 1; n++) {
-            if (n < 0 || n >= NT) continue;
-            const t = arr[n]; if (aa >= t.len) continue;
-            const f = aa / t.len, dv = Math.abs(V - (t.v + t.tilt * aa + t.curve * aa * aa));
-            const hwa = t.hw * Math.sqrt(1 - f) + 0.7;
-            if (dv < hwa) {
-              const cut = 1 - dv / hwa, dep = t.depth * (1 - 0.5 * f);
-              let ht = -dep * cut;
-              const lvl = -dep * (0.62 + 0.14 * nB.n2(U / 9 + 11, V / 9 - 5)) + hs * 0.9;     // soil in the bottom of the cut
-              let st = 0;
-              if (ht < lvl) { st = sstep(0, 1.6, lvl - ht); ht = lvl; }
-              if (ht < hg) { hg = ht; sg = st; }
-            }
-          }
-        }
-        if (hg < 0) { const keep = 1 + hg / SLOT_DEPTH; h = h * (keep < 0 ? 0 : keep) + hg; if (sg > soil) soil = sg; const cv = -hg / SLOT_DEPTH; if (cv > cav) cav = cv > 1 ? 1 : cv; }
-      }
-      // 4) the drilled hole: hand-drilled cone, plugged with loess
-      const hu = U - HOLE.U, hv = V - HOLE.V, hd2 = hu * hu + hv * hv;
-      if (hd2 < (HOLE.r + HOLE.bevel + 6) * (HOLE.r + HOLE.bevel + 6)) {
-        const hd = Math.sqrt(hd2), rh = HOLE.r * (1 + 0.03 * nA.n2(Math.atan2(hv, hu) * 1.4, 5.5));
-        if (hd < rh) {
-          h = -46 + 6 * nA.n2(hu / 30, hv / 30 + 9) + 1.3 * nB.n2(hu / 11, hv / 11) + 0.6 * nA.n2(hu / 4.3, hv / 4.3) + hs * 1.1; soil = 1; cav = 1;
-        } else if (hd < rh + HOLE.bevel) {
-          const t = (rh + HOLE.bevel - hd) / HOLE.bevel, tp = t < 0.22 ? t * t / 0.44 : t - 0.11;      // the lip is rounded over, not a knife edge
-          h = h * (1 - t) - 29 * tp * (0.75 + 0.25 * t) + (0.45 * Math.sin(hd * 1.7) + 0.5 * Math.sin(hd * 0.63 + 2)) * t; if (t * 0.5 > cav) cav = t * 0.5;
-          const sm = sstep(0.82, 1, t + 0.1 * nB.n2(hu / 6, hv / 6)) * 0.9; if (sm > soil) soil = sm;
-        }
-      }
-      // 5) loess still clinging to the face: the earth it lies in banks up over the two lower corners, crumbs scattered
-      //    around the banks, a film of dust in the grinding lines
+      if (sc > 0) h -= 2.0 * sc;
+      // 6) loess: banked over the two lower corners, packed in stretches into the corner under the rim and into the hollows
+      //    of the face; crumbs scattered around all of it
       const dL2 = (x + 90) * (x + 90) + (y - 1170) * (y - 1170), dR2 = (x - 2010) * (x - 2010) + (y - 1150) * (y - 1150);
       const cL = dL2 < 490000 ? 1 - sstep(190, 700, Math.sqrt(dL2)) : 0, cR = dR2 < 409600 ? 1 - sstep(180, 640, Math.sqrt(dR2)) : 0;
-      const cf = cg.bil(cCrust, i, j), cb = 0.95 * (cL > cR ? cL : cR) + 0.34 * cf;
+      const bank = cL > cR ? cL : cR, cf = cg.bil(cSoil, i, j);
+      let cb = 0.95 * bank + 0.34 * cf - 0.22 * rimIn * (1 - bank);
+      if (foot > 0.01) cb += foot * (0.28 + 0.6 * sstep(-0.05, 0.3, cf + 0.25 * nB.n2(U / 45 + 3, 2.2)));
+      else cb -= 0.12 * (1 - sstep(220, 460, U < 0 ? -U : U));
+      if (lump < 0) cb -= 0.3 * lump * (1 - rimIn);
       let crv = 0, crm = 0;
       if (cb > 0.08) {
-        const hero = Math.max(1 - sstep(200, 400, U < 0 ? -U : U), 1 - sstep(HOLE.r + 40, HOLE.r + 170, Math.sqrt(hd2)));
-        crv = cb + 0.04 * nB.n2(U / 14 + 4, V / 14) + 0.01 * hs - 0.6 * hero;
+        crv = cb + 0.04 * nB.n2(U / 14 + 4, V / 14) + 0.01 * hs;
         crm = sstep(0.6, 0.67, crv);
         if (crm > 0) {
-          h += crm * (5 + 10 * sstep(0.62, 1.1, crv) + 4 * nA.n2(U / 46 - 20, V / 46) + 1.2 * nB.n2(U / 11 + 70, V / 11) + 0.5 * nA.n2(U / 4.3, V / 4.3 + 9) + 0.75 * hs);
+          h += crm * (4 + 10 * sstep(0.62, 1.1, crv) + 4 * nA.n2(U / 46 - 20, V / 46) + 1.2 * nB.n2(U / 11 + 70, V / 11) + 0.75 * hs);
           if (crm > soil) soil = crm;
         } else if (crv > 0.05) {
-          const pc = 0.01 + 0.15 * sstep(0.36, 0.6, crv) + 0.05 * sstep(0.25, 0.5, cf) * (1 - hero);
+          const pc = 0.012 + 0.15 * sstep(0.36, 0.6, crv) + 0.05 * sstep(0.25, 0.5, cf);
           cell(U / 21 + 1.3, V / 21 + 8.8);
           if (cId < pc) {
-            const rp = 0.08 + 0.24 * cId2 * cId2, qq = cD1 / (rp * rp) * (1 + 0.5 * nB.n2(U / 4 + 9, V / 4));
-            if (qq < 1) { const dome = Math.sqrt(1 - qq); h += dome * rp * 21 * 0.42 + hs * 0.8; const sm = sstep(1, 0.72, qq); if (sm > soil) soil = sm; }
+            const rp = 0.08 + 0.26 * cId2 * cId2, qq = cD1 / (rp * rp) * (1 + 0.5 * nB.n2(U / 4 + 9, V / 4));
+            if (qq < 1) { const dome = Math.sqrt(1 - qq); h += dome * rp * 21 * 0.6 + hs * 0.8; const sm = sstep(1, 0.72, qq); if (sm > soil) soil = sm; }
           }
         }
       }
+      const cm = ClM[k];
+      if (cm > 0) { h += ClH[k]; if (cm > soil) soil = cm; }
+      if (soil > 0.3) { const ti = ((j & 255) << 8) | (i & 255); h += soil * (0.9 * sand.hA[ti] + 0.6 * sand.hB[ti]); }      // the same grain as the wall
       const dv2 = cg.bil(cDust, i, j);
-      Du[k] = Math.min(1, sstep(0.3, 0.6, crv) * 0.6 * (1 - crm) + sstep(0.0, 0.45, dv2) * sstep(0.15, -0.35, p2) * 0.5);
-      Yl[k] = cg.bil(cIvory, i, j);
-      // 6) the face rolls over into the edge
-      if (V < 480) h -= 12 * Math.exp(-V / 70) + (V < 90 ? 12 * Math.exp(-V / 9) : 0);
-      Hh[k] = h; Sm[k] = soil; Cv[k] = cav;
+      Du[k] = Math.min(1, sstep(0.3, 0.6, crv) * 0.6 * (1 - crm) + sstep(0.0, 0.45, dv2) * (0.2 + 0.3 * wG) * sstep(0.2, -0.3, mid) + 0.18 * foot);
+      Cr[k] = e0 > 0 || V < 22 ? Math.exp(-((V - 6.5) * (V - 6.5)) / 25) * (0.62 + 0.38 * nA.n2(U / 120 + 2, 0.7)) : 0;
+      Hh[k] = h; Sm[k] = soil; Cv[k] = cav; Gw[k] = wG; Mw[k] = wM; Kt[k] = kt; Ft[k] = foot; Rm[k] = rimIn;
+      Ws[k] = sstep(-0.5, 0.0, cz + 0.12 * lump) * 0.9 * (1 - wM);
     }
   }
 
   // shade
   const img = new ImageData(RW, RH), d = img.data;
-  const HN2 = (HOLE.r + 110) * (HOLE.r + 110);
+  const idx = (v) => { const n = (v / IMAX * (NL - 1)) | 0; return (n < 0 ? 0 : n > NL - 1 ? NL - 1 : n) * 3; };
   for (let j = 0; j < RH; j++) {
     const y = Y0 + j;
     const xt = 1235 + 0.6 * (y - 560) + 30 * Math.sin((y - 560) / 170 + 0.6);      // edge of the big shadow on this row
     for (let i = 0; i < RW; i++) {
       const k = j * RW + i; if (!In[k]) continue;
-      const x = X0 + i, U = Ua[k], V = Va[k];
-      const hu = U - HOLE.U, hv = V - HOLE.V;
-      light(Hh, RW, RH, i, j, hu * hu + hv * hv < HN2 ? 8 : 6);
-      const soil = Sm[k], cav = Cv[k];
+      const x = X0 + i, V = Va[k], ux = x - cx;
+      light(Hh, RW, RH, i, j, 8);
+      const soil = Sm[k], cav = Cv[k], wG = Gw[k], wM = Mw[k], foot = Ft[k], crown = Cr[k] * (1 - soil), sc = Sc[k];
       // the big shadow that takes the right third
       let gs = sstep(-85, 95, x - xt + 44 * cg.bil(cPatch, i, j));
       if (V < 60) gs *= 1 - 0.3 * Math.exp(-V / 12);
-      const macro = 1 + 0.07 * Math.exp(-((U + 380) * (U + 380)) / 270000 - ((V - 150) * (V - 150)) / 67600) - 0.1 * sstep(260, 660, V) - 0.07 * sstep(-520, -1150, U);
+      const macro = 1 + 0.1 * Math.exp(-((ux + 380) * (ux + 380)) / 270000 - ((V - 150) * (V - 150)) / 67600) - 0.1 * sstep(260, 660, V) - 0.07 * sstep(-520, -1150, ux);
       const rel = lRel + (1 - lRel) * 0.55 * gs;
-      const band = 1 + 0.06 * cg.bil(cDust, i, j) * (1 - soil);          // broad soft bands of the polish
-      let il = (0.3 + 0.7 * rel * (1 - 0.9 * lSh)) * macro * band * (1 - 0.42 * gs) * (1 - 0.1 * gs * sstep(1300, 1950, x)) * (1 - 0.32 * cav);
-      il += lSpec * 0.26 * (1 - gs) * (1 - soil);
-      let li = (il / IMAX * (NL - 1)) | 0; li = (li < 0 ? 0 : li > NL - 1 ? NL - 1 : li) * 3;
-      let r = BONE[li], g = BONE[li + 1], b = BONE[li + 2];
-      // ivory yellowing in slow blotches
-      const yl = Yl[k]; if (yl > 0) { const t = yl * 0.55; g *= 1 - 0.04 * t; b *= 1 - 0.17 * t; } else { const t = -yl * 0.3; r *= 1 - 0.03 * t; g *= 1 - 0.02 * t; }
+      let il = (0.3 + 0.7 * rel * (1 - 0.9 * lSh)) * macro * (1 - 0.4 * gs) * (1 - 0.1 * gs * sstep(1300, 1950, x)) * (1 - 0.32 * cav);
+      // the field lies a step lower: the rim keeps some of the sky off it, most in the corner just under the step
+      const rimIn = Rm[k];
+      il *= (1 + 0.07 * rimIn) * (1 - (1 - rimIn) * (1 - soil) * (0.3 * foot + (V < 420 ? 0.16 * Math.exp(-(V > RIMW ? V - RIMW : 0) / 80) : 0)));
+      il *= 1 + 0.3 * crown;                                                   // the shoulder is rubbed a shade paler: the light draws a line along the edge
+      il += lSpec * (0.1 * (1 - wG) + 0.7 * wM) * (1 - 0.7 * gs) * (1 - soil);     // the patina is matte; only bare metal has a sheen
+      const li = idx(il * 0.86);
+      // the bronze itself: dark brown, stained red-brown where the crust has just let go of it
+      let r = BRZ[li], g = BRZ[li + 1], b = BRZ[li + 2];
+      const ws = Ws[k];
+      if (ws > 0.004) { r += (PAT[li] - r) * ws; g += (PAT[li + 1] - g) * ws; b += (PAT[li + 2] - b) * ws; }
+      const mg = wG * (1 - wG) * 4;
+      if (mg > 0.01) { r *= 1 + 0.14 * mg; g *= 1 - 0.08 * mg; b *= 1 - 0.14 * mg; }
+      // the crust: malachite ↔ grey-green earthy rust, in slow blotches, each knob a shade of its own
+      if (wG > 0.004) {
+        const kt = Kt[k], gi = idx(il * 0.84 * (1 + 0.24 * kt));
+        const wy = sstep(0.02, 0.4, cg.bil(cGrey, i, j) + 0.25 * kt);
+        let gr = MAL[gi] + (GRY[gi] - MAL[gi]) * wy, gg = MAL[gi + 1] + (GRY[gi + 1] - MAL[gi + 1]) * wy, gb = MAL[gi + 2] + (GRY[gi + 2] - MAL[gi + 2]) * wy;
+        const tn = cg.bil(cTint, i, j);
+        if (tn > 0) { gr *= 1 + 0.3 * tn; gb *= 1 - 0.24 * tn; } else { gr *= 1 + 0.16 * tn; gg *= 1 + 0.1 * tn; gb *= 1 + 0.06 * tn; }
+        r += (gr - r) * wG; g += (gg - g) * wG; b += (gb - b) * wG;
+      }
+      if (crown > 0.01) { const hk = 0.42 * crown, ci = idx(il * 1.2); r += (GLD[ci] - r) * hk; g += (GLD[ci + 1] - g) * hk; b += (GLD[ci + 2] - b) * hk; }
+      // bare metal: dark gold where it is rubbed, a thread of it in the bottom of each scratch
+      const wm = wM + 0.34 * sc * (1 - wM);
+      if (wm > 0.004) { const mi = idx(il); r += (GLD[mi] - r) * wm; g += (GLD[mi + 1] - g) * wm; b += (GLD[mi + 2] - b) * wm; }
       // loess: dust film, then solid earth
       const du = Du[k] * 0.5;
       if (du > 0 || soil > 0) {
-        let si = (il * 1.12 / IMAX * (NL - 1)) | 0; si = (si < 0 ? 0 : si > NL - 1 ? NL - 1 : si) * 3;
+        const si = idx(il * 0.9);
         if (du > 0) { r += (SOIL[si] * 1.08 - r) * du; g += (SOIL[si + 1] * 1.1 - g) * du; b += (SOIL[si + 2] * 1.15 - b) * du; }
         if (soil > 0) { r += (SOIL[si] - r) * soil; g += (SOIL[si + 1] - g) * soil; b += (SOIL[si + 2] - b) * soil; }
       }
@@ -265,60 +357,9 @@ function buildBone(env) {
   const cnv = L.makeCanvas(RW, RH);
   cnv.getContext('2d').putImageData(img, 0, 0);
 
-  const toXY = (U, V) => { const rr = R - V, th = U / rr; return [cx + rr * Math.sin(th), cy - rr * Math.cos(th)]; };
   const layer = L.makeLayer(PAD, (g) => {
     g.save(); a.clipBelow(g, 0);
     g.drawImage(cnv, X0, Y0);
-    // hairline drying cracks along the bone's long axis, stained with earth
-    const rc = L.rng('s29crack'), nz = L.makeNoise('s29crk');
-    const cracks = [[-1010, 4, 300], [-760, 60, 260], [-640, 330, 300], [-250, 250, 200], [300, 300, 320], [520, 2, 240], [760, 140, 380], [1020, 40, 300], [-900, 380, 260],
-      [HOLE.U + 22, HOLE.V + HOLE.r + 14, 190], [HOLE.U - 30, HOLE.V - HOLE.r - 150, 138]];
-    g.globalCompositeOperation = 'multiply'; g.lineCap = 'round'; g.lineJoin = 'round';
-    // each crack is a tapered ribbon (widest where it opens at the rim or at a fork), filled once so nothing beads
-    const ribbon = (pts, kw, base, style, dx) => {
-      const n = pts.length, lf = [], rt = [];
-      for (let t = 0; t < n; t++) {
-        const a0 = pts[t > 0 ? t - 1 : 0], a1 = pts[t < n - 1 ? t + 1 : n - 1];
-        let tx = a1[0] - a0[0], ty = a1[1] - a0[1]; const l = Math.hypot(tx, ty) || 1; tx /= l; ty /= l;
-        const hw = (pts[t][2] * kw + base) * 0.5;
-        lf.push([pts[t][0] + dx - ty * hw, pts[t][1] + tx * hw]); rt.push([pts[t][0] + dx + ty * hw, pts[t][1] - tx * hw]);
-      }
-      g.fillStyle = style; g.beginPath();
-      lf.forEach((p, t) => (t ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])));
-      for (let t = n - 1; t >= 0; t--) g.lineTo(rt[t][0], rt[t][1]);
-      g.closePath(); g.fill();
-    };
-    const trace = (U0, V0, len, lean, w0, open, n) => {
-      const pts = []; let u = U0;
-      for (let v = 0; v <= len; v += 4) {
-        const t = v / len;
-        u += lean * 4 + rc.range(-0.7, 0.7) + 1.0 * nz.n2(v / 52, n * 3.1);
-        const p = toXY(u, V0 + v);
-        p.push(w0 * (open ? Math.pow(1 - t, 0.8) : Math.pow(Math.max(0, Math.sin(Math.PI * (0.04 + 0.96 * t))), 0.7)), u, V0 + v);
-        pts.push(p);
-      }
-      return pts;
-    };
-    const main = [], hair = [];
-    cracks.forEach(([U0, V0, len], n) => {
-      const pts = trace(U0, V0, len, 0, 1, V0 < 30, n); pts.lit = U0 < 250; main.push(pts);
-      if (len >= 260) {      // a short fork leaving the crack at a shallow angle
-        const q = pts[(pts.length * rc.range(0.3, 0.55)) | 0];
-        const br = trace(q[3], q[4], len * rc.range(0.16, 0.26), rc.sign() * rc.range(0.22, 0.4), q[2] * 0.62, true, n + 20); br.lit = pts.lit; main.push(br);
-      }
-    });
-    // the finest level: short hairline checks scattered over the face (kept off the slot and the hole)
-    for (let n = 0; n < 54; n++) {
-      const U0 = rc.range(-1150, 1150), V0 = rc.range(34, 520), len = rc.range(24, 86), lean = rc.range(-0.05, 0.05), w0 = rc.range(0.28, 0.5);
-      const hu = U0 - HOLE.U, hv = V0 + len / 2 - HOLE.V;
-      if (Math.abs(U0) < 175 || hu * hu + hv * hv < 130 * 130) continue;
-      hair.push(trace(U0, V0, len, lean, w0, false, 40 + n));
-    }
-    for (const pts of hair) ribbon(pts, 1.5, 0.12, 'rgba(126,84,40,0.5)', 0);
-    for (const pts of main) { ribbon(pts, 4.2, 0.6, 'rgba(214,170,98,0.26)', 0.5); ribbon(pts, 1.9, 0.22, 'rgba(120,78,36,0.72)', 0); ribbon(pts, 0.9, 0, 'rgba(56,30,12,0.85)', 0); }
-    // the far lip of each crack catches the raking light (lit side of the face only)
-    g.globalCompositeOperation = 'screen';
-    for (const pts of main) if (pts.lit) ribbon(pts, 0.9, 0, 'rgba(255,244,220,0.3)', 1.35);
     g.restore();
   });
   // shallow depth of field: the face comes toward the lens at the bottom of frame and goes a touch soft (only that strip is blurred)
@@ -346,13 +387,13 @@ function sandTile() {
   return { hA, hB, tn };
 }
 
-/** the loess wall behind: everything above the arc (and a margin below it, hidden by the bone) */
-function buildSoil(env) {
+/** the loess wall behind: everything above the arc (and a margin below it, hidden by the coin) */
+function buildSoil(env, sand) {
   const a = env.arc, R = a.R, cx = a.cx, cy = a.cy;
   const X0 = -PAD, Y0 = -PAD;
   const RW = W + PAD * 2, RH = Math.min(H + PAD, Math.ceil(a.yAt(-PAD)) + 44) - Y0, N = RW * RH;
   const nA = L.makeNoise('s29c'), nB = L.makeNoise('s29d');
-  const SOIL = lut(SOIL_STOPS), RED = lut(RED_STOPS), BONE = lut(BONE_STOPS);
+  const SOIL = lut(SOIL_STOPS), RED = lut(RED_STOPS), CHIP = lut(CHIP_STOPS);
   const RIN2 = (R - 44) * (R - 44);
 
   const CS = 4, cg = coarse(RW, RH, CS);
@@ -365,7 +406,6 @@ function buildSoil(env) {
     cPale[k] = nB.fbm(x / 330 - 7, y / 260 + 3, 3);
     cMac[k] = nB.fbm(x / 520 + 21, y / 520 + 77, 3);
   }
-  const sand = sandTile();
 
   const Hh = new Float32Array(N), Tn = new Float32Array(N), Ck = new Float32Array(N), Chip = new Float32Array(N), Calm = new Float32Array(N);
   const Bed = new Float32Array(N), Rd = new Float32Array(N);
@@ -410,7 +450,7 @@ function buildSoil(env) {
       Hh[k] = h; Tn[k] = tn;
     }
   }
-  // white chips (bone / shell crumbs): small bevelled flakes lying in the earth, each tilted its own way
+  // pale chips (料姜石, lime nodules broken out of the loess): small bevelled flakes lying in the earth, each tilted its own way
   const rcp = L.rng('s29chips');
   for (const [px, py, pr] of [[1568, 124, 21], [1640, 92, 12], [1742, 158, 27], [1796, 96, 11], [1700, 226, 9], [1846, 420, 13], [232, 384, 16], [96, 232, 10], [420, 96, 11], [1480, 60, 8]]) {
     const ns = rcp.int(4, 6), rot0 = rcp.range(0, L.TAU), pl = [];
@@ -439,7 +479,7 @@ function buildSoil(env) {
       // raking light: bright gold at the upper left, sinking to sienna by the middle; the calm patch lies in that half-shade
       let m = L.lerp(1.26, 0.62, sstep(-80, 1020, x + 0.35 * (y - 300))) * (1 + 0.2 * mac * kc) * (x > 1300 ? L.lerp(1, 0.84, sstep(1300, 1950, x)) : 1);
       m += (L.lerp(0.58, m, 0.25) - m) * calm * 0.9;
-      // the crevice between bone and earth: narrow on the lit side, a broad cast shadow on the right
+      // the crevice between coin and earth: narrow on the lit side, a broad cast shadow on the right
       let crev = 0.12;
       if (dr > 0) { const wS = L.lerp(13, 62, sstep(-0.42, 0.42, th)); crev = dr < wS * 7 ? 1 - 0.88 * Math.exp(-dr / wS) : 1; }
       const chip = Chip[k], ck = Ck[k];
@@ -461,14 +501,14 @@ function buildSoil(env) {
       const pale = sstep(0.1, 0.5, cg.bil(cPale, i, j)) * 0.22 * kc;
       if (pale > 0) { r += (236 - r) * pale * 0.5; g += (206 - g) * pale * 0.5; b += (140 - b) * pale * 0.5; }
       if (tn > 0.12) { const t = (tn - 0.12) * 0.9; r += (232 - r) * t; g += (214 - g) * t; b += (176 - b) * t; }
-      if (chip > 0) { r += (BONE[li] * 0.97 - r) * chip; g += (BONE[li + 1] * 0.95 - g) * chip; b += (BONE[li + 2] * 0.9 - b) * chip; }
+      if (chip > 0) { r += (CHIP[li] * 0.97 - r) * chip; g += (CHIP[li + 1] * 0.95 - g) * chip; b += (CHIP[li + 2] * 0.9 - b) * chip; }
       const o = k * 4;
       d[o] = r; d[o + 1] = g; d[o + 2] = b; d[o + 3] = 255;
     }
   }
   const cnv = L.makeCanvas(RW, RH), sg = cnv.getContext('2d');
   sg.putImageData(img, 0, 0);
-  // shallow depth of field: the wall is sharp where it meets the bone and softens as it recedes toward the top of frame
+  // shallow depth of field: the wall is sharp where it meets the coin and softens as it recedes toward the top of frame
   const out = L.makeCanvas(W + PAD * 2, H + PAD * 2), og = out.getContext('2d');
   out._pad = PAD;
   og.fillStyle = '#1a0d05'; og.fillRect(0, 0, out.width, out.height);
@@ -482,17 +522,18 @@ function buildSoil(env) {
 }
 
 export default {
-  name: '出土骨贝',
+  name: '出土钱缘',
   tone: 'light',
   init(env) {
-    S = { soil: buildSoil(env), bone: buildBone(env) };
+    const sand = sandTile();
+    S = { soil: buildSoil(env, sand), coin: buildCoin(env, sand) };
   },
   draw(ctx, env, p) {
     const a = env.arc;
     const rot = L.lerp(-0.008, 0.008, p);
     L.blit(ctx, env, S.soil, { rot: rot * 0.35, zoom: L.lerp(1.0, 1.005, p) });
-    L.blit(ctx, env, S.bone, { rot, zoom: L.lerp(1.0, 1.012, p) });
-    // the raking light creeps along the grinding lines
+    L.blit(ctx, env, S.coin, { rot, zoom: L.lerp(1.0, 1.012, p) });
+    // the raking light creeps along the rim
     ctx.save(); a.clipBelow(ctx, 0); ctx.globalCompositeOperation = 'soft-light';
     a.at(ctx, L.lerp(-0.23, -0.14, p), -170, () => {
       ctx.scale(4.2, 1);

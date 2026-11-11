@@ -25,18 +25,23 @@ async function loadFonts() {
 function makeEnv(shot) {
   return { W: S, H: S, S, FPS, id: shot.id, scene: shot.scene, frames: shot.frames, dur: shot.frames / FPS, seed: shot.id, glyph: K.GLYPH, t: 0, frame: 0, p: 0, state: {} };
 }
-async function ensure(shot) {
-  if (loaded.has(shot.id)) return loaded.get(shot.id);
+// one module instance per (shot, glyph): a material plate is used by several shots with different glyphs, and plates keep
+// their pre-rendered layers in module-level variables
+async function ensure(shot, glyph) {
+  const key = shot.id + '|' + (glyph || '');
+  if (loaded.has(key)) return loaded.get(key);
   const t0 = performance.now();
+  if (glyph) K.useGlyph(glyph);
   let mod;
-  try { mod = (await import(`./films/${FILM}/scenes/${shot.scene}.js`)).default; }
+  try { mod = (await import(`./films/${FILM}/scenes/${shot.scene}.js?inst=${encodeURIComponent(key)}`)).default; }
   catch (e) { errors.push(`${shot.id} import: ${e.message}`); mod = null; }
   const env = makeEnv(shot);
+  env.glyph = glyph || null;
   if (mod && mod.init) {
     try { await mod.init(env); } catch (e) { errors.push(`${shot.id} init: ${e.stack || e.message}`); }
   }
   const rec = { mod, env, initMs: performance.now() - t0 };
-  loaded.set(shot.id, rec);
+  loaded.set(key, rec);
   return rec;
 }
 
@@ -45,11 +50,10 @@ let grains = null, dithers = null;
 function ensureGrain() {
   if (grains) return;
   grains = [1, 2, 3, 4, 5].map((s) => L.grainTex(S + 64, S + 64, { seed: 'film2' + s, amount: 0.42, size: 1 }));
-  dithers = [1, 2, 3].map((s) => {
-    const c = L.makeCanvas(S + 64, S + 64), g = c.getContext('2d'), img = g.createImageData(S + 64, S + 64), d = img.data, r = L.rng('dither2' + s);
+  dithers = [1, 2, 3].map((s) => L.pixelCanvas(S + 64, S + 64, (d) => {   // adds 0…3 levels to every DEVICE pixel
+    const r = L.rng('dither2' + s);
     for (let i = 0; i < d.length; i += 4) { const v = Math.floor(r() * 4); d[i] = v; d[i + 1] = v; d[i + 2] = v; d[i + 3] = 255; }
-    g.putImageData(img, 0, 0); return c;
-  });
+  }));
 }
 function vignette(strength = 0.12) {
   const rad = Math.hypot(S / 2, S / 2);
@@ -68,7 +72,9 @@ function errorSlate(msg) {
 async function renderShot(id, p, opts = {}) {
   const shot = SHOTS.find((s) => s.id === id);
   if (!shot) throw new Error('unknown shot ' + id);
-  const rec = await ensure(shot);
+  const glyph = shot.glyph ? (opts.glyph || shot.glyph) : null;     // opts.glyph: preview a glyph plate with another glyph
+  const rec = await ensure(shot, glyph);
+  if (glyph) K.useGlyph(glyph);
   const { finish = true, guide = false } = opts;
   const frame = opts.frame !== undefined ? opts.frame : Math.min(shot.frames - 1, Math.round(p * (shot.frames - 1)));
   rec.env.p = p; rec.env.frame = frame; rec.env.t = frame / FPS; rec.env.globalFrame = shot.start + frame;
@@ -79,7 +85,6 @@ async function renderShot(id, p, opts = {}) {
   if (!rec.mod) errorSlate(`scene ${shot.scene} failed to load\n` + errors.join('\n'));
   else {
     ctx.save();
-    if (shot.flip) { ctx.translate(S, 0); ctx.scale(-1, 1); }   // mirrored repeat of an earlier plate (the glyph is symmetric)
     try { rec.mod.draw(ctx, rec.env, p); }
     catch (e) { errors.push(`${shot.id} draw@${frame}: ${e.stack || e.message}`); ctx.restore(); ctx.save(); errorSlate(`${shot.id} draw error\n${e.stack || e.message}`); }
     ctx.restore();
@@ -93,7 +98,7 @@ async function renderShot(id, p, opts = {}) {
   }
   ctx.getImageData(0, 0, 1, 1);
   const drawMs = performance.now() - t0;
-  if (guide) K.guide(ctx);
+  if (guide && glyph) K.guide(ctx);
   return { drawMs, initMs: rec.initMs };
 }
 async function renderFrame(n, opts = {}) {
@@ -107,6 +112,6 @@ const ready = loadFonts();
 window.GJ = {
   ready, errors, missingFonts, SHOTS, TOTAL_FRAMES, FPS, film: FILM, size: S,
   renderShot, renderFrame,
-  preload: async (ids) => { for (const s of SHOTS) if (!ids || ids.includes(s.id)) await ensure(s); return errors.slice(); },
+  preload: async (ids) => { for (const s of SHOTS) if (!ids || ids.includes(s.id)) await ensure(s, s.glyph || null); return errors.slice(); },
   toDataURL: (type = 'image/png', q) => canvas.toDataURL(type, q),
 };

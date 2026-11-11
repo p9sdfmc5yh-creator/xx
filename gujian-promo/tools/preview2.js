@@ -5,6 +5,8 @@
 //                                                      build/coins2/preview/g07_zoom.jpg    three 1:1 crops of the middle frame
 //                                                      build/coins2/preview/g07_compare.jpg the reference film's plate (left) next to ours (right)
 //   node tools/preview2.js p01 --film coins2 --p 0.25   (extra still at progress 0.25)      --out some/dir  (write elsewhere)
+//   node tools/preview2.js f07 --film coins2 --glyph 诚  (a glyph plate with another glyph: 志 | 和 | 诚 | 志和诚)
+//   GJ_SS=2 node tools/preview2.js f07 --film coins2     (render at 2160 × 2160, the delivery resolution; the zoom sheet is then 1:1 DEVICE pixels)
 // Exit code 1 if the scene threw or logged errors.
 const fs = require('fs');
 const path = require('path');
@@ -18,6 +20,8 @@ const { openPlayer, dataUrlToBuffer, filmArgs, ROOT } = require('./harness');
   const pIdx = args.indexOf('--p');
   const extraP = pIdx >= 0 ? parseFloat(args[pIdx + 1]) : null;
   if (!ids.length) { console.error('usage: node tools/preview2.js <plateId...> --film coins2 [--p 0.25] [--out dir]'); process.exit(2); }
+  const gIdx = args.indexOf('--glyph');
+  const glyph = gIdx >= 0 ? args[gIdx + 1] : null;     // preview a glyph plate with another glyph: 志 | 和 | 诚 | 志和诚
   const oIdx = args.indexOf('--out');
   const outDir = oIdx >= 0 ? path.resolve(args[oIdx + 1]) : fa.previewDir;
   fs.mkdirSync(outDir, { recursive: true });
@@ -31,11 +35,12 @@ const { openPlayer, dataUrlToBuffer, filmArgs, ROOT } = require('./harness');
       fs.writeFileSync(f, buf);
       return { f, info };
     };
-    const a = await grab(0, {}, 'tmp-start');
-    const b = await grab(0.5, {}, 'mid');
-    await grab(1, {}, 'tmp-end');
-    await grab(0.5, { guide: true }, 'tmp-guide');
-    if (extraP !== null) await grab(extraP, {}, 'p' + Math.round(extraP * 100));
+    const G = glyph ? { glyph } : {};
+    const a = await grab(0, { ...G }, 'tmp-start');
+    const b = await grab(0.5, { ...G }, 'mid');
+    await grab(1, { ...G }, 'tmp-end');
+    await grab(0.5, { ...G, guide: true }, 'tmp-guide');
+    if (extraP !== null) await grab(extraP, { ...G }, 'p' + Math.round(extraP * 100));
     const errs = await page.evaluate(() => window.GJ.errors.splice(0));
     const frames = await page.evaluate((id) => window.GJ.SHOTS.find((s) => s.id === id).frames, id);
     console.log(`${id}: init ${a.info.initMs.toFixed(0)} ms, draw ${b.info.drawMs.toFixed(0)} ms/frame, ${frames} frames (${(frames / 25).toFixed(2)} s)`);

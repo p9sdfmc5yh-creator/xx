@@ -83,7 +83,9 @@ async function acquireSlot() {
 
 async function openBrowser(film) {
   const releaseSlot = await acquireSlot();
-  const query = film && film !== 'arch' ? `?film=${encodeURIComponent(film)}` : '';
+  // GJ_SS=2 renders with 2 × 2 device pixels per logical pixel (a 4K master of a 1080p film) — see src/lib/hires.js
+  const ss = Math.max(1, parseInt(process.env.GJ_SS || '1', 10) || 1);
+  const query = `?film=${encodeURIComponent(film || 'arch')}` + (ss > 1 ? `&ss=${ss}` : '');
   // a film may name its own renderer page in src/films/<film>/PLAYER (e.g. the square plate films use player2.html)
   let pageFile = 'player.html';
   try { const pf = path.join(ROOT, 'src', 'films', String(film), 'PLAYER'); if (fs.existsSync(pf)) pageFile = fs.readFileSync(pf, 'utf8').trim() || pageFile; } catch (e) { /* default page */ }
@@ -118,7 +120,8 @@ function filmArgs(argv) {
   const film = i >= 0 ? argv[i + 1] : 'arch';
   const rest = argv.filter((a, k) => !(i >= 0 && (k === i || k === i + 1)));
   const previewDir = film === 'arch' ? path.join(ROOT, 'build', 'preview') : path.join(ROOT, 'build', film, 'preview');
-  const framesDir = path.join(ROOT, 'build', film, 'frames');
+  const ss = Math.max(1, parseInt(process.env.GJ_SS || '1', 10) || 1);
+  const framesDir = path.join(ROOT, 'build', film, ss > 1 ? `frames-ss${ss}` : 'frames');
   const scenesDir = film === 'arch' ? path.join(ROOT, 'src', 'scenes') : path.join(ROOT, 'src', 'films', film, 'scenes');
   return { film, rest, previewDir, framesDir, scenesDir };
 }

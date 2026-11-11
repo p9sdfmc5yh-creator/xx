@@ -159,6 +159,26 @@ export function makeCanvas(w, h) {
   c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h));
   return c;
 }
+/** device pixels per logical pixel: 1 normally, 2 when the page was opened with ?ss=2 for a 4K master (see lib/hires.js) */
+export const SS = globalThis.__GJ_SS || 1;
+/** write an ImageData 1:1 into a canvas's DEVICE pixels (the plain putImageData works in logical pixels and enlarges the data) */
+export function putRaw(c, img, dx = 0, dy = 0) { const R = globalThis.__GJ_RAW; if (R) R.put(c, img, dx, dy); else c.getContext('2d').putImageData(img, dx, dy); }
+/** read a canvas's DEVICE pixels (width × height of the result are SS times the canvas's logical size) */
+export function getRaw(c) { const R = globalThis.__GJ_RAW; return R ? R.get(c) : c.getContext('2d').getImageData(0, 0, c.width, c.height); }
+/**
+ * Per-pixel painting at DEVICE resolution, so the result is as sharp at 4K as it is at 1080p. Returns a canvas of logical size w × h.
+ *   pixelCanvas(w, h, (data, pw, ph, q) => { … })   data: RGBA Uint8ClampedArray of pw × ph device pixels (pw = w·q, ph = h·q, q = L.SS).
+ * Device pixel (i, j) covers the logical point ((i + 0.5) / q, (j + 0.5) / q): compute everything from those logical coordinates
+ * and the picture is the same at any q, only finer.
+ */
+export function pixelCanvas(w, h, fn) {
+  const c = makeCanvas(w, h);
+  const pw = Math.max(1, Math.round(w)) * SS, ph = Math.max(1, Math.round(h)) * SS;
+  const img = new ImageData(pw, ph);
+  fn(img.data, pw, ph, SS);
+  putRaw(c, img);
+  return c;
+}
 /** linear gradient with stops [[t,color],...] */
 export function linear(ctx, x0, y0, x1, y1, stops) {
   const g = ctx.createLinearGradient(x0, y0, x1, y1);
@@ -368,7 +388,8 @@ export function cam(ctx, env, opts, fn) {
 export function noiseTex(w, h, opts = {}) {
   const { seed = 1, scale = 200, octaves = 4, gain = 0.5, lac = 2, sx = 1, sy = 1, res = 0.5, warp = 0, warpScale = 2.5,
     ridged = false, cellular = false, contrast = 1, bias = 0, ramp = [[0, '#000'], [1, '#fff']], ox = 0, oy = 0, polar = null } = opts;
-  const cw = Math.max(2, Math.round(w * res)), ch = Math.max(2, Math.round(h * res));
+  const lw = Math.max(2, Math.round(w * res)), lh = Math.max(2, Math.round(h * res));   // logical size of the internal buffer…
+  const cw = lw * SS, ch = lh * SS, rq = res * SS;                                           // …which is computed in device pixels
   const nz = makeNoise(seed);
   const rampFn = typeof ramp === 'function' ? ramp : makeRamp(ramp);
   const img = new ImageData(cw, ch);
@@ -378,7 +399,7 @@ export function noiseTex(w, h, opts = {}) {
   let k = 0;
   for (let y = 0; y < ch; y++) {
     for (let x = 0; x < cw; x++) {
-      let px = x / res + ox, py = y / res + oy;
+      let px = x / rq + ox, py = y / rq + oy;
       if (polar) {
         const ddx = px - polar.cx, ddy = polar.cy - py;
         const rr = Math.hypot(ddx, ddy);
@@ -399,8 +420,8 @@ export function noiseTex(w, h, opts = {}) {
       d[k++] = lut[li * 4]; d[k++] = lut[li * 4 + 1]; d[k++] = lut[li * 4 + 2]; d[k++] = lut[li * 4 + 3];
     }
   }
-  const small = makeCanvas(cw, ch);
-  small.getContext('2d').putImageData(img, 0, 0);
+  const small = makeCanvas(lw, lh);
+  putRaw(small, img);
   if (res === 1) return small;
   const out = makeCanvas(w, h);
   const g = out.getContext('2d');
@@ -427,7 +448,7 @@ export function polarNoiseLayer(env, pad, opts = {}) {
  */
 export function grainTex(w, h, opts = {}) {
   const { seed = 7, amount = 0.5, mono = true, size = 1 } = opts;
-  const cw = Math.ceil(w / size), ch = Math.ceil(h / size);
+  const lw = Math.ceil(w / size), lh = Math.ceil(h / size), cw = lw * SS, ch = lh * SS;   // one grain per DEVICE pixel
   const r = rng('grain' + seed);
   const img = new ImageData(cw, ch); const d = img.data;
   for (let i = 0; i < d.length; i += 4) {
@@ -436,8 +457,8 @@ export function grainTex(w, h, opts = {}) {
     else { d[i] = g; d[i + 1] = 128 + (r() - 0.5) * 255 * amount; d[i + 2] = 128 + (r() - 0.5) * 255 * amount; }
     d[i + 3] = 255;
   }
-  const small = makeCanvas(cw, ch);
-  small.getContext('2d').putImageData(img, 0, 0);
+  const small = makeCanvas(lw, lh);
+  putRaw(small, img);
   if (size === 1) return small;
   const out = makeCanvas(w, h); const g = out.getContext('2d');
   g.imageSmoothingEnabled = true; g.drawImage(small, 0, 0, w, h);
@@ -454,21 +475,21 @@ export function grainTex(w, h, opts = {}) {
 export function bumpLight(heightCanvas, opts = {}) {
   const { angle = 225, strength = 4, blur = 0, res = 0.5 } = opts;
   const w = heightCanvas.width, h = heightCanvas.height;
-  const cw = Math.max(2, Math.round(w * res)), ch = Math.max(2, Math.round(h * res));
-  const tmp = makeCanvas(cw, ch); const tg = tmp.getContext('2d', { willReadFrequently: true });
+  const lw = Math.max(2, Math.round(w * res)), lh = Math.max(2, Math.round(h * res));
+  const tmp = makeCanvas(lw, lh); const tg = tmp.getContext('2d', { willReadFrequently: true });
   if (blur) tg.filter = `blur(${blur * res}px)`;
-  tg.drawImage(heightCanvas, 0, 0, cw, ch);
-  const src = tg.getImageData(0, 0, cw, ch).data;
+  tg.drawImage(heightCanvas, 0, 0, lw, lh);
+  const raw = getRaw(tmp), src = raw.data, cw = raw.width, ch = raw.height;                 // device pixels: the relief is as fine as the height map
   const out = new ImageData(cw, ch); const o = out.data;
   const lx = Math.cos(deg(angle)), ly = Math.sin(deg(angle));
   const L = (x, y) => { x = x < 0 ? 0 : x >= cw ? cw - 1 : x; y = y < 0 ? 0 : y >= ch ? ch - 1 : y; const i = (y * cw + x) * 4; return (src[i] * 0.299 + src[i + 1] * 0.587 + src[i + 2] * 0.114) * (src[i + 3] / 255); };
   for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
     const gx = L(x + 1, y) - L(x - 1, y), gy = L(x, y + 1) - L(x, y - 1);
-    const s = 128 + (gx * lx + gy * ly) * strength;
+    const s = 128 + (gx * lx + gy * ly) * strength * SS;   // × SS: slopes are measured per logical pixel
     const i = (y * cw + x) * 4;
     o[i] = o[i + 1] = o[i + 2] = s; o[i + 3] = 255;
   }
-  tg.filter = 'none'; tg.putImageData(out, 0, 0);
+  tg.filter = 'none'; putRaw(tmp, out);
   const res2 = makeCanvas(w, h); const g = res2.getContext('2d');
   g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
   g.drawImage(tmp, 0, 0, w, h);

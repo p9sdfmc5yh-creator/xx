@@ -6,7 +6,7 @@ import * as K from '../../../lib/plate.js';
 const { S } = K;
 const TAU = Math.PI * 2;
 const N = 1400, O = (N - S) / 2;                 // oversize layer; page coords = frame coords shifted by O
-const G = K.GLYPH;
+const G = K.COIN;
 const LX = -0.7071, LY = -0.7071;                // unit vector pointing TO the light (top-left)
 let layer = null, petals = [];
 
@@ -222,7 +222,7 @@ function build() {
 
   // faint 烘染 wash filling the coin's body so the form reads from far away
   const wash = L.makeCanvas(N, N), wg = wash.getContext('2d');
-  wg.translate(O, O); K.fillGlyph(wg, '#c29a8a', { grow: -4 });
+  wg.translate(O, O); K.fillCoin(wg, '#c29a8a', { grow: -4 });
   pg.save(); pg.globalCompositeOperation = 'multiply'; pg.globalAlpha = 0.3; pg.drawImage(L.blurred(wash, 16), 0, 0); pg.restore();
 
   const art = L.makeCanvas(N, N), g = art.getContext('2d');
@@ -329,7 +329,7 @@ function build() {
     if (!rnd.chance(0.55)) return;
     const [p0, m] = s.raw, r = rnd.range(6.5, 10), ang = Math.atan2(m[1] - p0[1], m[0] - p0[0]) + rnd.sign() * 1.3;
     const x = m[0] + Math.cos(ang) * (r + 3), y = m[1] + Math.sin(ang) * (r + 3);
-    if (!K.inGlyph(x, y, r + 2) || coins.some((c) => Math.hypot(c.x - x, c.y - y) < c.R + r + 4) || spots.some((p) => Math.hypot(p.x - x, p.y - y) < p.r + r)) return;
+    if (!K.inCoin(x, y, r + 2) || coins.some((c) => Math.hypot(c.x - x, c.y - y) < c.R + r + 4) || spots.some((p) => Math.hypot(p.x - x, p.y - y) < p.r + r)) return;
     bud(g, x, y, r, ang, rnd);
   });
   spots.forEach((p, i) => {

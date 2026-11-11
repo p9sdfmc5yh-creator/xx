@@ -66,11 +66,10 @@ let dithers = null;   // ±1-level noise added to every frame so that dark, smoo
 function ensureGrain() {
   if (grains) return;
   grains = [1, 2, 3, 4, 5].map((s) => L.grainTex(W + 64, H + 64, { seed: 'film' + s, amount: GRAIN.amount, size: GRAIN.size }));
-  dithers = [1, 2, 3].map((s) => {
-    const c = L.makeCanvas(W + 64, H + 64), g = c.getContext('2d'), img = g.createImageData(W + 64, H + 64), d = img.data, r = L.rng('dither' + s);
-    for (let i = 0; i < d.length; i += 4) { const v = Math.floor(r() * 4); d[i] = v; d[i + 1] = v; d[i + 2] = v; d[i + 3] = 255; }   // adds 0…3 levels
-    g.putImageData(img, 0, 0); return c;
-  });
+  dithers = [1, 2, 3].map((s) => L.pixelCanvas(W + 64, H + 64, (d) => {   // adds 0…3 levels to every DEVICE pixel
+    const r = L.rng('dither' + s);
+    for (let i = 0; i < d.length; i += 4) { const v = Math.floor(r() * 4); d[i] = v; d[i + 1] = v; d[i + 2] = v; d[i + 3] = 255; }
+  }));
 }
 
 const beatShots = { 1: SHOTS.filter((s) => s.beat === 1), 2: SHOTS.filter((s) => s.beat === 2), 3: SHOTS.filter((s) => s.beat === 3) };

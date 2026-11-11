@@ -8,7 +8,7 @@ import * as L from '../../../lib/core.js';
 import * as K from '../../../lib/plate.js';
 const { S } = K;
 const LS = 1400, PAD = (LS - S) / 2;
-const G = { cx: PAD - 8, cy: PAD + 1088, R: K.GLYPH.R * 2.3, a: K.GLYPH.a * 2.3 };   // the big coin, in layer coordinates
+const G = { cx: PAD - 8, cy: PAD + 1088, R: K.COIN.R * 2.3, a: K.COIN.a * 2.3 };   // the big coin, in layer coordinates
 
 const D = 138, RC = D / Math.SQRT2, BW = 11, SQ = 40, SQB = 7, FIL = 6;   // 连钱 lattice
 const PX = 3.0, PY = 4.2, TILT = -0.06;                                   // warp pitch, weft pitch, the cloth is not cut square
