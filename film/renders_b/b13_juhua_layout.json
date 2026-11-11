@@ -1,0 +1,32 @@
+{
+ "shot": "b13_juhua",
+ "layout": "wreath",
+ "frame_width_m": 0.437398362904285,
+ "frame_height_m": 0.24603657913366034,
+ "items": [
+  "m09_juhua"
+ ],
+ "seed": 28,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.24494308322639963,
+  0.24494308322639963,
+  -0.14926219134108726,
+  0.14926219134108726
+ ],
+ "n_items": 554,
+ "layers_max": 27,
+ "heap_top_mm": 42.89878463745117,
+ "display_gain": 1.0,
+ "render_seconds": 202.3,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

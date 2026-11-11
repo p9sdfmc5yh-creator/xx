@@ -1,0 +1,40 @@
+{
+ "shot": "b20_sangshen",
+ "layout": "glyph",
+ "frame_width_m": 1.1346658371192369,
+ "frame_height_m": 0.6382495333795708,
+ "items": [
+  "k06_sangshen"
+ ],
+ "seed": 45,
+ "empty": false,
+ "text": "食",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.24,
+ "engine": "packed",
+ "px_per_m": 1814.5067838527887,
+ "stroke_width_m": 0.035271292766460294,
+ "stroke_items_wide": 3.8,
+ "block_m": [
+  0.47726468024616586,
+  0.4723046547008824
+ ],
+ "char_boxes": [
+  [
+   0.29795,
+   0.10036,
+   0.70108,
+   0.81791
+  ]
+ ],
+ "align": 0.92,
+ "n_items": 419,
+ "layers_max": 2,
+ "heap_top_mm": 23.65943717956543,
+ "display_gain": 1.134,
+ "render_seconds": 71.5,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

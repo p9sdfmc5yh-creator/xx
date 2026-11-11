@@ -176,7 +176,7 @@ GLYPHS = [
  ('b17', 'k03_guiyuan',    '桂圆',   '药', INDIGO,     3.6, 1.0, 'ball'),
  ('b18', 'k04_heizhima',   '黑芝麻', '药', PEACH,      9.0, 1.0, 'seed'),
  ('b19', 'k05_bohe',       '薄荷',   '食', PALE_ROSE,  2.8, 1.0, 'flat'),
- ('b20', 'k06_sangshen',   '桑椹',   '食', BUTTER,     3.8, 1.0, 'ball'),
+ ('b20', 'k06_sangshen',   '桑椹',   '食', BUTTER,     4.8, 1.0, 'ball'),
  ('b21', 'k07_chixiaodou', '赤小豆', '食', CELADON,    5.5, 1.0, 'seed'),
  ('b22', 'k08_heye',       '荷叶',   '食', LILAC,      2.8, 0.6, 'flat'),
  ('b23', 'k09_gancao',     '甘草',   '同', SLATE_BLUE, 3.4, 1.0, 'flat'),
