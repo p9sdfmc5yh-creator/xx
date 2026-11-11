@@ -192,7 +192,7 @@ def leaf_material():
     col = m.jitter(col, hue=0.012, saturation=0.10, value=0.14)
     col = m.mix(col, (0.55, 0.68, 0.40), hair)
     rn = m.noise(scale=0.9, detail=3, roughness=0.6, vector=uv)
-    rough = m.map_range(puff, 0.2, 0.95, 0.56, 0.37)
+    rough = m.map_range(puff, 0.2, 0.95, 0.60, 0.42)
     rough = m.math('ADD', rough, m.map_range(rn, 0.3, 0.7, -0.06, 0.08))
     rough = m.mixf(rough, 0.60, m.map_range(groove, 0.4, 1.0))
     rough = m.mixf(rough, 0.62, back)
@@ -201,16 +201,27 @@ def leaf_material():
     nrm = m.bump(m.map_range(ret, 0.0, 0.22), strength=0.75, distance=0.000028)
     nrm = m.bump(m.noise(scale=11.0, detail=3, roughness=0.6, vector=uv), strength=0.5, distance=0.000012, normal=nrm)
     nrm = m.bump(gdot, strength=0.6, distance=0.000015, normal=nrm)
-    m.set(base_color=col, roughness=rough, ior=1.45, specular=0.42, normal=nrm)
+    m.set(base_color=col, roughness=rough, ior=1.45, specular=0.30, normal=nrm)
     # light through the blade: bright yellow-green, darker under veins
-    tc = m.mix((0.130, 0.360, 0.015), (0.270, 0.560, 0.040), m.map_range(puff, 0.1, 0.9))
-    tc = m.mix(tc, (0.05, 0.16, 0.01), m.map_range(vein, 0.4, 0.95, 0.0, 0.7))
+    tc = m.mix((0.080, 0.250, 0.010), (0.170, 0.400, 0.026), m.map_range(puff, 0.1, 0.9))
+    tc = m.mix(tc, (0.030, 0.105, 0.006), m.map_range(vein, 0.3, 0.9, 0.0, 0.85))
+    tc = m.mix(tc, (0.045, 0.150, 0.008), m.map_range(groove, 0.4, 1.0, 0.0, 0.55))
     tc = m.mix(tc, (0.07, 0.24, 0.012), m.math('MULTIPLY', m.map_range(tone, 0.5, 1.0), 0.5))
     tc = m.jitter(tc, hue=0.010, saturation=0.08, value=0.12)
     tr = m.node('ShaderNodeBsdfTranslucent', {'Color': tc, 'Normal': nrm})
-    mix = m.node('ShaderNodeMixShader', {0: m.mixf(0.42, 0.25, hair), 1: m.bsdf.outputs[0], 2: tr.outputs[0]})
+    mix = m.node('ShaderNodeMixShader', {0: m.mixf(0.36, 0.25, hair), 1: m.bsdf.outputs[0], 2: tr.outputs[0]})
     m.nt.links.new(mix.outputs[0], m.out.inputs['Surface'])
     return m
+
+
+def base_material():
+    """Dark leaf-green backing (deeper leaves in shadow): mottled, matte, faint veiny bump."""
+    m = C.Mat('mint_base')
+    n = m.noise(scale=55, detail=4, roughness=0.6)
+    v = m.voronoi(scale=420, feature='DISTANCE_TO_EDGE')
+    col = m.mix((0.010, 0.036, 0.006), (0.024, 0.075, 0.010), n)
+    m.set(base_color=col, roughness=0.75, specular=0.2, normal=m.bump(m.map_range(v, 0.0, 0.25), 0.6, 0.00015))
+    return m.mat
 
 
 def _object(name, h, mat):
@@ -253,11 +264,19 @@ def main():
                        max_slope_deg=13)        # leaves stay near-tangent: a shingled dome, no see-through pile
     n = len(heap)
     C.instance_on_points('heap', variants, heap, attrs={'tone': np.clip(rng.beta(1.8, 2.2, n), 0, 1)})
-    C.dome_base(R_DOME - 0.0004, C.simple_material('base', (0.006, 0.022, 0.004), 0.9))
+    # backing dome just under the lowest visible leaf tops: plugs the see-through gaps of a loose pile
+    # (reads as deeper leaves in shadow), raised from the bare dome to the 8th percentile of the heap top
+    gxx, gyy = np.meshgrid(heap.gx, heap.gy)
+    rr = np.sqrt(gxx ** 2 + gyy ** 2 + heap.height ** 2)
+    x0, x1, y0, y1 = heap.extent
+    ins = (gxx > x0) & (gxx < x1) & (gyy > y0) & (gyy < y1)
+    lift = max(float(np.percentile(rr[ins], 8)) - R_DOME - 0.0012, 0.0)
+    print('[base] lifted %.1f mm' % (lift * 1000))
+    C.dome_base(R_DOME + lift, base_material())
 
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.56, edge=0.685, top_margin=0.03)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=SKY_TINT, key=0.85, fill=0.80, rim=1.0, world=1.0, key_size=1.0)
+    C.studio_lights(info, tint=SKY_TINT, key=0.85, fill=0.70, rim=1.0, world=0.85, key_size=1.0)
     finish(args, SHOT)
 
 

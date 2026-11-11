@@ -119,7 +119,7 @@ GLYPHS = [
  ('b29', 'k15_qianshi',    '芡实',   '源', (34, 50, 80),    'light', (7, 7),    5.0, None),
  ('b30', 'k16_lingzhi',    '灵芝',   '源', (24, 19, 15),    'light', (45, 15),  2.7, 'length'),
 ]
-THIN = 0.16     # stroke erosion (fraction of the stroke width): opens the counters of the Black weight
+THIN = 0.10     # stroke erosion (fraction of the stroke width): opens the counters of the Black weight
 for i, (bid, src, label, ch, col, tm, (ln, wd), n, size_by) in enumerate(GLYPHS):
     wm = round(n * wd * 1e-3 / (GLYPH_K * (1.0 - THIN)), 3)
     expo = {'dark': 0.9}.get(tm, 0.0)

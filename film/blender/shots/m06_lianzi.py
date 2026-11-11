@@ -176,7 +176,7 @@ def make_variants():
 def main():
     S.run_pile(SHOT, make_variants, R_DOME,
                heap_kw=dict(layers=3.0, coverage=0.72, scale_range=(0.90, 1.08), tilt_deg=30, roll_deg=120, flip=True,
-                            candidates=6, sink=0.07, rough=0.0045),
+                            candidates=9, sink=0.07, rough=0.0030),
                base_color=(0.075, 0.050, 0.025), base_drop=0.003,
                light_kw=dict(tint=(1.0, 0.94, 0.86), key=0.72, fill=0.55, rim=0.9, world=0.8, key_size=1.0))
 

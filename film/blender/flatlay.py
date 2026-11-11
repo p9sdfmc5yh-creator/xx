@@ -159,6 +159,7 @@ class ItemSet(object):
 
       objects   K template mesh objects (natural resting pose, lowest point z = 0, origin = footprint centre)
       a, b, c   (K,) half length / half width of the top-down footprint along its principal axes, half height
+      bp        (K,) packing half width: the ellipse (a, bp) has the footprint's real area (bp <= b)
       theta     (K,) angle of the footprint's long axis in the template's own XY (radians)
       clouds    K (n,3) surface point clouds = the collision proxies of the drop-and-settle pass
       com       (K,3) centroid of the cloud (tilts pivot about it)
@@ -186,6 +187,7 @@ class ItemSet(object):
         self.half_height = np.asarray(d.get('half_height', np.zeros(K)), float) * scale
         rng = np.random.default_rng(4242 + seed)
         self.a, self.b, self.c, self.theta = np.zeros(K), np.zeros(K), np.zeros(K), np.zeros(K)
+        self.bp = np.zeros(K)                                        # half width of the ellipse with the footprint's real area
         self.clouds, self.com = [], np.zeros((K, 3))
         for k, ob in enumerate(self.objects):
             pts, co = _mesh_points(ob, 6000, rng)
@@ -200,6 +202,13 @@ class ItemSet(object):
             self.b[k] = 0.5 * (np.percentile(q[:, 1], 99.7) - np.percentile(q[:, 1], 0.3))
             self.c[k] = 0.5 * float(co[:, 2].max() - min(co[:, 2].min(), 0.0))
             self.theta[k] = th
+            cell = max(self.a[k], self.b[k]) / 24.0                  # real footprint area (the bounding ellipse is too fat
+            gi = np.floor(q / cell).astype(int)                      # for spindles, crescents, stars ...)
+            gi -= gi.min(0)
+            occ = np.zeros(gi.max(0) + 1, bool)
+            occ[gi[:, 0], gi[:, 1]] = True
+            occ = ndi.binary_fill_holes(ndi.binary_closing(np.pad(occ, 2), iterations=2))
+            self.bp[k] = min(self.b[k], float(occ.sum()) * cell * cell / (math.pi * self.a[k]))
             self.clouds.append(pts)
             self.com[k] = pts.mean(0)
         self.L = float(2 * self._wmedian(self.a))
@@ -207,8 +216,9 @@ class ItemSet(object):
         self.T = float(2 * self._wmedian(self.c))
         self.r_eff = float(np.sqrt(self._wmedian(self.a) * self._wmedian(self.b)))
         self.aspect = self.L / max(self.Wd, 1e-9)
-        print('[items] %s (%s): %d variants, L %.1f mm  W %.1f mm  T %.1f mm  aspect %.2f' % (
-            shot_id, self.name, K, self.L * 1e3, self.Wd * 1e3, self.T * 1e3, self.aspect))
+        self.fullness = float(self._wmedian(self.bp / self.b))       # footprint area / bounding ellipse area
+        print('[items] %s (%s): %d variants, L %.1f mm  W %.1f mm  T %.1f mm  aspect %.2f  fullness %.2f' % (
+            shot_id, self.name, K, self.L * 1e3, self.Wd * 1e3, self.T * 1e3, self.aspect, self.fullness))
 
     def _wmedian(self, v):
         o = np.argsort(v)
@@ -586,12 +596,14 @@ def _candidates(sets, mix, x, y, rng, size_jitter=0.07, assign=None):
     scale = np.ones(n)
     a = np.zeros(n)
     b = np.zeros(n)
+    bfull = np.zeros(n)
     for si, S in enumerate(sets):
         m = iset == si
         v, sc = _pick_variants(S, int(m.sum()), rng, size_jitter)
         var[m], scale[m] = v, sc
-        a[m], b[m] = S.a[v] * sc, S.b[v] * sc
-    return dict(x=np.asarray(x, float), y=np.asarray(y, float), iset=iset, var=var, scale=scale, a=a, b=np.minimum(b, a))
+        a[m], b[m], bfull[m] = S.a[v] * sc, S.bp[v] * sc, S.b[v] * sc
+    return dict(x=np.asarray(x, float), y=np.asarray(y, float), iset=iset, var=var, scale=scale, a=a, b=np.minimum(b, a),
+                bfull=bfull)
 
 
 def _cat_c(c1, c2):
@@ -638,7 +650,7 @@ def _scatter_passes(extent, sets, mix, dens_fns, rng, k=(0.94, 0.88, 0.85), over
     xmin, xmax, ymin, ymax = extent
     area = (xmax - xmin) * (ymax - ymin)
     mixn = np.asarray(mix, float) / np.sum(mix)
-    foot = float(np.sum(mixn * np.array([math.pi * s.L * s.Wd / 4.0 for s in sets])))
+    foot = float(np.sum(mixn * np.array([math.pi * s.L * s.Wd / 4.0 * s.fullness for s in sets])))
     parts = []
     for p, fn in enumerate(dens_fns):
         def sample(n, fn=fn):
@@ -875,7 +887,7 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
                     pl = pl.take(rng.random(n) < float(ps['fill']))
                 parts.append(pl)
     else:
-        passes = P.get('passes') or [dict(mode='relax', pack=0.86), dict(mode='rsa', inset=0.8, k=0.90, fill=0.45)]
+        passes = P.get('passes') or [dict(mode='relax', pack=0.90), dict(mode='rsa', inset=0.7, k=0.92, fill=0.6)]
         sdir = _stroke_direction(mask, sw)
         sd_img = (dt_in - dt_out).astype(np.float32)                # signed distance (px), + inside the stroke
         sgy, sgx = np.gradient(ndi.gaussian_filter(sd_img, 1.5))
@@ -904,7 +916,7 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
             if len(ys_) == 0:
                 continue
             fill = float(ps.get('fill', 1.0))
-            foot = math.pi * S.L * S.Wd / 4.0
+            foot = math.pi * S.L * S.Wd / 4.0 * S.fullness
 
             def throw(n, ys_=ys_, xs_=xs_):
                 j = rng.integers(0, len(ys_), n)
@@ -919,7 +931,7 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
 
             if ps.get('mode', 'rsa') == 'relax':
                 area = float(mask.sum()) / px_per_m ** 2
-                c = throw(int(float(ps.get('pack', 0.86)) * area / foot))
+                c = throw(int(float(ps.get('pack', 0.90)) * area / foot))
                 c = relax_pack(c, signed, rng, iters=int(ps.get('iters', 140)), tol=tol_px / px_per_m, dir_fn=dir_fn,
                                align_w=0.05 * align, verbose='pass %d' % p)
                 c['ang'] = c['ang'] + np.where(rng.random(len(c['x'])) < 0.5, math.pi, 0.0)
@@ -933,7 +945,7 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
                         if attempt == 1:
                             ang = np.where(todo, c['sd'], ang)
                         ca, sa = np.cos(ang[todo]), np.sin(ang[todo])
-                        a_, b_ = c['a'][todo], c['b'][todo]
+                        a_, b_ = c['a'][todo], c['bfull'][todo]
                         w = np.zeros(int(todo.sum()))
                         for t in ts_l:                               # points along the long axis ...
                             w = np.maximum(w, outside_px(c['x'][todo] + t * a_ * ca, c['y'][todo] + t * a_ * sa))
@@ -1350,8 +1362,8 @@ def build_ground(frame, G_, exposure, seed, tex_px, margin, tag):
         nrm = m.bump(cR, strength=0.9, distance=0.00007, normal=nrm)
         nrm = m.bump(cB, strength=0.5, distance=0.00006, normal=nrm)
         nrm = m.micro_bump(scale=5200, strength=0.55, distance=0.000035, vector=pos, normal=nrm)
-        m.set(base_color=base, roughness=rough, specular=0.30, sheen=float(G_.get('sheen', 0.25)), sheen_roughness=0.45,
-              normal=nrm)
+        m.set(base_color=base, roughness=rough, specular=float(G_.get('specular', 0.22)), sheen=float(G_.get('sheen', 0.10)),
+              sheen_roughness=0.5, normal=nrm)
     elif kind == 'slate':
         dust = tuple(float(min(0.9, c * 1.9 + 0.012)) for c in col)
         deep = tuple(float(c * 0.55) for c in col)
@@ -1426,6 +1438,8 @@ def window_light(frame, P=None):
         fl = C._area_light('fill', tuple(df * 6.0 * s), (0, 0, 0), 7.0 * s, 1.0, P.get('fill_color', (0.90, 0.95, 1.0)),
                            shape='DISK')
         fl.data.energy = 4.70 * f * (6.0 * s) ** 2
+        fl.visible_glossy = bool(P.get('fill_glossy', False))        # diffuse fill only: no veiling reflection on dark
+        #                                                             paper or on waxy skins (the "polariser")
     a = 0.096 * float(P.get('ambient', 1.0))
     C.world_gradient(horizon=(a * 0.6,) * 3, zenith=(a,) * 3, ground=(a * 0.3,) * 3)
     return key

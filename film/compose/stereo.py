@@ -232,25 +232,40 @@ def _soften_small_steps(d, radius, step):
     return _box(a, radius) * x + _box(b, radius) + off
 
 
-def _jumps(d, thr, axis=1):
+def _jumps(d, thr, axis=1, big=4.0, rho=2.0):
     """Depth DISCONTINUITIES between neighbours along `axis`: bool array shaped like d, True at
     index j when the step d[j+1] - d[j] is a jump (the last index is always True = frame edge).
 
-    A step is a jump when it exceeds `thr` AND is not part of a steady slope (a step whose two
-    neighbouring steps are both within `thr` of it): a steep but continuous surface - the side
-    of a heap, a bowl wall - stays one surface however steep it is, a real edge is cut."""
+    A steep but continuous surface - the flank of a heap, a bowl wall, the limb of a berry - must
+    stay ONE surface however steep it is (it is stretched / compressed between the eyes), while
+    a real edge must be cut.  With s = |step|:
+        s <= thr                 connected (ordinary surface);
+        thr < s <= big * thr     connected if a neighbouring step of the same sign is at least
+                                 s / rho (the step belongs to a slope or to the accelerating
+                                 gradient of a limb), a jump if it stands alone;
+        any s                    connected if both neighbouring steps are within thr of it (a
+                                 steady slope of any steepness);
+        otherwise                a jump."""
     if axis == 0:
-        return np.ascontiguousarray(_jumps(np.ascontiguousarray(d.T), thr, 1).T)
+        return np.ascontiguousarray(_jumps(np.ascontiguousarray(d.T), thr, 1, big, rho).T)
     H, W = d.shape
-    dD = np.empty_like(d)
-    np.subtract(d[:, 1:], d[:, :-1], out=dD[:, :-1])
-    dD[:, -1] = np.inf
-    big = np.abs(dD) > np.float32(thr)
-    with np.errstate(invalid='ignore'):
-        sim = np.abs(dD[:, 1:] - dD[:, :-1]) <= np.float32(thr)   # step j ~ step j+1
-    steady = np.zeros((H, W), bool)
-    steady[:, 1:-1] = sim[:, :-1] & sim[:, 1:]
-    return big & ~steady
+    f32 = np.float32
+    dD = np.zeros((H, W + 1), f32)                            # dD[:, j+1] = step j ; padded with 0
+    np.subtract(d[:, 1:], d[:, :-1], out=dD[:, 1:W])
+    c = dD[:, 1:W]                                            # steps 0 .. W-2
+    l = dD[:, 0:W - 1]                                        # previous step (0 at the border)
+    r = dD[:, 2:W + 1]                                        # next step (0 at the border)
+    a = np.abs(c)
+    jump = a > f32(thr)
+    if jump.any():
+        sg = np.sign(c)
+        nb = np.maximum(np.maximum(l * sg, r * sg), 0)        # largest same-signed neighbour step
+        lenient = (a <= f32(big * thr)) & (nb * f32(rho) >= a)
+        steady = (np.abs(c - l) <= f32(thr)) & (np.abs(c - r) <= f32(thr))
+        jump &= ~(lenient | steady)
+    out = np.ones((H, W), bool)
+    out[:, :W - 1] = jump
+    return out
 
 
 def _dilate_near(d, radius, thr):

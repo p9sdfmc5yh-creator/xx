@@ -450,3 +450,46 @@ def finish(args, shot):
         C.quick_comp(args.out, shot, comp)
     print('[comp]', comp)
     return comp
+
+
+# ----------------------------------------------------------------------------- shader helpers
+def moist_layers(m, P, celld, grain, wet, dry_mask, knife_deg=10.0, cell_h=0.000028, grain_h=0.000008, drop=None,
+                 coat_ior=1.38, coat_rough=(0.10, 0.26), calm_scale=600.0, film_gain=1.0):
+    """Micro relief + wet film of a freshly cut, juicy face.  celld = Voronoi F1 socket (one cell pattern
+    drives colour and relief), grain = fine noise socket, wet = 0-1 wetness mask, dry_mask = 1 where no
+    film (skin).  Cells are slightly domed (their amplitude varies slowly), the film is patchy and smeared
+    along the knife strokes; `drop` = optional mask of real droplets (mirror-smooth).  Returns the kwargs
+    for Mat.set (normal, coat, coat_ior, coat_normal, coat_roughness).  Cheap on purpose: 2 bump nodes."""
+    calm = m.map_range(m.noise(scale=calm_scale, detail=2, vector=P), 0.3, 0.7, 0.35, 1.0)
+    amp = calm if drop is None else m.math('MULTIPLY', calm, m.math('SUBTRACT', 1.0, drop))
+    dome = m.math('MULTIPLY', m.map_range(celld, 0.0, 0.60, 1.0, 0.0, smooth=True), amp)
+    nrm = m.bump(dome, strength=0.7, distance=cell_h)
+    nrm = m.bump(grain, strength=0.5, distance=grain_h, normal=nrm)
+    Pk = m.mapping(P, rotation=(0, 0, math.radians(knife_deg)), scale=(0.06, 1.0, 1.0))
+    streak = m.noise(scale=800, detail=2, roughness=0.5, vector=Pk)
+    film = m.math('MULTIPLY', m.math('MULTIPLY', wet, m.map_range(streak, 0.25, 0.75, 0.45 * film_gain, film_gain)),
+                  m.math('SUBTRACT', 1.0, dry_mask))
+    cr = m.map_range(streak, 0.2, 0.8, coat_rough[0], coat_rough[1])
+    if drop is not None:
+        film = m.math('MAXIMUM', m.math('MULTIPLY', film, 0.9), drop)
+        cr = m.mixf(cr, 0.035, drop)
+    return dict(normal=nrm, coat=film, coat_ior=coat_ior, coat_normal=nrm, coat_roughness=cr)
+
+
+def skin_mask(m, P, din, thick=(0.15, 0.34), scale=2200.0):
+    """1 on the skin seen in cross-section (noisy thickness, mm) and on the outer wall (din < 0)."""
+    t = m.map_range(m.noise(scale=scale, detail=2, vector=P), 0.2, 0.8, thick[0], thick[1])
+    return m.math('SUBTRACT', 1.0, m.map_range(din, m.math('MULTIPLY', t, 0.55), t, 0.0, 1.0, smooth=True))
+
+
+def translucent_sheet(m, color, fac=0.35):
+    """Mix a Translucent BSDF into Mat m (thin papery flakes, petals: light passes through the sheet)."""
+    nt = m.nt
+    tr = nt.nodes.new('ShaderNodeBsdfTranslucent')
+    m._in(tr.inputs['Color'], color)
+    mx = nt.nodes.new('ShaderNodeMixShader')
+    mx.inputs[0].default_value = fac
+    nt.links.new(m.bsdf.outputs[0], mx.inputs[1])
+    nt.links.new(tr.outputs[0], mx.inputs[2])
+    nt.links.new(mx.outputs[0], m.out.inputs['Surface'])
+    return m

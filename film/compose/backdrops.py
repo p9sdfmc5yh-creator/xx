@@ -40,8 +40,10 @@ Models (data in backdrops_data.npz, built by the scripts described in the
    (text + foreground masked), continued below the old horizon with a damped
    gradient (no extrapolation blow-up); stars = catalogue of sub-pixel points
    (position, RGB flux) that drift exactly like the original star field:
-   p(t) = c + (p0 - c) * exp((lam + i*omega) * (f - start)).  Stars do not
-   twinkle in the original (flux constant within measurement noise).
+   p(t) = c + (p0 - c) * exp((lam + i*omega) * (f - start))  (see sky_motion()).
+   Stars do not twinkle in the original (flux constant within measurement noise).
+   The fit is done in limb-following coordinates, so the tinted haze that hugs
+   the horizon is kept and bridged correctly behind the title.
 
 CLI:
     python backdrops.py --frame 120 --scale 2 --out x.png
@@ -478,6 +480,17 @@ def star_positions(shot_id, frame_idx):
     c = complex(ccx, ccy)
     p = c + (cat[:, 0] + 1j * cat[:, 1] - c) * e
     return p.real, p.imag, cat[:, 2:5]
+
+
+def sky_motion(shot_id, frame_idx):
+    """2x3 matrix M (1080p pixel-centre coords): p(frame) = M @ [x0, y0, 1] for a sky point that was at
+    (x0, y0) on the first frame of the shot - the rigid drift of the original picture: rotation of
+    -pi/6000 rad/frame about the planet centre (959.5, 3381), plus in the three 64-frame shots a
+    push-in of exp(3.4e-4 * frames) about the top of the limb.  Stars follow exactly this."""
+    lam, om, ccx, ccy, t0 = _data()['mot_' + shot_id]
+    e = np.exp(complex(lam, om) * (float(frame_idx) - t0))
+    dd = (1 - e) * complex(ccx, ccy)
+    return np.array([[e.real, -e.imag, dd.real], [e.imag, e.real, dd.imag]])
 
 
 def _splat_stars(img, x, y, flux, scale):

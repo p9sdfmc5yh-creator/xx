@@ -201,11 +201,11 @@ def inst_rand3(m):
 # ----------------------------------------------------------------------------- common driver
 def run_pile(shot, make_variants, R, heap_kw=None, base_color=(0.05, 0.03, 0.02), base_drop=0.0005,
              light_kw=None, dof_kw=None, exposure=0.0, final_res=None, debris=None, apex=0.53, edge=0.68,
-             inst_attrs=None, look='AgX - Punchy'):
+             inst_attrs=None, look='AgX - Punchy', seed=None):
     """Build the heap shot and render it (CLI of common.parse_args).
     make_variants() -> (objects, shapes, weights);  debris(heap, sol, rng) optional;
     inst_attrs(heap, rng) -> {name: per-instance array} optional."""
-    args = C.parse_args()
+    args = C.parse_args(**({} if seed is None else {'seed': seed}))
     if final_res and args.quality == 'final' and not args.res:
         args.q['res'] = final_res
     C.setup_scene(args, look=look, exposure=exposure)
