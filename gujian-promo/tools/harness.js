@@ -84,6 +84,9 @@ async function acquireSlot() {
 async function openBrowser(film) {
   const releaseSlot = await acquireSlot();
   const query = film && film !== 'arch' ? `?film=${encodeURIComponent(film)}` : '';
+  // a film may name its own renderer page in src/films/<film>/PLAYER (e.g. the square plate films use player2.html)
+  let pageFile = 'player.html';
+  try { const pf = path.join(ROOT, 'src', 'films', String(film), 'PLAYER'); if (fs.existsSync(pf)) pageFile = fs.readFileSync(pf, 'utf8').trim() || pageFile; } catch (e) { /* default page */ }
   const { chromium } = loadPlaywright();
   const { server, port } = await startServer();
   const browser = await chromium.launch({ args: ['--disable-gpu', '--force-color-profile=srgb', '--disable-lcd-text', '--js-flags=--max-old-space-size=3072'] });
@@ -92,7 +95,7 @@ async function openBrowser(film) {
     const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
     page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') logs.push(`[${m.type()}] ${m.text()}`); });
     page.on('pageerror', (e) => logs.push(`[pageerror] ${e.message}`));
-    await page.goto(`http://127.0.0.1:${port}/src/player.html${query}`);
+    await page.goto(`http://127.0.0.1:${port}/src/${pageFile}${query}`);
     await page.waitForFunction(() => window.GJ && window.GJ.ready, null, { timeout: 60000 });
     await page.evaluate(() => window.GJ.ready);
     return page;
