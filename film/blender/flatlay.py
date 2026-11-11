@@ -1295,6 +1295,14 @@ def _grid_ink(h, w, texel, x0, y0, grid, rng, fibre_h):
     return np.clip(ink, 0, 1)
 
 
+PAPER_REF_W = 0.30
+
+
+def paper_feature_scale(frame, P):
+    fs = P.get('feature_scale')
+    return float(fs) if fs else max(1.0, frame.W / PAPER_REF_W)
+
+
 def make_ground_maps(kind, frame, margin, texel, seed, P):
     """Numpy texture set for the ground plane, covering frame + margin at `texel` metres per pixel.
     Returns dict(rgb (h,w,3) uint16, ink (h,w) uint16 or None, size_m (w, h)).
@@ -1309,9 +1317,13 @@ def make_ground_maps(kind, frame, margin, texel, seed, P):
     ink = None
     if kind == 'paper':
         amt = float(P.get('fibres', 1.0))
+        # the paper STRUCTURE is drawn as if the sheet were photographed PAPER_REF_W wide: a 3 m plate of
+        # whole fruits shows the same fibre / cloud pattern in the picture as a 30 cm plate of seeds
+        fs = paper_feature_scale(frame, P)
+        texel_real, texel = texel, texel / fs
         fib = np.zeros((h, w), np.uint8)
         drk = np.zeros((h, w), np.uint8)
-        A = Wm * Hm
+        A = Wm * Hm / (fs * fs)
         # (count per m2, length m, width m, intensity, curl)
         for dens, ln, wd, val, curl in ((2.6e5, (0.0015, 0.005), (0.00003, 0.00007), 0.45, 0.32),      # felt
                                         (7.0e4, (0.005, 0.018), (0.00004, 0.00010), 0.70, 0.13),      # fibres
@@ -1339,6 +1351,7 @@ def make_ground_maps(kind, frame, margin, texel, seed, P):
         tint = 0.5 + 0.5 * fibf * (0.55 + 0.45 * np.clip(fbm2(h, w, 0.004 / texel, rng, 2) / 0.6 + 0.3, 0, 1)) - 0.5 * drkf
         relief = np.clip(fibf + 0.6 * drkf, 0, 1)
         rgb = np.stack([relief, np.clip(tint, 0, 1), np.clip(0.5 + 0.22 * cloud, 0, 1)], -1)
+        texel = texel_real
         grid = P.get('grid')
         if grid:
             ink = _grid_ink(h, w, texel, x0, y0, grid, rng, fibf)
@@ -1470,11 +1483,12 @@ def build_ground(frame, G_, exposure, seed, tex_px, margin, tag):
             ink_col = tuple(float(v) for v in albedo_for_display(gi.get('colour', [170, 40, 30]), exposure))
             base = m.mix(base, ink_col, m.math('MULTIPLY', it.outputs['Color'], float(gi.get('opacity', 0.85))))
         rough = m.map_range(cR, 0, 1, float(G_.get('roughness', 0.66)), float(G_.get('roughness', 0.66)) - 0.20)
-        cock = m.noise(scale=1.0 / 0.085, detail=2.0, roughness=0.45, vector=pos)
-        nrm = m.bump(cock, strength=1.0, distance=float(G_.get('cockle_m', 0.0022)))
-        nrm = m.bump(cR, strength=0.8, distance=0.000028, normal=nrm)
-        nrm = m.bump(cB, strength=0.5, distance=0.00006, normal=nrm)
-        nrm = m.micro_bump(scale=5200, strength=0.55, distance=0.000035, vector=pos, normal=nrm)
+        fs = paper_feature_scale(frame, G_)
+        cock = m.noise(scale=1.0 / (0.085 * fs), detail=2.0, roughness=0.45, vector=pos)
+        nrm = m.bump(cock, strength=1.0, distance=float(G_.get('cockle_m', 0.0022)) * fs)
+        nrm = m.bump(cR, strength=0.8, distance=0.000028 * fs, normal=nrm)
+        nrm = m.bump(cB, strength=0.5, distance=0.00006 * fs, normal=nrm)
+        nrm = m.micro_bump(scale=5200 / fs, strength=0.55, distance=0.000035 * fs, vector=pos, normal=nrm)
         m.set(base_color=base, roughness=rough, specular=float(G_.get('specular', 0.22)), sheen=float(G_.get('sheen', 0.10)),
               sheen_roughness=0.5, normal=nrm)
     elif kind == 'slate':
