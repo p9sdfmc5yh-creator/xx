@@ -1,0 +1,40 @@
+{
+ "shot": "b17_guiyuan",
+ "layout": "glyph",
+ "frame_width_m": 1.7792610169221856,
+ "frame_height_m": 1.0008343220187295,
+ "items": [
+  "k03_guiyuan"
+ ],
+ "seed": 42,
+ "empty": false,
+ "text": "药",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.2,
+ "engine": "packed",
+ "px_per_m": 1136.8893060569364,
+ "stroke_width_m": 0.06684907633056217,
+ "stroke_items_wide": 3.3,
+ "block_m": [
+  0.7177479774439307,
+  0.7406173982938599
+ ],
+ "char_boxes": [
+  [
+   0.30423,
+   0.09,
+   0.7017,
+   0.82912
+  ]
+ ],
+ "align": 0.0,
+ "n_items": 449,
+ "layers_max": 2,
+ "heap_top_mm": 60.090370178222656,
+ "display_gain": 1.1246,
+ "render_seconds": 188.1,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

@@ -1663,6 +1663,78 @@ def _unlink_templates(S):
             c.objects.unlink(ob)
 
 
+def macro_variation(objects, V):
+    """Plate-scale colour variation for ingredients whose modules were written for macro shots (their
+    detail is finer than a pixel from 1 m): every INSTANCE gets its own value / saturation / hue offset
+    and a soft mottling + a fine speckle in object space (shifted per instance), multiplied into the
+    base colour of every Principled BSDF.  V: inst (0.10), hue (0.010), sat (0.10), mott (0.06),
+    mott_mm (7), speck (0.04), speck_mm (1.1)."""
+    done = set()
+    inst_v, hue_v, sat_v = float(V.get('inst', 0.10)), float(V.get('hue', 0.010)), float(V.get('sat', 0.10))
+    mott, speck = float(V.get('mott', 0.06)), float(V.get('speck', 0.04))
+    for ob in objects:
+        for mat in ob.data.materials:
+            if mat is None or mat.name in done or not mat.node_tree:
+                continue
+            done.add(mat.name)
+            nt = mat.node_tree
+            N, L = nt.nodes, nt.links
+            for bsdf in [n for n in N if n.bl_idname == 'ShaderNodeBsdfPrincipled']:
+                inp = bsdf.inputs['Base Color']
+                attr = N.new('ShaderNodeAttribute')
+                attr.attribute_type = 'INSTANCER'
+                attr.attribute_name = 'inst_rand'
+                wn = N.new('ShaderNodeTexWhiteNoise')
+                wn.noise_dimensions = '1D'
+                L.new(attr.outputs['Fac'], wn.inputs['W'])
+                rgb = N.new('ShaderNodeSeparateColor')
+                L.new(wn.outputs['Color'], rgb.inputs[0])
+                tc = N.new('ShaderNodeTexCoord')
+                add = N.new('ShaderNodeVectorMath')
+                add.operation = 'ADD'
+                L.new(tc.outputs['Object'], add.inputs[0])
+                L.new(wn.outputs['Color'], add.inputs[1])
+
+                def noise(mm, detail):
+                    nz = N.new('ShaderNodeTexNoise')
+                    nz.inputs['Scale'].default_value = 1000.0 / mm
+                    nz.inputs['Detail'].default_value = detail
+                    nz.inputs['Roughness'].default_value = 0.55
+                    L.new(add.outputs[0], nz.inputs['Vector'])
+                    return nz.outputs['Fac']
+
+                def lin(sock, amp, base=1.0):                       # base + amp * (2 x - 1)
+                    mr = N.new('ShaderNodeMapRange')
+                    mr.inputs['From Min'].default_value, mr.inputs['From Max'].default_value = 0.0, 1.0
+                    mr.inputs['To Min'].default_value, mr.inputs['To Max'].default_value = base - amp, base + amp
+                    mr.clamp = False
+                    L.new(sock, mr.inputs['Value'])
+                    return mr.outputs['Result']
+
+                def mul(a, b):
+                    mm_ = N.new('ShaderNodeMath')
+                    mm_.operation = 'MULTIPLY'
+                    L.new(a, mm_.inputs[0])
+                    L.new(b, mm_.inputs[1])
+                    return mm_.outputs[0]
+
+                val = lin(rgb.outputs[0], inst_v)
+                if mott > 0:
+                    val = mul(val, lin(noise(float(V.get('mott_mm', 7.0)), 2.0), 2.2 * mott))     # noise spans ~0.3-0.7
+                if speck > 0:
+                    val = mul(val, lin(noise(float(V.get('speck_mm', 1.1)), 3.0), 2.2 * speck))
+                hsv = N.new('ShaderNodeHueSaturation')
+                L.new(lin(rgb.outputs[2], hue_v, 0.5), hsv.inputs['Hue'])
+                L.new(lin(rgb.outputs[1], sat_v), hsv.inputs['Saturation'])
+                L.new(val, hsv.inputs['Value'])
+                if inp.is_linked:
+                    L.new(inp.links[0].from_socket, hsv.inputs['Color'])
+                else:
+                    hsv.inputs['Color'].default_value = inp.default_value
+                L.new(hsv.outputs['Color'], inp)
+    return len(done)
+
+
 def speed_tweaks(scene, mode, args):
     """Render economy for the top-down plates (soft light, small items): random-walk SSS is the single
     most expensive thing in these scenes and reads the same as Christensen-Burley at 100 px per item."""
@@ -1778,6 +1850,11 @@ def main(argv=None):
                 print('[items] %s not written yet - skipped' % sid)
                 continue
             S = ItemSet(sid, seed=0, scale=float(shot.get('item_scale', 1.0)))
+            V_ = shot.get('variation')
+            if V_:
+                V_ = V_.get(sid, V_) if any(isinstance(v_, dict) for v_ in V_.values()) else V_
+                if V_ and not V_.get('off'):
+                    print('[variation] %s: %d material(s)' % (sid, macro_variation(S.objects, V_)))
             cache[sid] = S
             sets.append(S)
         if not sets and not cli.empty:

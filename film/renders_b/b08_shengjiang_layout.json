@@ -1,0 +1,32 @@
+{
+ "shot": "b08_shengjiang",
+ "layout": "wreath",
+ "frame_width_m": 0.5017788945960024,
+ "frame_height_m": 0.2822506282102514,
+ "items": [
+  "m04_shengjiang"
+ ],
+ "seed": 23,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.2809961809737614,
+  0.2809961809737614,
+  -0.17123204778088583,
+  0.17123204778088583
+ ],
+ "n_items": 326,
+ "layers_max": 3,
+ "heap_top_mm": 11.399483680725098,
+ "display_gain": 1.0,
+ "render_seconds": 175.9,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
