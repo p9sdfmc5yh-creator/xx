@@ -1,0 +1,40 @@
+{
+ "shot": "b21_chixiaodou",
+ "layout": "glyph",
+ "frame_width_m": 0.6828462953690291,
+ "frame_height_m": 0.38410104114507887,
+ "items": [
+  "k07_chixiaodou"
+ ],
+ "seed": 46,
+ "empty": false,
+ "text": "食",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.24,
+ "engine": "packed",
+ "px_per_m": 3015.1131708874464,
+ "stroke_width_m": 0.02122640059350167,
+ "stroke_items_wide": 5.499999999999998,
+ "block_m": [
+  0.2872197330308195,
+  0.28423477044735834
+ ],
+ "char_boxes": [
+  [
+   0.29795,
+   0.10036,
+   0.70108,
+   0.81791
+  ]
+ ],
+ "align": 0.7715638463208655,
+ "n_items": 1684,
+ "layers_max": 4,
+ "heap_top_mm": 12.126777648925781,
+ "display_gain": 1.0112,
+ "render_seconds": 85.6,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

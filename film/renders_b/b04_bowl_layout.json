@@ -1,0 +1,37 @@
+{
+ "shot": "b04_bowl",
+ "layout": "wreath",
+ "frame_width_m": 0.56,
+ "frame_height_m": 0.31500000000000006,
+ "items": [
+  "m02_gouqi",
+  "m03_dazao",
+  "m09_juhua",
+  "m06_lianzi",
+  "k03_guiyuan",
+  "m01_shanyao"
+ ],
+ "seed": 15,
+ "empty": false,
+ "window": [
+  0.5,
+  0.385,
+  0.6,
+  0.37
+ ],
+ "extent": [
+  -0.31983860630351046,
+  0.31983860630351046,
+  -0.19733860630351047,
+  0.19733860630351047
+ ],
+ "n_items": 999,
+ "layers_max": 30,
+ "heap_top_mm": 56.108428955078125,
+ "display_gain": 1.0,
+ "render_seconds": 189.3,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
