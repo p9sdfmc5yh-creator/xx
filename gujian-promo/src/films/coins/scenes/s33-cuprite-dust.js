@@ -112,7 +112,7 @@ function buildDust(env) {
     const y = j - PAD, near = y > yArc;
     for (let i = 0; i < AW; i++) {
       const h = hsh(i, j);
-      let pr = 0.085 * bil(Dn, i, j), bf = bil(Br, i, j);
+      let pr = 0.05 * bil(Dn, i, j), bf = bil(Br, i, j);
       if (near) {   // a lip of fine dust banked against the coin's edge
         const x = i - PAD, dr = Math.hypot(x - a.cx, y - a.cy) - R;
         if (dr > -0.5 && dr < 34) { const pl = 0.26 * Math.exp(-dr / 8.5) * (0.55 + 0.45 * nz.n2(x / 60, 7.7)); if (pl > pr) { pr = pl; bf = 0.62; } }
@@ -121,6 +121,13 @@ function buildDust(env) {
       const u = Math.pow(hsh(i + 7919, j - 104729), 2.6), v = (58 + 190 * u) * bf;
       const d = im[(hsh(i - 31337, j + 911) * 3) | 0].data, o = (j * AW + i) * 4;
       d[o] = v; d[o + 1] = v * (0.14 + 0.09 * u); d[o + 2] = v * 0.105; d[o + 3] = 255;
+      // a third of the grains are a little bigger and softer: a 2×2 speck whose light falls off to one side
+      if (i + 1 < AW && j + 1 < AH && hsh(i + 4241, j + 1787) < 0.34) {
+        const gG = 0.14 + 0.09 * u, o1 = o + 4, o2 = o + AW * 4, o3 = o2 + 4;
+        if (!d[o1 + 3]) { const w = v * 0.5; d[o1] = w; d[o1 + 1] = w * gG; d[o1 + 2] = w * 0.105; d[o1 + 3] = 255; }
+        if (!d[o2 + 3]) { const w = v * 0.42; d[o2] = w; d[o2 + 1] = w * gG; d[o2 + 2] = w * 0.105; d[o2 + 3] = 255; }
+        if (!d[o3 + 3]) { const w = v * 0.2; d[o3] = w; d[o3 + 1] = w * gG; d[o3 + 2] = w * 0.105; d[o3 + 3] = 255; }
+      }
     }
   }
   gx.forEach((g, k) => { g.putImageData(im[k], 0, 0); g.translate(PAD, PAD); }); tick('micro');
@@ -425,7 +432,7 @@ function buildCoin(env) {
     const n1 = nl.n2(s / 46, 0.3), n2 = nl.n2(s / 9, 4.1), n3 = nl.fbm(s / 240, 9.3, 2);
     const key = 0.66 + 0.34 * Math.exp(-Math.pow((th + 0.09) / 0.24, 2));     // the light rakes in from the upper left
     // outer edge: its top side sits exactly on the arc
-    const w = 2.8 + 0.9 * n1 + 0.7 * n2, b = L.clamp((0.74 + 0.3 * n3 + 0.14 * n1 + 0.1 * n2) * key);
+    const w = 2.5 + 0.6 * n1 + 0.4 * n2, b = L.clamp((0.74 + 0.3 * n3 + 0.14 * n1 + 0.1 * n2) * key);
     let p0 = a.pt(th, -w / 2), p1 = a.pt(th + ds, -w / 2);
     rg.strokeStyle = L.css(LINE(b)); rg.lineWidth = w; rg.globalAlpha = 1;
     rg.beginPath(); rg.moveTo(p0.x, p0.y); rg.lineTo(p1.x, p1.y); rg.stroke();
@@ -436,17 +443,28 @@ function buildCoin(env) {
     rg.beginPath(); rg.moveTo(p0.x, p0.y); rg.lineTo(p1.x, p1.y); rg.stroke();
   }
   rg.globalAlpha = 1;
-  // burrs and beads of rust riding the outer edge
-  for (let n = 0; n < 520; n++) {
-    const th = r.range(-sp, sp), dr = r.range(-3.2, 0.6), rad = 0.9 + 2.2 * Math.pow(r(), 3), u = r();
+  // the very edge: a hair of hot light riding the top of the line (its upper side stays on the arc);
+  // it swells to pale orange where the arris is sharp and sinks back into the vermilion where it is worn
+  const HOT = L.makeRamp([[0, '#e2301c'], [0.38, '#ff5a2a'], [0.72, '#ff8a55'], [1, '#ffd9c2']]);
+  for (let th = -sp; th < sp; th += ds) {
+    const s = th * R, key = 0.66 + 0.34 * Math.exp(-Math.pow((th + 0.09) / 0.24, 2));
+    const hb = L.clamp((0.52 + 0.55 * nl.fbm(s / 150, 51.7, 2) + 0.2 * nl.n2(s / 23, 77.1)) * key + 0.06);
+    const p0 = a.pt(th, -0.78), p1 = a.pt(th + ds, -0.78);
+    rg.strokeStyle = L.css(HOT(hb)); rg.lineWidth = 0.95 + 0.5 * hb;
+    rg.beginPath(); rg.moveTo(p0.x, p0.y); rg.lineTo(p1.x, p1.y); rg.stroke();
+  }
+  // burrs and beads of rust riding the outer edge: mostly fine, a few big enough to carry their own highlight
+  for (let n = 0; n < 430; n++) {
+    const th = r.range(-sp, sp), dr = r.range(-3.2, 0.6), rad = 0.8 + 2.1 * Math.pow(r(), 3.2), u = r();
     const p = a.pt(th, dr - rad * 0.4);
     rg.fillStyle = u > 0.93 ? '#ffd9c2' : u > 0.7 ? '#ff7a3a' : pcol(0.6 + 0.4 * u); rg.globalAlpha = 0.75 + 0.25 * r();
     rg.beginPath(); rg.ellipse(p.x, p.y, rad * 1.3, rad * 0.8, th + r.range(-0.3, 0.3), 0, L.TAU); rg.fill();
+    if (rad > 1.7 && u <= 0.93) { rg.fillStyle = '#ffd9c2'; rg.globalAlpha = 0.85; rg.beginPath(); rg.ellipse(p.x - rad * 0.3, p.y - rad * 0.22, rad * 0.36, rad * 0.24, th, 0, L.TAU); rg.fill(); }
   }
   rg.globalAlpha = 1;
   g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = 'lighter';
-  g.globalAlpha = 0.32; g.drawImage(L.blurred(rc, 14), 0, 0);
-  g.globalAlpha = 0.6; g.drawImage(L.blurred(rc, 3.5), 0, 0);
+  g.globalAlpha = 0.3; g.drawImage(L.blurred(rc, 14), 0, 0);
+  g.globalAlpha = 0.5; g.drawImage(L.blurred(rc, 2.6), 0, 0);
   g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; g.drawImage(rc, 0, 0);
   g.restore();
 

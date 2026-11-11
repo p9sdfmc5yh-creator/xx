@@ -57,21 +57,26 @@ function arcLine(a, dr, t0, t1, drFn) {
 // ───────────────────────── marks ─────────────────────────
 /** a ruled line as a ribbon: almost straight, almost even — the "almost" is what makes it ink on paper */
 function ribbon(pts, o) {
-  const { w = 3, seed = 1, wvar = 0.09, rag = 0.32, drift = 0.3 } = o;
+  const { w = 3, seed = 1, wvar = 0.09, rag = 0.32, drift = 0.3, slow = 0.16, taper = 0 } = o;
   const nz = L.makeNoise('s34rb' + seed), n = pts.length, A = [], B = [];
+  let total = 0;
+  if (taper) for (let i = 1; i < n; i++) total += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
   let s = 0;
   for (let i = 0; i < n; i++) {
     const p0 = pts[Math.max(0, i - 1)], p1 = pts[Math.min(n - 1, i + 1)];
     let nx = -(p1[1] - p0[1]), ny = p1[0] - p0[0]; const m = Math.hypot(nx, ny) || 1; nx /= m; ny /= m;
     if (i) s += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
     const c = drift * nz.n2(s / 240, 1.7);                                                   // the straightedge is never perfectly true
-    const hw = (w / 2) * (1 + wvar * nz.n2(s / 70, 7.3) + wvar * 0.5 * nz.n2(s / 12, 3.1));   // ink flow breathes
+    const press = 1 + slow * nz.n2(s / 310, 5.9);                                            // the hand leans on the pen and eases off again over a hand's breadth
+    const lift = taper ? 1 - taper * (1 - ease(Math.min(s, total - s) / 54)) : 1;            // a pencil lands and lifts off lightly
+    const hw = (w / 2) * press * lift * (1 + wvar * nz.n2(s / 70, 7.3) + wvar * 0.5 * nz.n2(s / 12, 3.1));   // ink flow breathes
     const ea = rag * nz.n2(s / 4.5, 11.1), eb = rag * nz.n2(s / 4.5, 23.9);                   // fibres wick the two edges separately
     A.push([pts[i][0] + nx * (c + hw + ea), pts[i][1] + ny * (c + hw + ea)]);
     B.push([pts[i][0] + nx * (c - hw - eb), pts[i][1] + ny * (c - hw - eb)]);
   }
   return { A, B, n };
 }
+function ease(x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
 function tracePoly(g, pts) { pts.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); }
 function fillRibbon(g, rb) {
   g.beginPath(); tracePoly(g, rb.A);
@@ -83,7 +88,16 @@ function inkLine(g, pts, o) {
   const w = o.w || 3, n = pts.length, col = o.color || C.ink;
   const a0 = o.alpha === undefined ? 0.95 : o.alpha, a1 = a0 * (o.fade === undefined ? 1 : o.fade);   // the pen runs a little dry toward the far end
   g.save();
-  g.fillStyle = a0 === a1 ? L.rgba(col, a0) : L.linear(g, pts[0][0], pts[0][1], pts[n - 1][0], pts[n - 1][1], [[0, L.rgba(col, a0)], [1, L.rgba(col, a1)]]);
+  const dens = o.dens === undefined ? 0.13 : o.dens;                                                  // …and its load is never quite constant along the way
+  if (dens > 0 || a0 !== a1) {
+    const x0 = pts[0][0], y0 = pts[0][1], x1 = pts[n - 1][0], y1 = pts[n - 1][1], len = Math.hypot(x1 - x0, y1 - y0);
+    const nz = L.makeNoise('s34dn' + o.seed), K = Math.max(2, Math.ceil(len / 30)), stops = [];
+    for (let k = 0; k <= K; k++) {
+      const t = k / K, v = 0.5 + 0.5 * nz.n2((t * len) / 130, 4.4);
+      stops.push([t, L.rgba(col, L.lerp(a0, a1, t) * (1 - dens * v * v))]);
+    }
+    g.fillStyle = L.linear(g, x0, y0, x1, y1, stops);
+  } else g.fillStyle = L.rgba(col, a0);
   fillRibbon(g, ribbon(pts, o));
   if (!o.noCaps) {
     g.beginPath(); g.arc(pts[0][0], pts[0][1], w * 0.6, 0, L.TAU); g.fill();
@@ -94,7 +108,7 @@ function inkLine(g, pts, o) {
 /** colour line (gouache in a ruling pen): flat and saturated, pigment pooled along both edges, a paler streak in the core */
 function colourLine(g, pts, o) {
   const { w = 15, color, seed, deep = L.shade(color, -0.3) } = o;
-  const rb = ribbon(pts, { w, seed, wvar: 0.06, rag: 0.5, drift: 0.4 }), n = rb.n;
+  const rb = ribbon(pts, { w, seed, wvar: 0.06, rag: 0.5, drift: 0.4, slow: 0.06 }), n = rb.n;
   const nz = L.makeNoise('s34cl' + seed);
   const at = (i, k) => [L.lerp(rb.B[i][0], rb.A[i][0], k), L.lerp(rb.B[i][1], rb.A[i][1], k)];
   const run = (kFn) => { g.beginPath(); for (let i = 0; i < n; i++) { const q = at(i, kFn(i)); if (i) g.lineTo(q[0], q[1]); else g.moveTo(q[0], q[1]); } g.stroke(); };
@@ -163,7 +177,7 @@ function softCopy(src, n = 1) {
 }
 
 // ───────────────────────── paper ─────────────────────────
-function buildPaper() {
+function buildPaper(env) {
   return L.makeLayer(PAD, (g) => {
     g.fillStyle = C.paper; full(g);
     // the sheet is not perfectly flat — a breath of unevenness, kept inside the paper's own hue
@@ -180,6 +194,22 @@ function buildPaper() {
       g.beginPath(); g.moveTo(x, y);
       g.quadraticCurveTo(x + Math.cos(an) * len * 0.5 - Math.sin(an) * bend, y + Math.sin(an) * len * 0.5 + Math.cos(an) * bend, x + Math.cos(an) * len, y + Math.sin(an) * len);
       g.stroke();
+    }
+    // longer rag fibres pressed into the surface: each a hair of shade on its lee side and a hair of light toward the lamp.
+    // Quieter in the caption zone above the crest.
+    const rf = L.rng('s34fib2'), ar = env.arc;
+    for (let i = 0; i < 1500; i++) {
+      const x = rf.range(-PAD, W + PAD), y = rf.range(-PAD, H + PAD), len = rf.range(22, 96), an = rf() * Math.PI;
+      const b1 = rf.range(-0.22, 0.22) * len, b2 = rf.range(-0.22, 0.22) * len, ux = Math.cos(an), uy = Math.sin(an);
+      const quiet = y < ar.crestY && y > ar.crestY - 330 && Math.abs(x - ar.cx) < 410 ? 0.55 : 1;
+      const path = (ox, oy) => {
+        g.beginPath(); g.moveTo(x + ox, y + oy);
+        g.bezierCurveTo(x + ux * len * 0.33 - uy * b1 + ox, y + uy * len * 0.33 + ux * b1 + oy, x + ux * len * 0.66 - uy * b2 + ox, y + uy * len * 0.66 + ux * b2 + oy, x + ux * len + ox, y + uy * len + oy);
+        g.stroke();
+      };
+      g.lineWidth = rf.range(0.55, 1.15);
+      g.strokeStyle = `rgba(112,105,94,${(rf.range(0.045, 0.105) * quiet).toFixed(3)})`; path(0.55, 0.55);
+      g.strokeStyle = `rgba(255,255,255,${rf.range(0.5, 0.85).toFixed(3)})`; path(-0.45, -0.45);
     }
     // tooth, lit by the raking lamp from the upper left: a soft cold-press swell under a fine grain
     const swell = L.bumpLight(L.noiseLayer(PAD, { seed: 's34swell', scale: 15, octaves: 2, gain: 0.5, res: 0.5 }), { angle: 45, strength: 1.5, res: 0.5 });
@@ -226,7 +256,7 @@ function buildMarks(env) {
     { x: 1648, ang: 45, end: 'rim' },
     { via: knot, ang: 108 },
   ];
-  GR.forEach((o, i) => inkLine(gg, chord(o), { w: r.range(2.0, 2.6), seed: 'g' + i, alpha: r.range(0.5, 0.68), fade: r.range(0.6, 0.9), rag: 0.5, wvar: 0.2, drift: 0.5, color: C.graphite, noCaps: true }));
+  GR.forEach((o, i) => inkLine(gg, chord(o), { w: r.range(2.0, 2.6), seed: 'g' + i, alpha: r.range(0.5, 0.68), fade: r.range(0.6, 0.9), rag: 0.5, wvar: 0.26, slow: 0.24, taper: 0.5, dens: 0.42, drift: 0.5, color: C.graphite, noCaps: true }));
 
   // ── ink: the staggered chords. 45 = "\" (parallel to the right-hand red edge), 135 = "/" (parallel to the left one) ──
   const CH = [
@@ -253,7 +283,7 @@ function buildMarks(env) {
   inkLine(gi, seg(a.cx, a.crestY - 5, a.cx, BOT), { w: 3.8, seed: 'axis', drift: 0.2 });
   // concentric arc: inner edge of the outer rim
   const sp = a.span(PAD + 60);
-  inkLine(gi, arcLine(a, RIM, -sp * 1.12, sp * 1.12), { w: 4.4, seed: 'rim', drift: 0.15, noCaps: true, alpha: 0.93 });
+  inkLine(gi, arcLine(a, RIM, -sp * 1.12, sp * 1.12), { w: 4.4, seed: 'rim', drift: 0.15, slow: 0.07, dens: 0, noCaps: true, alpha: 0.93 });
   // the square hole: its top edge and two top corners, wrapped by the inner rim. Corners overshoot, as ruled corners do.
   const xi = HOLE_W, xo = HOLE_W + NEI;
   inkLine(gi, seg(a.cx - xi - 9, yIn, a.cx + xi + 6, yIn), { w: 4.4, seed: 'hi' });
@@ -263,16 +293,16 @@ function buildMarks(env) {
   inkLine(gi, seg(a.cx - xo, yOut - 10, a.cx - xo, BOT), { w: 2.8, seed: 'hol', alpha: 0.88 });
   inkLine(gi, seg(a.cx + xo, yOut - 6, a.cx + xo, BOT), { w: 2.8, seed: 'hor', alpha: 0.88 });
   // the outer circle itself: one even line, exactly on the shared arc — the heaviest ink on the sheet
-  inkLine(gi, arcLine(a, 0, -sp, sp), { w: 6.6, seed: 'outer', wvar: 0.05, rag: 0.3, drift: 0, noCaps: true, alpha: 0.97 });
+  inkLine(gi, arcLine(a, 0, -sp, sp), { w: 6.6, seed: 'outer', wvar: 0.05, rag: 0.3, drift: 0, slow: 0.03, dens: 0, noCaps: true, alpha: 0.97 });
 
   // ── pencil: the yellow-green draft of the outer circle, struck from a slightly different centre so it peels away to the right ──
   const peel = (th) => 5.6 + 7.5 * Math.sin(th) + 0.9 * Math.sin(th * 23 + 1);
   gp.fillStyle = C.pencil; gp.globalAlpha = 0.9;
-  fillRibbon(gp, ribbon(arcLine(a, 0, -sp, sp, peel), { w: 7.6, seed: 'pencil', wvar: 0.24, rag: 0.9, drift: 0.7 }));
+  fillRibbon(gp, ribbon(arcLine(a, 0, -sp, sp, peel), { w: 7.6, seed: 'pencil', wvar: 0.24, rag: 0.9, drift: 0.7, slow: 0.16 }));
   {
     const d = 7, pts = [...seg(a.cx - xi - d, BOT, a.cx - xi - d, yIn - d + 14).slice(0, -1), ...seg(a.cx - xi - d + 2, yIn - d, a.cx + xi + d - 2, yIn - d), ...seg(a.cx + xi + d, yIn - d + 14, a.cx + xi + d, BOT).slice(1)];
     gp.globalAlpha = 0.66;
-    fillRibbon(gp, ribbon(pts, { w: 6.6, seed: 'pencil2', wvar: 0.24, rag: 0.9, drift: 0.9 }));
+    fillRibbon(gp, ribbon(pts, { w: 6.6, seed: 'pencil2', wvar: 0.24, rag: 0.9, drift: 0.9, slow: 0.18 }));
   }
   gp.globalAlpha = 1;
   // construction points: crosses in graphite
@@ -298,7 +328,7 @@ function buildMarks(env) {
 
 function buildSheet(env) {
   const a = env.arc;
-  const sheet = buildPaper();
+  const sheet = buildPaper(env);
   const g = sheet.getContext('2d');
   const { ink, col, pen, gra } = buildMarks(env);
   // tooth tiles: fine specks where the paper's high points refuse the ink

@@ -26,6 +26,8 @@ const C = {
   shoe: '#30271F', shoeHi: '#6A5B4E',
 };
 C.cloth = L.mix(C.b1, C.white, 0.5); C.clothSh = L.mix(C.b2, C.white, 0.25);                 // the short tunic: thin indigo over white
+C.hot = '#FFCB74'; C.hot2 = '#FFF1C4'; C.v2b = '#EE5A2A';                                    // molten copper: orange-red body, yellow-white core
+C.br = '#DBBE8E'; C.brD = '#C49A66'; C.brG = '#A7B2AA'; C.brL = '#EDDFBB';                    // brick: thin ochre ground, a deeper coat, a blue-grey one, a pale one
 C.o1f = L.mix(C.o1, C.o2, 0.5); C.o2f = L.mix(C.o2, C.o3, 0.6);       // the far leg sits a tone deeper
 
 const NZ = L.makeNoise('s14brush');
@@ -71,7 +73,7 @@ function loop(pts, step = 5) {
  * raw (pts are already dense), prof (u → width factor along the line)
  */
 function brush(g, pts, w, o = {}) {
-  const { head = 0.3, tin = 0, tail = 0.08, wob = 0.18, turn = 0.35, col = C.ink, raw = false, prof = null } = o;
+  const { head = 0.3, tin = 0, tail = 0.08, wob = 0.26, turn = 0.4, col = C.ink, raw = false, prof = null } = o;
   const p = raw ? pts : L.smoothPath(pts, 3);
   const n = p.length; if (n < 2) return;
   const id = (++SID) * 3.713;
@@ -89,6 +91,7 @@ function brush(g, pts, w, o = {}) {
     if (head) k *= 1 + head * Math.exp(-Math.pow(s / hl, 2));
     if (prof) k *= prof(s / len);
     k *= 1 + wob * (0.65 * NZ.n2(s / 70 + id, id * 0.7) + 0.35 * NZ.n2(s / 19 + id, 4.1 + id));
+    k *= 1 + 0.6 * wob * NZ.n2(s / 150 + id * 2.1, 1.3 + id);        // 顿挫: the hand leans in and eases off over a long pull
     if (turn) {
       const a2 = p[Math.max(0, i - 3)], b2 = p[Math.min(n - 1, i + 3)];
       const u1 = unit(p[i][0] - a2[0], p[i][1] - a2[1]), u2 = unit(b2[0] - p[i][0], b2[1] - p[i][1]);
@@ -297,12 +300,25 @@ function flask(P, a, o) {
   const dv = [o.dx || 48, o.dy || -28];
   const T3 = add(A3, dv), T2 = add(A2, dv), R1 = add(A1, dv);
   const front = [A0, A1, A2, A3], side = [A1, R1, T2, A2], top = [A3, A2, T2, T3];
+  // it stands on the floor: a breath of tone where it meets the ground
+  { const g = P.g; g.save(); g.filter = 'blur(5px)'; g.globalAlpha = 0.34; g.strokeStyle = C.o3; g.lineWidth = 12; g.lineJoin = 'round'; g.lineCap = 'round';
+    g.beginPath(); poly(g, [add(A0, [-5, 4]), add(A1, [0, 5]), add(R1, [7, 3])]); g.stroke(); g.restore(); }
   P.fill(front, C.b1); P.fill(side, C.b2); P.fill(top, C.b0);
   // 分染: the faces deepen toward the ground, the side face turns away from the light
   P.shade(front, C.b2, 20, 0.55, 70, (g) => poly(g, [add(A0, [0, 12]), add(A1, [0, 12])]));
   P.shade(front, C.b2, 9, 0.35, 16, (g) => poly(g, [A1, A2]));
   P.shade(side, C.b3, 18, 0.5, 80, (g) => poly(g, [add(A1, [0, 14]), add(R1, [0, 14])]));
   P.shade(side, C.b3, 7, 0.4, 14, (g) => poly(g, [R1, T2]));
+  // the boards of the frame: the colour was pulled down them with a flat brush, and its hairs follow the grain
+  for (const [face, p0, p1, n] of [[front, A0, A1, 18], [side, A1, R1, 9]]) {
+    P.within(face, (g2) => {
+      for (let i = 0; i < n; i++) {
+        const u = r.range(0.05, 0.95), f0 = r.range(0, 0.6), f1 = f0 + r.range(0.22, 0.4), b = mid(p0, p1, u), pts = [];
+        for (let q = 0; q <= 8; q++) pts.push(add(add(b, up, lerp(f0, f1, q / 8)), [1.1 * NZ.n2(q * 0.4 + i, u * 9.1), 0]));
+        brush(g2, pts, r.range(1.3, 2.4), { raw: true, head: 0, tin: 0.25, tail: 0.35, wob: 0.4, turn: 0, col: r.chance(0.5) ? L.rgba(C.b3, r.range(0.08, 0.18)) : L.rgba(C.white, r.range(0.14, 0.28)) });
+      }
+    });
+  }
   // ropes binding the two halves together
   const U = (p, fr) => add(p, up, fr);
   for (const fr of [0.24, 0.7]) {
@@ -311,6 +327,22 @@ function flask(P, a, o) {
     P.fill(rope, C.o1);
     P.shade(rope, C.o3, 3, 0.55, 8, (g) => poly(g, [U(A0, fr), U(A1, fr), U(R1, fr)]));
     for (const q of [fr, fr2]) { P.line([U(A0, q), U(A1, q)], 1.6, { head: 0, tail: 0, turn: 0 }); P.line([U(A1, q), U(R1, q)], 1.6, { head: 0, tail: 0, turn: 0 }); }
+    // the lay of the twisted rope
+    for (const [p0, p1] of [[A0, A1], [A1, R1]]) {
+      const n = Math.max(3, Math.round(Math.hypot(p1[0] - p0[0], p1[1] - p0[1]) / 11));
+      for (let i = 0; i < n; i++) {
+        const u0 = (i + 0.15) / n, u1 = (i + 0.85) / n;
+        P.line([U(mid(p0, p1, u0), fr2 - 2 / o.h), U(mid(p0, p1, u1), fr + 2 / o.h)], 1.25, { head: 0.5, tail: 0.3, turn: 0, col: C.o4 });
+      }
+    }
+    // a wooden wedge driven under the rope to draw the two halves tight
+    const wu = fr < 0.5 ? 0.3 : 0.68, wv = 7.5 / o.w, wl = (fr < 0.5 ? 1 : -1) * 3 / o.w;
+    const WQ = (u, q) => U(mid(A0, A1, u), q);
+    const wedge = [WQ(wu - wv + wl, fr2 + 15 / o.h), WQ(wu + wv + wl, fr2 + 15 / o.h), WQ(wu + wv * 0.3 - wl, fr - 17 / o.h), WQ(wu - wv * 0.3 - wl, fr - 17 / o.h)];
+    P.fill(wedge, C.o2);
+    P.shade(wedge, C.o4, 2.5, 0.5, 6, (g) => poly(g, [wedge[1], wedge[2]]));
+    P.line([wedge[0], wedge[3]], 1.7, { head: 0.3, tail: 0, turn: 0 }); P.line([wedge[1], wedge[2]], 1.9, { head: 0.3, tail: 0, turn: 0 });
+    P.line([wedge[0], wedge[1]], 1.6, { head: 0, tail: 0, turn: 0 }); P.line([wedge[3], wedge[2]], 1.6, { head: 0, tail: 0, turn: 0 });
   }
   const j = () => [r.range(-1, 1), r.range(-1, 1)];
   const seg = (p, q, w, oo = {}) => P.line([add(p, j()), add(mid(p, q), j(), 0.7), add(q, j())], w, { head: 0.3, tail: 0.04, wob: 0.22, turn: 0, ...oo });
@@ -320,13 +352,22 @@ function flask(P, a, o) {
   seg(mid(A2, T2), mid(A1, R1), 1.6, { col: C.ink2, tail: 0.2 });
   seg(mid(A3, T3), mid(A2, T2), 1.6, { col: C.ink2, tail: 0.2 });
   // the pouring gate, brimming
-  const c = mid(mid(A3, T3), mid(A2, T2));
-  const ell = (rx, ry, n = 28) => { const e = []; for (let i = 0; i < n; i++) { const an = (i / n) * L.TAU; e.push([c[0] + Math.cos(an) * rx + Math.sin(an) * ry * 0.5, c[1] + Math.sin(an) * ry]); } return e; };
-  P.fill(ell(20, 8), C.v2);
-  P.fill(ell(11, 4), C.v1, 0.8);
-  const ring = ell(20, 8); ring.push(ring[0], ring[1]);
-  P.line(ring, 1.7, { raw: true, head: 0, tail: 0, wob: 0.25, turn: 0 });
-  return { gate: c, top: A3[1] };
+  // the pouring cup (浇口): a clay funnel luted onto the top over the parting, brimming with copper
+  const c0 = mid(mid(A3, T3), mid(A2, T2)), uu = unit(up[0], up[1]), c = add(c0, uu, 26);
+  const ellAt = (cc, rx, ry, a0 = 0, a1 = L.TAU, n = 28) => { const e = []; for (let i = 0; i <= n; i++) { const an = lerp(a0, a1, i / n); e.push([cc[0] + Math.cos(an) * rx + Math.sin(an) * ry * 0.5, cc[1] + Math.sin(an) * ry]); } return e; };
+  const cupFront = [...ellAt(c, 30, 11, Math.PI, Math.PI, 0), ...ellAt(c0, 17, 6.5, Math.PI, 0, 14), ...ellAt(c, 30, 11, 0, 0, 0)];
+  const cup = [...cupFront, ...ellAt(c, 30, 11, 0, -Math.PI, 14)];
+  P.fill(cup, C.o2);
+  P.shade(cup, C.o4, 4, 0.7, 14, (g) => poly(g, cupFront.slice(8)));
+  P.shade(cup, C.o1, 3, 0.5, 6, (g) => poly(g, [add(c, [-20, 8]), add(c0, [-11, 2])]));
+  P.line(cupFront, 2.2, { raw: true, head: 0.3, tail: 0.02, wob: 0.2, turn: 0 });
+  P.fill(ellAt(c, 30, 11), C.o4, 1, true);
+  P.fill(ellAt(add(c, [0, 1]), 24, 8), C.v2b, 1, true);
+  P.fill(ellAt(add(c, [-2, 1]), 16, 5), C.hot, 0.95, true);
+  P.fill(ellAt(add(c, [-3, 1]), 8, 2.4), C.hot2, 0.9, true);
+  const ring = ellAt(c, 30, 11); ring.push(ring[1]);
+  P.line(ring, 1.9, { raw: true, head: 0, tail: 0, wob: 0.25, turn: 0 });
+  return { gate: add(c, [0, 1]), top: A3[1] };
 }
 
 /** long-handled copper ladle; `target` = where its stream of molten copper lands (omit for a ladle that is not pouring yet) */
@@ -362,8 +403,8 @@ function ladle(P, o) {
   P.shade(hull, C.o1, 6 * k, 0.5, 10 * k, (g2) => poly(g2, [B(-34, 16), B(-22, 30), B(-4, 38)]));                     // a dull light on the copper
   const rim = [], melt = [];
   for (let i = 0; i < 30; i++) { const an = (i / 30) * L.TAU; rim.push(B(RX * Math.cos(an), RY * Math.sin(an))); melt.push(B((RX - 7) * Math.cos(an) + 1, (RY - 4) * Math.sin(an) + 1)); }
-  P.fill(rim, C.o5); P.fill(melt, C.v2);
-  P.shade(melt, C.v1, 3 * k, 0.9, 'fill', (g2) => poly(g2, melt.map((q) => mid(q, B(-6, 0), 0.45))));
+  P.fill(rim, C.o5); P.fill(melt, C.v2b);
+  P.shade(melt, C.hot, 3 * k, 0.95, 'fill', (g2) => poly(g2, melt.map((q) => mid(q, B(-6, 0), 0.4))));
   P.line(body, 2.8, { head: 0.2, tail: 0.02, wob: 0.22 });
   rim.push(rim[0], rim[1]);
   P.line(rim, 2.0, { raw: true, head: 0, tail: 0, wob: 0.25, turn: 0 });
@@ -375,9 +416,10 @@ function ladle(P, o) {
       pts.push([x + 1.2 * NZ.n2(u * 4, seed.length + 3.3), y]);
     }
     const prof = (u) => lerp(1.12, 0.62, L.smooth(u));
-    brush(g, pts, 14.5 * k, { raw: true, head: 0, tail: 0, wob: 0.1, turn: 0, col: C.v3, prof });
-    brush(g, pts, 11.2 * k, { raw: true, head: 0, tail: 0, wob: 0.1, turn: 0, col: C.v2, prof });
-    brush(g, pts.map((q) => [q[0] - 1.6 * k, q[1]]), 4 * k, { raw: true, head: 0, tin: 0.15, tail: 0.3, wob: 0.2, turn: 0, col: C.v1, prof });
+    brush(g, pts, 15 * k, { raw: true, head: 0, tail: 0, wob: 0.1, turn: 0, col: C.v3, prof });
+    brush(g, pts, 11.6 * k, { raw: true, head: 0, tail: 0, wob: 0.1, turn: 0, col: C.v2b, prof });
+    brush(g, pts.map((q) => [q[0] - 0.8 * k, q[1]]), 6.2 * k, { raw: true, head: 0, tail: 0, wob: 0.14, turn: 0, col: C.hot, prof });
+    brush(g, pts.map((q) => [q[0] - 1.4 * k, q[1]]), 2.2 * k, { raw: true, head: 0, tin: 0.1, tail: 0.25, wob: 0.2, turn: 0, col: C.hot2, prof });
   }
 }
 
@@ -387,38 +429,101 @@ function platform(P, a) {
   const row = (fn, n = 170) => { const out = []; for (let i = 0; i <= n; i++) { const th = lerp(-s, s, i / n), q = a.pt(th, fn(th * a.R)); out.push([q.x, q.y]); } return out; };
   const top = row(() => 0);
   const lowFn = (u) => -88 + 1.4 * NZ.n2(u / 260, 12.1);
-  const end = row((u) => -99 + 3.5 * NZ.n2(u / 150, 5.5) + 1.8 * NZ.n2(u / 43, 9.1));
+  const end = row((u) => -95.5 + 3 * NZ.n2(u / 150, 5.5) + 1.5 * NZ.n2(u / 43, 9.1));
   const face = [...top, ...row(lowFn).reverse()];
   // the colour was not laid quite in register with the line: it runs a little past the lower one
-  g.save(); g.filter = 'blur(1.2px)'; P.fill([...row(() => -80), ...end.reverse()], L.mix(C.b2, C.paper, 0.3), 1, true); g.restore();
+  g.save(); g.filter = 'blur(1.2px)'; P.fill([...row(() => -80), ...end.reverse()], L.mix(C.b2, C.br, 0.3), 0.7, true); g.restore();
   P.fill(face, C.b3, 1, true);
   // 分染: deepest under the top line, thinning toward the foot
   P.shade(face, C.b4, 13, 0.95, 40, (g2) => a.trace(g2, -8, -s, s));
   P.shade(face, C.b5, 6, 0.4, 10, (g2) => a.trace(g2, -3, -s, s));
   P.shade(face, C.b2, 12, 0.3, 26, (g2) => a.trace(g2, -76, -s, s));
   P.band = face;
-  P.line(row(lowFn, 320), 2.0, { raw: true, head: 0, tail: 0, wob: 0.26, turn: 0 });
-  P.line(L.arcPts(a, -1.6, -s, s, 440), 3.3, { raw: true, head: 0, tail: 0, wob: 0.2, turn: 0 });
+  P.line(row(lowFn, 320), 2.6, { raw: true, head: 0, tail: 0, wob: 0.32, turn: 0 });
+  P.line(L.arcPts(a, -2.0, -s, s, 440), 4.0, { raw: true, head: 0, tail: 0, wob: 0.26, turn: 0 });
 }
 
 /** the ground under the platform: a pale ochre wash graded off from its foot, and a few dry strokes of a split brush */
 function ground(P, a) {
   const g = P.g, s = a.span(PAD + 90);
-  g.save(); a.clipBelow(g, -92);
-  g.filter = 'blur(26px)'; g.globalAlpha = 0.5; g.strokeStyle = C.o1; g.lineWidth = 60;
-  a.stroke(g, -118, -s, s);
-  g.restore();
   // the floor of the platform: the thinnest wash, so that feet and flasks stand on something
   g.save(); a.clipAbove(g, 0);
   g.filter = 'blur(15px)'; g.globalAlpha = 0.3; g.strokeStyle = '#CDB286'; g.lineWidth = 34;
   a.stroke(g, 12, -s, s);
   g.restore();
-  // and lower down two broad, barely tinted pulls of the same wash: the ground
-  for (const [t0, t1, dr, w, al] of [[-0.36, -0.05, -214, 46, 0.2], [0.0, 0.31, -292, 58, 0.17]]) {
-    g.save(); g.filter = 'blur(13px)'; g.globalAlpha = al; g.strokeStyle = C.o1; g.lineWidth = w; g.lineCap = 'round';
-    g.beginPath();
-    for (let i = 0; i <= 40; i++) { const u = i / 40, q = a.pt(lerp(t0, t1, u), dr + 9 * NZ.n2(u * 2.3, dr) + 6 * Math.sin(u * Math.PI)); if (i) g.lineTo(q.x, q.y); else g.moveTo(q.x, q.y); }
-    g.stroke(); g.restore();
+}
+
+/**
+ * Under the coping the platform is built of brick: the whole lower half of the leaf is its side, drawn the way a ruled-line
+ * painter lays masonry — a thin ground coat, a second coat on some bricks, tone washed up from every bed joint, joints in ink.
+ */
+function brickwork(P, a) {
+  const g = P.g, r = L.rng('s14brick');
+  const sb = a.span(PAD + 90) * 1.32;
+  const TOP = -84, CH = 112, BL = 276, NC = 6;
+  const row = (dr, n = 150, t0 = -sb, t1 = sb) => { const out = []; for (let i = 0; i <= n; i++) { const q = a.pt(lerp(t0, t1, i / n), dr); out.push([q.x, q.y]); } return out; };
+  const bed = (c) => TOP - c * CH;
+  const wall = [...row(TOP), ...row(bed(NC) - 40).reverse()];
+  P.fill(wall, C.br, 1, true);
+  P.wall = wall;
+  // the masonry as a whole: in the shadow of the coping at the top, damp and darker toward the ground
+  P.shade(wall, C.o4, 9, 0.5, 22, (g2) => poly(g2, row(TOP - 6)));
+  P.shade(wall, C.o3, 60, 0.4, 300, (g2) => poly(g2, row(bed(NC) + 40)));
+  for (let i = 0; i < 7; i++) {
+    const t = r.range(-sb * 0.7, sb * 0.7), len = r.range(120, 300), w = r.range(18, 44);
+    P.shade(wall, C.o4, 11, r.range(0.12, 0.2), w, (g2) => { for (let j = 0; j <= 10; j++) { const q = a.pt(t + 0.004 * NZ.n2(j * 0.3, i * 5.1), TOP - 4 - (len * j) / 10); if (j) g2.lineTo(q.x, q.y); else g2.moveTo(q.x, q.y); } });
+  }
+  const joints = [];
+  for (let c = 0; c < NC; c++) {
+    const d0 = bed(c), d1 = bed(c + 1), Rm = a.R + (d0 + d1) / 2, dth = BL / Rm;
+    const off = (c % 2 ? 0.5 : 0) + r.range(-0.07, 0.07);
+    const n0 = Math.floor(-sb / dth) - 1, n1 = Math.ceil(sb / dth) + 1, cj = [];
+    for (let j = n0; j <= n1; j++) {
+      const ta = (j + off) * dth + r.range(-0.004, 0.004), tb = ta + dth;
+      cj.push(ta);
+      // a second coat on most bricks: no two took the colour alike
+      const u = r(), brick = [...row(d0, 8, ta, tb), ...row(d1, 8, ta, tb).reverse()];
+      if (u < 0.3) P.fill(brick, C.brD, r.range(0.28, 0.6));
+      else if (u < 0.52) P.fill(brick, C.brG, r.range(0.25, 0.5));
+      else if (u < 0.7) P.fill(brick, C.brL, r.range(0.35, 0.6));
+    }
+    joints.push(cj);
+    const band = [...row(d0), ...row(d1).reverse()];
+    // 分染: each course turns under into its bed joint; each brick into the upright joint on its shaded side
+    P.shade(band, C.o4, 7, 0.42, 20, (g2) => poly(g2, row(d1 + 5)));
+    P.shade(band, C.brL, 5, 0.5, 8, (g2) => poly(g2, row(d0 - 7)));
+    P.shade(band, C.o4, 5, 0.3, 12, (g2) => { for (const t of cj) { const p0 = a.pt(t, d0), p1 = a.pt(t, d1); g2.moveTo(p0.x - 6, p0.y); g2.lineTo(p1.x - 6, p1.y); } });
+  }
+  // the hairs of the broad brush the coats were laid with, pulled along the courses
+  P.within(wall, (g2) => {
+    for (let i = 0; i < 300; i++) {
+      const dr = r.range(bed(NC), TOP - 6), t0 = r.range(-sb, sb), len = r.range(0.05, 0.2), n = Math.ceil((len * a.R) / 10), pts = [];
+      for (let j = 0; j <= n; j++) { const q = a.pt(t0 + (len * j) / n, dr + 1.4 * NZ.n2(j * 0.12 + i, i * 2.3)); pts.push([q.x, q.y]); }
+      brush(g2, pts, r.range(1.4, 3.0), { raw: true, head: 0, tin: 0.25, tail: 0.35, wob: 0.4, turn: 0, col: r.chance(0.5) ? L.rgba(C.o4, r.range(0.05, 0.12)) : L.rgba(C.brL, r.range(0.1, 0.24)) });
+    }
+  });
+  // joints: the bed joints in long pulls that are taken up and set down again, the upright joints pressed in from the top
+  for (let c = 1; c <= NC; c++) {
+    let t = -sb;
+    while (t < sb) {
+      const t1 = Math.min(sb, t + r.range(0.16, 0.34));
+      P.line(row(bed(c) + 1.2 * NZ.n2(t * 9, c * 3.3), Math.ceil(((t1 - t) * a.R) / 9), t, t1 + 0.004), r.range(2.2, 2.8), { raw: true, head: 0.35, tail: 0.03, wob: 0.32, turn: 0 });
+      t = t1;
+    }
+  }
+  for (let c = 0; c < NC; c++) {
+    for (const t of joints[c]) {
+      const p0 = a.pt(t + r.range(-0.0006, 0.0006), bed(c) - 1), p1 = a.pt(t + r.range(-0.0006, 0.0006), bed(c + 1) + 1);
+      P.line([[p0.x, p0.y], [lerp(p0.x, p1.x, 0.5) + r.range(-1, 1), lerp(p0.y, p1.y, 0.5)], [p1.x, p1.y]], r.range(2.0, 2.6), { head: 0.55, tail: 0.06, wob: 0.3, turn: 0 });
+    }
+  }
+  // a few bricks have lost a corner or cracked: quick strokes of pale ink
+  for (let i = 0; i < 14; i++) {
+    const c = r.int ? r.int(0, NC - 1) : Math.floor(r() * NC), cj = joints[c], t = cj[Math.floor(r() * cj.length)];
+    if (Math.abs(t) > sb) continue;
+    const up = r.chance(0.5), d = up ? bed(c) : bed(c + 1), sg = up ? -1 : 1, side = r.chance(0.5) ? 1 : -1;
+    const q0 = a.pt(t + side * r.range(0.006, 0.012), d), q1 = a.pt(t + side * r.range(0.002, 0.005), d + sg * r.range(10, 18)), q2 = a.pt(t, d + sg * r.range(20, 30));
+    P.line([[q0.x, q0.y], [q1.x, q1.y], [q2.x, q2.y]], 1.6, { head: 0.4, tail: 0.3, col: C.ink2 });
   }
 }
 
@@ -489,6 +594,7 @@ export default {
     SID = 0;
 
     ground(P, a);
+    brickwork(P, a);
     platform(P, a);
     // the row of flasks
     const f1 = flask(P, a, { s: -752, dr: 20, w: 116, h: 258, tilt: -0.02, seed: 'a' });
@@ -519,8 +625,10 @@ export default {
     bg.globalCompositeOperation = 'multiply'; bg.drawImage(paper.tone, 0, 0);
     bg.globalCompositeOperation = 'source-over';
     bg.drawImage(paper.fibre, 0, 0);
+    // 水色: every wash bled a little way into the sized sheet before it dried
+    bg.globalAlpha = 0.38; bg.drawImage(L.blurred(P.layer, 6), 0, 0); bg.globalAlpha = 1;
     bg.drawImage(P.layer, 0, 0);
-    bg.globalAlpha = 0.3; bg.drawImage(paper.fibre, 0, 0); bg.globalAlpha = 1;
+    bg.globalAlpha = 0.34; bg.drawImage(paper.fibre, 0, 0); bg.globalAlpha = 1;
     const sheet = L.blurred(base, 0.5), sg = sheet.getContext('2d');      // the ink has sunk into the sheet
     // copy-stand lens: sharp round the crest, losing the corners
     const soft = L.blurred(sheet, 3.6), fg = soft.getContext('2d');
@@ -536,7 +644,7 @@ export default {
     x0 = Math.floor(x0); y0 = Math.floor(y0);
     const glow = L.makeCanvas(Math.ceil(x1 - x0), Math.ceil(y1 - y0)), gg = glow.getContext('2d');
     for (const [x, y, rad] of hot) {
-      gg.fillStyle = L.radial(gg, x - x0, y - y0, 0, rad, [[0, 'rgba(255,176,96,0.6)'], [0.3, 'rgba(255,150,70,0.26)'], [1, 'rgba(255,140,60,0)']]);
+      gg.fillStyle = L.radial(gg, x - x0, y - y0, 0, rad, [[0, 'rgba(255,186,100,0.72)'], [0.3, 'rgba(255,150,66,0.3)'], [1, 'rgba(255,140,60,0)']]);
       gg.beginPath(); gg.arc(x - x0, y - y0, rad, 0, L.TAU); gg.fill();
     }
     S = { sheet, glow, gx: x0, gy: y0 };
@@ -546,8 +654,8 @@ export default {
     const rot = lerp(-0.0175, 0.0175, p);          // the leaf slides ~2° round the circle
     L.blit(ctx, env, S.sheet, { rot });
     // the molten copper flickers
-    const fl = 0.25 + 0.75 * rr();
-    L.cam(ctx, env, { rot }, (c) => { c.globalCompositeOperation = 'screen'; c.globalAlpha = 0.55 * fl; c.drawImage(S.glow, S.gx, S.gy); });
+    const fl = 0.55 + 0.45 * rr();
+    L.cam(ctx, env, { rot }, (c) => { c.globalCompositeOperation = 'screen'; c.globalAlpha = 0.62 * fl; c.drawImage(S.glow, S.gx, S.gy); });
     // copy-stand light: a touch brighter left of centre, falling off warm toward the corners
     ctx.save(); ctx.globalCompositeOperation = 'multiply';
     ctx.fillStyle = L.radial(ctx, 840, 430, 320, 1350, [[0, '#ffffff'], [0.55, '#f8f1e2'], [1, '#e7d8b8']]);

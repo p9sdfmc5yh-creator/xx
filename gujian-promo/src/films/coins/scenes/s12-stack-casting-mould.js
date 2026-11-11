@@ -113,12 +113,12 @@ function buildMould(env) {
   {
     const gl = L.makeCanvas(RW, RH), g = gl.getContext('2d');
     g.translate(-X0, -Y0); g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = '#f00';
-    // not writing: a handful of random bars and hooks either side of the boss, where a legend would sit, then blurred
+    // not writing: a handful of random bars either side of the boss, where a legend would sit, smeared into worn, unreadable lumps
     for (const c of coins) for (const side of [-1, 1]) {
       g.save(); g.translate(c.x, c.y); g.rotate(c.th); g.translate(side * 100, 0);
       const n = rnd.int(5, 8);
       for (let k = 0; k < n; k++) {
-        g.lineWidth = rnd.range(4.5, 7.5); g.globalAlpha = rnd.range(0.5, 1);
+        g.lineWidth = rnd.range(4.5, 7.5) + 3.5; g.globalAlpha = rnd.range(0.5, 1) * 0.8;
         const x0 = rnd.range(-15, 15), y0 = rnd.range(-34, 34), an = rnd.range(0, Math.PI), hl = rnd.range(7, 17), bd = rnd.range(-9, 9);
         const ux = Math.cos(an), uy = Math.sin(an);
         g.beginPath(); g.moveTo(x0 - ux * hl, y0 - uy * hl); g.quadraticCurveTo(x0 - uy * bd, y0 + ux * bd, x0 + ux * hl, y0 + uy * hl); g.stroke();
@@ -154,7 +154,7 @@ function buildMould(env) {
       q.lineWidth = wd; q.stroke();
     };
     crack(196, 400, 0.05, 1.3, 1.7); crack(246, 150, 0.5, 4.1, 1.2); crack(-742, 230, -0.12, 7.7, 1.4); crack(1010, 300, 0.1, 11.2, 1.5);
-    dg.filter = 'blur(2.1px)'; dg.drawImage(gl, 0, 0);
+    dg.filter = 'blur(4px)'; dg.drawImage(gl, 0, 0);
     dg.globalCompositeOperation = 'lighter'; dg.filter = 'blur(1px)'; dg.drawImage(ln, 0, 0);
     dg.filter = 'none';
   }
@@ -221,8 +221,10 @@ function buildMould(env) {
       let ci = Math.round(th / DTH) + nC; ci = ci < 0 ? 0 : ci > 2 * nC ? 2 * nC : ci;
       const c = coins[ci];
       const dxl = x - c.x, dyl = y - c.y, lx = dxl * c.cs + dyl * c.sn, ly = -dxl * c.sn + dyl * c.cs;
-      const r = Math.sqrt(lx * lx + ly * ly) + 1.5 * e1 + 0.5 * e2;
-      let h = 0, pit = 0, runM = 0, aff = 0, bossM = 0;
+      const r = Math.sqrt(lx * lx + ly * ly) + 0.8 * e1 + 0.3 * e2;
+      let h = 0, pit = 0, runM = 0, aff = 0, bossM = 0, lip = 0;
+      // pressing the pattern in squeezed up a hair-fine lip of clay round each cavity
+      if (r > RC - 1 && r < RC + 13) { const ql = (r - RC - 4.4) / 3.4; lip = (0.5 + 0.2 * e1) * Math.exp(-ql * ql) * (0.3 + 0.7 * sstep(-0.4, 0.25, nB.n2(x / 33 + 11, y / 33))); }   // rubbed away in places
       if (r < RC + 2) {
         const wall = sstep(RC + 1.5, RC - 4.5, r), tr = sstep(RG - 4, RG + 2.5, r);
         // square boss with slightly softened corners
@@ -230,20 +232,25 @@ function buildMould(env) {
         const mx = bx > 0 ? bx : 0, my = by > 0 ? by : 0;
         const d = Math.sqrt(mx * mx + my * my) + Math.min(Math.max(bx, by), 0) - 7 + 1.0 * e1 + 0.5 * e2;
         const b = sstep(4.2, -0.8, d);
-        const gw = sstep(-0.5, 0.25, nB.n2(x / 41, y / 41) + c.gl);
-        h = -wall * (DF + (DG - DF) * tr) * (1 - b) - (0.9 + 0.5 * e1) * b - 3.3 * (DT[k * 4] / 255) * gw * wall * (1 - tr) * (1 - b);
+        const gw = sstep(-0.35, 0.5, nB.n2(x / 41, y / 41) + c.gl);
+        h = -wall * (DF + (DG - DF) * tr) * (1 - b) - (0.9 + 0.5 * e1) * b - 2.1 * (DT[k * 4] * DT[k * 4 + 3] / 65025) * gw * wall * (1 - tr) * (1 - b);   // × alpha: getImageData is un-premultiplied, the blur's soft falloff lives in alpha
         pit = wall * (1 - b); bossM = b;
         aff = wall * c.soot * (0.5 + 0.5 * tr) * (1 - 0.75 * b);
       } else if (r < RC + 60) aff = c.soot * 0.6 * Math.exp(-(r - RC) / 15);
       // runner toward the circle centre
       if (ly > RG - 10 && lx > -60 && lx < 60) {
-        const wv = 16.5 + 0.02 * (ly - RC) + 1.3 * e1, q = lx / wv, pr = 1 - q * q, gate = sstep(RG - 10, RG + 2, ly);
+        const flare = ly > RC ? 9 * Math.exp(-(ly - RC) / 13) : 9;      // the gate opens like a trumpet mouth into the cavity
+        const wv = 16.5 + 0.02 * (ly - RC) + 1.3 * e1 + flare, q = lx / wv, pr = 1 - q * q, gate = sstep(RG - 10, RG + 2, ly);
         if (pr > 0) {
-          const hr = -DR * Math.pow(pr, 0.55) * gate;
+          const hr = (-DR * Math.pow(pr, 0.55) + 0.5 * Math.min(1, pr * 2.5) * vn(lx / 2.7 + c.th * 61, ly / 48)) * gate;   // tool drag lines along the bed
           if (hr < h) h = hr;
           runM = Math.min(1, pr * 3) * gate;
           aff = Math.max(aff, (0.42 + 0.5 * c.soot) * runM);
-        } else if (ly > RC - 6) aff = Math.max(aff, (0.3 + 0.45 * c.soot) * Math.exp(-(Math.abs(lx) - wv) / 15));
+        } else if (ly > RC - 6) {
+          const ov = Math.abs(lx) - wv, qb = (ov - 3.6) / 2.9;
+          aff = Math.max(aff, (0.3 + 0.45 * c.soot) * Math.exp(-ov / 15));
+          lip = Math.max(lip, 0.42 * Math.exp(-qb * qb) * sstep(RC + 2, RC + 14, ly));
+        }
       }
       // rounded, chipped edge of the disc: a worn chamfer that steepens into the side wall; flakes leave a scarp and a dished scar
       let rimU = 0;
@@ -256,6 +263,7 @@ function buildMould(env) {
       }
       const rimM = sstep(0, 0.2, rimU);
       const faceM = (1 - pit) * (1 - runM) * (1 - rimM);
+      h += lip * (1 - runM) * (1 - rimM);
       // micro relief: scraper marks, wiping striations, tooth of the clay, slow undulation
       h += faceM * (1 - bossM) * (-0.5 * (DT[k * 4 + 2] / 255) + 0.16 * nB.n2(s / 140 + 5, dr / 2.9));
       h += (0.34 * e1 + 1.3 * u1) * (1 - 0.6 * pit) + 0.22 * e2 + 0.1 * e3 + 4 * bil(cU2, i, j);
@@ -283,7 +291,12 @@ function buildMould(env) {
       const frac = chip * sstep(0.0, 0.08, rimU);
       // the smoked stretch: densest on the edge, licking down the face in tongues
       const lick = 190 + 90 * nB.fbm(x / 150 + 3, y / 210, 2) + 46 * s2 + 16 * e1;
-      const smoke = ST[ti] * sstep(-lick - 150, -lick + 70, dr) * (1 - 0.94 * frac) * (1 - 0.8 * sstep(0.62, 0.93, rimU));
+      let tj = ((th + (120 * bil(cS1, i, j) + 34 * s2 + 8 * e1) * sstep(-10, -150, dr) / R + SPAN) * TK) | 0; tj = tj < 0 ? 0 : tj >= TN ? TN - 1 : tj;
+      let smoke = ST[tj] * sstep(-lick - 150, -lick + 70, dr) * (1 - 0.94 * frac) * (1 - 0.8 * sstep(0.62, 0.93, rimU));
+      if (smoke > 0.004) {
+        smoke *= 0.88 + 0.08 * nB.n2(s / 12 + 3 + 1.5 * s2, dr / 140) + 0.07 * nB.n2(s / 37 + 9, dr / 260);                        // streaks licked in from the edge
+        smoke *= 1 - 0.6 * (1 - smoke) * sstep(-0.25, 0.7, e2 + 0.6 * e3);          // where the film thins, the tooth of the clay shows through
+      }
       let K = aff * (0.75 + 0.5 * (s2 * 0.5 + 0.5)) + cloud * (0.35 + aff) + smoke * (0.94 + 0.06 * e2);
       Sk[k] = K < 0 ? 0 : K > 0.96 ? 0.96 : K; Fr[k] = frac;
     }

@@ -48,26 +48,36 @@ function capsule(x0, y0, r0, x1, y1, r1) {
   for (let i = 0; i <= 6; i++) { const t = a - Math.PI / 2 + (Math.PI * i) / 6; out.push([x1 + Math.cos(t) * r1, y1 + Math.sin(t) * r1]); }
   return out;
 }
+/** a little disc: the knobby joints of a camel's leg */
+function knob(x, y, r) {
+  const out = [];
+  for (let i = 0; i < 14; i++) { const t = (TAU * i) / 14; out.push([x + Math.cos(t) * r, y + Math.sin(t) * r]); }
+  return out;
+}
 function leg(P, front, ph, dx) {
   const a = 0.33 * Math.sin(ph), lift = Math.max(0, Math.cos(ph));
-  let J, K, F, r0, r1, r2;
+  let J, K, F, r0, r1, r2, rk;
   if (front) {
-    J = [0.71 + dx, 1.22]; r0 = 0.135; r1 = 0.066; r2 = 0.05;
+    J = [0.73 + dx, 1.24]; r0 = 0.122; r1 = 0.054; r2 = 0.045; rk = 0.061;
     const t1 = a + 0.20 * lift, t2 = t1 - 0.55 * lift;
-    K = [J[0] + 0.56 * Math.sin(t1), J[1] - 0.56 * Math.cos(t1)];
+    K = [J[0] + 0.58 * Math.sin(t1), J[1] - 0.58 * Math.cos(t1)];
     F = [K[0] + 0.56 * Math.sin(t2), K[1] - 0.56 * Math.cos(t2)];
   } else {
-    J = [-0.80 + dx, 1.30]; r0 = 0.22; r1 = 0.07; r2 = 0.05;
+    J = [-0.80 + dx, 1.32]; r0 = 0.195; r1 = 0.058; r2 = 0.045; rk = 0.064;
     const t1 = -0.34 + a * 0.8 + 0.22 * lift, t2 = 0.12 + a * 1.05 - 0.5 * lift;
-    K = [J[0] + 0.66 * Math.sin(t1), J[1] - 0.66 * Math.cos(t1)];
+    K = [J[0] + 0.68 * Math.sin(t1), J[1] - 0.68 * Math.cos(t1)];
     F = [K[0] + 0.60 * Math.sin(t2), K[1] - 0.60 * Math.cos(t2)];
   }
   if (lift < 0.02 || F[1] < 0.10) F[1] = 0.10;
-  P.push(capsule(J[0], J[1], r0, K[0], K[1], r1));
+  // long forearm / gaskin tapering fast to a slim cannon, a knobby knee or hock between them
+  const mx = J[0] + (K[0] - J[0]) * 0.42, my = J[1] + (K[1] - J[1]) * 0.42;
+  P.push(capsule(J[0], J[1], r0, mx, my, r0 * 0.5 + r1 * 0.5));
+  P.push(capsule(mx, my, r0 * 0.5 + r1 * 0.5, K[0], K[1], r1));
+  P.push(knob(K[0] + (front ? 0.008 : -0.012), K[1], rk));
   P.push(capsule(K[0], K[1], r1, F[0], F[1], r2));
-  // the broad two-toed pad
+  // the broad two-toed pad, splayed flat on the sand, tipped toe-down when lifted
   const up = F[1] - 0.10, tilt = -Math.min(0.8, up * 3.0);
-  P.push(capsule(F[0] - 0.04, F[1] - 0.045, 0.055, F[0] + 0.15 * Math.cos(tilt), F[1] - 0.055 + 0.15 * Math.sin(tilt), 0.045));
+  P.push(capsule(F[0] - 0.03, F[1] - 0.052, 0.048, F[0] + 0.125 * Math.cos(tilt), F[1] - 0.064 + 0.125 * Math.sin(tilt), 0.034));
 }
 /**
  * one loaded Bactrian camel (双峰驼) walking toward +x: two separate humps, always clear above the load.
@@ -77,37 +87,45 @@ function leg(P, front, ph, dx) {
 function camel(o) {
   const { ph = 0, neck = 0, h1 = 0.47, h2 = 0.45, l1 = 0, l2 = 0, load = 1 } = o;
   const P = [];
-  const n = neck, hy = 2.24 + 0.15 * n, hx = 1.50 - 0.05 * n, tl = 0.12 + 0.06 * n;   // poll, head tilt (camels carry the nose high)
+  const n = neck, hy = 2.29 + 0.15 * n, hx = 1.60 - 0.06 * n, tl = 0.10 + 0.07 * n;   // poll, head tilt (camels carry the nose high)
   const ct = Math.cos(tl), st = Math.sin(tl);
-  const hd = (dx, dy) => [hx + dx * ct - dy * st, hy + dx * st + dy * ct];
-  const t1 = 1.86 + h1, t2 = 1.86 + h2;
+  const hd = (dx, dy) => [hx + 1.19 * (dx * ct - dy * st), hy + 1.19 * (dx * st + dy * ct)];
+  const t1 = 1.86 + h1, t2 = 1.86 + h2, c1 = -0.42, c2 = 0.36;
+  // a plump, rounded hump: broad base, domed top, leaning a little (l)
+  const hump = (c, t, l) => [[c - 0.29, 1.95], [c - 0.215 + l * 0.3, 2.105], [c - 0.125 + l * 0.8, t - 0.06], [c + l, t], [c + 0.125 + l * 0.8, t - 0.065], [c + 0.21 + l * 0.3, 2.095], [c + 0.28, 1.94]];
   P.push(loop([
-    [-1.13, 1.48], [-1.09, 1.66], [-0.98, 1.79], [-0.80, 1.86],
-    [-0.68, 1.96], [-0.58, 2.12], [-0.49 + l1, t1 - 0.06], [-0.41 + l1, t1], [-0.33 + l1, t1 - 0.07], [-0.25 + l1 * 0.4, 2.10], [-0.15, 1.94],
-    [-0.03, 1.87],
-    [0.10, 1.94], [0.20, 2.10], [0.29 + l2, t2 - 0.07], [0.37 + l2, t2], [0.45 + l2, t2 - 0.06], [0.53 + l2 * 0.4, 2.10], [0.63, 1.94],
-    [0.76, 1.83], [0.90, 1.73], [1.04, 1.65], [1.18, 1.66], [1.31, 1.80 + 0.05 * n], [1.41, 2.02 + 0.10 * n],
-    hd(-0.02, 0.0), hd(0.02, 0.09), hd(0.05, 0.16), hd(0.10, 0.09), hd(0.21, 0.10), hd(0.36, 0.05), hd(0.48, 0.02), hd(0.54, -0.05),
-    hd(0.52, -0.14), hd(0.45, -0.18), hd(0.31, -0.17), hd(0.18, -0.20), hd(0.10, -0.26),
-    [1.56, 1.86 + 0.07 * n], [1.53, 1.62 + 0.03 * n], [1.44, 1.38], [1.29, 1.20], [1.10, 1.10], [0.93, 1.05],
-    [0.60, 1.08], [0.20, 1.10], [-0.25, 1.15], [-0.56, 1.24], [-0.80, 1.30], [-1.00, 1.24], [-1.14, 1.28],
-  ], 5));
+    // rump and croup
+    [-1.14, 1.46], [-1.115, 1.64], [-1.02, 1.775], [-0.87, 1.86],
+    ...hump(c1, t1, l1),
+    [-0.03, 1.88],
+    ...hump(c2, t2, l2),
+    // withers, then the neck: it dips in a U before it rises, long and slender
+    [0.76, 1.83], [0.92, 1.715], [1.08, 1.635], [1.23, 1.63], [1.36, 1.74 + 0.03 * n], [1.458 - 0.02 * n, 1.93 + 0.08 * n], [1.532 - 0.04 * n, 2.12 + 0.12 * n],
+    // head: nape, poll, ear, brow, the long nose, split lip, chin, deep jaw
+    hd(-0.03, -0.03), hd(0.0, 0.065), hd(0.018, 0.158), hd(0.072, 0.082), hd(0.16, 0.098), hd(0.28, 0.064), hd(0.40, 0.042), hd(0.50, 0.026), hd(0.558, -0.018),
+    hd(0.56, -0.08), hd(0.525, -0.128), hd(0.47, -0.158), hd(0.385, -0.136), hd(0.28, -0.15), hd(0.185, -0.195), hd(0.115, -0.225),
+    // throat, under-neck, breast
+    [1.648 - 0.05 * n, 1.87 + 0.07 * n], [1.605 - 0.02 * n, 1.60 + 0.03 * n], [1.505, 1.365], [1.37, 1.20], [1.19, 1.09], [0.98, 1.04],
+    // belly, tucked up toward the flank; thigh
+    [0.68, 1.05], [0.28, 1.075], [-0.12, 1.115], [-0.46, 1.205], [-0.72, 1.30], [-0.96, 1.255], [-1.11, 1.30],
+  ], 6));
   // tail: thin, tufted, swinging a little
   const sw = 0.05 * Math.sin(ph * 2);
-  P.push(capsule(-1.11, 1.56, 0.03, -1.17 - sw * 0.5, 1.28, 0.028)); P.push(capsule(-1.17 - sw * 0.5, 1.28, 0.03, -1.19 - sw, 1.02, 0.05));
+  P.push(capsule(-1.12, 1.58, 0.028, -1.18 - sw * 0.5, 1.30, 0.022)); P.push(capsule(-1.18 - sw * 0.5, 1.30, 0.024, -1.20 - sw, 1.06, 0.044));
   // legs: the far pair first, half a cycle out of step with the near pair (camels pace)
-  leg(P, true, ph + Math.PI, 0.08); leg(P, false, ph + Math.PI + 0.4, 0.08);
+  leg(P, true, ph + Math.PI, 0.09); leg(P, false, ph + Math.PI + 0.4, 0.09);
   leg(P, true, ph, 0); leg(P, false, ph + 0.4, 0);
-  // the load, slung low on both flanks from a pack frame between the humps
-  let hitch = [-0.54, 1.30];
-  if (load === 1 || load === 2) P.push(loop([[-0.50, 1.84], [-0.47, 1.93], [-0.10, 1.97], [0.38, 1.94], [0.43, 1.84], [0.46, 1.40], [0.44, 0.93], [0.38, 0.86], [-0.05, 0.84], [-0.46, 0.87], [-0.52, 0.94], [-0.54, 1.40]], 4));
-  if (load === 2) P.push(loop([[-0.26, 1.96], [-0.20, 2.08], [0.0, 2.11], [0.20, 2.07], [0.25, 1.96], [0.0, 1.92]], 5));
+  // the load, slung on both flanks from a pack frame between the humps: kept small, so both humps stand clear above it
+  // and daylight shows under the belly
+  let hitch = [-0.47, 1.36];
+  if (load === 1 || load === 2) P.push(loop([[-0.44, 1.80], [-0.40, 1.90], [-0.05, 1.925], [0.33, 1.90], [0.37, 1.80], [0.395, 1.42], [0.375, 1.05], [0.31, 0.975], [-0.04, 0.955], [-0.40, 0.985], [-0.455, 1.06], [-0.47, 1.42]], 5));
+  if (load === 2) P.push(loop([[-0.22, 1.93], [-0.17, 2.03], [0.0, 2.06], [0.17, 2.03], [0.21, 1.93], [0.0, 1.90]], 5));
   if (load === 3) {
-    P.push(loop([[-0.56, 1.70], [-0.40, 1.82], [-0.10, 1.80], [-0.04, 1.40], [-0.08, 0.98], [-0.30, 0.88], [-0.54, 0.96], [-0.62, 1.34]], 5));
-    P.push(loop([[-0.02, 1.80], [0.30, 1.83], [0.46, 1.70], [0.52, 1.32], [0.44, 0.94], [0.22, 0.86], [0.02, 0.96], [-0.02, 1.40]], 5));
-    hitch = [-0.62, 1.30];
+    P.push(loop([[-0.50, 1.70], [-0.37, 1.82], [-0.10, 1.80], [-0.05, 1.42], [-0.08, 1.06], [-0.28, 0.965], [-0.49, 1.03], [-0.555, 1.36]], 6));
+    P.push(loop([[-0.02, 1.80], [0.27, 1.82], [0.41, 1.70], [0.46, 1.34], [0.40, 1.02], [0.21, 0.955], [0.03, 1.04], [-0.02, 1.42]], 6));
+    hitch = [-0.555, 1.34];
   }
-  return { polys: P, nose: hd(0.50, -0.10), hitch };
+  return { polys: P, nose: hd(0.52, -0.08), hitch };
 }
 /** the camel puller, walking toward +x with a staff; the lead rope runs back from his trailing hand */
 function man(o) {
@@ -147,21 +165,27 @@ function buildEdge(env) {
   const uLead = R * Math.asin((FRONT_X - 30 - a.cx) / R);
   for (let i = 0; i < N; i++) {
     const u = -UH + i * 0.5;
-    const lump = 1 - Math.abs(nz.n2(u / 41, 7.7));                    // scalloped by the wind: round backs, sharp notches
-    e[i] = 1.5 * nz.n2(u / 230, 1.3) + 3.2 * (lump - 0.62) + 0.8 * nz.n2(u / 9.5, 3.1) + 0.45 * nz.n2(u / 3.4, 5.9);
+    const lump = 1 - Math.abs(nz.n2(u / 66, 7.7));                    // scalloped by the wind: long round backs, soft notches
+    e[i] = 1.5 * nz.n2(u / 230, 1.3) + 2.3 * (lump - 0.62) + 0.5 * nz.n2(u / 19, 3.1) + 0.14 * nz.n2(u / 6.5, 5.9);
   }
   // hoof prints where the caravan has already walked: a notch and the little lip of sand pushed up beside it
   const r = L.rng('s21prints');
   for (let u = -UH; u < uLead; u += r.range(12, 26)) {
-    const depth = r.range(0.9, 2.5), sg = r.range(2.6, 4.6);
+    const depth = r.range(0.5, 1.5), sg = r.range(3.4, 5.6);
     const i0 = Math.max(0, Math.floor((u - 16 + UH) * 2)), i1 = Math.min(N - 1, Math.ceil((u + 16 + UH) * 2));
     for (let i = i0; i <= i1; i++) {
       const du = -UH + i * 0.5 - u;
       e[i] += -depth * Math.exp(-(du * du) / (sg * sg)) + 0.45 * depth * Math.exp(-((du - 1.9 * sg) * (du - 1.9 * sg)) / (sg * sg));
     }
   }
+  // round every corner off: at 1:1 the crest must read as a drawn line, not as teeth
+  const tmp = new Float32Array(N);
+  for (let pass = 0; pass < 3; pass++) {
+    for (let i = 0; i < N; i++) tmp[i] = (e[Math.max(0, i - 2)] + 2 * e[Math.max(0, i - 1)] + 3 * e[i] + 2 * e[Math.min(N - 1, i + 1)] + e[Math.min(N - 1, i + 2)]) / 9;
+    e.set(tmp);
+  }
   let m = 0; for (let i = 0; i < N; i++) m += e[i]; m /= N;
-  for (let i = 0; i < N; i++) e[i] = L.clamp(e[i] - m + 0.4, -4.8, 4.8);
+  for (let i = 0; i < N; i++) { const q = (e[i] - m + 0.3) / 3.8; e[i] = 3.8 * q / Math.sqrt(1 + q * q); }
   const at = (u) => { const f = L.clamp((u + UH) * 2, 0, N - 2), i = f | 0; return e[i] + (e[i + 1] - e[i]) * (f - i); };
   return { e, UH, N, at };
 }
@@ -204,17 +228,29 @@ function buildDune(env, E) {
   const X0 = -PAD, Y0 = Math.floor(a.crestY) - 10, RW = W + PAD * 2, RH = H + PAD - Y0;
   const nA = L.makeNoise('s21a'), nB = L.makeNoise('s21b');
   // per-u tables: strength and colour of the back-light on the crest
-  const N = E.N, rimK = new Float32Array(N), rimC = new Float32Array(N * 3), warm = new Float32Array(N);
+  const N = E.N, rimK = new Float32Array(N), rimS = new Float32Array(N), rimC = new Float32Array(N * 3), warm = new Float32Array(N);
   const rimRamp = L.makeRamp([[0, '#ffd08c'], [0.25, '#ffa450'], [0.45, '#ff6a30'], [0.62, '#e23c2c'], [0.8, '#a82a3a'], [1, '#5a2046']]);
   for (let i = 0; i < N; i++) {
     const u = -E.UH + i * 0.5, x = cx + R * Math.sin(u / R);
-    const slope = (E.e[Math.min(N - 1, i + 2)] - E.e[Math.max(0, i - 2)]) / 2;           // + where the sand faces the light
+    const slope = (E.e[Math.min(N - 1, i + 8)] - E.e[Math.max(0, i - 8)]) / 8 * 2.2;     // + where the sand faces the light
     const patch = sstep(0.25, 0.7, 0.5 + 0.5 * nA.n2(u / 64, 11.3)) * (0.75 + 0.25 * nA.n2(u / 11, 2.2));
-    rimK[i] = sunK(x) * L.clamp(0.3 + 0.7 * patch) * L.clamp(0.8 + 0.9 * slope, 0.4, 1.5);
+    rimK[i] = sunK(x) * L.clamp(0.36 + 0.64 * patch) * L.clamp(0.85 + 0.9 * slope, 0.5, 1.45);
     const c = rimRamp(L.clamp(x / W));
     rimC[i * 3] = c[0]; rimC[i * 3 + 1] = c[1]; rimC[i * 3 + 2] = c[2];
     warm[i] = 1 - sstep(300, 1050, x);
   }
+  // running means: a short one for the thread of light on the very edge, a long one for the light that spills onto the ripples
+  const smooth = (src, dst, rad) => {
+    let acc = 0, cnt = 0;
+    for (let i = 0; i < Math.min(N, rad); i++) { acc += src[i]; cnt++; }
+    for (let i = 0; i < N; i++) {
+      if (i + rad < N) { acc += src[i + rad]; cnt++; }
+      if (i - rad - 1 >= 0) { acc -= src[i - rad - 1]; cnt--; }
+      dst[i] = acc / cnt;
+    }
+  };
+  smooth(rimK, rimS, 6); smooth(rimS, rimK, 6);
+  smooth(rimK, rimS, 44); { const t2 = new Float32Array(N); smooth(rimS, t2, 44); rimS.set(t2); }
   const img = new ImageData(RW, RH), d = img.data;
   let hsh = 0x51ed270b | 0;
   for (let j = 0; j < RH; j++) {
@@ -234,9 +270,15 @@ function buildDune(env, E) {
         const gr = 0.82 + 0.18 * (((hsh >>> 9) & 1023) / 1023);
         // wind ripples run with the crest and open up toward the lens (the bottom of frame): sp = depth in "far" px
         const sp = 110 * Math.log(1 + s / 110);
-        const wv = nA.n2(u / 260 + 3, sp / 95);
-        const rn = nA.n2(u / 78 + wv * 0.6, (sp + 9 * wv) / 4.6) + 0.35 * nB.n2(u / 30 + 5, (sp + 9 * wv) / 2.4 + 3);
-        const rp = sstep(-0.25, 0.55, rn);
+        // drawn as continuous, gently wandering lines (a warped phase), each with a soft windward face and a crisper lee;
+        // they thin out and swell along their length
+        const wr = 12 * nA.n2(u / 240 + 3, sp / 330) + 6.5 * nB.n2(u / 92 + 5, sp / 120 + 3) + 1.3 * nA.n2(u / 31 + 9, sp / 48 + 1);
+        const phs = (sp + wr) * (TAU / 6.6);
+        const ph2 = (sp * 1.17 + 0.8 * wr + 11) * (TAU / 6.6);
+        const mx = sstep(0.4, 0.6, 0.5 + 0.5 * nA.n2(u / 380 + 20, sp / 64 + 4));
+        const sn = L.lerp(Math.sin(phs + 0.55 * Math.cos(phs)), Math.sin(ph2 + 0.55 * Math.cos(ph2)), mx);
+        const brk = 0.6 + 0.4 * nB.n2(u / 210 + 2, sp / 19 + 7);
+        const rp = sstep(-0.7, 0.95, sn) * brk + 0.12;
         const patch = 0.3 + 0.7 * sstep(0.3, 0.75, 0.5 + 0.5 * nB.n2(u / 520 + 3, s / 240));
         const sheen = (1 - Math.exp(-s / 8)) * Math.exp(-s / 190) * patch * rp * gr * 0.4;
         const big = sstep(0.45, 0.85, 0.5 + 0.5 * nB.n2(u / 700 + 1, s / 380)) * (1 - Math.exp(-s / 200)) * Math.exp(-s / 420);
@@ -244,7 +286,7 @@ function buildDune(env, E) {
         cr += (wm * 96 + (1 - wm) * 58) * sheen + 8 * big; cg += (wm * 26 + (1 - wm) * 30) * sheen + 4 * big; cb += (wm * 24 + (1 - wm) * 88) * sheen + 13 * big;
         // back-light: a bright thread on the very edge, and some of it spilling over onto the first ripples
         if (s < 70) {
-          const k = rimK[i0], spill = k * Math.exp(-s / 14) * (0.25 + 0.75 * rp) * gr * 0.6;
+          const k = rimK[i0] + (rimK[i0 + 1] - rimK[i0]) * ft, spill = (rimS[i0] + (rimS[i0 + 1] - rimS[i0]) * ft) * Math.exp(-s / 14) * (0.25 + 0.75 * rp) * gr * 0.6;
           cr += 200 * spill; cg += 54 * spill; cb += 22 * spill;
           if (s < 16) { const rim = 1.5 * k * Math.exp(-Math.max(0, s - 0.3) / 2.0); cr += rimC[i0 * 3] * rim; cg += rimC[i0 * 3 + 1] * rim; cb += rimC[i0 * 3 + 2] * rim; }
         }
