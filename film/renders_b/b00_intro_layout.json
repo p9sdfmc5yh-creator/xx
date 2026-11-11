@@ -1,0 +1,43 @@
+{
+ "shot": "b00_intro",
+ "layout": "wreath",
+ "frame_width_m": 0.62,
+ "frame_height_m": 0.34875,
+ "items": [
+  "m02_gouqi",
+  "m03_dazao",
+  "m09_juhua",
+  "m06_lianzi",
+  "m08_shanzha",
+  "k03_guiyuan",
+  "m04_shengjiang",
+  "k09_gancao",
+  "m07_baihe",
+  "k11_shaji",
+  "m01_shanyao",
+  "k06_sangshen"
+ ],
+ "seed": 11,
+ "empty": false,
+ "window": [
+  0.5,
+  0.5,
+  0.72,
+  0.7
+ ],
+ "extent": [
+  -0.34983860630351044,
+  0.34983860630351044,
+  -0.21421360630351044,
+  0.21421360630351044
+ ],
+ "n_items": 491,
+ "layers_max": 1,
+ "heap_top_mm": 32.00889587402344,
+ "display_gain": 1.1388,
+ "render_seconds": 61.1,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

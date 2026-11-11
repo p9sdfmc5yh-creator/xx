@@ -376,6 +376,19 @@ def measure_columns(full, empty):
     return out
 
 
+def _layout_bounds(still_path):
+    """The same three boundaries from <still>_layout.json (char_boxes of flatlay.py), or None.
+    Only a cross-check / fallback for measure_columns()."""
+    try:
+        with open(os.path.splitext(still_path)[0] + '_layout.json', encoding='utf-8') as fh:
+            boxes = sorted(json.load(fh).get('char_boxes') or [], key=lambda b: b[0])
+        if len(boxes) != 4:
+            return None
+        return [float(boxes[i][2] + boxes[i + 1][0]) / 2.0 for i in range(3)]
+    except Exception:
+        return None
+
+
 def _landing_plate(sid, f, start, wout, hout, zmax):
     """Landing plate with the first n characters revealed (n = 1..4), before the push-in."""
     full = _prep(sid, wout, hout, zmax)
@@ -401,7 +414,14 @@ def _landing_plate(sid, f, start, wout, hout, zmax):
             empty = _synth_empty(full)
     if sig not in _reveal_cache:
         _reveal_cache.clear()
-        _reveal_cache[sig] = measure_columns(full, empty)
+        meas = measure_columns(full, empty)
+        ref = _layout_bounds(e_full['path'])
+        sane = all(b > a + 0.08 for a, b in zip([0.0] + meas, meas + [1.0]))
+        if ref is not None and (not sane or max(abs(m - r) for m, r in zip(meas, ref)) > 0.03):
+            meas = ref                                   # measurement failed: boxes written by flatlay.py
+        elif not sane:
+            meas = [0.3, 0.5, 0.7]
+        _reveal_cache[sig] = meas
     bounds = _reveal_cache[sig]
     w = full.shape[1]
     x = (np.arange(w, dtype=np.float32) + 0.5)

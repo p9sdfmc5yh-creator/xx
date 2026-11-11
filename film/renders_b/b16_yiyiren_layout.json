@@ -1,0 +1,40 @@
+{
+ "shot": "b16_yiyiren",
+ "layout": "glyph",
+ "frame_width_m": 0.7200609922364343,
+ "frame_height_m": 0.4050343081329943,
+ "items": [
+  "k02_yiyiren"
+ ],
+ "seed": 41,
+ "empty": false,
+ "text": "药",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.16,
+ "engine": "packed",
+ "px_per_m": 2809.238168200372,
+ "stroke_width_m": 0.028477471545692707,
+ "stroke_items_wide": 4.999999999999999,
+ "block_m": [
+  0.29047020976606563,
+  0.29972538801841575
+ ],
+ "char_boxes": [
+  [
+   0.30325,
+   0.09,
+   0.7017,
+   0.82912
+  ]
+ ],
+ "align": 0.023731351288763677,
+ "n_items": 1469,
+ "layers_max": 3,
+ "heap_top_mm": 11.272252082824707,
+ "display_gain": 1.0,
+ "render_seconds": 45.7,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
