@@ -1,5 +1,5 @@
 {
- "_about": "Master shot table of VERSION B (top-down specimen plates / ingredient typography) of 《药食同源》.\nRun this file to (re)generate film/shots_b.json.  Same timeline, audio and cut grid as version A\n(film/shots.json): 1248 frames @ 30 fps; every start/end below is a cut of the original film.\n\nLOOK (user: \"不要搞得像鬼片\"): BRIGHT, warm, clean vintage specimen plates.  Every ground is a light or\nmid-tone handmade card stock with visible fibre (never near-black), each plate its own colour chosen\nfor contrast with the ingredient (pale ingredients on mid-tones, dark / saturated ones on pale paper).\nFirst and last page are warm WHITE paper with a faint ruled grid.\n\nScene keys\n  id, start, end      frame range [start, end)\n  layout              wreath | glyph | landing | taiji   (film/blender/flatlay.py)\n  text                glyph string poured from the ingredient (glyph / landing), else null\n  label               what the 2-D text layer writes over the plate (information for the compositor)\n  source              ingredient module id(s) in film/blender/shots/ (make_items)\n  ground              {type: paper, colour: DISPLAY sRGB 0-255 of the lit ground,\n                       grid: {type, pitch_m, line_m, colour, opacity, major}, fibres, cloud, ...}\n  frame_width_m       physical width of the frame on the ground, chosen for the measured item size\n                      (lock_width: true everywhere - flatlay does not rescale)\n  item_scale          optional uniform scale of the module's items (smaller cut pieces)\n  seed                layout + paper seed\n  text_mode           'dark' = dark-ink overlay text (pale ground), 'light' = white overlay text (mid-tone ground)\n  exposure            stops (1.0 for every plate: one consistent bright exposure; papers paler than a\n                      0.90 albedo can render get a small display gain in flatlay, see display_gain)\n  params              layout parameters (see README_B.md)\n",
+ "_about": "Master shot table of VERSION B (top-down specimen plates / ingredient typography) of 《药食同源》.\nRun this file to (re)generate film/shots_b.json.  Same timeline, audio and cut grid as version A\n(film/shots.json): 1248 frames @ 30 fps; every start/end below is a cut of the original film.\n\nLOOK (user: \"不要搞得像鬼片\"): BRIGHT, warm, clean vintage specimen plates.  Every ground is a light or\nmid-tone handmade card stock with visible fibre (never near-black), each plate its own colour chosen\nfor contrast with the ingredient (pale ingredients on mid-tones, dark / saturated ones on pale paper).\nFirst and last page are warm WHITE paper with a faint ruled grid.\n\nScene keys\n  id, start, end      frame range [start, end)\n  layout              wreath | glyph | landing | taiji   (film/blender/flatlay.py)\n  text                glyph string poured from the ingredient (glyph / landing), else null\n  label               what the 2-D text layer writes over the plate (information for the compositor)\n  source              ingredient module id(s) in film/blender/shots/ (make_items)\n  ground              {type: paper, colour: DISPLAY sRGB 0-255 of the lit ground,\n                       grid: {type, pitch_m, line_m, colour, opacity, major}, fibres, cloud, ...}\n  frame_width_m       nominal physical width of the frame on the ground.  flatlay DERIVES the real width from\n                      the measured items when params has stroke_items (glyph / landing: regular stroke width\n                      in item widths) or lengths_across (wreath: item lengths across the frame)\n  item_scale          optional uniform scale of the module's items (smaller cut pieces)\n  seed                layout + paper seed\n  text_mode           'dark' = dark-ink overlay text (pale ground), 'light' = white overlay text (mid-tone ground)\n  exposure            stops (0.6 for every plate: one consistent bright exposure that keeps the reds rich;\n                      papers paler than a 0.90 albedo can render get a display gain in flatlay, see display_gain)\n  params              layout parameters (see README_B.md)\n",
  "fps": 30,
  "width": 3840,
  "height": 2160,
@@ -60,7 +60,7 @@
    "lock_width": true,
    "seed": 11,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -102,11 +102,11 @@
    "lock_width": true,
    "seed": 12,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
-     0.725
+     0.715
     ],
     "diameter": 0.5,
     "dot": 0.2,
@@ -145,7 +145,7 @@
    "lock_width": true,
    "seed": 13,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -192,7 +192,7 @@
    "lock_width": true,
    "seed": 14,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -239,7 +239,7 @@
    "lock_width": true,
    "seed": 15,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -280,7 +280,7 @@
    "lock_width": true,
    "seed": 20,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -291,7 +291,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 20
    }
   },
   {
@@ -318,7 +319,7 @@
    "lock_width": true,
    "seed": 21,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -329,7 +330,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 21
    }
   },
   {
@@ -356,7 +358,7 @@
    "lock_width": true,
    "seed": 22,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -367,7 +369,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 19
    }
   },
   {
@@ -394,7 +397,7 @@
    "lock_width": true,
    "seed": 23,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -405,7 +408,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 20
    }
   },
   {
@@ -432,7 +436,7 @@
    "lock_width": true,
    "seed": 24,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -443,7 +447,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 18
    }
   },
   {
@@ -470,7 +475,7 @@
    "lock_width": true,
    "seed": 25,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -481,7 +486,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 21
    }
   },
   {
@@ -508,7 +514,7 @@
    "lock_width": true,
    "seed": 26,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -519,7 +525,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 20
    }
   },
   {
@@ -546,7 +553,7 @@
    "lock_width": true,
    "seed": 27,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -557,7 +564,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 20
    }
   },
   {
@@ -584,7 +592,7 @@
    "lock_width": true,
    "seed": 28,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -595,7 +603,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 20
    }
   },
   {
@@ -622,7 +631,7 @@
    "lock_width": true,
    "seed": 29,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "window": [
      0.5,
@@ -633,7 +642,8 @@
     "layers": 2.0,
     "reach": 0.55,
     "rough": 0.16,
-    "strays": 8
+    "strays": 8,
+    "lengths_across": 19
    }
   },
   {
@@ -656,20 +666,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 1.049,
+   "frame_width_m": 1.389,
    "lock_width": true,
    "seed": 40,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.2,
+    "strays": 0.008,
+    "stroke_items": 3.4,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.8,
+      "k": 0.92,
+      "fill": 0.3
+     }
+    ]
    }
   },
   {
@@ -692,20 +716,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.624,
+   "frame_width_m": 0.715,
    "lock_width": true,
    "seed": 41,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.16,
+    "strays": 0.008,
+    "stroke_items": 5.0,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.9,
+      "k": 0.92,
+      "fill": 0.55
+     }
+    ]
    }
   },
   {
@@ -728,20 +766,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 1.293,
+   "frame_width_m": 1.765,
    "lock_width": true,
    "seed": 42,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.2,
+    "strays": 0.008,
+    "stroke_items": 3.3,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 1.0,
+      "k": 0.92,
+      "fill": 0.12
+     }
+    ]
    }
   },
   {
@@ -764,20 +816,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.34,
+   "frame_width_m": 0.429,
    "lock_width": true,
    "seed": 43,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.16,
+    "strays": 0.008,
+    "stroke_items": 9.0,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.9,
+      "k": 0.92,
+      "fill": 0.55
+     }
+    ]
    }
   },
   {
@@ -800,20 +866,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 1.499,
+   "frame_width_m": 2.058,
    "lock_width": true,
    "seed": 44,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.27999999999999997,
+    "strays": 0.008,
+    "stroke_items": 2.8,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.8,
+      "k": 0.92,
+      "fill": 0.3
+     }
+    ]
    }
   },
   {
@@ -836,20 +916,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.741,
+   "frame_width_m": 0.98,
    "lock_width": true,
    "seed": 45,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.24,
+    "strays": 0.008,
+    "stroke_items": 3.8,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 1.0,
+      "k": 0.92,
+      "fill": 0.12
+     }
+    ]
    }
   },
   {
@@ -872,20 +966,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.466,
+   "frame_width_m": 0.595,
    "lock_width": true,
    "seed": 46,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.24,
+    "strays": 0.008,
+    "stroke_items": 5.5,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.9,
+      "k": 0.92,
+      "fill": 0.55
+     }
+    ]
    }
   },
   {
@@ -908,20 +1016,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 1.365,
+   "frame_width_m": 1.874,
    "lock_width": true,
    "seed": 47,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.27999999999999997,
+    "strays": 0.008,
+    "stroke_items": 2.8,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.8,
+      "k": 0.92,
+      "fill": 0.3
+     }
+    ]
    },
    "item_scale": 0.6
   },
@@ -945,20 +1067,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.989,
+   "frame_width_m": 1.183,
    "lock_width": true,
    "seed": 48,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.14,
+    "strays": 0.008,
+    "stroke_items": 3.4,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.8,
+      "k": 0.92,
+      "fill": 0.3
+     }
+    ]
    }
   },
   {
@@ -981,20 +1117,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 1.076,
+   "frame_width_m": 1.286,
    "lock_width": true,
    "seed": 49,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.14,
+    "strays": 0.008,
+    "stroke_items": 3.3,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.8,
+      "k": 0.92,
+      "fill": 0.3
+     }
+    ]
    }
   },
   {
@@ -1017,20 +1167,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.632,
+   "frame_width_m": 0.743,
    "lock_width": true,
    "seed": 50,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
+    "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.1,
-    "strays": 0.01
+    "strays": 0.008,
+    "stroke_items": 4.6,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.9,
+      "k": 0.92,
+      "fill": 0.55
+     }
+    ]
    }
   },
   {
@@ -1053,20 +1217,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.358,
+   "frame_width_m": 0.45,
    "lock_width": true,
    "seed": 51,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
+    "font": "NotoSansCJKsc-Bold.otf",
     "thin": 0.1,
-    "strays": 0.01
+    "strays": 0.008,
+    "stroke_items": 8.0,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.9,
+      "k": 0.92,
+      "fill": 0.55
+     }
+    ]
    }
   },
   {
@@ -1089,20 +1267,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 3.082,
+   "frame_width_m": 4.532,
    "lock_width": true,
    "seed": 52,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.27999999999999997,
+    "strays": 0.008,
+    "stroke_items": 3.0,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 1.0,
+      "k": 0.92,
+      "fill": 0.12
+     }
+    ]
    }
   },
   {
@@ -1125,20 +1317,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 1.787,
+   "frame_width_m": 2.389,
    "lock_width": true,
    "seed": 53,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.27999999999999997,
+    "strays": 0.008,
+    "stroke_items": 3.0,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 1.0,
+      "k": 0.92,
+      "fill": 0.12
+     }
+    ]
    }
   },
   {
@@ -1161,20 +1367,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 0.646,
+   "frame_width_m": 0.818,
    "lock_width": true,
    "seed": 54,
    "text_mode": "light",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.24,
+    "strays": 0.008,
+    "stroke_items": 5.0,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.9,
+      "k": 0.92,
+      "fill": 0.55
+     }
+    ]
    }
   },
   {
@@ -1197,20 +1417,34 @@
     "fibres": 1.0,
     "cloud": 0.05
    },
-   "frame_width_m": 3.278,
+   "frame_width_m": 4.476,
    "lock_width": true,
    "seed": 55,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.46
     ],
     "height": 0.74,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
-    "strays": 0.01
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.27999999999999997,
+    "strays": 0.008,
+    "stroke_items": 2.6,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.8,
+      "k": 0.92,
+      "fill": 0.3
+     }
+    ]
    }
   },
   {
@@ -1249,17 +1483,31 @@
    "lock_width": true,
    "seed": 77,
    "text_mode": "dark",
-   "exposure": 1.0,
+   "exposure": 0.6,
    "params": {
     "centre": [
      0.5,
      0.4
     ],
     "width": 0.8,
-    "font": "NotoSansCJKsc-Black.otf",
-    "thin": 0.1,
+    "font": "NotoSansCJKsc-Bold.otf",
+    "thin": 0.18,
     "tracking": 0.1,
-    "strays": 0.004
+    "strays": 0.004,
+    "stroke_items": 3.6,
+    "edge_tol": 0.12,
+    "engine": "packed",
+    "passes": [
+     {
+      "mode": "relax"
+     },
+     {
+      "mode": "rsa",
+      "inset": 0.9,
+      "k": 0.92,
+      "fill": 0.55
+     }
+    ]
    },
    "reveal": {
     "per_char_frames": 8,

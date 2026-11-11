@@ -157,7 +157,7 @@ def main(argv=None):
     ap.add_argument('--scale', type=int, default=1, help='1 = 1920x1080 (default), 2 = 3840x2160')
     ap.add_argument('--start', type=int, default=0)
     ap.add_argument('--end', type=int, default=NFRAMES)
-    ap.add_argument('--workers', type=int, default=3)
+    ap.add_argument("--workers", type=int, default=4)
     ap.add_argument('--out', default=None)
     ap.add_argument('--renders', default=None, help='directory of the stills (default film/renders_b)')
     ap.add_argument('--crf', type=int, default=18)

@@ -60,7 +60,7 @@ def _finish(P, flat, dedge, wrap_v, rng, seed, th0, flipped, scar=None):
     how = C.smoothstep(-0.30, 0.30, C.fbm3(q * [70, 70, 1] + 9.0, 2, seed=seed + 4))
     edgew = np.exp(-de / 0.0045)
     wav = 0.0008 * edgew * C.perlin3(q * [210, 210, 1] + 5.0, seed + 5)          # wavy dried margin
-    h = warp + wav - 0.00016 * crease * (0.25 + 0.75 * how) - 0.00005 * crease2
+    h = warp + wav - 0.00010 * crease * (0.10 + 0.90 * how) - 0.00004 * crease2
     V1 = V0 + nrm * h[:, None]
     n1 = C.vertex_normals(V1, faces)
     th = th0 * (0.55 + 0.45 * C.smoothstep(0.0, 0.0035, de)) * (1.0 + 0.18 * C.fbm3(q * [90, 90, 1] + 11.0, 2, seed=seed + 9))
@@ -79,7 +79,7 @@ def _finish(P, flat, dedge, wrap_v, rng, seed, th0, flipped, scar=None):
     if (qn * qc).sum() < 0:
         rim = rim[:, ::-1].copy()
     allf = np.concatenate([faces, faces[:, ::-1] + N, rim], 0)
-    cav = np.clip(crease * (0.25 + 0.75 * how) + 0.35 * crease2, 0, 1)
+    cav = np.clip(crease * (0.10 + 0.90 * how) + 0.30 * crease2, 0, 1)
     edge = np.exp(-de / 0.0028)
     sc = np.zeros(N) if scar is None else scar.ravel()
     attrs = dict(side=np.concatenate([np.zeros(N), np.ones(N)]),
@@ -126,7 +126,7 @@ def make_lobe(seed, flipped=False, fragment=False, nu=290, nv=176):
 def make_trilobe(seed, flipped=False, nu=236, nv=690):
     """A whole peel opened into three lobes joined at the stem end (三瓣陈皮)."""
     rng = np.random.default_rng(900 + seed)
-    s = np.linspace(0.0, 1.0, nu)[:, None]
+    s = np.linspace(0.012, 1.0, nu)[:, None]
     th = np.linspace(0.0, 2 * math.pi, nv, endpoint=False)[None, :]
     S, TH = np.broadcast_arrays(s, th)
     kk = np.round(TH / (2 * math.pi / 3)).astype(int) % 3
@@ -134,7 +134,7 @@ def make_trilobe(seed, flipped=False, nu=236, nv=690):
     Lk = rng.uniform(0.040, 0.052, 3)[kk]
     r_sin = rng.uniform(0.0065, 0.0095)
     en = C.fbm3(np.stack([np.cos(TH) * 2.2, np.sin(TH) * 2.2, 0 * TH + seed], -1), 3, seed=seed + 20)
-    r_out = r_sin + (Lk - r_sin) * np.cos(1.5 * phi).clip(0, 1) ** 0.52 * (1.0 + 0.10 * en)
+    r_out = r_sin + (Lk - r_sin) * ((np.cos(1.5 * phi) - 0.22) / 0.78).clip(0, 1) ** 0.58 * (1.0 + 0.10 * en)
     r = S * r_out
     xa, ya = r * np.cos(phi), r * np.sin(phi)
     rho_w = (0.016 / rng.uniform(0.75, 1.25, 3))[kk]
@@ -169,23 +169,23 @@ def peel_material():
     pit = m.math('MAXIMUM', m.math('MULTIPLY', pit1, 0.75), pit2)
     # --- outer side (flavedo): orange -> orange-red -> reddish-brown patches
     mott = m.noise(scale=150, detail=3, roughness=0.55, vector=P)
-    col = m.mix((0.470, 0.125, 0.013), (0.330, 0.058, 0.010), m.map_range(mott, 0.34, 0.66))
+    col = m.mix((0.560, 0.165, 0.014), (0.420, 0.078, 0.010), m.map_range(mott, 0.34, 0.66))
     brown = m.noise(scale=55, detail=2, roughness=0.5, vector=m.mapping(P, location=(3.1, 1.7, 0.4)))
-    col = m.mix(col, (0.160, 0.036, 0.011), m.map_range(brown, 0.50, 0.74, 0.0, 0.85, smooth=True))
+    col = m.mix(col, (0.200, 0.042, 0.011), m.map_range(brown, 0.56, 0.80, 0.0, 0.70, smooth=True))
     speck = m.noise(scale=2600, detail=2, roughness=0.6, vector=P)
     col = m.mix(col, (0.56, 0.20, 0.03), m.map_range(speck, 0.58, 0.80, 0.0, 0.30))
     col = m.mix(col, (0.110, 0.026, 0.009), m.math('MULTIPLY', edge, 0.55))
-    col = m.mix(col, (0.100, 0.022, 0.007), m.math('MULTIPLY', cav, 0.55))
+    col = m.mix(col, (0.100, 0.022, 0.007), m.math('MULTIPLY', cav, 0.38))
     col = m.mix(col, (0.070, 0.016, 0.005), m.math('MULTIPLY', pit, 0.72))
     col = m.jitter(col, hue=0.014, saturation=0.10, value=0.22)
     col = m.mix(col, (0.085, 0.024, 0.010), m.math('MULTIPLY', m.attr('dark', 'INSTANCER'), 0.70))
     col = m.mix(col, (0.050, 0.040, 0.016), m.map_range(m.attr('scar'), 0.3, 0.8, smooth=True))
     # --- inner side (albedo / pith): pale yellowish white, tan patches, fibre strands, gland dots
     pn = m.noise(scale=95, detail=3, roughness=0.6, vector=m.mapping(P, location=(1.3, 5.2, 2.2)))
-    pith = m.mix((0.560, 0.430, 0.215), (0.400, 0.265, 0.105), m.map_range(pn, 0.38, 0.70))
+    pith = m.mix((0.680, 0.540, 0.280), (0.500, 0.350, 0.150), m.map_range(pn, 0.38, 0.70))
     fib = m.noise(scale=820, detail=2, roughness=0.5, distortion=0.6, vector=m.mapping(UV, scale=(0.10, 1.0, 1.0)))
     strand = m.ramp(fib, [(0.40, 0.0), (0.50, 1.0), (0.60, 0.0)])
-    pith = m.mix(pith, (0.640, 0.520, 0.300), m.math('MULTIPLY', strand, 0.55))
+    pith = m.mix(pith, (0.740, 0.620, 0.360), m.math('MULTIPLY', strand, 0.55))
     pith = m.mix(pith, (0.420, 0.230, 0.050), m.math('MULTIPLY', pit, 0.30))
     pith = m.mix(pith, (0.300, 0.170, 0.060), m.math('MULTIPLY', edge, 0.45))
     pith = m.jitter(pith, hue=0.008, saturation=0.10, value=0.14)
@@ -215,7 +215,7 @@ def peel_material():
 # (kind, seed, flipped): outer side up dominates; a few lie inner side up; two whole three-lobed peels
 SPEC = [('lobe', 0, False), ('lobe', 1, False), ('lobe', 2, False), ('frag', 3, False), ('lobe', 4, False),
         ('lobe', 5, True), ('frag', 6, True), ('tri', 0, False), ('tri', 1, True)]
-WEIGHTS = [1.0, 1.0, 1.0, 0.9, 1.0, 0.55, 0.45, 0.33, 0.15]
+WEIGHTS = [1.0, 1.0, 1.0, 0.9, 1.0, 0.30, 0.25, 0.30, 0.08]
 
 
 def _build(kind, seed, flipped, lite=1.0):
@@ -245,7 +245,7 @@ def make_items(seed=0):
 # ----------------------------------------------------------------------------- build + render
 def main():
     args = C.parse_args()
-    C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
+    C.setup_scene(args, look='AgX - Punchy', exposure=0.25)
     rng = np.random.default_rng(args.seed)
     mat = peel_material()
     variants, shapes = [], []
@@ -255,15 +255,16 @@ def main():
         shapes.append(half)
 
     sol = C.planet_solve(R_DOME)
-    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=3.0, coverage=0.72, weights=WEIGHTS, seed=args.seed,
-                       scale_range=(0.86, 1.12), tilt_deg=13, roll_deg=24, candidates=6, sink=0.22, rough=0.004)
+    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=2.6, coverage=0.74, weights=WEIGHTS, seed=args.seed,
+                       scale_range=(0.86, 1.12), tilt_deg=6, roll_deg=12, candidates=8, sink=0.25, rough=0.002,
+                       max_slope_deg=30)
     dark = (rng.random(len(heap)) < 0.18) * rng.uniform(0.4, 1.0, len(heap))
     C.instance_on_points('heap', variants, heap, attrs={'dark': dark})
     C.dome_base(R_DOME - 0.002, C.simple_material('base', (0.040, 0.012, 0.005), 0.9))
 
-    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68)
+    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.54, edge=0.68, top_margin=0.03)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=(1.0, 0.90, 0.80), key=0.85, fill=0.80, rim=1.1, world=1.0, key_size=0.9)
+    C.studio_lights(info, tint=(1.0, 0.90, 0.80), key=0.90, fill=0.95, rim=1.1, world=1.0, key_size=0.9)
 
     C.render(args)
     if not args.region:

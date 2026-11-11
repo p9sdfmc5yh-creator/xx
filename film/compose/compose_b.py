@@ -17,6 +17,8 @@ Stills        renders_b/<id>.png or renders_b/<bNN>*.png ; the landing also need
               plate renders_b/<bNN>*empty*.png.  A missing / unreadable still = plain paper
               placeholder carrying the shot id.
 Push-in       1.012 over 8-frame shots, 1.02 over 16, 1.05 over 64, 1.06 over the intro / landing.
+Finishing     retro.retro(img, frame, scale, RETRO_STRENGTH x PAGE_STRENGTH[scene]) - the white first
+              and last page get half strength so that they stay white instead of cream.
 Landing       736-1248: stop-motion reveal, one character per 8 frames (药 736, 食 744, 同 752,
               源 760): the full plate is blended over the empty plate through one soft-edged
               vertical band per character; the columns are measured from the difference of the
@@ -62,12 +64,17 @@ RENDERS_B = os.environ.get('YAOSHI_RENDERS_B', os.path.join(FILM, 'renders_b'))
 SHOTS_B = os.path.join(FILM, 'shots_b.json')
 
 RETRO_STRENGTH = float(os.environ.get('YAOSHI_B_RETRO', '1.0'))   # retro.retro(strength=...)
-LUMA_SPLIT = 0.45                                   # ground luma (display value) below which text is white
+PAGE_STRENGTH = {'b00': 0.5, 'b31': 0.5}            # x RETRO_STRENGTH on the white first / last page: at full
+                                                    # strength the warm cast turns the white paper cream
+LUMA_SPLIT = 0.45                                   # relative luminance (linear Y) of the ground below which
+                                                    # the text is warm white; above it dark ink
+LUMA_BAND = 0.07                                    # |Y - split| below this: shots_b.json text_mode decides
 INK = np.array([0.115, 0.092, 0.075], np.float32)
 WARM_WHITE = np.array([0.992, 0.968, 0.918], np.float32)
 INK_OPACITY = 0.94
 WHITE_OPACITY = 0.97
-PAPER = np.array([0.930, 0.905, 0.850], np.float32)   # placeholder paper
+SHADOW = 0.30                                       # soft shadow under white text on mid-tone grounds
+PAPER = np.array([0.945, 0.928, 0.886], np.float32)   # placeholder paper
 
 LANDING = (736, 1248)
 REVEAL_STEP = 8            # frames per character
@@ -107,13 +114,18 @@ RELAY = {
 
 
 # ----------------------------------------------------------------------------- scenes
+_TEXT_MODE = {}            # scene id -> 'light' (white text) | 'dark' (ink) from shots_b.json, a hint only
+
+
 def _load_scenes():
     try:
         with open(SHOTS_B, encoding='utf-8') as fh:
-            sc = [(s['id'], int(s['start']), int(s['end'])) for s in json.load(fh)['scenes']]
+            raw = json.load(fh)['scenes']
+        sc = [(s['id'], int(s['start']), int(s['end'])) for s in raw]
         sc.sort(key=lambda s: s[1])
         ok = sc[0][1] == 0 and sc[-1][2] == NFRAMES and all(a[2] == b[1] for a, b in zip(sc[:-1], sc[1:]))
         if ok:
+            _TEXT_MODE.update({s['id']: s.get('text_mode') for s in raw})
             return sc
     except Exception:
         pass
@@ -363,6 +375,8 @@ def _landing_plate(sid, f, start, wout, hout, zmax):
         return None
     n = min(4, 1 + (f - start) // REVEAL_STEP)
     if n >= 4:
+        for k in [k for k in _img_cache if k[0] == 'reveal' or (k[0] == 'prep' and 'empty' in os.path.basename(k[1]))]:
+            del _img_cache[k]
         return full
     e_full = _still_entry(sid)
     e_emp = _still_entry(sid + '#empty')
@@ -476,10 +490,11 @@ def _card_mode(sid, a, b, card, plate):
     if key in _mode_cache:
         return _mode_cache[key]
     if plate is None:
-        res = ('ink', float(PAPER.mean()))
+        res = ('ink', 0.8)
     else:
-        small = cv2.resize(plate, (480, 270), interpolation=cv2.INTER_AREA)
-        luma = small @ np.array([0.299, 0.587, 0.114], np.float32)
+        small = np.clip(cv2.resize(plate, (480, 270), interpolation=cv2.INTER_AREA), 0, 1)
+        lin = np.where(small <= 0.04045, small / 12.92, ((small + 0.055) / 1.055) ** 2.4)
+        luma = lin @ np.array([0.2126, 0.7152, 0.0722], np.float32)          # relative luminance
         num = den = 0.0
         for el in b_elements():
             if el['card'] != card or el['end'] <= a or el['start'] >= b:
@@ -493,7 +508,11 @@ def _card_mode(sid, a, b, card, plate):
             num += float(np.median(luma[ya:yb, xa:xb])) * area
             den += area
         lum = num / den if den else 1.0
-        res = ('white' if lum < LUMA_SPLIT else 'ink', lum)
+        mode = 'white' if lum < LUMA_SPLIT else 'ink'
+        hint = {'light': 'white', 'dark': 'ink'}.get(_TEXT_MODE.get(sid))
+        if hint and abs(lum - LUMA_SPLIT) < LUMA_BAND:
+            mode = hint
+        res = (mode, lum)
     if len(_mode_cache) > 256:
         _mode_cache.clear()
     _mode_cache[key] = res
@@ -517,7 +536,8 @@ def _draw_text(img, f, scene, plate, scale):
         dst = img[y0 + sy0:y0 + sy1, x0 + sx0:x0 + sx1]
         c = cov[sy0:sy1, sx0:sx1, None]
         if mode == 'white':
-            k = 0.50 * min(1.0, max(0.0, (lum - 0.10) / 0.25))      # soft shadow only on mid-tone grounds
+            k = SHADOW * min(1.0, max(0.0, (lum - 0.03) / 0.15))    # soft shadow only on mid-tone grounds
+            k *= 1.0 + 0.5 * min(1.0, max(0.0, (70.0 - el['size']) / 36.0))   # a little more under small lines
             if k > 0:
                 dst *= 1.0 - (k * op) * sh[sy0:sy1, sx0:sx1, None]
             al = c * (op * el['fill_opacity'] * WHITE_OPACITY)
@@ -555,6 +575,7 @@ def compose_frame_b(frame_idx, scale=1, strength=None, finish=True):
     _draw_text(img, f, scene, plate, scale)
     if finish:
         k = RETRO_STRENGTH if strength is None else float(strength)
+        k *= PAGE_STRENGTH.get(_short(scene[0]), 1.0)
         if k > 0:
             img = R.retro(img, f, scale, k)
     g = float(T.global_fade(f))

@@ -135,7 +135,7 @@ def make_scale(seed, broken=0, nu=250, nv=208):
 
 
 # ----------------------------------------------------------------------------- 2. material
-def baihe_material(sss_method='RANDOM_WALK'):
+def baihe_material(sss_method='BURLEY'):
     m = C.Mat('baihe_scale', sss_method=sss_method)
     cav, vein, edge, thin = m.attr('cav'), m.attr('vein'), m.attr('edge'), m.attr('thin')
     P = m.per_instance_coords()
@@ -251,7 +251,10 @@ def main():
         C.check_framing(args.out)
     comp = args.comp or os.path.join(C.PREVIEW_DIR, SHOT + ('_comp.jpg' if args.quality == 'final'
                                                               else '_%s_comp.jpg' % args.quality))
-    C.quick_comp(args.out, SHOT, comp)
+    if args.region:
+        C.quick_comp(args.out, SHOT, comp, crop=args.region, text=False)
+    else:
+        C.quick_comp(args.out, SHOT, comp)
     print('[comp]', comp)
 
 

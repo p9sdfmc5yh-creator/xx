@@ -79,7 +79,7 @@ def display_gain(srgb255, exposure=0.0):
     a = albedo_for_display(srgb255, exposure)
     got = np.interp((a * LIGHT_E + VEIL) * 2.0 ** exposure, _LUT_LIN, _LUT_DISP)
     g = float(np.max(d) / max(np.max(got), 1e-6))
-    return float(np.clip(g, 1.0, 1.18))
+    return float(np.clip(g, 1.0, 1.25))
 
 
 def apply_display_gain(path, gain):
@@ -997,9 +997,13 @@ def layout_glyph(frame, sets, P, rng, text, seed=0):
 
             if ps.get('mode', 'rsa') == 'relax':
                 area = float(mask.sum()) / px_per_m ** 2
-                c = throw(int(float(ps.get('pack', 0.90)) * area / foot))
+                # thick items (berries, nuts, whole fruits) cannot shingle: they must end up side by side,
+                # flat ones (slices, leaves, seeds lying flat) may overlap a little
+                thick = S.T / max(S.Wd, 1e-9) > 0.55
+                c = throw(int(float(ps.get('pack', 0.86 if thick else 0.90)) * area / foot))
                 c = relax_pack(c, signed, rng, iters=int(ps.get('iters', 140)), tol=tol_px / px_per_m, dir_fn=dir_fn,
-                               align_w=0.05 * align, verbose='pass %d' % p)
+                               align_w=0.05 * align, k=float(ps.get('k', 1.0 if thick else 0.96)),
+                               max_overlap=float(ps.get('max_overlap', 0.10 if thick else 0.34)), verbose='pass %d' % p)
                 c['ang'] = c['ang'] + np.where(rng.random(len(c['x'])) < 0.5, math.pi, 0.0)
             else:
                 def sample(n, throw=throw, inset=inset):
@@ -1737,7 +1741,8 @@ def main(argv=None):
         src = [over[i % len(over)] for i in range(max(len(src), len(over)))]
     sets = []
     width = float(shot['frame_width_m'])
-    if cli.empty and (cli.width or shot.get('lock_width') or not shot.get('item_mm')):
+    P_dep = shot.get('params', {}).get('stroke_items') or shot.get('params', {}).get('lengths_across')
+    if cli.empty and not P_dep and (cli.width or shot.get('lock_width') or not shot.get('item_mm')):
         src = []                                                     # the frame width does not depend on the items
     if src:                                                          # (--empty still measures them: same frame as the full plate)
         cache = {}
@@ -1766,6 +1771,21 @@ def main(argv=None):
             if abs(k - 1.0) > 0.15:
                 print('[frame] item size differs from the table (x%.2f): frame width %.3f -> %.3f m' % (k, width, width * k))
                 width *= k
+    # frame width derived from the MEASURED items (robust against edits of the ingredient modules):
+    #   glyph / landing  params.stroke_items = regular stroke width in item widths
+    #   wreath           params.lengths_across = item lengths across the frame (median over the sources)
+    if sets and layout in ('glyph', 'landing') and P.get('stroke_items'):
+        m_ = _glyph_mask(cli.text or shot['text'], P.get('font', G.DEFAULT_FONT), float(P.get('tracking', 0.06)),
+                         float(P.get('thin', 0.0)))
+        sw_ = stroke_width_robust(m_)
+        if 'width' in P:
+            width = float(P['stroke_items']) * sets[0].Wd * m_.shape[1] / (sw_ * float(P['width']))
+        else:
+            width = float(P['stroke_items']) * sets[0].Wd * m_.shape[0] * ASPECT / (sw_ * float(P.get('height', 0.72)))
+        print('[frame] width from stroke_items=%.2f x %.1f mm items: %.3f m' % (float(P['stroke_items']), sets[0].Wd * 1e3, width))
+    elif sets and layout == 'wreath' and P.get('lengths_across'):
+        width = float(P['lengths_across']) * float(np.median([s_.L for s_ in sets]))
+        print('[frame] width from lengths_across=%.1f: %.3f m' % (float(P['lengths_across']), width))
     if cli.width:
         width = cli.width
     frame = Frame(width)

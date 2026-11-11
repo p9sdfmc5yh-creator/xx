@@ -16,20 +16,21 @@ Scene keys
   source              ingredient module id(s) in film/blender/shots/ (make_items)
   ground              {type: paper, colour: DISPLAY sRGB 0-255 of the lit ground,
                        grid: {type, pitch_m, line_m, colour, opacity, major}, fibres, cloud, ...}
-  frame_width_m       physical width of the frame on the ground, chosen for the measured item size
-                      (lock_width: true everywhere - flatlay does not rescale)
+  frame_width_m       nominal physical width of the frame on the ground.  flatlay DERIVES the real width from
+                      the measured items when params has stroke_items (glyph / landing: regular stroke width
+                      in item widths) or lengths_across (wreath: item lengths across the frame)
   item_scale          optional uniform scale of the module's items (smaller cut pieces)
   seed                layout + paper seed
   text_mode           'dark' = dark-ink overlay text (pale ground), 'light' = white overlay text (mid-tone ground)
-  exposure            stops (1.0 for every plate: one consistent bright exposure; papers paler than a
-                      0.90 albedo can render get a small display gain in flatlay, see display_gain)
+  exposure            stops (0.6 for every plate: one consistent bright exposure that keeps the reds rich;
+                      papers paler than a 0.90 albedo can render get a display gain in flatlay, see display_gain)
   params              layout parameters (see README_B.md)
 """
 import json, os
 
 FPS, W, H, NFRAMES = 30, 3840, 2160, 1248
-FONT = 'NotoSansCJKsc-Black.otf'
-EXPO = 1.0
+FONT = 'NotoSansCJKsc-Bold.otf'      # Black closes the counters of 食 / 源 once they are built from objects
+EXPO = 0.6
 
 # stroke width of a single glyph in NotoSans Black at height 0.72 H = 0.0543 x frame width (measured on 药),
 # so   frame_width = n_item_widths * item_width / 0.0543 / (1 - thin)
@@ -101,7 +102,7 @@ SCENES += [
       source=['k04_heizhima', 'k02_yiyiren'],
       ground=paper(TERRACOTTA),
       frame_width_m=0.40, lock_width=True, seed=12, text_mode='light', exposure=EXPO,
-      params=dict(centre=[0.50, 0.725], diameter=0.50, dot=0.20, layers=3),
+      params=dict(centre=[0.50, 0.715], diameter=0.50, dot=0.20, layers=3),
       note='yin = black sesame, yang = white coix seed, two opposite eyes, on terracotta card; the text zone above '
            'y 0.46 H is bare paper'),
  dict(id='b02_cabinet', start=256, end=320, layout='wreath', text=None, label='四气 · 五味 (upper-centre window)',
@@ -147,33 +148,43 @@ for i, (bid, src, label, col, nlen) in enumerate(WREATHS):
         id='%s_%s' % (bid, src.split('_')[1]), start=448 + 16 * i, end=464 + 16 * i, layout='wreath', text=None, label=label,
         source=[src], ground=paper(col),
         frame_width_m=round(nlen * SIZE[src][0] * 1e-3, 3), lock_width=True, seed=20 + i, text_mode=tmode(col), exposure=EXPO,
-        params=dict(window=[0.50, 0.42, 0.46, 0.30], layers=2.0, reach=0.55, rough=0.16, strays=8)))
+        params=dict(window=[0.50, 0.42, 0.46, 0.30], layers=2.0, reach=0.55, rough=0.16, strays=8, lengths_across=nlen)))
 
 # ----------------------------------------------------------------------------- 8-frame glyphs
+# stroke erosion per character (fraction of the stroke width): opens the counters; 食 and 源 need most
+THIN_CH = {'药': 0.16, '食': 0.24, '同': 0.10, '源': 0.24}
 #   id, source, small label, glyph, ground, strokes in item widths, item scale, extra params
 GLYPHS = [
- ('b15', 'k01_fuling',     '茯苓',   '药', TERRACOTTA, 3.4, 1.0, {}),
- ('b16', 'k02_yiyiren',    '薏苡仁', '药', TEAL,       5.5, 1.0, {}),
- ('b17', 'k03_guiyuan',    '桂圆',   '药', CREAM,      3.2, 1.0, {}),
- ('b18', 'k04_heizhima',   '黑芝麻', '药', PEACH,      9.0, 1.0, {}),
- ('b19', 'k05_bohe',       '薄荷',   '食', PALE_ROSE,  3.0, 1.0, {}),
- ('b20', 'k06_sangshen',   '桑椹',   '食', BUTTER,     4.0, 1.0, {}),
- ('b21', 'k07_chixiaodou', '赤小豆', '食', CELADON,    6.0, 1.0, {}),
- ('b22', 'k08_heye',       '荷叶',   '食', LILAC,      3.0, 0.6, {}),
- ('b23', 'k09_gancao',     '甘草',   '同', SLATE_BLUE, 3.5, 1.0, {}),
- ('b24', 'k10_jianghuang', '姜黄',   '同', DEEP_TEAL,  3.4, 1.0, {}),
- ('b25', 'k11_shaji',      '沙棘',   '同', MINT,       4.6, 1.0, {}),
- ('b26', 'k12_juemingzi',  '决明子', '同', CREAM,      7.5, 1.0, {}),
- ('b27', 'k13_luohanguo',  '罗汉果', '源', PALE_BLUE,  3.0, 1.0, {}),
- ('b28', 'k14_rougui',     '肉桂',   '源', PALE_SAGE,  3.3, 1.0, {}),
- ('b29', 'k15_qianshi',    '芡实',   '源', MAUVE,      5.5, 1.0, {}),
- ('b30', 'k16_lingzhi',    '灵芝',   '源', OCHRE,      2.8, 1.0, {}),
+ ('b15', 'k01_fuling',     '茯苓',   '药', TERRACOTTA, 3.4, 1.0, 'flat'),
+ ('b16', 'k02_yiyiren',    '薏苡仁', '药', TEAL,       5.0, 1.0, 'seed'),
+ ('b17', 'k03_guiyuan',    '桂圆',   '药', CREAM,      3.3, 1.0, 'ball'),
+ ('b18', 'k04_heizhima',   '黑芝麻', '药', PEACH,      9.0, 1.0, 'seed'),
+ ('b19', 'k05_bohe',       '薄荷',   '食', PALE_ROSE,  2.8, 1.0, 'flat'),
+ ('b20', 'k06_sangshen',   '桑椹',   '食', BUTTER,     3.8, 1.0, 'ball'),
+ ('b21', 'k07_chixiaodou', '赤小豆', '食', CELADON,    5.5, 1.0, 'seed'),
+ ('b22', 'k08_heye',       '荷叶',   '食', LILAC,      2.8, 0.6, 'flat'),
+ ('b23', 'k09_gancao',     '甘草',   '同', SLATE_BLUE, 3.4, 1.0, 'flat'),
+ ('b24', 'k10_jianghuang', '姜黄',   '同', DEEP_TEAL,  3.3, 1.0, 'flat'),
+ ('b25', 'k11_shaji',      '沙棘',   '同', MINT,       4.6, 1.0, 'seed'),
+ ('b26', 'k12_juemingzi',  '决明子', '同', CREAM,      8.0, 1.0, 'seed'),
+ ('b27', 'k13_luohanguo',  '罗汉果', '源', PALE_BLUE,  3.0, 1.0, 'ball'),
+ ('b28', 'k14_rougui',     '肉桂',   '源', PALE_SAGE,  3.0, 1.0, 'ball'),
+ ('b29', 'k15_qianshi',    '芡实',   '源', MAUVE,      5.0, 1.0, 'seed'),
+ ('b30', 'k16_lingzhi',    '灵芝',   '源', OCHRE,      2.6, 1.0, 'flat'),
 ]
-for i, (bid, src, label, ch, col, n, isc, extra) in enumerate(GLYPHS):
+# pouring passes per kind of item: 'seed' = small grains (a real little mound), 'ball' = big thick items
+# (ONE clean layer + a few on top: a second layer of whole fruits only blurs the strokes), 'flat' = slices / leaves
+PASSES = {
+ 'seed': [dict(mode='relax'), dict(mode='rsa', inset=0.9, k=0.92, fill=0.55)],
+ 'ball': [dict(mode='relax'), dict(mode='rsa', inset=1.0, k=0.92, fill=0.12)],
+ 'flat': [dict(mode='relax'), dict(mode='rsa', inset=0.8, k=0.92, fill=0.30)],
+}
+for i, (bid, src, label, ch, col, n, isc, kind) in enumerate(GLYPHS):
     wd = SIZE[src][1] * isc
-    wm = round(n * wd * 1e-3 / (GLYPH_K * (GLYPH_H / 0.72) * (1.0 - THIN)), 3)
-    P = dict(centre=[0.50, 0.46], height=GLYPH_H, font=FONT, thin=THIN, strays=0.010)
-    P.update(extra)
+    thin = THIN_CH[ch] + (0.04 if wd > 12 else 0.0)                  # big items: thinner strokes, wider counters
+    wm = round(n * wd * 1e-3 / (GLYPH_K * (GLYPH_H / 0.72) * (1.0 - thin) * 0.85), 3)      # nominal only
+    P = dict(centre=[0.50, 0.46], height=GLYPH_H, font=FONT, thin=thin, strays=0.008, stroke_items=n, edge_tol=0.12,
+             engine='packed', passes=PASSES[kind])
     sc = dict(
         id='%s_%s' % (bid, src.split('_')[1]), start=608 + 8 * i, end=616 + 8 * i, layout='glyph', text=ch, label=label,
         source=[src], ground=paper(col),
@@ -189,7 +200,8 @@ SCENES.append(dict(
     ground=paper(WHITE, grid=dict(type='square', pitch_m=0.0281, line_m=0.00065, colour=GRID_INK, opacity=0.30, major=0),
                  fibres=1.0, cloud=0.035),
     frame_width_m=0.90, lock_width=True, seed=77, text_mode='dark', exposure=EXPO,
-    params=dict(centre=[0.50, 0.40], width=0.80, font=FONT, thin=THIN, tracking=0.10, strays=0.004),
+    params=dict(centre=[0.50, 0.40], width=0.80, font=FONT, thin=0.18, tracking=0.10, strays=0.004, stroke_items=3.6,
+                edge_tol=0.12, engine='packed', passes=PASSES['seed']),
     reveal=dict(per_char_frames=8, order='药食同源', empty_variant='--empty  ->  renders_b/b31_empty.png'),
     note='the four characters poured from dried goji berries (vermilion on warm white paper with a faint ruled grid, '
          'like a red seal); block centre (0.50 W, 0.40 H), width 0.80 W; lower third clear; rendered twice '
