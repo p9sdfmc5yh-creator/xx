@@ -1,5 +1,67 @@
 # film/blender - VERSION B: top-down specimen plates + ingredient typography
 
+## CURRENT STATE (b-stills pass) - read this first
+
+**Look.** The user found the first (dark-ground) version gloomy ("像鬼片"), so every plate is now BRIGHT, warm and
+clean: light or mid-tone vintage card stock with visible fibre, one colour per plate chosen for contrast with the
+ingredient, never near-black.  First page (b00) and last page (b31) are warm WHITE paper with a faint ruled grid.
+One exposure for the whole film (`exposure: 0.6`); papers paler than a 0.90 albedo can render under AgX get a
+display-space gain (`display_gain`, <= 1.25, written to `<id>_layout.json`).
+
+**Timeline -> stills** (`film/renders_b/<id>.png`, 1920x1080, opaque 16-bit, + `<id>_depth.npy`, `<id>_layout.json`):
+
+| frames | id | what |
+|---|---|---|
+| 0-192 | `b00_intro` | white grid paper, sparse border of 12 ingredients, centre clear |
+| 192-256 | `b01_yinyang` | taiji of black sesame / coix seed on terracotta, text zone above |
+| 256-320 | `b02_cabinet` | "四气·五味": wreath of herbs & spices in patches on cream (id kept, no cabinet any more) |
+| 320-384 | `b03_grains` | "五谷为养": seven grains / seeds, one per SECTOR around the window, on sage |
+| 384-448 | `b04_bowl` | "药食同源": goji + jujube + chrysanthemum + lotus seed + longan + yam on slate-blue (id kept) |
+| 448-608 | `b05`..`b14` | ten single-ingredient wreath plates, window 46 % W x 30 % H at (0.50, 0.42) |
+| 608-736 | `b15`..`b30` | sixteen glyph plates: 药 x4, 食 x4, 同 x4, 源 x4; calm label strip at y 0.925 H |
+| 736-1248 | `b31_landing` + `b31_empty` | 药食同源 in one row poured from goji on white grid paper (block centre 0.50 W / 0.40 H, width 0.80 W) and the same page without the characters (identical camera / light / paper) for the stop-motion reveal; `b31_landing_layout.json` has `char_boxes` |
+
+**Render everything** (one still at a time through the machine-wide render lock, make-style):
+
+```
+nohup film/blender/b_render_all.sh > $S/b_logs/runner.out 2>&1 &     # all stale stills
+film/blender/b_render_all.sh b17 b31 b31_empty                       # only these
+FORCE=1 film/blender/b_render_all.sh b17                             # regardless of the stored key
+python film/blender/b_sheets.py                                      # QA sheets -> $S/previews/b_sheet_NN.jpg (6 stills each, zones outlined)
+```
+
+Logs: `$S/b_logs/queue.log` (START / DONE / FAIL), `$S/b_logs/<id>.log`, a JPEG of every finished still in
+`$S/b_logs/<id>.jpg`.  A still is up to date when the hash of its table entry (`$S/b_logs/<id>.key`) is unchanged
+and it is newer than its ingredient modules.  NEVER edit b_render_all.sh while a runner is active (bash reads
+scripts incrementally).
+
+**New since the first write-up** (all in flatlay.py):
+
+* `--speed fast` (default; `full` = common.py's settings): Burley SSS, bounces 6/2/3/6, adaptive threshold 0.07.
+  1080p / 32 spp: glyph plates 45-190 s, wreaths 150-350 s on the loaded 4-core box.
+* `--lock FILE`: flock around the Cycles render only (the scene build runs outside the lock).
+* frame width derived from the MEASURED items: `params.stroke_items` (glyph / landing: regular stroke width in
+  item widths) and `params.lengths_across` (wreath) - robust against edits of the ingredient modules.
+* glyphs: `NotoSansCJKsc-Bold` + per-character `thin` (药 0.16, 食 0.24, 同 0.10, 源 0.24; +0.04 for big items) -
+  the Black weight closes the counters of 食 / 源 once built from objects.  Engine `packed` for every glyph.
+  `passes[0].thick = true` for big whole items (longan, mulberry, monk fruit, cinnamon): thrown at 0.76 coverage,
+  no footprint overlap, so nothing is perched on a neighbour.  Pass-0 items may now slide (roll0).
+* wreath `mix: 'sectors'` (+ `sector_start` deg, `sector_blur`): one ingredient per sector around the window.
+* `item_scale` (shot key): uniform scale of a module's items (lotus leaf pieces 0.6, cinnamon 0.75).
+* `variation` (shot key, `macro_variation`): per-instance value / saturation / hue offsets + mottling + speckle
+  multiplied into the base colour - cut slices (yam, ginger, liquorice, turmeric, hawthorn, reishi, poria) look
+  like paper cut-outs from above without it.  A preset dict, or `{source id: preset}` on mixed plates.
+* paper: the fibre / cloud STRUCTURE is drawn as if the sheet were `PAPER_REF_W` (0.45 m) wide, whatever the
+  physical frame (a 3 m plate of monk fruit shows the same paper as a 30 cm plate of seeds); pale strands get
+  less contrast on mid-tone sheets.  Saturated mid-tones come out a little lighter / pinker than the table asks
+  (AgX is not per-channel) - the palette in shots_b_src.py is pre-compensated by eye.
+
+Everything below is the original description; where it disagrees with this section (dark grounds, 4K default,
+bespoke cabinet / bowl scenes, Black font, table columns), this section wins.
+
+---
+
+
 Same film, same audio, same cut grid as version A, but every scene is shot **straight down** like
 a specimen plate / knolling photograph, and the montage ends by rebuilding the four title
 characters 药 食 同 源 out of sixteen different ingredients before landing on the full title.

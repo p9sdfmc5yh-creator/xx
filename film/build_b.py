@@ -5,6 +5,7 @@
     python build_b.py                     # 1920x1080 -> film/out/yaoshi_B_1080p.mp4
     python build_b.py --scale 2           # 3840x2160 -> film/out/yaoshi_B_4k.mp4
     python build_b.py --list              # which stills exist / which segments are stale
+    python build_b.py --watch 60          # build, then rebuild whenever stills arrive, until none is missing
     python build_b.py --start 608 --end 760 --out glyphs.mp4      # a range (video only)
 
  * Stills are looked up ONCE per build (film/renders_b/<id>.png, see compose_b.find_still); a
@@ -167,10 +168,26 @@ def main(argv=None):
     ap.add_argument('--audio', default=AUDIO)
     ap.add_argument('--force', action='store_true', help='re-render every segment')
     ap.add_argument('--list', action='store_true', help='only show the state of the stills / segments')
+    ap.add_argument('--watch', type=float, default=0, metavar='SECONDS',
+                    help='after the build keep polling the stills directory every SECONDS and rebuild whenever a '
+                         'still arrived or changed; exits once no placeholder is left')
     args = ap.parse_args(argv)
     import compose_b
     if args.strength is None:
         args.strength = compose_b.RETRO_STRENGTH
+    rc, manifest = build_once(args)
+    while args.watch > 0 and not args.list and rc == 0 and any(v is None for v in manifest.values()):
+        time.sleep(args.watch)
+        new = compose_b.build_manifest(args.renders)
+        if new != manifest:
+            print('--- %s  stills changed, rebuilding' % time.strftime('%H:%M:%S'), flush=True)
+            rc, manifest = build_once(args, new)
+    return rc
+
+
+def build_once(args, manifest=None):
+    """One (incremental) build; returns (exit code, manifest of the stills it used)."""
+    import compose_b
     full = args.start == 0 and args.end == NFRAMES
     out = args.out or (DEFAULT_OUT.get(args.scale) if full else
                        os.path.join(HERE, 'out', 'B_range_%04d_%04d_s%d.mp4' % (args.start, args.end, args.scale)))
@@ -178,7 +195,8 @@ def main(argv=None):
     os.makedirs(segdir, exist_ok=True)
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     t0 = time.time()
-    manifest = compose_b.build_manifest(args.renders)
+    if manifest is None:
+        manifest = compose_b.build_manifest(args.renders)
     compose_b.MANIFEST = manifest
     code = code_signature()
     segs = segments(args.start, args.end)
@@ -207,7 +225,7 @@ def main(argv=None):
         for name, a, b, scene in segs:
             print('  %-30s %4d-%4d  %s%s' % (name, a, b, 'RENDER' if name in stale else 'cached',
                                              '  placeholder' if scene[0] in placeholders else ''))
-        return 0
+        return 0, manifest
     if todo:
         ctx = get_context('fork')
         with ctx.Pool(args.workers, initializer=_init, initargs=(manifest, args.strength)) as pool:
@@ -241,10 +259,11 @@ def main(argv=None):
         v.get('width'), v.get('height'), v.get('pix_fmt'), v.get('r_frame_rate'), v.get('nb_read_packets'),
         v.get('duration'), v.get('color_primaries'), v.get('color_transfer'), v.get('color_space'),
         v.get('color_range'), a and a.get('codec_name'), a and a.get('duration')))
+    sys.stdout.flush()
     if int(v.get('nb_read_packets', -1)) != nfr:
         print('ERROR: expected %d frames' % nfr)
-        return 1
-    return 0
+        return 1, manifest
+    return 0, manifest
 
 
 if __name__ == '__main__':
