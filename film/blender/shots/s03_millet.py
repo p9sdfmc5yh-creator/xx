@@ -216,7 +216,7 @@ def millet_material():
     col = m.mix(col, hcol, hull)
 
     # --- roughness: satin, broken up; germ / flour / fracture matte; hull glossy
-    rough = m.map_range(rvar, 0.0, 1.0, 0.36, 0.56)
+    rough = m.map_range(rvar, 0.0, 1.0, 0.30, 0.50)
     rough = m.math('ADD', rough, m.map_range(t_misc, 0, 1, -0.05, 0.07))
     rough = m.mixf(rough, 0.66, m.math('MULTIPLY', germ, 0.8))
     rough = m.mixf(rough, 0.85, dust)
@@ -225,7 +225,7 @@ def millet_material():
     rough = m.mixf(rough, m.map_range(rvar, 0.0, 1.0, 0.24, 0.40), hull)
     # --- micro relief in ONE bump: 0.17 mm orange-peel down to 25 um pericarp grain; stronger on floury faces
     mic = m.noise(scale=6000, detail=3, roughness=0.62, lacunarity=2.6, vector=P)
-    nrm = m.bump(mic, strength=m.mixf(0.55, 1.0, matte), distance=m.mixf(0.000012, 0.00004, matte))
+    nrm = m.bump(mic, strength=m.mixf(0.70, 1.0, matte), distance=m.mixf(0.000018, 0.00004, matte))
     sss = m.mixf(0.55, 0.25, m.math('MAXIMUM', hull, m.math('MULTIPLY', frac, 0.5)))
     m.set(base_color=col, roughness=rough, ior=1.50, specular=0.38,
           sss=sss, sss_radius=(1.0, 0.55, 0.20), sss_scale=0.00035,

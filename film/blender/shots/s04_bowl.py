@@ -316,7 +316,7 @@ def make_soaked_goji(seed, nu=150, nv=92):
     X = (S - 0.5) * L
     # position on the undeformed surface (for noise lookups)
     q = np.stack([X, R0 * np.cos(PH), R0 * np.sin(PH)], -1)
-    wr = rng.uniform(0.40, 1.0)                                                      # how wrinkled this one stayed
+    wr = rng.uniform(0.60, 1.0)                                                      # how wrinkled this one stayed
     qq = np.stack([q[..., 0] * 110.0, np.cos(PH) * 1.7, np.sin(PH) * 1.7], -1)
     warp = C.fbm3(q * 160.0, octaves=2, seed=seed * 7 + 1)[..., None] * 0.55
     bil = np.abs(C.perlin3(qq * np.array([1.0, 1.55, 1.55]) + warp, seed=seed * 7 + 2)) ** 0.6
@@ -325,7 +325,7 @@ def make_soaked_goji(seed, nu=150, nv=92):
     env = (0.30 + 0.70 * (1 - S) ** 1.3) * prof ** 0.6 * wr * (0.25 + 0.75 * how)
     crease = np.clip(1.0 - bil / 0.55, 0, 1) ** 1.6                                  # narrow valleys
     crease2 = np.clip(1.0 - bil2 / 0.45, 0, 1) ** 1.6
-    disp = -(crease * 0.00058 + crease2 * 0.00018) * env
+    disp = -(crease * 0.00088 + crease2 * 0.00028) * env
     lumps = C.fbm3(q * 300.0 + 1.7, octaves=2, seed=seed * 7 + 5) * 0.00034 * prof ** 0.5   # seeds under the skin
     dent = -0.0005 * rng.uniform(0, 1) * np.exp(-(((S - rng.uniform(0.3, 0.7)) / 0.16) ** 2 +
                                                  ((np.angle(np.exp(1j * (PH - rng.uniform(0, 6.28))))) / 0.7) ** 2))
@@ -343,25 +343,39 @@ def make_soaked_goji(seed, nu=150, nv=92):
 
 
 def soaked_goji_material():
+    """Rehydrated goji skin: deep orange-red, patchy, seeds glowing through, darker in the residual
+    furrows; a thin UNEVEN water film (coat) whose highlight is broken by the skin relief - a uniform
+    mirror coat over a smooth body is what reads as plastic."""
     m = C.Mat('goji_wet', sss_method='RANDOM_WALK')
     oc = m.per_instance_coords('Object', spread=3.0)
+    fur = m.attr('furrow')
     n_patch = m.noise(scale=150, detail=2, vector=oc)
     n_fine = m.noise(scale=1500, detail=3, vector=oc)
-    col = m.ramp(n_patch, [(0.22, (0.30, 0.010, 0.005)), (0.50, (0.45, 0.024, 0.006)), (0.80, (0.56, 0.060, 0.010))])
+    col = m.ramp(n_patch, [(0.22, (0.205, 0.0055, 0.0035)), (0.50, (0.315, 0.015, 0.004)), (0.80, (0.41, 0.043, 0.006))])
     vor = m.voronoi(scale=560, vector=oc, feature='SMOOTH_F1', smoothness=0.4)
     seedm = m.map_range(vor, 0.10, 0.50, 1.0, 0.0, smooth=True)                 # seeds showing through
-    col = m.mix(col, (0.66, 0.16, 0.02), m.math('MULTIPLY', seedm, 0.22))
-    col = m.mix(col, (0.20, 0.005, 0.004), m.math('MULTIPLY', m.attr('furrow'), 0.65))
-    col = m.jitter(col, hue=0.012, saturation=0.07, value=0.16)
-    col = m.mix(col, (0.80, 0.66, 0.40), m.map_range(m.attr('scar'), 0.25, 0.8, 0.0, 0.95, smooth=True))
-    rough = m.math('ADD', m.map_range(n_fine, 0.3, 0.7, 0.20, 0.40), m.math('MULTIPLY', m.attr('furrow'), 0.15))
+    col = m.mix(col, (0.50, 0.105, 0.012), m.math('MULTIPLY', seedm, 0.20))
+    col = m.mix(col, (0.46, 0.070, 0.008), m.map_range(m.attr('ax'), 0.02, 0.26, 0.42, 0.0, smooth=True))   # paler shoulder
+    col = m.mix(col, (0.105, 0.003, 0.003), m.math('MULTIPLY', fur, 0.78))
+    col = m.jitter(col, hue=0.014, saturation=0.08, value=0.30)
+    dark = m.map_range(m.math('FRACT', m.math('MULTIPLY', m.obj_random(), 13.37)), 0.80, 1.0, 0.0, 0.55)   # a few older, browner
+    col = m.mix(col, (0.100, 0.012, 0.007), dark)
+    col = m.mix(col, (0.74, 0.60, 0.36), m.map_range(m.attr('scar'), 0.25, 0.8, 0.0, 0.95, smooth=True))
+    rough = m.math('ADD', m.map_range(n_fine, 0.3, 0.7, 0.30, 0.52), m.math('MULTIPLY', fur, 0.22))
     stretch = m.mapping(oc, scale=(0.22, 1.0, 1.0))
-    nrm = m.bump(m.noise(scale=760, detail=3, vector=stretch), strength=0.55, distance=0.00022)
-    nrm = m.bump(m.noise(scale=2600, detail=3, vector=stretch), strength=0.6, distance=0.00010, normal=nrm)
-    nrm = m.bump(m.noise(scale=9000, detail=2, vector=oc), strength=0.35, distance=0.00002, normal=nrm)
-    wet = m.map_range(m.noise(scale=220, detail=2, vector=oc), 0.35, 0.65, 0.25, 0.60)      # uneven water film
-    m.set(base_color=col, roughness=rough, sss=0.7, sss_radius=(1.0, 0.16, 0.06), sss_scale=0.0016,
-          sss_anisotropy=0.4, ior=1.42, coat=wet, coat_roughness=0.05, coat_ior=1.34, normal=nrm)
+    h1 = m.noise(scale=760, detail=3, vector=stretch)
+    nrm = m.bump(h1, strength=0.75, distance=0.00026)
+    nrm = m.bump(m.noise(scale=2600, detail=3, vector=stretch), strength=0.7, distance=0.00010, normal=nrm)
+    nrm = m.bump(m.noise(scale=9000, detail=2, vector=oc), strength=0.4, distance=0.00002, normal=nrm)
+    wn = m.noise(scale=240, detail=2, vector=oc)
+    wet = m.math('MULTIPLY', m.map_range(wn, 0.32, 0.68, 0.10, 0.52, smooth=True),
+                 m.math('SUBTRACT', 1.0, m.math('MULTIPLY', fur, 0.5)))                     # uneven water film
+    cn = m.bump(h1, strength=0.45, distance=0.00018)                                        # the film follows the skin, softened
+    m.set(base_color=col, roughness=rough, sss=0.65, sss_radius=(1.0, 0.13, 0.05), sss_scale=0.0014,
+          sss_anisotropy=0.3, ior=1.42, specular=0.40, coat=wet, coat_ior=1.34, normal=nrm,
+          coat_roughness=m.map_range(n_fine, 0.3, 0.7, 0.06, 0.16))
+    m.bsdf.inputs['Coat Normal'].default_value = (0, 0, 0)
+    m.nt.links.new(cn, m.bsdf.inputs['Coat Normal'])
     return m
 
 
@@ -565,6 +579,8 @@ def build_broth(material, pf, e_fn, floaters_world, y_split, bubbles=None):
             val[j - k:j + k + 1, i - k:i + k + 1][sub] = np.maximum(val[j - k:j + k + 1, i - k:i + k + 1][sub],
                                                                     0.25 * br)
     h_f = solve_meniscus(fixed, val, DX, LAMBDA)
+    from scipy.ndimage import gaussian_filter
+    h_f = gaussian_filter(h_f, 1.4, mode='nearest')          # no raster stair-steps along the contact lines
     # ---- coarse zone (near half, out of frame): analytic wall meniscus
     cx, cy = np.meshgrid(xs, ys_c)
     crr = np.hypot(cx, cy)
@@ -588,10 +604,21 @@ def build_broth(material, pf, e_fn, floaters_world, y_split, bubbles=None):
 
 
 # ============================================================================= public: loose items
-def make_items(seed=0):
-    """Bespoke liquid scene: there are no loose dry items for the flat-lay version.
-    (The rehydrated berries are exposed through make_soaked_goji / soaked_goji_material.)"""
-    return dict(objects=[], footprint_r=[], half_height=[], name=NAME)
+def make_items(seed=0, n=6):
+    """Loose items for the flat-lay version: plump rehydrated goji berries (泡发枸杞) lying on their flat
+    side, lowest point on z = 0, origin at the footprint centre.
+    -> dict(objects, footprint_r [m], half_height [m], name)."""
+    skin = soaked_goji_material()
+    objs, fr, hh = [], [], []
+    for i in range(n):
+        v, f, attrs, _ = make_soaked_goji(seed * 11 + i)
+        v = v.copy()
+        v[:, :2] -= 0.5 * (v[:, :2].max(0) + v[:, :2].min(0))
+        v[:, 2] -= v[:, 2].min()
+        objs.append(C.mesh_from_arrays('bowl_goji_item_%d' % i, v, f, attrs=attrs, material=skin))
+        fr.append(float(np.hypot(v[:, 0], v[:, 1]).max()))
+        hh.append(float(0.5 * v[:, 2].max()))
+    return dict(objects=objs, footprint_r=fr, half_height=hh, name='枸杞（泡发）')
 
 
 # ============================================================================= scene
@@ -647,7 +674,7 @@ def build_scene(args):
         scl.append(it['scale'])
         var.append(it['var'])
         v, f = vmesh[it['var']]
-        world.append(((v * it['scale']) @ np.array(M).T + p, f, float(rng.uniform(0.0006, 0.0010))))
+        world.append(((v * it['scale']) @ np.array(M).T + p, f, float(rng.uniform(0.00030, 0.00060))))
     n_float = len(loc)
     # sunk berries resting on the bottom (seen refracted through the deep broth)
     for k in range(7):
@@ -730,8 +757,8 @@ def main():
     args = C.parse_args()
     if args.quality == 'final' and not args.res:
         args.q['res'] = FINAL_RES
-        args.q['spp'] = args.spp or 192
-        args.q['thr'] = 0.012
+        args.q['spp'] = args.spp or 48
+        args.q['thr'] = 0.02
     C.setup_scene(args, look='AgX - Punchy', exposure=0.0)
     sc = bpy.context.scene
     sc.cycles.transmission_bounces = 6
@@ -744,7 +771,7 @@ def main():
         C.check_framing(args.out)
     comp = args.comp or os.path.join(C.PREVIEW_DIR, SHOT + ('_comp.jpg' if args.quality == 'final'
                                                               else '_%s_comp.jpg' % args.quality))
-    C.quick_comp(args.out, SHOT, comp)
+    C.quick_comp(args.out, SHOT, comp, crop=args.region, text=not args.region)
     print('[comp]', comp, ' render %.1f s' % res['seconds'])
 
 

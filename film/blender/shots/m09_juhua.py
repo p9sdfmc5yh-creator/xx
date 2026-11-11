@@ -26,7 +26,7 @@ import common as C                                                              
 
 SHOT = 'm09_juhua'
 R_DOME = 0.42             # bare dome radius -> a 25 mm head is ~170 px (1920 frame) at the horizon
-SEED = 3                  # default heap seed (chosen by a framing scan)
+SEED = 4                  # default heap seed (chosen by a framing scan)
 N_UP, N_FLIP = 7, 2       # head mesh variants built face-up / built upside-down (involucre showing)
 SKY_TINT = (0.80, 0.87, 1.0)   # navy night sky of the shot -> cool fill / rim
 
@@ -502,7 +502,7 @@ def main():
     # 4. camera fitted to the real heap, lens-like DOF, back-lit food lighting in the night-sky key
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.56, edge=0.685, top_margin=0.025)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=SKY_TINT, key=0.66, fill=0.50, rim=0.9, world=1.0, key_size=1.0)
+    C.studio_lights(info, tint=SKY_TINT, key=0.70, fill=0.42, rim=1.0, world=0.8, key_size=1.0)
 
     # 5. render, verify the framing contract, write the judging composite
     C.render(args)
