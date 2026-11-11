@@ -192,6 +192,14 @@ def _entry(path):
 
 
 def _readable(path):
+    """False for a still that is still being written (a PNG without its IEND chunk) or broken."""
+    try:
+        with open(path, 'rb') as fh:
+            if fh.read(8) == b'\x89PNG\r\n\x1a\n':
+                fh.seek(-12, 2)
+                return fh.read(12)[4:8] == b'IEND'
+    except OSError:
+        return False
     im = cv2.imread(path, cv2.IMREAD_UNCHANGED)
     return im is not None and im.ndim >= 2 and im.shape[0] >= 270 and im.shape[1] >= 480
 
