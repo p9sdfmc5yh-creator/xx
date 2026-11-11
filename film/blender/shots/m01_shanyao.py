@@ -36,14 +36,21 @@ def fields(x, y, d, ro, th, seed=0):
     h += 1.2e-5 * C.fbm3(p * 3000.0, 3, seed=seed + 2)                      # granular starch lumps (0.3 mm)
     bounds = (x.min(), x.max(), y.min(), y.max())
     pts = D.scatter(bounds, 0.0012, seed + 3, density=lambda a, b: 0.75)   # scattered vascular bundles
-    dot, dotid, q = D.dots(x, y, pts, (0.00005, 0.00012), soft=0.35, seed=seed + 4)
-    dot = dot * (d > 0.0007)
-    h += dot * (dotid - 0.45) * 1.6e-5                                    # some are pits, some ooze a bead
+    dot, dotid, q = D.dots(x, y, pts, (0.00004, 0.00011), soft=0.35, seed=seed + 4)
+    q = q * (1.0 + 0.55 * C.fbm3(p * 9000.0, 2, seed=seed + 12))          # ragged, never round
+    dot = (1.0 - C.smoothstep(0.30, 1.0, q)) * (d > 0.0007)
+    h -= dot * (0.3 + dotid) * 0.9e-5                                     # cut bundles sit in tiny pits
+    dpts = D.scatter(bounds, 0.0021, seed + 13, density=lambda a, b: 0.55)  # beads of mucilage oozing out
+    _, drid, dq = D.dots(x, y, dpts, (0.00009, 0.00030), soft=0.5, seed=seed + 14)
+    dq = dq * (1.0 + 0.18 * C.perlin3(p * 4000.0, seed + 15))
+    drop = np.sqrt(np.clip(1.0 - dq * dq, 0.0, 1.0)) * (d > 0.0010)
+    drad = 0.00009 + 0.00021 * ((drid * 7.31) % 1.0)
+    h += drop * drad * 0.30
     lipn = C.fbm3(D.P3(th * ro / 0.0005, np.zeros_like(th), 3.3), 3, seed=seed + 6)
     h += np.exp(-(d / 0.00016) ** 2) * (1.0e-5 + 2.2e-5 * lipn)           # tough skin leaves a tiny burr
     h -= 1.4e-5 * np.exp(-((d - 0.0008) / 0.0005) ** 2)                   # cortex sinks a little
     wet = C.smoothstep(-0.30, 0.25, C.fbm3(p * 260.0, 3, seed=seed + 7))  # mucilage film is patchy
-    return h, dict(dot=dot, dotid=dotid, wet=wet)
+    return h, dict(dot=dot, dotid=dotid, wet=wet, drop=np.clip(drop * 3.0, 0, 1))
 
 
 # ----------------------------------------------------------------------------- 2. materials
@@ -56,32 +63,37 @@ def face_material(dry=False):
         return _MATS[key]
     m = C.Mat('yam_face_' + key, sss_method='BURLEY')
     P = m.coords('Object')
-    din, dot, dotid, wet = m.attr('din'), m.attr('dot'), m.attr('dotid'), m.attr('wet')
+    din, dot, dotid, wet, drop = m.attr('din'), m.attr('dot'), m.attr('dotid'), m.attr('wet'), m.attr('drop')
     # flesh: ivory white, slow cream mottling, cell walls a hair darker, starch grains brighter
     mott = m.noise(scale=150, detail=3, roughness=0.55, vector=P)
     flesh = m.mix((0.76, 0.725, 0.61), (0.84, 0.82, 0.74), m.map_range(mott, 0.30, 0.72))
     moist = m.noise(scale=520, detail=3, roughness=0.6, distortion=0.4, vector=P)
     flesh = m.mix(flesh, (0.64, 0.61, 0.50), m.math('MULTIPLY', m.map_range(moist, 0.45, 0.75), 0.55))
     cell = m.voronoi(scale=8500, feature='DISTANCE_TO_EDGE', vector=P)
-    flesh = m.mix(flesh, (0.63, 0.59, 0.47), m.map_range(cell, 0.0, 0.10, 0.32, 0.0))
+    flesh = m.mix(flesh, (0.58, 0.54, 0.42), m.map_range(cell, 0.0, 0.14, 0.55, 0.0))
     grain = m.noise(scale=30000, detail=2, roughness=0.6, vector=P)
-    flesh = m.mix(flesh, (0.90, 0.89, 0.84), m.map_range(grain, 0.60, 0.80, 0.0, 0.55))
+    flesh = m.mix(flesh, (0.92, 0.91, 0.87), m.map_range(grain, 0.56, 0.78, 0.0, 0.8))
     band = m.map_range(din, 0.35, 2.0, 1.0, 0.0, smooth=True)             # translucent cortex under the skin
     flesh = m.mix(flesh, (0.58, 0.47, 0.24), m.math('MULTIPLY', band, 0.70))
-    flesh = m.mix(flesh, (0.47, 0.40, 0.26), m.math('MULTIPLY', dot, m.map_range(dotid, 0, 1, 0.30, 0.75)))
+    flesh = m.mix(flesh, (0.50, 0.46, 0.36), m.math('MULTIPLY', dot, m.map_range(dotid, 0, 1, 0.25, 0.8)))
+    flesh = m.mix(flesh, (0.30, 0.21, 0.12), m.math('MULTIPLY', m.map_range(dot, 0.75, 1.0), m.map_range(dotid, 0.55, 0.9, 0.0, 0.6)))
     # skin in cross-section (noisy thickness 0.15-0.4 mm) and on the outer wall (din < 0)
-    thick = m.map_range(m.noise(scale=2200, detail=3, vector=P), 0.2, 0.8, 0.28, 0.55)
+    thick = m.map_range(m.noise(scale=2200, detail=3, vector=P), 0.2, 0.8, 0.15, 0.34)
     is_skin = m.math('SUBTRACT', 1.0, m.map_range(din, m.math('MULTIPLY', thick, 0.55), thick, 0.0, 1.0, smooth=True))
-    skin_col = m.ramp(m.noise(scale=1300, detail=4, roughness=0.6, vector=P),
-                      [(0.25, (0.075, 0.040, 0.020)), (0.55, (0.22, 0.135, 0.065)), (0.85, (0.34, 0.235, 0.12))])
+    skin_col = m.ramp(m.noise(scale=2600, detail=5, roughness=0.7, vector=P),
+                      [(0.25, (0.030, 0.016, 0.008)), (0.50, (0.12, 0.068, 0.030)), (0.80, (0.27, 0.17, 0.08))])
+    skin_col = m.mix(skin_col, (0.022, 0.012, 0.007), m.map_range(din, 0.0, 0.09, 0.8, 0.0))   # outer cork line
     col = m.mix(flesh, skin_col, is_skin)
     if dry:
         col = m.mix(col, (0.86, 0.85, 0.80), m.math('MULTIPLY', m.math('SUBTRACT', 1.0, is_skin), 0.45))
     # roughness + micro relief (cells slightly domed, starch grain)
     r_fl = m.map_range(m.noise(scale=900, detail=3, vector=P), 0.3, 0.7, 0.40, 0.60)
     rough = m.mixf(r_fl if not dry else 0.82, 0.86, is_skin)
-    nrm = m.bump(cell, strength=0.45, distance=0.000010)
-    nrm = m.bump(grain, strength=0.55, distance=0.000007, normal=nrm)
+    celld = m.voronoi(scale=8500, feature='SMOOTH_F1', smoothness=0.35, vector=P)
+    calm = m.map_range(m.noise(scale=600, detail=2, vector=P), 0.3, 0.7, 0.35, 1.0)
+    dome = m.math('MULTIPLY', m.map_range(celld, 0.0, 0.55, 1.0, 0.0), m.math('MULTIPLY', calm, m.math('SUBTRACT', 1.0, drop)))
+    nrm = m.bump(dome, strength=0.7, distance=0.000028)
+    nrm = m.bump(grain, strength=0.5, distance=0.000008, normal=nrm)
     kw = {}
     if not dry:
         # mucilage film: patchy, smeared along the knife strokes; tiny beads give the sparkle
@@ -91,12 +103,13 @@ def face_material(dry=False):
                       m.math('SUBTRACT', 1.0, is_skin))
         bead = m.map_range(m.voronoi(scale=5200, feature='F1', vector=P), 0.0, 0.30, 1.0, 0.0, smooth=True)
         bead = m.math('MULTIPLY', bead, m.map_range(m.noise(scale=1300, detail=2, vector=P), 0.52, 0.62))
-        cn = m.bump(m.noise(scale=21000, detail=2, roughness=0.6, vector=P), strength=0.35, distance=0.000005)
+        cn = m.bump(dome, strength=0.55, distance=0.000020)
         cn = m.bump(bead, strength=0.9, distance=0.000022, normal=cn)
-        kw = dict(coat=m.math('MULTIPLY', film, 0.85), coat_ior=1.36, coat_normal=cn,
-                  coat_roughness=m.map_range(streak, 0.2, 0.8, 0.16, 0.36))
+        film = m.math('MAXIMUM', m.math('MULTIPLY', film, 0.9), drop)
+        kw = dict(coat=film, coat_ior=1.38, coat_normal=cn,
+                  coat_roughness=m.mixf(m.map_range(streak, 0.2, 0.8, 0.10, 0.26), 0.035, drop))
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.45, normal=nrm,
-          sss=m.mixf(0.9, 0.25, is_skin), sss_radius=(1.0, 0.80, 0.52), sss_scale=0.0011, **kw)
+          sss=m.mixf(0.55, 0.2, is_skin), sss_radius=(1.0, 0.80, 0.52), sss_scale=0.00045, **kw)
     _MATS[key] = m
     return m
 
@@ -110,6 +123,18 @@ def rootlet_material():
     m.set(base_color=m.ramp(n, [(0.3, (0.10, 0.055, 0.028)), (0.75, (0.30, 0.20, 0.10))]), roughness=0.72,
           sss=0.25, sss_radius=(1.0, 0.5, 0.25), sss_scale=0.0002, normal=m.bump(n, 0.6, 0.00002))
     _MATS['root'] = m
+    return m
+
+
+def skin_material():
+    if 'skin' in _MATS:
+        return _MATS['skin']
+    m = C.Mat('yam_skin_bits')
+    P = m.coords('Object')
+    n = m.noise(scale=3000, detail=4, roughness=0.65, vector=P)
+    m.set(base_color=m.ramp(n, [(0.3, (0.035, 0.018, 0.009)), (0.75, (0.22, 0.14, 0.065))]), roughness=0.8,
+          normal=m.bump(n, 0.7, 0.00002))
+    _MATS['skin'] = m
     return m
 
 
@@ -138,8 +163,10 @@ def main():
     D.hero_face('yam_face', ol, info, fields, face_material(), n_max=D.n_max_for(args), fillet=0.00006, seed=args.seed)
     D.rootlets('yam_rootlets', ol, info, rootlet_material(), n=24, th_range=(-0.85, 0.85), length=(0.002, 0.009),
                radius=(0.00004, 0.00011), depth=(0.0002, 0.0016), rise=(-0.10, 0.50), seed=args.seed + 5)
-    C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    D.lights(info, tint=(0.82, 1.0, 0.93), key=0.50, fill=0.60, rim=0.9, top=0.25, sheen=0.6, sheen_size=0.6, sheen_az=-9, sheen_el=28)
+    D.flakes('yam_fray', ol, info, skin_material(), n=34, th_range=(-0.85, 0.85), width=(0.00015, 0.0006),
+             length=(0.00015, 0.0007), lift=(0.3, 1.4), curl=(-0.6, 1.2), z0=-0.00004, seed=args.seed + 9)
+    C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.2)
+    D.lights(info, tint=(0.82, 1.0, 0.93), key=0.42, fill=0.50, rim=0.9, top=0.15, sheen=1.6, sheen_size=0.6, sheen_az=-9, sheen_el=28)
     D.finish(args, SHOT)
 
 

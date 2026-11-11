@@ -67,10 +67,10 @@ def lotus_arrays(seed, half=False, nu=200, nv=300):
     seam = np.exp(-(dz / 0.022) ** 2) * (0.35 + 0.65 * C.smoothstep(1.6, 0.3, T)) * C.smoothstep(0.12, 0.3, tA)
     r = r - 0.010 * seam
     # thin red-brown seed-coat remnants (amount varies a lot from seed to seed)
-    amt = rng.choice([0.0, 0.0, 0.0, 0.25, 0.5, 1.0])
+    amt = {2: 0.35, 5: 1.0, 7: 0.15}.get(seed % 100, 0.0)                 # most seeds are fully skinned
     sk = S.norm01(C.fbm3(q * [0.9, 1.6, 1.6] + off + 40.0, 3, seed=seed + 40)) + 0.35 * np.exp(-(tA / 0.7) ** 2)
-    th = 1.25 - 0.55 * amt
-    skin = C.smoothstep(th, th + 0.07, sk) * (amt > 0)
+    th = 1.22 - 0.50 * amt
+    skin = C.smoothstep(th, th + 0.10, sk) * (amt > 0)
     r = r + 0.0045 * skin
     ee = 0.93
     X = a * np.sign(dx) * np.abs(dx) ** ee * r
@@ -168,7 +168,9 @@ def make_variants():
         v, f, attrs, hs = lotus_arrays(i, half=(i >= N_WHOLE))
         objs.append(C.mesh_from_arrays('lz%02d' % i, v, f, attrs=attrs, material=mat))
         shapes.append(hs)
-    return objs, shapes, [1.0] * N_WHOLE + [0.30] * N_HALF
+    w = [1.0] * N_WHOLE + [0.30] * N_HALF
+    w[5] = 0.5
+    return objs, shapes, w
 
 
 def main():

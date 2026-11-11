@@ -340,9 +340,9 @@ def petal_material():
     col = m.jitter(col, hue=0.008, saturation=0.15, value=0.07)
     rn = m.noise(scale=1300, detail=3, roughness=0.6, vector=P)
     rough = m.map_range(rn, 0.25, 0.75, 0.52, 0.80)
-    nrm = m.bump(vein, strength=0.7, distance=0.00006)
+    nrm = m.bump(vein, strength=1.0, distance=0.00011)
     crinkle = m.noise(scale=2300, detail=3, roughness=0.65, vector=P)
-    nrm = m.bump(crinkle, strength=0.55, distance=0.00009, normal=nrm)
+    nrm = m.bump(crinkle, strength=0.7, distance=0.00012, normal=nrm)
     nrm = m.micro_bump(scale=9000, strength=0.4, distance=0.00003, vector=P, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.30, sheen=0.30, sheen_roughness=0.5, normal=nrm)
     tcol = m.mix(col, (1.0, 0.89, 0.64), 1.0, blend='MULTIPLY')
@@ -379,14 +379,16 @@ def bract_material():
     stem, cut = inf.outputs[0], inf.outputs[1]
     P = m.per_instance_coords()
     n = m.noise(scale=900, detail=4, roughness=0.6, vector=P)
-    col = m.mix((0.165, 0.170, 0.060), (0.300, 0.255, 0.095), n)
-    col = m.mix(col, (0.52, 0.42, 0.24), m.map_range(pale, 0.15, 0.9, smooth=True))
+    col = m.mix((0.105, 0.110, 0.038), (0.215, 0.170, 0.060), n)
+    blot = m.noise(scale=260, detail=3, roughness=0.6, vector=P)
+    col = m.mix(col, (0.150, 0.085, 0.032), m.map_range(blot, 0.45, 0.75, 0.0, 0.8, smooth=True))
+    col = m.mix(col, (0.37, 0.27, 0.12), m.map_range(pale, 0.50, 1.0, smooth=True))
     col = m.mix(col, m.mix((0.25, 0.22, 0.10), (0.38, 0.31, 0.15), n), stem)
     col = m.mix(col, (0.62, 0.54, 0.36), cut)
     col = m.jitter(col, hue=0.015, saturation=0.15, value=0.15)
     fib = m.noise(scale=2600, detail=3, roughness=0.6, vector=m.mapping(P, scale=(1.0, 1.0, 0.3)))
-    m.set(base_color=col, roughness=m.map_range(n, 0.3, 0.7, 0.60, 0.82), specular=0.30, sheen=0.35,
-          sheen_roughness=0.5, normal=m.bump(fib, 0.6, 0.00006))
+    m.set(base_color=col, roughness=m.map_range(n, 0.3, 0.7, 0.60, 0.82), specular=0.25, sheen=0.10,
+          sheen_roughness=0.5, normal=m.bump(fib, 0.9, 0.00010))
     return m
 
 
