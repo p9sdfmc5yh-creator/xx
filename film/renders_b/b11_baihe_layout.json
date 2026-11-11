@@ -1,0 +1,32 @@
+{
+ "shot": "b11_baihe",
+ "layout": "wreath",
+ "frame_width_m": 0.5191692946220063,
+ "frame_height_m": 0.2920327282248786,
+ "items": [
+  "m07_baihe"
+ ],
+ "seed": 26,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.29073480498832355,
+  0.29073480498832355,
+  -0.17716652178975967,
+  0.17716652178975967
+ ],
+ "n_items": 476,
+ "layers_max": 1,
+ "heap_top_mm": 12.570509910583496,
+ "display_gain": 1.0,
+ "render_seconds": 92.5,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

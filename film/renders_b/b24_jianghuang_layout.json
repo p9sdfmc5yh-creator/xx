@@ -1,0 +1,40 @@
+{
+ "shot": "b24_jianghuang",
+ "layout": "glyph",
+ "frame_width_m": 1.1763706874920352,
+ "frame_height_m": 0.6617085117142698,
+ "items": [
+  "k10_jianghuang"
+ ],
+ "seed": 49,
+ "empty": false,
+ "text": "同",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.14,
+ "engine": "packed",
+ "px_per_m": 1639.8990128204725,
+ "stroke_width_m": 0.05244225365566143,
+ "stroke_items_wide": 3.3,
+ "block_m": [
+  0.46771172737084094,
+  0.48966429866855965
+ ],
+ "char_boxes": [
+  [
+   0.30121,
+   0.09,
+   0.69879,
+   0.82908
+  ]
+ ],
+ "align": 0.15191833892129647,
+ "n_items": 516,
+ "layers_max": 4,
+ "heap_top_mm": 14.387555122375488,
+ "display_gain": 1.0,
+ "render_seconds": 40.0,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

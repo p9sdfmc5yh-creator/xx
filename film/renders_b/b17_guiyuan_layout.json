@@ -1,8 +1,8 @@
 {
  "shot": "b17_guiyuan",
  "layout": "glyph",
- "frame_width_m": 1.7792610169221856,
- "frame_height_m": 1.0008343220187295,
+ "frame_width_m": 1.9410120184605664,
+ "frame_height_m": 1.0918192603840686,
  "items": [
   "k03_guiyuan"
  ],
@@ -12,12 +12,12 @@
  "font": "NotoSansCJKsc-Bold.otf",
  "thin": 0.2,
  "engine": "packed",
- "px_per_m": 1136.8893060569364,
- "stroke_width_m": 0.06684907633056217,
- "stroke_items_wide": 3.3,
+ "px_per_m": 1042.1485305521917,
+ "stroke_width_m": 0.07292626508788601,
+ "stroke_items_wide": 3.6,
  "block_m": [
-  0.7177479774439307,
-  0.7406173982938599
+  0.7829977935751972,
+  0.8079462526842107
  ],
  "char_boxes": [
   [
@@ -28,11 +28,11 @@
   ]
  ],
  "align": 0.0,
- "n_items": 449,
+ "n_items": 564,
  "layers_max": 2,
- "heap_top_mm": 60.090370178222656,
- "display_gain": 1.1246,
- "render_seconds": 188.1,
+ "heap_top_mm": 66.06934356689453,
+ "display_gain": 1.0,
+ "render_seconds": 40.8,
  "resolution": [
   1920,
   1080
