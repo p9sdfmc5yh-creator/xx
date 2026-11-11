@@ -90,7 +90,9 @@ def tmode(col):
 VAR_SLICE = dict(inst=0.10, hue=0.012, sat=0.12, mott=0.07, mott_mm=7.0, speck=0.07, speck_mm=0.9)
 VAR_BIG = dict(inst=0.10, hue=0.012, sat=0.10, mott=0.07, mott_mm=18.0, speck=0.05, speck_mm=3.0)
 VAR_WHITE = dict(inst=0.05, hue=0.004, sat=0.10, mott=0.04, mott_mm=6.0, speck=0.03, speck_mm=1.0)
-VARIATION = {'m01_shanyao': VAR_WHITE, 'm04_shengjiang': VAR_SLICE, 'k09_gancao': VAR_SLICE, 'k10_jianghuang': VAR_SLICE,
+VAR_YAM = dict(inst=0.06, hue=0.006, sat=0.15, mott=0.06, mott_mm=5.0, speck=0.05, speck_mm=0.8,
+               tint=[1.0, 0.90, 0.72], tint_amt=0.55, tint_mm=10.0)
+VARIATION = {'m01_shanyao': VAR_YAM, 'm04_shengjiang': VAR_SLICE, 'k09_gancao': VAR_SLICE, 'k10_jianghuang': VAR_SLICE,
              'm08_shanzha': VAR_SLICE, 'k16_lingzhi': VAR_BIG, 'k01_fuling': VAR_WHITE}
 
 SCENES = []

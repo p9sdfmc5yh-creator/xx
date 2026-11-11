@@ -1,0 +1,32 @@
+{
+ "shot": "b09_jupi",
+ "layout": "wreath",
+ "frame_width_m": 0.7848040695566214,
+ "frame_height_m": 0.4414522891255996,
+ "items": [
+  "m05_jupi"
+ ],
+ "seed": 24,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.44472230608208546,
+  0.44472230608208546,
+  -0.2730464158665746,
+  0.2730464158665746
+ ],
+ "n_items": 468,
+ "layers_max": 2,
+ "heap_top_mm": 51.100955963134766,
+ "display_gain": 1.0584,
+ "render_seconds": 104.4,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

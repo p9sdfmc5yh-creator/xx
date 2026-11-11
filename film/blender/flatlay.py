@@ -1731,7 +1731,30 @@ def macro_variation(objects, V):
                     L.new(inp.links[0].from_socket, hsv.inputs['Color'])
                 else:
                     hsv.inputs['Color'].default_value = inp.default_value
-                L.new(hsv.outputs['Color'], inp)
+                out_col = hsv.outputs['Color']
+                tint = V.get('tint')
+                if tint:
+                    # warm / stained patches: multiply by a tint whose strength follows a soft noise and
+                    # differs from instance to instance (chalk-white slices are never one flat white)
+                    tn = lin(noise(float(V.get('tint_mm', 9.0)), 2.0), 1.6, 0.5)           # ~0-1
+                    fac = N.new('ShaderNodeMath')
+                    fac.operation = 'MULTIPLY_ADD'
+                    L.new(tn, fac.inputs[0])
+                    fac.inputs[1].default_value = 0.65 * float(V.get('tint_amt', 0.5))
+                    ir = N.new('ShaderNodeMath')
+                    ir.operation = 'MULTIPLY'
+                    L.new(rgb.outputs[1], ir.inputs[0])
+                    ir.inputs[1].default_value = 0.55 * float(V.get('tint_amt', 0.5))
+                    L.new(ir.outputs[0], fac.inputs[2])
+                    fac.use_clamp = True
+                    mx = N.new('ShaderNodeMix')
+                    mx.data_type = 'RGBA'
+                    mx.blend_type = 'MULTIPLY'
+                    L.new(fac.outputs[0], mx.inputs['Factor'])
+                    L.new(out_col, mx.inputs['A'])
+                    mx.inputs['B'].default_value = (float(tint[0]), float(tint[1]), float(tint[2]), 1.0)
+                    out_col = mx.outputs['Result']
+                L.new(out_col, inp)
     return len(done)
 
 

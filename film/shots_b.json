@@ -295,13 +295,20 @@
    "note": "goji + jujube + chrysanthemum + lotus seed + longan + yam on slate-blue card",
    "variation": {
     "m01_shanyao": {
-     "inst": 0.05,
-     "hue": 0.004,
-     "sat": 0.1,
-     "mott": 0.04,
-     "mott_mm": 6.0,
-     "speck": 0.03,
-     "speck_mm": 1.0
+     "inst": 0.06,
+     "hue": 0.006,
+     "sat": 0.15,
+     "mott": 0.06,
+     "mott_mm": 5.0,
+     "speck": 0.05,
+     "speck_mm": 0.8,
+     "tint": [
+      1.0,
+      0.9,
+      0.72
+     ],
+     "tint_amt": 0.55,
+     "tint_mm": 10.0
     }
    }
   },
@@ -344,13 +351,20 @@
     "lengths_across": 20
    },
    "variation": {
-    "inst": 0.05,
-    "hue": 0.004,
-    "sat": 0.1,
-    "mott": 0.04,
-    "mott_mm": 6.0,
-    "speck": 0.03,
-    "speck_mm": 1.0
+    "inst": 0.06,
+    "hue": 0.006,
+    "sat": 0.15,
+    "mott": 0.06,
+    "mott_mm": 5.0,
+    "speck": 0.05,
+    "speck_mm": 0.8,
+    "tint": [
+     1.0,
+     0.9,
+     0.72
+    ],
+    "tint_amt": 0.55,
+    "tint_mm": 10.0
    }
   },
   {

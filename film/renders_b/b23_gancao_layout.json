@@ -1,0 +1,40 @@
+{
+ "shot": "b23_gancao",
+ "layout": "glyph",
+ "frame_width_m": 1.0836495968971411,
+ "frame_height_m": 0.6095528982546419,
+ "items": [
+  "k09_gancao"
+ ],
+ "seed": 48,
+ "empty": false,
+ "text": "同",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.14,
+ "engine": "packed",
+ "px_per_m": 1780.214872642305,
+ "stroke_width_m": 0.04830877514934671,
+ "stroke_items_wide": 3.399999999999999,
+ "block_m": [
+  0.430846866738941,
+  0.45106914470843495
+ ],
+ "char_boxes": [
+  [
+   0.30121,
+   0.09,
+   0.69879,
+   0.82908
+  ]
+ ],
+ "align": 0.007901800595279734,
+ "n_items": 614,
+ "layers_max": 4,
+ "heap_top_mm": 12.757555961608887,
+ "display_gain": 1.0,
+ "render_seconds": 43.4,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
