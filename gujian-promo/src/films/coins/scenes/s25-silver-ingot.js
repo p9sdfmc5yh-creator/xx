@@ -218,11 +218,29 @@ function buildIngot(env) {
         let dif = hv * 0.9 + 0.2; dif = dif < 0 ? 0 : dif > 0.6 ? 0.6 : dif;
         const sheen = dif * 30 + 10 * sstep(0.78, 0.36, s) + (fn > 0.6 ? (fn - 0.6) * 24 : 0);
         br += sheen; bg += sheen * 0.95; bb += sheen * 1.12;
+        // the skin of the tarnish: drawn-out wrinkles that each catch a thread of light, and a slow drift of temper colour
+        const body = sstep(0.04, 0.22, s) * sstep(1, 0.84, s);
+        const wr = 1 - Math.abs(nA.n2(U / 52 + 13, dC / 6.5 + 2.5)), w2 = wr * wr, w6 = w2 * w2 * w2;
+        const irid = nB.n2(U / 150 + 40, dC / 52 + 6);
+        const lus = body * w6 * (8 + 34 * dif);
+        br += lus * (1 + 0.3 * irid) + 5 * irid * body; bg += lus * 0.94; bb += lus * (1.22 - 0.3 * irid) - 4 * irid * body;
         const rim = sstep(-0.35, -1.0, hv) * sstep(0.7, 0.97, s);         // the silver below bounces pink into the underside
         br += 110 * rim; bg += 30 * rim; bb += 88 * rim;
-        refl = sstep(0.27, 0.4, hv + 0.2 * ht + 0.03 * fn);
+        // a wet hairline where the lip curls under and meets the face (broken along its length, absent where a drip leaves)
+        if (fC > -8) {
+          const hl = sstep(-7, -3.8, fC) * sstep(-1, -2.8, fC) * (1 - bil(gM, gw, i / CS, j / CS)) * (0.2 + 0.34 * sstep(-0.25, 0.5, nB.n2(U / 46 + 70, 3.3)));
+          br += (238 - br) * hl; bg += (192 - bg) * hl; bb += (226 - bb) * hl;
+        }
+        const rs = hv + 0.2 * ht + 0.03 * fn;
+        refl = sstep(0.27, 0.4, rs);
+        // gloss falloff: beside the mirror line the wet black goes steel-violet before it goes black
+        const g2 = sstep(0, 0.3, rs), gk = 0.28 * g2 * g2;
+        br += (108 - br) * gk; bg += (98 - bg) * gk; bb += (122 - bb) * gk;
         const hot = sstep(0.4, 1.2, hv), lb = prof(LB, U);
         let lr = (186 + 69 * hot) * lb, lg = (179 + 76 * hot) * lb, lbb = (196 + 59 * hot) * lb;
+        // inside the mirror line: fine drawn hairlines of the lip's own grain, a shade cooler than the silver
+        const st = nA.n2(U / 240 + 21, dC / 2.9 + 5), sk = st > 0 ? st * 0.11 : 0;
+        lr *= 1 - sk; lg *= 1 - sk * 1.15; lbb *= 1 - sk * 0.7;
         if (hv > 2.4) { const e = 0.3 * sstep(2.4, 4.2, hv); lr += (232 - lr) * e; lg += (190 - lg) * e; lbb += (216 - lbb) * e; }   // grazing edge picks up the paper's colour
         br += (lr - br) * refl; bg += (lg - bg) * refl; bb += (lbb - bb) * refl;
         const wc = fC <= -1.2 ? 1 : sstep(1.2, -1.2, fC);

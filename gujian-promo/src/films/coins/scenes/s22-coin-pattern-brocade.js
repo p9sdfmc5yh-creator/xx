@@ -33,6 +33,7 @@ const STITCH = -48;                   // dr of the row of running stitches
 const QX = 5.0, QY = 4.6;             // warp / weft pitch of the homespun
 const TILT_I = 0.032;
 
+const FIL = 9;                        // fillet of the smooth union where rings meet (px)
 const PETAL = 0, FACE = 1, GOLD = 2, HOLE = 3;   // PETAL = the vermilion ground weave
 let S = null;
 
@@ -79,14 +80,17 @@ function patternAt(u, v) {
   const m = Math.max(Math.abs(ra), Math.abs(rb));
   if (m < SQ / 2) return m > SQ / 2 - SQB ? GOLD : HOLE;
   const i0 = Math.floor(a), j0 = Math.floor(b);
-  let inside = 0, ring = false;
+  // the four rings are joined with a smooth union: where two bands meet, cross or part, the acute notch between
+  // them is closed by a small fillet, so the junction flows instead of ending in one-thread slivers
+  let inside = 0, e = 1e9;
   for (let k = 0; k < 4; k++) {
     const du = (a - i0 - (k & 1)) * D, dv = (b - j0 - (k >> 1)) * D;
     const dist = Math.sqrt(du * du + dv * dv);
-    if (Math.abs(dist - RC) < BW / 2) ring = true;
+    const ek = Math.abs(dist - RC), h = FIL - Math.abs(e - ek);
+    e = Math.min(e, ek) - (h > 0 ? (h * h) / (4 * FIL) : 0);
     if (dist < RC) inside++;
   }
-  return ring ? GOLD : inside >= 2 ? PETAL : FACE;
+  return e < BW / 2 ? GOLD : inside >= 2 ? PETAL : FACE;
 }
 
 // ───────────────────────── brocade (per pixel) ─────────────────────────
@@ -108,6 +112,15 @@ function buildBrocade(env) {
   const NI = I1 - I0 + 1, NJ = J1 - J0 + 1;
   const CLS = new Uint8Array(NI * NJ);
   for (let j = 0; j < NJ; j++) for (let i = 0; i < NI; i++) CLS[j * NI + i] = patternAt((I0 + i + 0.5) * PX, (J0 + j + 0.5) * PY);
+  // tidy the draft the way a pattern-drafter does: no stray single crossing, no one-cell tooth on an outline
+  {
+    const C0 = CLS.slice();
+    for (let j = 1; j < NJ - 1; j++) for (let i = 1; i < NI - 1; i++) {
+      const o = j * NI + i, c = C0[o], l = C0[o - 1], rr = C0[o + 1], up = C0[o - NI], dn = C0[o + NI];
+      if ((l === c) + (rr === c) + (up === c) + (dn === c) > 1) continue;
+      if (l === rr && l !== c) CLS[o] = l; else if (up === dn && up !== c) CLS[o] = up;
+    }
+  }
   const clsAt = (u, v) => CLS[(Math.floor(v / PY) - J0) * NI + Math.floor(u / PX) - I0];
 
   const RED = lut([[0, '#300604'], [0.2, '#64100b'], [0.4, '#9e2014'], [0.55, '#c8321f'], [0.72, '#da3b21'], [0.9, '#ea4d2a'], [1.1, '#f86c40'], [1.5, '#ffb48e']]);
@@ -324,16 +337,37 @@ function stitchList(env) {
   const out = [];
   let s = -span * R + r.range(0, 20);
   while (s < span * R) {
-    const len = r.range(27, 37), gap = r.range(15, 21);
-    const p0 = a.pt(s / R, STITCH + r.range(-2, 2)), p1 = a.pt((s + len) / R, STITCH + r.range(-2, 2));
-    out.push({ p0, p1, w: r.range(6.4, 7.6), tone: r.range(-0.1, 0.12) });
+    // hand sewing: no two stitches the same length, none dead level, none dead straight
+    const len = r.range(25, 38), gap = r.range(14, 22);
+    const p0 = a.pt(s / R, STITCH + r.range(-2.5, 2.5)), p1 = a.pt((s + len) / R, STITCH + r.range(-2.5, 2.5));
+    out.push({ p0, p1, w: r.range(6.2, 7.7), tone: r.range(-0.1, 0.12), bow: r.range(-1.5, 1.5), ph: r.range(1.5, 4.5), tw: r.range(3.3, 4.0) });
     s += len + gap;
   }
   return out;
 }
 /** running stitches in indigo cotton thread, the same yarn as the cloth above */
 function drawStitches(g, list) {
-  g.save(); g.lineCap = 'round';
+  const r = L.rng('s22stitchfuzz');
+  // centre line: a shallow bow between the two needle holes
+  const at = (t, k) => {
+    const dx = t.p1.x - t.p0.x, dy = t.p1.y - t.p0.y, len = Math.hypot(dx, dy), b = t.bow * 4 * k * (1 - k);
+    return [t.p0.x + dx * k - (dy / len) * b, t.p0.y + dy * k + (dx / len) * b];
+  };
+  // half width along the stitch: full where the thread rides over the cloth, pinched where it dives into its hole
+  const hwAt = (t, k) => 0.5 * t.w * (0.46 + 0.54 * Math.pow(Math.sin(Math.PI * k), 0.42));
+  const ribbon = (t, ws, ox, oy, k0, k1) => {
+    const dx = t.p1.x - t.p0.x, dy = t.p1.y - t.p0.y, len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
+    const N = 16, up = [], dn = [];
+    for (let i = 0; i <= N; i++) {
+      const k = k0 + ((k1 - k0) * i) / N, c = at(t, k), hw = hwAt(t, k) * ws;
+      up.push([c[0] - nx * hw + ox, c[1] - ny * hw + oy]); dn.push([c[0] + nx * hw + ox, c[1] + ny * hw + oy]);
+    }
+    g.beginPath(); g.moveTo(up[0][0], up[0][1]);
+    for (let i = 1; i <= N; i++) g.lineTo(up[i][0], up[i][1]);
+    for (let i = N; i >= 0; i--) g.lineTo(dn[i][0], dn[i][1]);
+    g.closePath();
+  };
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
   // needle holes and the little dent each stitch presses into the brocade
   for (const t of list) {
     for (const p of [t.p0, t.p1]) {
@@ -345,20 +379,40 @@ function drawStitches(g, list) {
   }
   for (const t of list) {
     const dx = t.p1.x - t.p0.x, dy = t.p1.y - t.p0.y, len = Math.hypot(dx, dy), ux = dx / len, uy = dy / len, nx = -uy, ny = ux;
-    g.strokeStyle = L.shade('#0b1a30', t.tone * 0.4); g.lineWidth = t.w;
-    g.beginPath(); g.moveTo(t.p0.x, t.p0.y); g.lineTo(t.p1.x, t.p1.y); g.stroke();
-    g.strokeStyle = L.shade('#28507f', t.tone); g.lineWidth = t.w * 0.66;
-    g.beginPath(); g.moveTo(t.p0.x + ux, t.p0.y - 0.9 + uy); g.lineTo(t.p1.x - ux, t.p1.y - 0.9 - uy); g.stroke();
-    // two-ply twist
+    // the thread: dark underside, lit body riding a little high (lamp upper-left)
+    const dark = L.shade('#0b1a30', t.tone * 0.4);
+    g.fillStyle = dark; g.strokeStyle = dark; g.lineWidth = 1.2; ribbon(t, 1, 0, 0, 0, 1); g.fill(); g.stroke();
+    g.fillStyle = L.shade('#2b568a', t.tone); ribbon(t, 0.7, 0, -0.8, 0.035, 0.965); g.fill();
+    g.fillStyle = L.rgba(L.shade('#3d689c', t.tone), 0.55); ribbon(t, 0.34, -nx * t.w * 0.1, -ny * t.w * 0.1 - 0.9, 0.1, 0.9); g.fill();
+    // two-ply twist: dark grooves between the plies, a glint on the crown of each ply — never one unbroken line
     g.lineCap = 'butt';
-    for (let s = 3; s < len - 2; s += 3.6) {
-      const px = t.p0.x + ux * s, py = t.p0.y + uy * s;
-      g.strokeStyle = 'rgba(6,14,30,0.6)'; g.lineWidth = 1.2;
-      g.beginPath(); g.moveTo(px - ux * 1.7 + nx * t.w * 0.4, py - uy * 1.7 + ny * t.w * 0.4); g.lineTo(px + ux * 1.7 - nx * t.w * 0.4, py + uy * 1.7 - ny * t.w * 0.4); g.stroke();
+    let idx = 0;
+    for (let s = t.ph; s < len - 1.5; s += t.tw, idx++) {
+      const k = s / len, c = at(t, k), hw = hwAt(t, k);
+      g.strokeStyle = 'rgba(6,14,30,0.5)'; g.lineWidth = 1.1;
+      g.beginPath(); g.moveTo(c[0] - ux * 1.7 + nx * hw * 0.82, c[1] - uy * 1.7 + ny * hw * 0.82); g.lineTo(c[0] + ux * 1.7 - nx * hw * 0.82, c[1] + uy * 1.7 - ny * hw * 0.82); g.stroke();
     }
     g.lineCap = 'round';
-    g.strokeStyle = 'rgba(142,176,224,0.8)'; g.lineWidth = 1.6;
-    g.beginPath(); g.moveTo(t.p0.x + ux * 4 - nx * t.w * 0.2, t.p0.y + uy * 4 - ny * t.w * 0.2 - 0.6); g.lineTo(t.p1.x - ux * 5 - nx * t.w * 0.2, t.p1.y - uy * 5 - ny * t.w * 0.2 - 0.6); g.stroke();
+    idx = 0;
+    for (let s = t.ph + t.tw * 0.5; s < len - 3.5; s += t.tw, idx++) {
+      if (s < 3.5) continue;
+      const k = s / len, c = at(t, k), hw = hwAt(t, k), al = 0.3 + 0.6 * hash2(idx, (t.p0.x * 7) | 0);
+      g.strokeStyle = `rgba(150,182,226,${al.toFixed(3)})`; g.lineWidth = 1.35;
+      g.beginPath(); g.moveTo(c[0] - ux * 0.8 - nx * hw * 0.22, c[1] - uy * 0.8 - ny * hw * 0.22 - 0.5); g.lineTo(c[0] + ux * 0.8 - nx * hw * 0.52, c[1] + uy * 0.8 - ny * hw * 0.52 - 0.5); g.stroke();
+    }
+    // the ends sink into the cloth: they darken toward the holes
+    g.fillStyle = L.linear(g, t.p0.x, t.p0.y, t.p1.x, t.p1.y, [[0, 'rgba(5,10,22,0.62)'], [0.14, 'rgba(5,10,22,0)'], [0.86, 'rgba(5,10,22,0)'], [1, 'rgba(5,10,22,0.62)']]);
+    ribbon(t, 1, 0, 0, 0, 1); g.fill();
+    // cotton is hairy: a few fibres stand off the thread
+    const nf = 2 + ((r() * 3) | 0);
+    for (let i = 0; i < nf; i++) {
+      const k = r.range(0.12, 0.88), c = at(t, k), side = r.chance(0.6) ? -1 : 1, hw = hwAt(t, k) * 0.8;
+      const ph = r.range(0.25, 1.1), f = r.chance(0.5) ? 1 : -1, l2 = r.range(3, 7.5);
+      const x0 = c[0] + side * nx * hw, y0 = c[1] + side * ny * hw;
+      const dirx = ux * f * Math.cos(ph) + side * nx * Math.sin(ph), diry = uy * f * Math.cos(ph) + side * ny * Math.sin(ph);
+      g.strokeStyle = `rgba(128,162,212,${r.range(0.28, 0.55).toFixed(3)})`; g.lineWidth = r.range(0.5, 0.85);
+      g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo(x0 + dirx * l2 * 0.5 + r.range(-1.2, 1.2), y0 + diry * l2 * 0.5 + r.range(-1.2, 1.2), x0 + dirx * l2, y0 + diry * l2); g.stroke();
+    }
   }
   g.restore();
 }
@@ -388,7 +442,8 @@ function drawFringe(g, env) {
       const s = -span * R + ((i + r.range(-0.45, 0.45)) / n) * 2 * span * R, th = s / R;
       const inText = Math.abs(a.pt(th, 0).x - a.cx) < 350;
       // clumps: neighbours lean together, and whole tufts are shorter or longer
-      const clump = (vn(s * 0.027 + 7.7, 3.3) - 0.5) * 0.9, tuft = 0.7 + 0.6 * vn(s * 0.019 + 1.1, 8.8);
+      const clump = (vn(s * 0.027 + 7.7, 3.3) - 0.5) * 0.9 + (vn(s * 0.13 + 2.2, 5.5) - 0.5) * 0.35;
+      const tuft = 0.56 + 0.56 * vn(s * 0.019 + 1.1, 8.8) + 0.34 * vn(s * 0.12 + 4.4, 1.7);
       let len = front ? (12 + 15 * Math.pow(r(), 1.5)) * tuft : (8 + 9 * r()) * tuft;
       if (front && r.chance(0.04)) len += r.range(8, 20);
       if (inText) len = Math.min(len, 30);
@@ -396,22 +451,34 @@ function drawFringe(g, env) {
       const lean = -0.55 * th + clump + r.gauss() * (front ? 0.16 : 0.1);
       const root = EDGE - r.range(1, 9);
       const gold = front && r.chance(0.035);
-      out.push({ th, root, len: len + (EDGE - root), lean, bend: r.range(-0.4, 0.4), c: gold ? '#e3b341' : r.pick(front ? FRONT : BACK), w: gold ? 1.3 : front ? r.range(1.5, 2.9) : r.range(2.2, 3.6), fray: front && r.chance(0.35), z: r() });
+      out.push({ th, root, len: len + (EDGE - root), lean, bend: r.range(-0.4, 0.4), c: gold ? '#e3b341' : r.pick(front ? FRONT : BACK), w: gold ? 1.3 : front ? r.range(1.5, 2.9) : r.range(2.2, 3.6), fray: front && r.chance(0.35), z: r(),
+        // pulled out of the weave, a warp end keeps the crimp the picks pressed into it; a few hook over at the tip
+        cr: front ? r.range(0.35, 1.05) : r.range(0.2, 0.6), cf: (Math.PI * 2) / (PY * r.range(1.8, 2.5)), cp: r.range(0, 6.28),
+        curl: front && r.chance(0.14) ? r.range(-5.5, 5.5) : 0, lt: front ? r.range(0.18, 0.62) : 0 });
+    }
+    for (const t of out) {
+      const p = a.pt(t.th, t.root), cs = Math.cos(t.th), sn = Math.sin(t.th);
+      const ex = Math.tan(L.clamp(t.lean, -1, 1)) * t.len, ey = -t.len;
+      const mx = ex * 0.35 + t.bend * t.len * 0.3, my = ey * 0.55;
+      const n = Math.max(6, Math.ceil(t.len / 1.5)), P = [];
+      for (let i = 0; i <= n; i++) {
+        const k = i / n, k1 = 1 - k;
+        let lx = 2 * k1 * k * mx + k * k * ex, ly = 2 * k1 * k * my + k * k * ey;
+        const tx = 2 * k1 * mx + 2 * k * (ex - mx), ty = 2 * k1 * my + 2 * k * (ey - my), tl = Math.hypot(tx, ty) || 1;
+        const off = t.cr * sm(k * 3) * Math.sin(k * t.len * t.cf + t.cp) + t.curl * k * k * k;
+        lx += (-ty / tl) * off; ly += (tx / tl) * off;
+        P.push([p.x + lx * cs - ly * sn, p.y + lx * sn + ly * cs]);
+      }
+      t.P = P;
     }
     return out.sort((p, q2) => p.z - q2.z);
   };
   const back = make(false), front = make(true);
   const path = (t, ox, oy, k0 = 0) => {
-    const p = a.pt(t.th, t.root), cs = Math.cos(t.th), sn = Math.sin(t.th);
-    const ex = Math.tan(L.clamp(t.lean, -1, 1)) * t.len, ey = -t.len;
-    const mx = ex * 0.35 + t.bend * t.len * 0.3, my = ey * 0.55;
-    const toX = (lx, ly) => p.x + lx * cs - ly * sn + ox, toY = (lx, ly) => p.y + lx * sn + ly * cs + oy;
-    g.beginPath();
-    if (k0 > 0) {   // only the outer part of the thread (de Casteljau split of the quadratic at k0)
-      const ax = mx * k0, ay = my * k0, bx = mx + (ex - mx) * k0, by = my + (ey - my) * k0, sx = ax + (bx - ax) * k0, sy = ay + (by - ay) * k0;
-      g.moveTo(toX(sx, sy), toY(sx, sy)); g.quadraticCurveTo(toX(bx, by), toY(bx, by), toX(ex, ey), toY(ex, ey));
-    } else { g.moveTo(toX(0, 0), toY(0, 0)); g.quadraticCurveTo(toX(mx, my), toY(mx, my), toX(ex, ey), toY(ex, ey)); }
-    return [toX(ex, ey), toY(ex, ey), Math.atan2(toY(ex, ey) - toY(mx, my), toX(ex, ey) - toX(mx, my))];
+    const P = t.P, n = P.length - 1, i0 = Math.min(n - 2, Math.round(k0 * n));
+    g.beginPath(); g.moveTo(P[i0][0] + ox, P[i0][1] + oy);
+    for (let i = i0 + 1; i <= n; i++) g.lineTo(P[i][0] + ox, P[i][1] + oy);
+    return [P[n][0] + ox, P[n][1] + oy, Math.atan2(P[n][1] - P[n - 2][1], P[n][0] - P[n - 2][0])];
   };
   g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
   // shadows the fringe drops on the cotton (lamp upper-left → they fall down-right, so only a short smear shows)
@@ -428,7 +495,7 @@ function drawFringe(g, env) {
     g.strokeStyle = L.rgba(L.shade(t.c, -0.35), 0.55); g.lineWidth = t.w + 0.8; path(t, 0.5, 0.5); g.stroke();
     g.strokeStyle = t.c; g.lineWidth = t.w; const tip = path(t, 0, 0); g.stroke();
     // the loose end splays and scatters more light than the tight root
-    g.strokeStyle = L.rgba(lighter(t.c), 0.55); g.lineWidth = t.w * 0.9; path(t, 0, 0, 0.5); g.stroke();
+    g.strokeStyle = L.rgba(lighter(t.c), t.lt); g.lineWidth = t.w * 0.9; path(t, 0, 0, 0.5); g.stroke();
     g.strokeStyle = L.rgba(lighter(t.c), 0.7); g.lineWidth = Math.max(0.6, t.w * 0.3); path(t, -0.5, -0.3, 0.15); g.stroke();
     if (t.fray) {
       for (let k = 0; k < 3; k++) {
@@ -437,6 +504,16 @@ function drawFringe(g, env) {
         g.beginPath(); g.moveTo(tip[0], tip[1]); g.lineTo(tip[0] + Math.cos(an) * l2, tip[1] + Math.sin(an) * l2); g.stroke();
       }
     }
+  }
+  // loose silk filaments worked free of the yarns: a soft, irregular halo over the fringe (kept short under the caption)
+  for (let i = 0; i < 300; i++) {
+    const th = r.range(-span, span), p = a.pt(th, EDGE + r.range(-2, 9));
+    const inText = Math.abs(p.x - a.cx) < 350;
+    const len = inText ? r.range(7, 18) : r.range(9, 30), an = -Math.PI / 2 - 0.55 * th + r.gauss() * 0.6;
+    const ex = p.x + Math.cos(an) * len, ey = p.y + Math.sin(an) * len, bd = r.range(-0.35, 0.35) * len;
+    g.strokeStyle = L.rgba(r.pick(['#ffb69a', '#f48a68', '#ffd2ba', '#ee6c4a', '#e3b341']), r.range(0.22, 0.55)); g.lineWidth = r.range(0.45, 0.8);
+    g.beginPath(); g.moveTo(p.x, p.y);
+    g.quadraticCurveTo((p.x + ex) / 2 - Math.sin(an) * bd, (p.y + ey) / 2 + Math.cos(an) * bd, ex + r.range(-2, 2), ey + r.range(-1, 2)); g.stroke();
   }
   g.restore();
 }

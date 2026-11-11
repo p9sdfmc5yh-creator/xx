@@ -173,36 +173,51 @@ function buildShell(env) {
         // ───── the aperture (齿口): a dark slit, a porcelain lip either side, a row of fine teeth on each lip ─────
         const ax = x - SL.x, ay = y - SL.y, lx = ax * SL.c + ay * SL.s, lyr = -ax * SL.s + ay * SL.c;
         if (lx > -SL.rx - 70 && lx < SL.rx + 70 && lyr > -250 && lyr < 250) {
-          const un = lx / SL.rx, tw = cl(1 - un * un), endF = sstep(0, 0.1, tw);
+          const un = lx / SL.rx, tw = cl(1 - un * un), endF = sstep(0.04, 0.4, tw);   // the teeth die away well before either tip
           const ly = lyr + 54 * un * un - 18, up = ly < 0, ad = up ? -ly : ly;     // the slit bows gently
-          const ph = lx / (up ? 43 : 37) + (up ? 0.13 : 0.61) + 0.22 * nH.n2(lx / 140 + (up ? 3 : 17), 0.5);
-          const wear = 0.72 + 0.28 * nH.n2(Math.floor(ph + 0.5) * 3.17 + (up ? 0 : 50), 7.7);   // each tooth worn differently
-          const rg = 0.5 + 0.5 * Math.cos(L.TAU * ph);                                  // 1 on a tooth crest, 0 in the groove
+          const pitch = up ? 43 : 37;
+          const ph = lx / pitch + (up ? 0.13 : 0.61) + 0.22 * nH.n2(lx / 140 + (up ? 3 : 17), 0.5);
+          const ti = Math.floor(ph + 0.5), fr = ph - ti, tt = Math.abs(fr) * 2;      // fr: across one tooth (−½ … ½); tt: 0 on the crest → 1 in the crease
+          const wear = 0.72 + 0.28 * nH.n2(ti * 3.17 + (up ? 0 : 50), 7.7);          // each tooth worn differently …
+          const tl = 0.86 + 0.26 * nH.n2(ti * 5.31 + (up ? 20 : 80), 2.2);           // … and a little longer or shorter than its neighbour
+          const hgt = 1 - Math.pow(tt, 2.4);                                         // a rounded tooth, a sharp crease between neighbours
           const half = (26 + 5 * nH.n2(lx / 210, 3.3)) * Math.pow(tw, 0.55) * sstep(0, 0.07, tw);
-          const dl = ad - (half - (up ? 10 : 13) * wear * endF * rg);                  // px outside the dark opening
-          const covD = cl(-dl / 1.4 + 0.5) * sstep(0, 0.012, tw), ts = 0.35 + 0.65 * Math.sqrt(tw);   // lip tapers to a point at each end
-          const GL = up ? 46 : 64, fl = (1 - sstep(4, GL, dl)) * wear * endF;
-          const lipK = (1 - sstep((up ? 40 : 58) * ts, (up ? 120 : 150) * ts, dl)) * sstep(0, 0.2, tw) * 0.86;
+          const dl = ad - (half - (up ? 10 : 13) * wear * endF * hgt);               // px outside the dark opening
+          const open = sstep(0, 18, half);                                            // 0 where the slit has closed to a mere crease
+          const covD = cl(-dl / 1.4 + 0.5) * sstep(0, 0.08, tw);
+          const ts = Math.pow(tw, 0.85);                                              // the lips narrow to a point together with the slit
+          const GL = (up ? 46 : 64) * tl * Math.min(1, 0.05 + 0.95 * ts), relief = (1 - sstep(GL * 0.45, GL, dl)) * endF;
+          // the callus margin: a definite, slightly wandering edge — not a glow
+          const edge = (up ? 66 : 92) * ts * (1 + 0.1 * nH.n2(lx / 85 + (up ? 40 : 60), 1.7) + 0.04 * nB.n2(lx / 23, up ? 2.5 : 6.5));
+          const bw = 6 + 12 * ts;
+          const lipK = (1 - sstep(edge - bw, edge + bw, dl)) * (1 - 0.25 * sstep(edge * 0.3, edge, dl)) * sstep(0, 0.1, tw) * 0.9;
           if (lipK > 0 || covD > 0) {
             // the lip: unpigmented porcelain, rolling over into the opening (upper lip turns from the light, lower lip catches it)
             const roll = 1 - sstep(0, up ? 26 : 16, dl);
-            const rsh = (up ? 1 - 0.42 * roll : 1 - 0.3 * (1 - sstep(0, 5, dl))) * (1 - 0.15 * Math.sin(L.TAU * ph) * fl);
-            let pr = 251 * (0.3 + 0.7 * SH[li]) * rsh, pg = 245 * (0.3 + 0.7 * SH[li + 1]) * rsh, pb = 229 * (0.3 + 0.7 * SH[li + 2]) * rsh;
-            // grooves between the teeth, packed with old dirt — deeper and darker toward the opening
-            const dirt = 0.6 + 0.4 * nA.n2(lx / 19 + 5, ly / 11);
-            const gk = cl((Math.pow(1 - rg, 12) * 0.98 + Math.pow(1 - rg, 2.2) * 0.2) * fl * dirt * 1.15), gd = 1 - sstep(0, 22, dl);
-            pr += (118 - 60 * gd - pr) * gk; pg += (66 - 38 * gd - pg) * gk; pb += (28 - 16 * gd - pb) * gk;
-            // each tooth crest carries a small wet glint near the opening (stronger on the lower, light-facing lip)
-            const gl = Math.pow(rg, 8) * (1 - sstep(2, up ? 16 : 28, dl)) * sstep(-1, 3, dl) * (up ? 0.16 : 0.42) * wear * endF;
+            const rk = sstep(0.1, 0.6, ts), rsh = up ? 1 - 0.42 * roll * rk : 1 - 0.3 * (1 - sstep(0, 5, dl)) * rk;
+            // every tooth is a rounded ridge lit from the left: its right flank and the crease beside it fall into warm shade
+            const shd = relief * (0.2 * sstep(-0.1, 0.9, fr * 2) + 0.2 * tt * tt * tt);
+            let pr = 251 * (0.3 + 0.7 * SH[li]) * rsh * (1 - 0.75 * shd), pg = 245 * (0.3 + 0.7 * SH[li + 1]) * rsh * (1 - shd), pb = 229 * (0.3 + 0.7 * SH[li + 2]) * rsh * (1 - 1.3 * shd);
+            // the groove between two teeth: a clean dark wedge packed with old dirt, widest at the opening, running out to a point
+            const gw = endF * 0.3 * Math.pow(cl(1 - Math.max(0, dl) / GL), 0.8);
+            if (gw > 0.004) {
+              const gk = cl(((tt - 1 + gw) * pitch * 0.5) / 1.2 + 0.5) * cl((gw * pitch * 0.5) / 0.8);
+              const dirt = 0.78 + 0.22 * nA.n2(lx / 19 + 5, ly / 11), gd = 1 - sstep(0, GL * 0.6, dl), ga = gk * dirt * (0.6 + 0.4 * gd);
+              pr += (126 - 76 * gd - pr) * ga; pg += (72 - 47 * gd - pg) * ga; pb += (32 - 21 * gd - pb) * ga;
+            }
+            // a clean specular line along each crest, on the side toward the light (stronger on the lower, light-facing lip)
+            const gl = Math.exp(-sq(((fr + 0.1) * pitch) / 2.6)) * sstep(1, 5, dl) * (1 - sstep(GL * 0.35, GL * 0.8, dl)) * (up ? 0.3 : 0.62) * wear * endF;
             pr += (255 - pr) * gl; pg += (252 - pg) * gl; pb += (244 - pb) * gl;
-            // a faint tea line of grime where the lip meets the glaze
-            const st = Math.exp(-sq((dl - (up ? 78 : 104) * ts) / 20)) * 0.22 * endF * (0.6 + 0.4 * nB.n2(lx / 60, 9.1));
+            // a faint tea line of grime lodged against the margin, on the glaze side
+            const st = Math.exp(-sq((dl - edge - 5) / 11)) * 0.2 * sstep(0.02, 0.25, tw) * (0.6 + 0.4 * nB.n2(lx / 60, 9.1));
             r += (TEA[0] * 0.9 - r) * st; g += (TEA[1] * 0.9 - g) * st; b += (TEA[2] * 0.9 - b) * st;
             r += (pr - r) * lipK; g += (pg - g) * lipK; b += (pb - b) * lipK;
             if (covD > 0) {
-              // inside: dark, the teeth running down into it as dim ridges
-              const dd = dl < 0 ? -dl : 0, deep = sstep(0, 10, dd), tin = rg * rg * Math.exp(-dd / 9) * 0.38 * wear * endF;
-              const kr = 32 - 13 * deep + (150 - 30) * tin, kg = 16 - 8 * deep + (108 - 15) * tin, kb = 8 - 4 * deep + (66 - 7) * tin;
+              // inside: dark, the teeth running down into it as dim ridges; toward the tips only a shallow brown crease
+              const dd = dl < 0 ? -dl : 0, deep = sstep(0, 10, dd), tin = hgt * hgt * Math.exp(-dd / 7) * 0.34 * wear * endF;
+              let kr = 32 - 13 * deep + 120 * tin, kg = 16 - 8 * deep + 93 * tin, kb = 8 - 4 * deep + 59 * tin;
+              const sh = (1 - open) * 0.8;
+              kr += (128 - kr) * sh; kg += (72 - kg) * sh; kb += (32 - kb) * sh;
               r += (kr - r) * covD; g += (kg - g) * covD; b += (kb - b) * covD;
             }
           }

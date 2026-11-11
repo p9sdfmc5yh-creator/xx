@@ -319,6 +319,55 @@ function flask(P, a, o) {
       }
     });
   }
+  // the frame is of planks: on the front their seams and the grain of the wood, drawn in thin indigo line; a knot in one
+  // board with the grain parting round it, the arched figure of a flat-sawn plank in another
+  {
+    const FP = (u, v) => add(mid(A0, A1, u), up, v);
+    const seams = [0, 0.33 + r.range(-0.04, 0.04), 0.67 + r.range(-0.04, 0.04), 1];
+    const kb = o.knot === undefined ? 1 : o.knot, ab = (kb + 1 + (r.chance(0.5) ? 1 : 0)) % 3;
+    P.within(front, (g2) => {
+      for (let b = 0; b < 3; b++) {
+        const u0 = seams[b], bw = seams[b + 1] - u0, sd = o.seed.charCodeAt(0) * 0.37 + b * 5.3;
+        const knot = b === kb ? [u0 + bw * r.range(0.42, 0.58), r.range(0.38, 0.6)] : null;
+        const sway = (u, v) => {
+          let x = u + 0.02 * NZ.n2(v * 2.4 + sd, sd * 0.7) + 0.007 * NZ.n2(v * 7 + sd, 3.1 + u * 9);
+          if (knot) { const du = u - knot[0]; x += (du >= 0 ? 1 : -1) * 0.055 * Math.exp(-Math.pow((v - knot[1]) / 0.075, 2)) * Math.exp(-Math.abs(du) / 0.12); }
+          return x;
+        };
+        const us = b === ab ? [u0 + bw * 0.1, u0 + bw * 0.9] : [0, 1, 2, 3].map((i) => u0 + (bw * (i + 0.5 + r.range(-0.22, 0.22))) / 4);
+        for (const u of us) {
+          const va = r.range(0.02, 0.2), vb = r.range(0.8, 0.98), pts = [];
+          for (let q = 0; q <= 26; q++) { const v = lerp(va, vb, q / 26); pts.push(FP(sway(u, v), v)); }
+          brush(g2, pts, r.range(1.1, 1.5), { raw: true, head: 0.5, tail: 0.3, wob: 0.35, turn: 0, col: L.rgba(C.b4, r.range(0.36, 0.56)) });
+        }
+        if (knot) {
+          for (const [rx, ry, al] of [[0.05, 0.036, 0.6], [0.022, 0.016, 0.7]]) {
+            const pts = [];
+            for (let q = 0; q <= 16; q++) { const an = (q / 16) * L.TAU + 0.6; pts.push(FP(knot[0] + Math.cos(an) * rx, knot[1] + Math.sin(an) * ry)); }
+            brush(g2, pts, 1.3, { raw: true, head: 0.3, tail: 0.1, wob: 0.3, turn: 0, col: L.rgba(C.b4, al) });
+          }
+        }
+        if (b === ab) {
+          const uc = u0 + bw * r.range(0.46, 0.54), v0 = r.range(0.4, 0.5);
+          for (let m = 0; m < 3; m++) {
+            const hw = bw * (0.11 + 0.1 * m), ap = v0 + 0.055 * m, lg = 0.3 + 0.05 * m, pts = [];
+            for (let q = 0; q <= 28; q++) { const s2 = lerp(-1, 1, q / 28); const v = ap - lg * Math.pow(Math.abs(s2), 2.4); pts.push(FP(uc + hw * s2 + 0.012 * NZ.n2(v * 3 + sd, m * 2.2), v)); }
+            brush(g2, pts, r.range(1.1, 1.4), { raw: true, head: 0.4, tin: 0.12, tail: 0.25, wob: 0.35, turn: 0.2, col: L.rgba(C.b4, r.range(0.4, 0.56)) });
+          }
+        }
+      }
+      for (const u of seams.slice(1, 3)) brush(g2, [FP(u, 1), FP(u + r.range(-0.006, 0.006), 0.5), FP(u, 0)], 1.7, { head: 0.45, tail: 0.1, wob: 0.3, turn: 0, col: L.rgba(C.b5, 0.72) });
+    });
+    // the side board, turned from the light: a few runs of the same grain
+    const SD = (u, v) => add(mid(A1, R1, u), up, v);
+    P.within(side, (g2) => {
+      for (const u of [0.2, 0.36, 0.66, 0.84]) {
+        const va = r.range(0.03, 0.2), vb = r.range(0.8, 0.97), pts = [];
+        for (let q = 0; q <= 20; q++) { const v = lerp(va, vb, q / 20); pts.push(SD(u + 0.03 * NZ.n2(v * 2.4 + u * 11, 6.6), v)); }
+        brush(g2, pts, r.range(1.1, 1.4), { raw: true, head: 0.5, tail: 0.3, wob: 0.35, turn: 0, col: L.rgba(C.b5, r.range(0.3, 0.46)) });
+      }
+    });
+  }
   // ropes binding the two halves together
   const U = (p, fr) => add(p, up, fr);
   for (const fr of [0.24, 0.7]) {
@@ -471,28 +520,43 @@ function brickwork(P, a) {
   P.shade(wall, C.o3, 60, 0.4, 300, (g2) => poly(g2, row(bed(NC) + 40)));
   for (let i = 0; i < 7; i++) {
     const t = r.range(-sb * 0.7, sb * 0.7), len = r.range(120, 300), w = r.range(18, 44);
-    P.shade(wall, C.o4, 11, r.range(0.12, 0.2), w, (g2) => { for (let j = 0; j <= 10; j++) { const q = a.pt(t + 0.004 * NZ.n2(j * 0.3, i * 5.1), TOP - 4 - (len * j) / 10); if (j) g2.lineTo(q.x, q.y); else g2.moveTo(q.x, q.y); } });
+    P.shade(wall, C.o4, 11, r.range(0.07, 0.12), w, (g2) => { for (let j = 0; j <= 10; j++) { const q = a.pt(t + 0.004 * NZ.n2(j * 0.3, i * 5.1), TOP - 4 - (len * j) / 10); if (j) g2.lineTo(q.x, q.y); else g2.moveTo(q.x, q.y); } });
   }
   const joints = [];
   for (let c = 0; c < NC; c++) {
     const d0 = bed(c), d1 = bed(c + 1), Rm = a.R + (d0 + d1) / 2, dth = BL / Rm;
     const off = (c % 2 ? 0.5 : 0) + r.range(-0.07, 0.07);
     const n0 = Math.floor(-sb / dth) - 1, n1 = Math.ceil(sb / dth) + 1, cj = [];
-    for (let j = n0; j <= n1; j++) {
-      const ta = (j + off) * dth + r.range(-0.004, 0.004), tb = ta + dth;
-      cj.push(ta);
-      // a second coat on most bricks: no two took the colour alike
-      const u = r(), brick = [...row(d0, 8, ta, tb), ...row(d1, 8, ta, tb).reverse()];
-      if (u < 0.3) P.fill(brick, C.brD, r.range(0.28, 0.6));
-      else if (u < 0.52) P.fill(brick, C.brG, r.range(0.25, 0.5));
-      else if (u < 0.7) P.fill(brick, C.brL, r.range(0.35, 0.6));
-    }
+    for (let j = n0; j <= n1 + 1; j++) cj.push((j + off) * dth + r.range(-0.004, 0.004));
     joints.push(cj);
-    const band = [...row(d0), ...row(d1).reverse()];
-    // 分染: each course turns under into its bed joint; each brick into the upright joint on its shaded side
-    P.shade(band, C.o4, 7, 0.42, 20, (g2) => poly(g2, row(d1 + 5)));
-    P.shade(band, C.brL, 5, 0.5, 8, (g2) => poly(g2, row(d0 - 7)));
-    P.shade(band, C.o4, 5, 0.3, 12, (g2) => { for (const t of cj) { const p0 = a.pt(t, d0), p1 = a.pt(t, d1); g2.moveTo(p0.x - 6, p0.y); g2.lineTo(p1.x - 6, p1.y); } });
+    // 水色: every brick is one flat coat laid just short of the joints (a hair of the ground shows along the line), no two
+    // bricks alike; where the wash stopped it dried to a faint tide line, heavier on the side the colour pooled toward
+    const washes = [];
+    for (let j = 0; j < cj.length - 1; j++) {
+      const ta = cj[j], tb = cj[j + 1], u = r();
+      const col = u < 0.3 ? C.brD : u < 0.5 ? C.brG : u < 0.7 ? C.brL : u < 0.86 ? L.mix(C.br, C.o2, 0.4) : L.mix(C.brD, C.brG, 0.5);
+      const al = u < 0.3 ? r.range(0.3, 0.62) : u < 0.5 ? r.range(0.26, 0.5) : u < 0.7 ? r.range(0.35, 0.6) : r.range(0.22, 0.5);
+      const in0 = r.range(3.0, 4.4), da = in0 / Rm, rad = r.range(3, 5);
+      const cnr = (t, d) => { const q = a.pt(t, d); return [q.x + r.range(-0.8, 0.8), q.y + r.range(-0.8, 0.8)]; };
+      const tl = cnr(ta + da, d0 - in0), tm = cnr((ta + tb) / 2, d0 - in0), tr = cnr(tb - da, d0 - in0);
+      const br = cnr(tb - da, d1 + in0), bm = cnr((ta + tb) / 2, d1 + in0), bl = cnr(ta + da, d1 + in0);
+      const rm = mid(tr, br), lm = mid(bl, tl);
+      const path = (cont) => {
+        if (!cont) g.beginPath();
+        g.moveTo(tm[0], tm[1]); g.arcTo(tr[0], tr[1], rm[0], rm[1], rad); g.arcTo(br[0], br[1], bm[0], bm[1], rad); g.lineTo(bm[0], bm[1]);
+        g.arcTo(bl[0], bl[1], lm[0], lm[1], rad); g.arcTo(tl[0], tl[1], tm[0], tm[1], rad); g.closePath();
+      };
+      washes.push(path);
+      g.save(); g.globalAlpha = al; g.fillStyle = col; path(); g.fill();
+      g.clip(); g.translate(-0.7, -0.7); g.lineJoin = 'round';
+      g.globalAlpha = r.range(0.4, 0.6); g.strokeStyle = L.mix(col, C.o4, 0.55); g.lineWidth = 2.6; path(); g.stroke();
+      g.restore();
+    }
+    // 分染, sparingly: inside the coats only, a breath of tone where each brick turns under into its bed joint
+    g.save(); g.beginPath(); for (const wp of washes) wp(true); g.clip();
+    g.filter = 'blur(3px)'; g.globalAlpha = 0.15; g.strokeStyle = C.o4; g.lineWidth = 14; g.lineJoin = 'round';
+    g.beginPath(); poly(g, row(d1 + 11)); g.stroke();
+    g.restore();
   }
   // the hairs of the broad brush the coats were laid with, pulled along the courses
   P.within(wall, (g2) => {
@@ -507,14 +571,14 @@ function brickwork(P, a) {
     let t = -sb;
     while (t < sb) {
       const t1 = Math.min(sb, t + r.range(0.16, 0.34));
-      P.line(row(bed(c) + 1.2 * NZ.n2(t * 9, c * 3.3), Math.ceil(((t1 - t) * a.R) / 9), t, t1 + 0.004), r.range(2.2, 2.8), { raw: true, head: 0.35, tail: 0.03, wob: 0.32, turn: 0 });
+      P.line(row(bed(c) + 1.2 * NZ.n2(t * 9, c * 3.3), Math.ceil(((t1 - t) * a.R) / 9), t, t1 + 0.004), r.range(2.2, 2.8), { raw: true, head: 0.6, tail: 0.05, wob: 0.42, turn: 0 });
       t = t1;
     }
   }
   for (let c = 0; c < NC; c++) {
     for (const t of joints[c]) {
       const p0 = a.pt(t + r.range(-0.0006, 0.0006), bed(c) - 1), p1 = a.pt(t + r.range(-0.0006, 0.0006), bed(c + 1) + 1);
-      P.line([[p0.x, p0.y], [lerp(p0.x, p1.x, 0.5) + r.range(-1, 1), lerp(p0.y, p1.y, 0.5)], [p1.x, p1.y]], r.range(2.0, 2.6), { head: 0.55, tail: 0.06, wob: 0.3, turn: 0 });
+      P.line([[p0.x, p0.y], [lerp(p0.x, p1.x, 0.5) + r.range(-1, 1), lerp(p0.y, p1.y, 0.5)], [p1.x, p1.y]], r.range(2.0, 2.6), { head: 0.9, tail: 0.16, wob: 0.4, turn: 0 });
     }
   }
   // a few bricks have lost a corner or cracked: quick strokes of pale ink
@@ -650,11 +714,10 @@ export default {
     S = { sheet, glow, gx: x0, gy: y0 };
   },
   draw(ctx, env, p) {
-    const fi = Math.round(p * (env.frames - 1)), rr = L.rng('s14f' + fi);
     const rot = lerp(-0.0175, 0.0175, p);          // the leaf slides ~2° round the circle
     L.blit(ctx, env, S.sheet, { rot });
-    // the molten copper flickers
-    const fl = 0.55 + 0.45 * rr();
+    // the molten copper breathes: one slow, even swell of brightness over the shot, nothing frame-to-frame
+    const fl = 0.8 + 0.14 * Math.sin(p * Math.PI * 1.3 + 0.4);
     L.cam(ctx, env, { rot }, (c) => { c.globalCompositeOperation = 'screen'; c.globalAlpha = 0.62 * fl; c.drawImage(S.glow, S.gx, S.gy); });
     // copy-stand light: a touch brighter left of centre, falling off warm toward the corners
     ctx.save(); ctx.globalCompositeOperation = 'multiply';

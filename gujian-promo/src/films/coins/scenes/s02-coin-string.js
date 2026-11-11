@@ -35,16 +35,16 @@ const sstep = (a, b, v) => { let t = (v - a) / (b - a); t = t < 0 ? 0 : t > 1 ? 
 // kinds: B rubbed bright brass · H honey-toned · C chocolate patina · R redder alloy · G chocolate with verdigris
 // lean > 0: the foot of the coin swings to the right. The left half leans toward the slack spot, the right half too.
 const LEFT = [
-  [74, 'H', 2, 'soft', -0.105], [62, 'C', 4, 'round', -0.115], [82, 'B', -1, 'round', -0.12], [60, 'H', 2, 'flat', -0.13],
-  [72, 'R', 0, 'soft', -0.125], [66, 'G', 5, 'round', -0.16], [84, 'H', -2, 'round', -0.15], [58, 'B', 3, 'soft', -0.14],
-  [70, 'H', 0, 'round', -0.135], [78, 'C', -1, 'flat', -0.13], [62, 'B', 4, 'round', -0.1], [80, 'H', -2, 'soft', -0.115],
-  [66, 'B', 1, 'round', -0.135], [72, 'H', 2, 'soft', -0.155], [60, 'C', 3, 'round', -0.175], [70, 'B', -1, 'round', -0.2],
+  [78, 'H', 3, 'soft', -0.09], [54, 'C', 6, 'round', -0.135], [88, 'B', -2, 'round', -0.1], [58, 'H', 5, 'flat', -0.16],
+  [70, 'R', 0, 'soft', -0.115], [62, 'G', 7, 'round', -0.185], [90, 'H', -3, 'round', -0.135], [50, 'B', 6, 'soft', -0.165],
+  [74, 'H', 1, 'round', -0.12], [82, 'C', -2, 'flat', -0.15], [56, 'B', 6, 'round', -0.08], [86, 'H', -3, 'soft', -0.125],
+  [64, 'B', 4, 'round', -0.155], [76, 'H', 0, 'soft', -0.14], [52, 'C', 6, 'round', -0.195], [70, 'B', -1, 'round', -0.2],
 ];
 // — the string is slack here: these have swung round on the cord —
 const FAN = [[66, 'H', -2, 'soft', 0.18, HERO_YAW], [70, 'B', 1, 'round', 0.17, 22], [62, 'H', 0, 'soft', 0.16, 11], [76, 'C', 2, 'round', 0.15, 4]];
 const RIGHT = [
-  [68, 'B', 0, 'round', 0.14], [80, 'H', -2, 'soft', 0.13], [60, 'G', 4, 'round', 0.135], [74, 'B', 1, 'flat', 0.11], [66, 'H', 2, 'round', 0.12],
-  [84, 'C', -1, 'soft', 0.13], [62, 'B', 3, 'round', 0.1], [72, 'R', 0, 'soft', 0.105], [78, 'H', 1, 'round', 0.11], [64, 'B', 2, 'soft', 0.1],
+  [68, 'B', 0, 'round', 0.14], [86, 'H', -3, 'soft', 0.115], [54, 'G', 6, 'round', 0.16], [78, 'B', 0, 'flat', 0.095], [60, 'H', 5, 'round', 0.145],
+  [90, 'C', -2, 'soft', 0.12], [52, 'B', 6, 'round', 0.075], [74, 'R', 1, 'soft', 0.125], [84, 'H', -2, 'round', 0.095], [58, 'B', 4, 'soft', 0.12],
 ];
 const KIND = {
   B: { pat: 0.12, pv: 0.22, rough: 0.1, wear: 0.15, tint: [1.0, 0.78, 0.32], file: 0.9, lump: 0.7 },
@@ -174,6 +174,7 @@ function makeString() {
     };
     for (let k = r.int(0, 2); k > 0; k--) c.dents.push({ u: r.range(-0.8, 0.8) * w, v: r.range(30, 420), rad: r.range(10, 22), dep: r.range(1.2, 3.2) });
     if (yawDeg) {
+      c.rhL = t * 0.115; c.rwL = t * 0.4;                    // the arris toward the lens is worn to a long, low round
       // the face that shows: outer rim (外郭), plain field, inner rim (内郭) round the square hole
       c.af = c.a - c.rhL; c.rho1 = c.af - 0.168 * c.a; c.hh = 0.27 * c.a; c.wi = 15;
       const hr = r.range(0.06, 0.1) * r.sign(); c.hc = Math.cos(hr); c.hs = Math.sin(hr);
@@ -182,7 +183,19 @@ function makeString() {
     return c;
   };
   const left = LEFT.map(mk), fan = FAN.map(mk), right = RIGHT.map(mk);
-  const gapTop = (cl, cr) => r.range(2, 4.5) + Math.max(0, cl.L - cr.L) * 620;     // leaning apart at the top → a dark V between two beads
+  // individual wear, from a second generator: a band rubbed flat and bright, a chip knocked out of an arris, spots of verdigris
+  const r2 = L.rng('coins-s02-wear-a');
+  for (const c of left.concat(right)) {
+    c.flat = r2.chance(0.4) ? { u: r2.range(-0.45, 0.45) * c.w, wd: r2.range(6, 13), k: r2.range(0.35, 0.6) } : null;
+    c.vsp = !c.verd && r2.chance(0.36) ? r2.range(0.8, 0.9) : 0;
+    if (r2.chance(0.45)) c.dents.push({ u: r2.sign() * r2.range(0.72, 0.92) * c.w, v: r2.range(24, 260), rad: r2.range(5, 8.5), dep: r2.range(2.4, 3.8), chip: 1 });
+  }
+  for (let k = 0; k < fan.length; k++) {
+    const f = fan[k];
+    if (f.nick) { f.nick.dep *= 0.45; f.nick.wd *= 1.5; }       // a knock on a turned rim sits right on the silhouette: keep it shallow
+    f.grR = k ? 0.62 : 0.2; if (k) { f.rPat = 0.44; f.fPat = 0.86; }   // the half-hidden faces behind: more of the cast skin left, deeper toning
+  }
+  const gapTop = (cl, cr) => r.range(2, 4.5) + Math.max(0, cl.L - cr.L) * 620 + (r2.chance(0.35) ? r2.range(3, 9) : 0);     // leaning apart at the top → a dark V between two beads
   const link = (cl, cr, g) => { cl.gR0 = g; cl.gRk = cr.L - cl.L; cr.gL0 = g; cr.gLk = cr.L - cl.L; };
   // the turned coin first, then outward both ways
   const hero = fan[0], A = left[left.length - 1];
@@ -313,7 +326,7 @@ function renderString(arc) {
     gn(U / 64, V / 118); const m1 = gV; let hU = (c.lump * 1.3 * gX) / 64, hV = (c.lump * 1.3 * gY) / 118;      // uneven casting skin
     gn(U / 24 + 9.3, V / 40 - 3.1); const m2 = gV; hU += (c.lump * 0.6 * gX) / 24; hV += (c.lump * 0.6 * gY) / 40;
     gn(U / 5.3 - 7.7, V / 240 + 4.4); const st = gV; hU += (c.file * 0.34 * gX) / 5.3;                         // wear streaks running round the rim
-    let groove = 0;
+    let groove = 0, chip = 0;
     if (fine) {
       gn(U / 2.4 + 5.5, V / 130 + 2.2); hU += (c.file * 0.17 * gX) / 2.4; if (gV < 0) groove = -gV * c.file * 0.5;   // filing marks (锉痕)
       cell(U / 15, V / 15);
@@ -324,8 +337,10 @@ function renderString(arc) {
     }
     for (let n = 0; n < c.dents.length; n++) {
       const dn = c.dents[n], du = u - dn.u, dv = V0 - dn.v, i2 = 1 / (dn.rad * dn.rad), r2 = (du * du + dv * dv) * i2;
-      if (r2 < 4) { const e = dn.dep * Math.exp(-r2 * 1.2) * 2.4 * i2; hU += e * du; hV += e * dv; }
+      if (r2 < 4) { const e = dn.dep * Math.exp(-r2 * 1.2) * 2.4 * i2; hU += e * du; hV += e * dv; if (dn.chip) chip += Math.exp(-r2 * 2.2); }
     }
+    let flatK = 0;
+    if (c.flat) { const t = (u - c.flat.u) / c.flat.wd; flatK = Math.exp(-t * t) * sstep(-0.55, 0.3, m1 + 0.35 * st); hU *= 1 - 0.6 * flatK; hV *= 1 - 0.6 * flatK; flatK *= c.flat.k; }
     if (c.ridge !== 0) { const t = (u - c.ur) / 5; if (t > -3 && t < 3) hU -= 0.4 * t * c.ridge * Math.exp(-t * t) * (0.65 + 0.35 * m2); }
     hU *= fade; hV *= fade;
     // normal: across the thickness / up / toward the lens (coin frame), then the coin's yaw and lean
@@ -337,7 +352,7 @@ function renderString(arc) {
     const right = u > 0, gw = right ? c.gR0 + c.gRk * dp : c.gL0 + c.gLk * dp;         // width of the gap on this side, here
     const tight = (1 - sstep(4, 34, gw)) * sstep(0, 46, dp + 12);                      // shut in by the neighbour (not at the open top of a notch)
     const ew = xs > 0.02 && xs < 0.62 ? c.edgeWear * Math.sin(((xs - 0.02) / 0.6) * Math.PI) : 0;   // arrises rubbed bright by the neighbours
-    const P = c.pat + c.pv * (0.7 * st + 0.4 * m2) + 0.8 * groove + 0.4 * xs * xs * c.dirt - 0.55 * c.wear * sstep(0.05, 0.7, m1) * (1 - 0.5 * xs) - ew;
+    const P = c.pat + c.pv * (0.7 * st + 0.4 * m2) + 0.8 * groove + 0.4 * xs * xs * c.dirt - 0.55 * c.wear * sstep(0.05, 0.7, m1) * (1 - 0.5 * xs) - ew - flatK + 0.5 * chip;
     const occ = 1 - 0.85 * xs * xs * xs * tight;
     const ao = (1 - 0.72 * Math.pow(xs, 2.6) * tight) * (1 - 0.5 * (groove > 1 ? 1 : groove)) * deep;
     const grime = sstep(0.5, 1, xs) * c.dirt * 0.6 * tight;
@@ -347,6 +362,13 @@ function renderString(arc) {
       gn(U / 26 + 3, V / 40 + 9);
       verd = sstep(0.58, 0.72, gV * 0.5 + 0.5 + 0.5 * xs + 0.3 * Math.exp(-V0 / 210) + c.verd - 0.55);
       if (verd > 0) { gn(U / 6, V / 8); vn = gV * 0.5 + 0.5; }
+    } else if (c.vsp > 0) {
+      // … or only a few spots of it, sitting in the low places
+      cell(U / 21 + 31.7, V / 29 + 17.3);
+      if (cId > c.vsp) {
+        const rs = 0.035 + (0.1 * (cId - c.vsp)) / (1 - c.vsp), dc = cD1;
+        if (dc < rs * 1.6) { gn(U / 5 + 2, V / 7 - 4); vn = gV * 0.5 + 0.5; verd = (1 - sstep(rs * 0.4, rs, dc * (1 + 0.55 * gV))) * 0.8 * (1 - sstep(130, 290, V0)); }   // none far down, where they would blur into dots
+      }
     }
     finish(c, nx, ny, nz, P, occ, ao, grime, verd, vn, xcol);
   };
@@ -356,7 +378,12 @@ function renderString(arc) {
     const Rp = (recess(f, p + 0.8, q) - recess(f, p - 0.8, q)) / 1.6, Rq = (recess(f, p, q + 0.8) - recess(f, p, q - 0.8)) / 1.6;
     gn(p / 46 + f.su, q / 46 + f.sv); const b1 = gV; let Hp = (0.9 * gX) / 46 - Rp, Hq = (0.9 * gY) / 46 - Rq;
     let grain = 0;
-    if (fine) { gn(p / 4.6 + 3.3, q / 4.6 - 8.1); grain = gV; const ga = 0.36 * (1 - 0.8 * raised); Hp += (ga * gX) / 4.6; Hq += (ga * gY) / 4.6; }
+    if (fine) { gn(p / 4.6 + 3.3, q / 4.6 - 8.1); grain = gV; const ga = 0.36 * (1 - (1 - f.grR) * raised); Hp += (ga * gX) / 4.6; Hq += (ga * gY) / 4.6; }
+    let pit = 0;
+    if (fine && f.grR > 0.3) {                                                                                           // sand-cast pores
+      cell(p / 6.5 + f.sv, q / 6.5 + f.su);
+      if (cId > 0.55) { const rad = 0.1 + 0.2 * (cId - 0.55), r2 = rad * rad; if (cD1 < r2) { const fq = 1 - cD1 / r2, kq = (1.1 * fq) / (rad * 6.5); Hp += kq * cPx; Hq += kq * cPy; pit = fq; } }
+    }
     const e = rho - (f.af - 6); if (e > 0) { const k = (e / 6) * 0.9; Hp -= (k * p) / rho; Hq -= (k * q) / rho; }      // the worn outer edge rolls over
     let nx = -f.cyw - Hp * f.sy, ny = -Hq, nz = f.sy - Hp * f.cyw;
     const il = 1 / Math.sqrt(nx * nx + ny * ny + nz * nz); nx *= il; ny *= il; nz *= il;
@@ -368,8 +395,8 @@ function renderString(arc) {
     gn(p / 23 + f.sv, q / 31 - f.su); const mot = gV;
     gn(p / 6.5 - f.su, q / 6.5 + f.sv); const fleck = gV;
     const P = f.fPat + (f.rPat - f.fPat) * raised + 0.14 * b1 + (1 - raised) * (0.1 * grain + 0.12 * (foot > 1 ? 1 : foot))
-      + raised * (0.2 * ring + 0.16 * b1 + 0.36 * mot + 0.14 * fleck + 0.1);
-    const grime = (1 - raised) * 0.45 * (foot > 1 ? 1 : foot);
+      + raised * (0.2 * ring + 0.16 * b1 + 0.36 * mot + 0.14 * fleck + 0.1) + 0.3 * pit + (f.grR > 0.3 ? 0.22 * sstep(-0.1, 0.6, b1 - 0.6 * mot) : 0);
+    const grime = (1 - raised) * 0.45 * (foot > 1 ? 1 : foot) + 0.3 * pit;
     finish(f, nx, ny, nz, P, shade, deep * (0.86 + 0.14 * raised), grime, 0, 0, xcol);
   };
   /** the hemp cord: three twisted strands, fibres running along them */
@@ -391,7 +418,7 @@ function renderString(arc) {
 
   // ── fragments of one pixel ──
   const FZ = new Float64Array(16), FC = new Float64Array(16), FP = new Float64Array(16 * 8), FT = new Int8Array(16), FK = new Int16Array(16), ORD = new Int8Array(16);
-  const tanH = hero.sy / hero.cyw;
+  const NS = 14, GS = new Float64Array(NS + 1);
   for (let j = 0; j < LH; j++) {
     const ddy = cy - (Y0 + j + 0.5);
     for (let i = 0; i < LW; i++) {
@@ -440,21 +467,56 @@ function renderString(arc) {
         const f = fan[kf], dpf = d - f.dtop, X = s - f.s - f.L * dpf;
         if (X < -f.ext || X > f.ext) continue;
         const Y = f.a - dpf;
-        // the rim, where it comes round toward the lens
-        let aL = f.a - f.rhL, p = 0, tau = 0;
-        for (let it = 0; it < 3; it++) {
-          const pp = aL * aL - Y * Y; p = pp > 0 ? Math.sqrt(pp) : 0;
-          tau = (X - p * f.sy) / f.cyw;
-          profile(f, tau < -f.w ? -f.w : tau > f.w ? f.w : tau); aL = f.a - pDrop;
-        }
-        if (tau > -f.w - 1 && tau < f.w + 0.6) {
-          const sl = pSlope / f.cyw;
-          let cov = (aL - Y) / Math.sqrt(1 + (sl * sl > 9 ? 9 : sl * sl)) + 0.5;
-          const cs2 = (f.w - tau) * f.cyw + 0.5; if (cs2 < cov) cov = cs2; if (cov > 1) cov = 1;
-          if (cov > 0) {
-            const o = nf * 8;
-            FT[nf] = T_RIM; FK[nf] = -1 - kf; FZ[nf] = p * f.cyw - tau * f.sy; FC[nf] = cov;
-            FP[o] = tau; FP[o + 1] = Math.atan2(p, Y); FP[o + 2] = pSlope; FP[o + 3] = pXs; FP[o + 4] = dpf; nf++;
+        // the rim, where it comes round toward the lens. The crossing is found by scanning across the thickness and bisecting
+        // (stepping to a fixed point does not settle where a corner or a knock folds the surface over — that left combed
+        // edges); the limb, the two ends and the fold of the corner each give an analytic coverage
+        if (Y < f.a + 2) {
+          const stp = (2 * f.w) / NS, ics = 1 / f.sy;
+          let gMax = -1e9, gMin = 1e9, iMax = 0, gPrev = 0, pPrev = 0, zB = -1e9, iHit = -1, M = -1e9;
+          for (let it = 0; it <= NS; it++) {
+            const tt = -f.w + stp * it;
+            profile(f, tt);
+            const al0 = f.a - pDrop, pp = al0 * al0 - Y * Y, pq = pp > 0 ? Math.sqrt(pp) : 0, gg = tt * f.cyw + f.sy * pq - X;
+            GS[it] = gg;
+            const e = (X - tt * f.cyw) * ics; if (e >= 0) { const mm = al0 * al0 - e * e; if (mm > M) M = mm; }   // the near side only
+            if (gg > gMax) { gMax = gg; iMax = it; }
+            if (gg < gMin) gMin = gg;
+            if (it > 0 && gPrev > 0 !== gg > 0) { const zz = (pq + pPrev) * 0.5 * f.cyw - (tt - stp * 0.5) * f.sy + (pq > 0 || pPrev > 0 ? 1e4 : 0); if (zz > zB) { zB = zz; iHit = it - 1; } }
+            gPrev = gg; pPrev = pq;
+          }
+          if (gMin <= 0.5) {
+            let tau0 = X / f.cyw, sl0 = 0;
+            if (tau0 > -f.w && tau0 < f.w) { profile(f, tau0); const al0 = f.a - pDrop; if (al0 * al0 > M) M = al0 * al0; sl0 = pSlope / f.cyw; }
+            let cov = M > 0 ? (Math.sqrt(M) - Y) / Math.sqrt(1 + (sl0 * sl0 > 9 ? 9 : sl0 * sl0)) + 0.5 : 0;
+            if (gMax < 4 && gMax > -4 && iMax > 0 && iMax < NS) {
+              // close to the fold of the far corner: find its crest exactly, so the edge is smooth from row to row
+              let lo = -f.w + stp * (iMax - 1), hi = lo + 2 * stp;
+              for (let it = 0; it < 8; it++) {
+                const m1 = lo + (hi - lo) / 3, m2 = hi - (hi - lo) / 3;
+                profile(f, m1); let al0 = f.a - pDrop, pp = al0 * al0 - Y * Y; const g1 = m1 * f.cyw + (pp > 0 ? f.sy * Math.sqrt(pp) : 0) - X;
+                profile(f, m2); al0 = f.a - pDrop; pp = al0 * al0 - Y * Y; const g2 = m2 * f.cyw + (pp > 0 ? f.sy * Math.sqrt(pp) : 0) - X;
+                if (g1 > g2) { hi = m2; if (g1 > gMax) gMax = g1; } else { lo = m1; if (g2 > gMax) gMax = g2; }
+              }
+            }
+            if (gMax + 0.5 < cov) cov = gMax + 0.5;
+            if (0.5 - gMin < cov) cov = 0.5 - gMin;
+            if (cov > 1) cov = 1;
+            if (cov > 0) {
+              let tau;
+              if (iHit >= 0) {
+                let lo = -f.w + stp * iHit, hi = lo + stp; const sLo = GS[iHit] > 0;
+                for (let it = 0; it < 6; it++) {
+                  const mid = (lo + hi) * 0.5; profile(f, mid);
+                  const al0 = f.a - pDrop, pp = al0 * al0 - Y * Y, gg = mid * f.cyw + (pp > 0 ? f.sy * Math.sqrt(pp) : 0) - X;
+                  if (gg > 0 === sLo) lo = mid; else hi = mid;
+                }
+                tau = (lo + hi) * 0.5;
+              } else tau = gMax < 0 ? -f.w + stp * iMax : tau0 < -f.w ? -f.w : tau0 > f.w ? f.w : tau0;
+              profile(f, tau);
+              const aL = f.a - pDrop, pp = aL * aL - Y * Y, p = pp > 0 ? Math.sqrt(pp) : 0, o = nf * 8;
+              FT[nf] = T_RIM; FK[nf] = -1 - kf; FZ[nf] = p * f.cyw - tau * f.sy; FC[nf] = cov;
+              FP[o] = tau; FP[o + 1] = Math.atan2(p, Y); FP[o + 2] = pSlope; FP[o + 3] = pXs; FP[o + 4] = dpf; nf++;
+            }
           }
         }
         // the face that is turned to the lens: a plane, with a relief that the oblique ray is marched over

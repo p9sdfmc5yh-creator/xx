@@ -18,6 +18,8 @@ let S = null;
 
 const sm = (a, b, v) => { const t = L.clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
 const K0 = 'rgba(0,0,0,0)', K1 = 'rgba(0,0,0,1)';
+/** signed distance to a square of half side h whose corners are eased by radius q (negative inside) */
+const rbox = (x, y, h, q) => { const ax = Math.abs(x) - (h - q), ay = Math.abs(y) - (h - q); return Math.hypot(Math.max(ax, 0), Math.max(ay, 0)) + Math.min(Math.max(ax, ay), 0) - q; };
 
 /** one coin, shaded per pixel from a height field: raised outer rim, raised square inner rim, plain cast field, open square hole */
 function buildCoin(seed) {
@@ -25,18 +27,28 @@ function buildCoin(seed) {
   const nA = L.makeNoise('s36a' + seed), nB = L.makeNoise('s36b' + seed);
   const Hh = new Float32Array(N), Am = new Float32Array(N), Pt = new Float32Array(N), Ed = new Float32Array(N);
   const HR = 5.8, HI = 4.4;
+  // the far mouth of the hole sits a touch up-left of the near one (each coin hangs slightly off-axis), so the thickness
+  // of the flan shows as a thin lit wall along the hole's lower and right edges
+  const ox = [-2.1, -2.8, -1.7, -2.5, -1.9][seed % 5], oy = [-3.6, -3.0, -4.0, -3.3, -3.8][seed % 5];
+  const Wl = new Float32Array(N);
   for (let j = 0; j < SZ; j++) for (let i = 0; i < SZ; i++) {
     const k = j * SZ + i, x = i + 0.5 - c, y = j + 0.5 - c, r = Math.hypot(x, y), sq = Math.max(Math.abs(x), Math.abs(y));
     if (r > RC + 2) continue;
     const ux = x / (r || 1), uy = y / (r || 1);
     const ro = RC - 0.8 + 0.9 * nA.n2(ux * 2.4 + 5, uy * 2.4 - 3);   // a cast outline is never a perfect circle …
-    const hs = HS + 0.9 * nB.n2(x / 36 + 2, y / 36);                     // … nor the hole a perfect square
-    Am[k] = L.clamp(ro - r + 0.5) * L.clamp(sq - hs + 0.5);
-    if (Am[k] <= 0) continue;
-    const rimO = sm(RC - WR - 3.5, RC - WR + 3, r) * (1 - sm(ro - 6.5, ro + 0.5, r));
-    const rimI = (1 - sm(hs + WI - 3, hs + WI + 3, sq)) * sm(hs - 1.5, hs + 3, sq);
+    const hs = HS + 0.7 * nB.n2(x / 36 + 2, y / 36);                     // … nor the hole a perfect square
+    const dh = rbox(x, y, hs, 3.2);                                       // > 0 on the metal; the cut corners are very slightly eased
+    Am[k] = L.clamp(ro - r + 0.5) * L.clamp(dh + 0.5);
+    if (dh < 0.5) Wl[k] = L.clamp(0.5 - dh) * L.clamp(rbox(x - ox, y - oy, hs - 0.4, 2.4) + 0.5);
+    if (Am[k] <= 0 && dh < -4) continue;
+    // both rims: a flat worn top between two short, crisp chamfers; the inner rim keeps sharp mitred outer corners
+    const rimO = sm(RC - WR - 2.4, RC - WR + 2, r) * (1 - sm(ro - 5.4, ro + 0.3, r));
+    const rimI = (1 - sm(hs + WI - 2.8, hs + WI + 1.4, sq)) * sm(-0.6, 2.8, dh);
+    // the fine undercut where each rim meets the field
+    const cr = Math.exp(-(((r - (RC - WR - 3.6)) / 1.35) ** 2)) + Math.exp(-(((sq - (hs + WI + 2.6)) / 1.25) ** 2));
     const f1 = nA.fbm(x / 48, y / 48, 3), f2 = nB.n2(x / 3.1, y / 3.1), f3 = nB.n2(x / 11 + 9, y / 11 - 4);
-    Hh[k] = HR * rimO + HI * rimI + 0.85 * f1 + 0.04 * f2 + 0.12 * f3;
+    Hh[k] = HR * rimO + HI * rimI - 0.36 * cr + 0.85 * f1 + 0.04 * f2 + 0.12 * f3;
+    if (Am[k] <= 0) continue;
     Pt[k] = 0.75 * nA.fbm(x / 70 + 11, y / 70 + 7, 3) + 0.45 * nB.fbm(x / 21 - 5, y / 21 + 13, 3);
     Ed[k] = sm(ro - 5, ro - 0.8, r) * Math.pow(Math.max(0, -uy), 0.6);    // the top edge of the rim catches the back-light
   }
@@ -62,7 +74,18 @@ function buildCoin(seed) {
   const img = new ImageData(SZ, SZ), d = img.data;
   const at = (x, y) => { const i = Math.round(x), j = Math.round(y); return i < 0 || j < 0 || i >= SZ || j >= SZ ? 0 : Hh[j * SZ + i]; };
   for (let j = 1; j < SZ - 1; j++) for (let i = 1; i < SZ - 1; i++) {
-    const k = j * SZ + i; if (Am[k] <= 0) continue;
+    const k = j * SZ + i, wl = Wl[k]; if (Am[k] <= 0 && wl <= 0) continue;
+    const x = i + 0.5 - c, y = j + 0.5 - c, o = k * 4;
+    let wr = 0, wg = 0, wb = 0, wt = 0;
+    if (wl > 0) {
+      // the hole's wall: the lower one faces the light, the right one is in half-tone; both darken toward the far mouth
+      const bot = (y - HS - oy) * -ox > (x - HS - ox) * -oy;
+      const f = bot ? L.clamp((HS - y) / -oy) : L.clamp((HS - x) / -ox);
+      const wlum = (bot ? 0.7 - 0.36 * f : 0.47 - 0.25 * f) + 0.03 * nB.n2(x / 3.1, y / 3.1);
+      const wi = (L.clamp(wlum) * 511 | 0) * 3;
+      wr = lut[wi]; wg = lut[wi + 1]; wb = lut[wi + 2]; wt = wl / (Am[k] + wl);
+    }
+    if (Am[k] <= 0) { d[o] = wr; d[o + 1] = wg; d[o + 2] = wb; d[o + 3] = wl * 255; continue; }
     const gx = (Hh[k + 1] - Hh[k - 1]) * 0.5, gy = (Hh[k + SZ] - Hh[k - SZ]) * 0.5;
     const inv = 1 / Math.sqrt(gx * gx + gy * gy + 1), nx = -gx * inv, ny = -gy * inv, nz = inv;
     const diff = Math.max(0, nx * lx + ny * ly + nz * lz);
@@ -71,7 +94,6 @@ function buildCoin(seed) {
     const shadow = L.clamp(occ / 1.6);
     const hn = L.clamp(Hh[k] / HR);
     const sp = Math.pow(Math.max(0, nx * hx0 + ny * hy0 + nz * hz0), 40);
-    const x = i + 0.5 - c, y = j + 0.5 - c;
     const sq = (x * 0.55 + y * 0.83 + sheenOff) / (0.46 * RC), sheen = Math.exp(-sq * sq);
     const cw = Math.cos(2 * (Math.atan2(y, x) - cwA));   // the two opposed bright fans of light a silvery disc throws back
     const alb = (0.86 + 0.28 * hn + 0.15 * Pt[k] * (1 - 0.5 * hn)) * gainK;
@@ -79,8 +101,8 @@ function buildCoin(seed) {
       - 0.2 * (y / RC) + 0.11 * cw * (1 - 0.45 * hn) + 0.08 * sheen + 0.45 * Ed[k];
     const li = (L.clamp(((lum - 0.62) * 1.14 + 0.635) / 1.35) * 511 | 0) * 3;
     const cool = Pt[k] < 0 ? -Pt[k] : 0;                 // the dimmer patches lean a little toward teal
-    const o = k * 4;
-    d[o] = lut[li] - 24 * cool; d[o + 1] = lut[li + 1] - 6 * cool; d[o + 2] = lut[li + 2] + 3 * cool; d[o + 3] = Am[k] * 255;
+    const fr = lut[li] - 24 * cool, fg = lut[li + 1] - 6 * cool, fb = lut[li + 2] + 3 * cool;
+    d[o] = fr + (wr - fr) * wt; d[o + 1] = fg + (wg - fg) * wt; d[o + 2] = fb + (wb - fb) * wt; d[o + 3] = Math.min(1, Am[k] + wl) * 255;
   }
   const cv = L.makeCanvas(SZ, SZ), g = cv.getContext('2d');
   g.putImageData(img, 0, 0);

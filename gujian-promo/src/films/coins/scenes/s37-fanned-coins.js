@@ -94,6 +94,49 @@ function buildFan(env) {
     near[q] = j;
   }
 
+  // one coin's rim at one pixel → colour in oR/oG/oB, bloom weight in oH; returns how much of the pixel it covers (0 = not there)
+  let oR = 0, oG = 0, oB = 0, oH = 0;
+  const shadeRim = (bar, x, half, d, di, th, rr, fade, pool, grain) => {
+    const c = coins[bar], ax = x < 0 ? -x : x, xn = x / half;
+    let nx = c.tilt + c.crown * xn, drop = c.crownPx * xn * xn + c.slant * x;
+    const xa = ax - (half - c.ra);
+    if (xa > 0) { const s = xa / c.ra; nx += (x < 0 ? -1 : 1) * (s > 1 ? 1 : s) * 0.92; }
+    const xt = ax - (half - c.rt);
+    if (xt > 0) { let s = xt / c.rt; s = s > 1 ? 1 : s; drop += c.rt * (1 - Math.sqrt(1 - s * s)); }
+    let xi = (x + 64.5) | 0; xi = xi < 0 ? 0 : xi > 127 ? 127 : xi;
+    const dp = d - c.o - drop - c.nk[xi];        // depth below this coin's own limb (its silhouette is its cross-section)
+    if (dp <= -0.5) return 0;
+    const cov = (dp + 0.5 < 1 ? dp + 0.5 : 1) * L.clamp(half + 0.5 - ax);
+    const dpp = dp < 0 ? 0 : dp;
+    // file marks run round the rim → hairlines down the blade; each one throws the highlight a little further or shorter
+    const h1 = nA.n2(x * 0.45 + c.s1, d * 0.0035 + c.s2), h2 = nB.n2(x * 0.16 + c.s2, d * 0.006 + c.s1);
+    const al = Math.acos(Math.max(-1, 1 - dpp / RO)) + c.pitch;
+    let key = Math.cos(al + 0.2 * h1 + 0.16 * h2 - PSI); key = key > 0 ? key * key : 0;
+    let lf = 1 - nx; lf = lf < 0.14 ? 0.14 : lf > 1.6 ? 1.6 : lf;
+    const mo = nA.fbm(x * 0.02 + c.s1 * 3.1, d * 0.005 + c.s2, 2);                     // slow tarnish: only ever darker and redder
+    const ox = sstep(0.3, 0.62, nB.n2(x * 0.045 + c.s2 * 1.9, d * 0.012 + c.s1));       // oxide blooms drawn out along the blade
+    const scr = sstep(0.5, 0.82, nB.n2(x * 0.7 + c.s1 * 2.3, d * 0.012 + c.s2 * 1.7));  // a few bright scratches
+    const tex = (1 + 0.12 * h1 + 0.08 * h2 + 0.14 * scr - 0.14 * sstep(0.1, 0.6, mo) - 0.12 * ox) * (1 + 0.1 * grain);
+    let E = 0.04 + 0.56 * key * fade * lf * pool * c.tone * tex;
+    // the arris that faces the light flashes in a broken line
+    const e = (nx + 0.6) / 0.2;
+    E += 0.3 * Math.exp(-e * e) * sstep(0.12, 0.45, al) * (1 - sstep(0.95, 1.4, al)) * c.spec * c.sp[di] * fade * pool;
+    // the key light's mirror image: one hot band round every rim, a little higher or lower on each coin, combed into streaks by the file marks
+    const ab = (al + 0.22 * h1 + 0.2 * h2 - 0.8) / 0.12, an = (nx + 0.18) / 0.42;
+    E += 0.36 * Math.exp(-ab * ab - an * an) * (0.5 + 0.5 * c.spec) * fade * pool;
+    // a prouder neighbour on the light side drops its shadow across this rim
+    if (bar > 0) {
+      const cl = coins[bar - 1], ls = (cl.zh - c.zh) * 3.2;
+      if (ls > 2) { const xl = (th - cl.th) * rr - cl.lean * d - cl.half; E *= 0.38 + 0.62 * sstep(ls - 5, ls + 3, xl); }
+    }
+    let li = (E * 1000) | 0; li = (li < 0 ? 0 : li > NL ? NL : li) * 3;
+    // pale-gold back-light riding the limb
+    const rim = Math.exp(-dpp / c.rimW) * c.rimI * (1 - 0.4 * (nx > 0 ? nx : 0)) * (0.8 + 0.25 * h2) * pool;
+    oR = lut[li] + rim * 250; oG = lut[li + 1] * (1 + 0.06 * c.hue) + rim * 205; oB = lut[li + 2] * (1 + 0.05 * c.hue) + rim * 128;
+    oH = Math.max(0, E - 0.8) * 1.6 + rim * 1.2;
+    return cov;
+  };
+
   for (let jy = 0; jy < RH; jy++) {
     const ddy = cy - (Y0 + jy);
     for (let ix = 0; ix < RW; ix++) {
@@ -101,93 +144,76 @@ function buildFan(env) {
       const o4 = (jy * RW + ix) * 4;
       px[o4 + 3] = 255; hp[o4 + 3] = 255;
       if (d < -8) { px[o4] = BG[0]; px[o4 + 1] = BG[1]; px[o4 + 2] = BG[2]; continue; }
-      const th = Math.atan2(ddx, ddy);
-      let q = ((th * R - uMin) / Q) | 0; q = q < 0 ? 0 : q >= nQ ? nQ - 1 : q;
+      const th0 = Math.atan2(ddx, ddy);
+      let q = ((th0 * R - uMin) / Q) | 0; q = q < 0 ? 0 : q >= nQ ? nQ - 1 : q;
       const j0 = near[q];
       let di = (d + 8.5) | 0; di = di >= ND ? ND - 1 : di;
-      // which rim covers this pixel, and how far the nearest rims are on either side
-      let bar = -1, barX = 0, barHW = 0, barZ = -1e9, sL = 1e9, sR = 1e9, cL = -1, cR = -1;
-      for (let k = j0 - 2; k <= j0 + 2; k++) {
-        if (k < 0 || k >= n) continue;
-        const c = coins[k];
-        const x = (th - c.th) * rr - c.lean * d, ax = x < 0 ? -x : x;
-        const hw = c.half + (x < 0 ? c.wL[di] : c.wR[di]);
-        if (ax < hw + 0.5) { if (c.zh > barZ && d - c.o > -3) { bar = k; barX = x; barHW = hw; barZ = c.zh; } }
-        else if (x > 0) { const s = x - hw; if (s < sL) { sL = s; cL = k; } }
-        else { const s = -x - hw; if (s < sR) { sR = s; cR = k; } }
-      }
-      const fade = 1 - 0.7 * sstep(280, 640, d);                       // everything sinks into the dark toward the ring's centre
-      const tq = (th + 0.09) / 0.36, pool = 0.78 + 0.34 * Math.exp(-tq * tq);   // the key light pools left of the crest
-      const grain = hash2(ix, jy) - 0.5;
-
-      // ── the slot between two rims: black, unless a coin leans and shows a sliver of its face ──
-      let cr0 = BG[0], cg0 = BG[1], cb0 = BG[2], hv = 0, li = 0;
-      if (d > 0 && cL >= 0 && cR >= 0) {
-        const g = sL + sR, open = sstep(1.5, 12, g);
-        if (open > 0) for (let side = 0; side < 2; side++) {
-          // side 0: the left face of the coin on the right (turned toward the key light → bright orange)
-          // side 1: the right face of the coin on the left (lit only by copper bouncing off copper → dark red)
-          const c = side ? coins[cL] : coins[cR], s = side ? sL : sR, ak = side ? c.k : -c.k, dc = d - c.o;
-          if (ak <= 0 || dc <= 0) continue;
-          const sk = s / ak; if (sk >= RO) continue;
-          const rt2 = Math.sqrt(RO * RO - sk * sk), dv = dc - (RO - rt2);      // the face's outline is the far half of the coin's ellipse
-          if (dv < -0.6) continue;
-          const sl = sk / ak / rt2, nd = dv / Math.sqrt(1 + sl * sl), cov = nd + 0.5 < 1 ? nd + 0.5 : 1;
-          let kf = Math.cos(Math.acos(Math.max(-1, 1 - dc / RO)) + c.pitch - PSI); kf = kf > 0 ? kf * kf : 0;
-          const tex = 1 + 0.2 * nA.n2(s * 0.4 + c.s1, d * 0.012 + c.s2) + 0.1 * nB.n2(ix * 0.3, jy * 0.3) + 0.08 * grain;
-          const E = (side ? 0.4 * Math.exp(-s / (3 + 0.3 * g)) : 0.84 * Math.exp(-s / (4 + 0.42 * g))) * open * kf * c.tone * tex * fade * pool;
-          li = (E * 1000) | 0; li = (li < 0 ? 0 : li > NL ? NL : li) * 3;
-          const rim = Math.exp(-(nd > 0 ? nd : 0) / 3) * 0.7 * c.rimI * Math.exp(-s / (5 + 0.5 * g)) * pool;
-          const fr = lut[li] + rim * 250, fg = lut[li + 1] + rim * 205, fb = lut[li + 2] + rim * 128;
-          if (fr * cov > cr0) { cr0 += (fr - cr0) * cov; cg0 += (fg - cg0) * cov; cb0 += (fb - cb0) * cov; hv = rim * 0.8 * cov; }
-        }
-      }
-
-      // ── the rim of a coin ──
-      if (bar >= 0) {
-        const c = coins[bar], x = barX, ax = x < 0 ? -x : x, half = barHW, xn = x / half;
-        let nx = c.tilt + c.crown * xn, drop = c.crownPx * xn * xn + c.slant * x;
-        const xa = ax - (half - c.ra);
-        if (xa > 0) { const s = xa / c.ra; nx += (x < 0 ? -1 : 1) * (s > 1 ? 1 : s) * 0.92; }
-        const xt = ax - (half - c.rt);
-        if (xt > 0) { let s = xt / c.rt; s = s > 1 ? 1 : s; drop += c.rt * (1 - Math.sqrt(1 - s * s)); }
-        let xi = (x + 64.5) | 0; xi = xi < 0 ? 0 : xi > 127 ? 127 : xi;
-        const dp = d - c.o - drop - c.nk[xi];        // depth below this coin's own limb (its silhouette is its cross-section)
-        if (dp > -0.5) {
-          const cov = (dp + 0.5 < 1 ? dp + 0.5 : 1) * L.clamp(half + 0.5 - ax);
-          const dpp = dp < 0 ? 0 : dp;
-          // file marks run round the rim → hairlines down the blade; each one throws the highlight a little further or shorter
-          const h1 = nA.n2(x * 0.45 + c.s1, d * 0.0035 + c.s2), h2 = nB.n2(x * 0.16 + c.s2, d * 0.006 + c.s1);
-          const al = Math.acos(Math.max(-1, 1 - dpp / RO)) + c.pitch;
-          let key = Math.cos(al + 0.2 * h1 + 0.16 * h2 - PSI); key = key > 0 ? key * key : 0;
-          let lf = 1 - nx; lf = lf < 0.14 ? 0.14 : lf > 1.6 ? 1.6 : lf;
-          const mo = nA.fbm(x * 0.02 + c.s1 * 3.1, d * 0.005 + c.s2, 2);                     // slow tarnish: only ever darker and redder
-          const ox = sstep(0.3, 0.62, nB.n2(x * 0.045 + c.s2 * 1.9, d * 0.012 + c.s1));       // oxide blooms drawn out along the blade
-          const scr = sstep(0.5, 0.82, nB.n2(x * 0.7 + c.s1 * 2.3, d * 0.012 + c.s2 * 1.7));  // a few bright scratches
-          const tex = (1 + 0.12 * h1 + 0.08 * h2 + 0.14 * scr - 0.14 * sstep(0.1, 0.6, mo) - 0.12 * ox) * (1 + 0.1 * grain);
-          let E = 0.04 + 0.56 * key * fade * lf * pool * c.tone * tex;
-          // the arris that faces the light flashes in a broken line
-          const e = (nx + 0.6) / 0.2;
-          E += 0.3 * Math.exp(-e * e) * sstep(0.12, 0.45, al) * (1 - sstep(0.95, 1.4, al)) * c.spec * c.sp[di] * fade * pool;
-          // the key light's mirror image: one hot band round every rim, a little higher or lower on each coin, combed into streaks by the file marks
-          const ab = (al + 0.22 * h1 + 0.2 * h2 - 0.8) / 0.12, an = (nx + 0.18) / 0.42;
-          E += 0.36 * Math.exp(-ab * ab - an * an) * (0.5 + 0.5 * c.spec) * fade * pool;
-          // a prouder neighbour on the light side drops its shadow across this rim
-          if (bar > 0) {
-            const cl = coins[bar - 1], ls = (cl.zh - c.zh) * 3.2;
-            if (ls > 2) { const xl = (th - cl.th) * rr - cl.lean * d - cl.half; E *= 0.38 + 0.62 * sstep(ls - 5, ls + 3, xl); }
+      // a rim's edge, and the hairline seam where two rims touch, are finer than a pixel: those pixels are sampled three times across the blade
+      let aR = 0, aG = 0, aB = 0, hR = 0, hG = 0, hB = 0, nT = 1;
+      for (let tap = 0; tap < nT; tap++) {
+        const th = th0 + (tap === 0 ? 0 : tap === 1 ? -0.34 : 0.34) / rr;
+        let edge = false;
+        // which rim covers this pixel, and how far the nearest rims are on either side
+        let bar = -1, barX = 0, barHW = 0, barZ = -1e9, sL = 1e9, sR = 1e9, cL = -1, cR = -1;
+        let bar2 = -1, bar2X = 0, bar2HW = 0, bar2Z = -1e9;       // the rim directly behind the front one, where two overlap
+        for (let k = j0 - 2; k <= j0 + 2; k++) {
+          if (k < 0 || k >= n) continue;
+          const c = coins[k];
+          const x = (th - c.th) * rr - c.lean * d, ax = x < 0 ? -x : x;
+          const hw = c.half + (x < 0 ? c.wL[di] : c.wR[di]);
+          if (ax > hw - 1.2 && ax < hw + 1.2) edge = true;
+          if (ax < hw + 0.5) {
+            if (d - c.o > -3) {
+              if (c.zh > barZ) { bar2 = bar; bar2X = barX; bar2HW = barHW; bar2Z = barZ; bar = k; barX = x; barHW = hw; barZ = c.zh; }
+              else if (c.zh > bar2Z) { bar2 = k; bar2X = x; bar2HW = hw; bar2Z = c.zh; }
+            }
           }
-          li = (E * 1000) | 0; li = (li < 0 ? 0 : li > NL ? NL : li) * 3;
-          let br = lut[li], bg = lut[li + 1] * (1 + 0.06 * c.hue), bb = lut[li + 2] * (1 + 0.05 * c.hue);
-          // pale-gold back-light riding the limb
-          const rim = Math.exp(-dpp / c.rimW) * c.rimI * (1 - 0.4 * (nx > 0 ? nx : 0)) * (0.8 + 0.25 * h2) * pool;
-          br += rim * 250; bg += rim * 205; bb += rim * 128;
-          cr0 += (br - cr0) * cov; cg0 += (bg - cg0) * cov; cb0 += (bb - cb0) * cov;
-          hv = hv * (1 - cov) + (Math.max(0, E - 0.8) * 1.6 + rim * 1.2) * cov;
+          else if (x > 0) { const s = x - hw; if (s < sL) { sL = s; cL = k; } }
+          else { const s = -x - hw; if (s < sR) { sR = s; cR = k; } }
         }
+        const fade = 1 - 0.7 * sstep(280, 640, d);                       // everything sinks into the dark toward the ring's centre
+        const tq = (th + 0.09) / 0.36, pool = 0.78 + 0.34 * Math.exp(-tq * tq);   // the key light pools left of the crest
+        const grain = hash2(ix, jy) - 0.5;
+
+        // ── the slot between two rims: black, unless a coin leans and shows a sliver of its face ──
+        let cr0 = BG[0], cg0 = BG[1], cb0 = BG[2], hv = 0, li = 0;
+        if (d > 0 && cL >= 0 && cR >= 0) {
+          const g = sL + sR, open = sstep(1.5, 12, g);
+          if (open > 0) for (let side = 0; side < 2; side++) {
+            // side 0: the left face of the coin on the right (turned toward the key light → bright orange)
+            // side 1: the right face of the coin on the left (lit only by copper bouncing off copper → dark red)
+            const c = side ? coins[cL] : coins[cR], s = side ? sL : sR, ak = side ? c.k : -c.k, dc = d - c.o;
+            if (ak <= 0 || dc <= 0) continue;
+            const sk = s / ak; if (sk >= RO) continue;
+            const rt2 = Math.sqrt(RO * RO - sk * sk), dv = dc - (RO - rt2);      // the face's outline is the far half of the coin's ellipse
+            if (dv < -0.6) continue;
+            const sl = sk / ak / rt2, nd = dv / Math.sqrt(1 + sl * sl), cov = nd + 0.5 < 1 ? nd + 0.5 : 1;
+            let kf = Math.cos(Math.acos(Math.max(-1, 1 - dc / RO)) + c.pitch - PSI); kf = kf > 0 ? kf * kf : 0;
+            const tex = 1 + 0.2 * nA.n2(s * 0.4 + c.s1, d * 0.012 + c.s2) + 0.1 * nB.n2(ix * 0.3, jy * 0.3) + 0.08 * grain;
+            const E = (side ? 0.4 * Math.exp(-s / (3 + 0.3 * g)) : 0.84 * Math.exp(-s / (4 + 0.42 * g))) * open * kf * c.tone * tex * fade * pool;
+            li = (E * 1000) | 0; li = (li < 0 ? 0 : li > NL ? NL : li) * 3;
+            const rim = Math.exp(-(nd > 0 ? nd : 0) / 3) * 0.7 * c.rimI * Math.exp(-s / (5 + 0.5 * g)) * pool;
+            const fr = lut[li] + rim * 250, fg = lut[li + 1] + rim * 205, fb = lut[li + 2] + rim * 128;
+            if (fr * cov > cr0) { cr0 += (fr - cr0) * cov; cg0 += (fg - cg0) * cov; cb0 += (fb - cb0) * cov; hv = rim * 0.8 * cov; }
+          }
+        }
+
+        // ── the rim of a coin ──
+        if (bar >= 0) {
+          const cov = shadeRim(bar, barX, barHW, d, di, th, rr, fade, pool, grain), fr = oR, fg = oG, fb = oB, fh = oH;
+          // where the front rim's edge or tip only part-covers the pixel, the rim behind it shows through — not the black of the slot
+          if (cov < 1 && bar2 >= 0) {
+            const c2 = shadeRim(bar2, bar2X, bar2HW, d, di, th, rr, fade, pool, grain);
+            if (c2 > 0) { cr0 += (oR - cr0) * c2; cg0 += (oG - cg0) * c2; cb0 += (oB - cb0) * c2; hv = hv * (1 - c2) + oH * c2; }
+          }
+          if (cov > 0) { cr0 += (fr - cr0) * cov; cg0 += (fg - cg0) * cov; cb0 += (fb - cb0) * cov; hv = hv * (1 - cov) + fh * cov; }
+        }
+        if (tap === 0 && edge) nT = 3;
+        aR += cr0; aG += cg0; aB += cb0;
+        if (hv > 0) { hR += cr0 * hv; hG += cg0 * hv; hB += cb0 * hv; }
       }
-      px[o4] = cr0; px[o4 + 1] = cg0; px[o4 + 2] = cb0;
-      if (hv > 0) { hp[o4] = cr0 * hv; hp[o4 + 1] = cg0 * hv; hp[o4 + 2] = cb0 * hv; }
+      px[o4] = aR / nT; px[o4 + 1] = aG / nT; px[o4 + 2] = aB / nT;
+      if (hR > 0) { hp[o4] = hR / nT; hp[o4 + 1] = hG / nT; hp[o4 + 2] = hB / nT; }
     }
   }
   const cnv = L.makeCanvas(RW, RH); cnv.getContext('2d').putImageData(img, 0, 0);

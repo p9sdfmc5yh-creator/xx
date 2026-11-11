@@ -35,6 +35,29 @@ function cell(x, y) {
   cD1 = d1; cD2 = d2; cId = id;
 }
 
+/** same cells as cell(): how far (x, y) is from being equidistant to three of them — 0 where three crackle lines meet */
+function junction(x, y) {
+  const xi = Math.floor(x), yi = Math.floor(y);
+  let d1 = 9, d2 = 9, d3 = 9;
+  for (let oy = -1; oy <= 1; oy++) for (let ox = -1; ox <= 1; ox++) {
+    const cx = xi + ox, cy = yi + oy;
+    let h = (Math.imul(cx, 374761393) + Math.imul(cy, 668265263)) | 0;
+    h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16;
+    const dx = cx + (h & 1023) / 1023 - x, dy = cy + ((h >>> 10) & 1023) / 1023 - y, dd = dx * dx + dy * dy;
+    if (dd < d1) { d3 = d2; d2 = d1; d1 = dd; } else if (dd < d2) { d3 = d2; d2 = dd; } else if (dd < d3) d3 = dd;
+  }
+  return Math.sqrt(d3) - Math.sqrt(d1);
+}
+
+// Where the crust has spalled off and the metal shows: few places, very unequal. [x, y, radius, stretch, angle, snap, hug] —
+// snap > 0: the spot is moved (at most that far) onto the nearest meeting of crackle lines; hug: how far it runs out along them.
+const SPALL = [
+  [498, 762, 50, 1.45, -0.2, 0, 0.25], [590, 786, 30, 1.2, 0.5, 0, 0.25],    // the big one (two lobes), tucked under the rim left of centre
+  [1545, 770, 27, 1.35, 0.3, 0, 0.3],                                        // a second, a third of its size, under the rim on the right
+  [990, 676, 11, 1.7, -0.5, 22, 0.55], [806, 902, 10, 1.6, 0.9, 60, 0.6], [1402, 886, 13, 1.5, -0.3, 60, 0.55], [318, 812, 9, 1.6, 0.4, 40, 0.6],   // flakes where cracks meet
+];
+const EXD = 5.2;       // thickness of the crust where it has broken away (px of relief)
+
 const lut = (stops) => {
   const f = L.makeRamp(stops), o = new Float32Array(256 * 3);
   for (let i = 0; i < 256; i++) { const c = f(i / 255); o[i * 3] = c[0]; o[i * 3 + 1] = c[1]; o[i * 3 + 2] = c[2]; }
@@ -164,11 +187,28 @@ function buildCoin(env) {
   let bk = 0, btx = 0, bty = 0;
   const B = (s) => { const a0 = s[bk], a1 = s[bk + 1], b0 = s[bk + cw], b1 = s[bk + cw + 1]; return (a0 + (a1 - a0) * btx) * (1 - bty) + (b0 + (b1 - b0) * btx) * bty; };
 
+  // the spalled places: the small ones are moved onto a crackle junction (in the field, where the crackle is strong)
+  const SP = SPALL.map(([sx, sy, r, st, ang, snap, hug]) => {
+    let bx = sx, by = sy, best = 1e9;
+    for (let oy = -snap; oy <= snap && snap > 0; oy += 3) for (let ox = -snap; ox <= snap; ox += 3) {
+      if (ox * ox + oy * oy > snap * snap) continue;
+      const x = sx + ox, y = sy + oy;
+      if (R - Math.hypot(x - cx, cy - y) < RIMW + 26) continue;
+      const wx = nB.n2(x / 190 + 5, y / 190), wy = nB.n2(x / 190 - 31, y / 190 + 19);
+      const w1 = nA.n2(x / 24 + 80, y / 24), w2 = nB.n2(x / 24 - 20, y / 24 + 60);
+      const zs = sstep(0.4, 0.85, sstep(-0.32, 0.26, nA.fbm(x / 360 + 70, y / 360 + 21, 2)));
+      const sc = junction(x / 122 + wx * 0.4 + w1 * 0.036, y / 122 + wy * 0.4 + w2 * 0.036) + 0.0005 * Math.hypot(ox, oy) + 0.06 * (1 - zs);
+      if (sc < best) { best = sc; bx = x; by = y; }
+    }
+    return { x: bx, y: by, r, c: Math.cos(ang), s: Math.sin(ang), ia: 1 / (st * st), rr: r * st * 2.3 + 4, ew: 3 / r, hug, dp: 0.56 + 0.44 * Math.min(1, r / 27) };   // dp: a small flake is only the top skin of the crust
+  });
+
   const GREEN = lut([[0, '#0d3a23'], [0.2, '#1c5f3c'], [0.46, '#2f9a5f'], [0.63, '#4aae66'], [0.82, '#7cc68a'], [1, '#b6e3b4']]);
   const SOIL = lut([[0, '#5a3d1a'], [0.22, '#876a30'], [0.5, '#ae8d48'], [0.76, '#c2a25c'], [1, '#d8c088']]);
 
   // ── pass 1: height (full, and without the finest grain), albedo, occlusion, gloss ──
   const Hh = new Float32Array(N), Hs = new Float32Array(N), Hr = new Float32Array(N), Ao = new Float32Array(N), Gs = new Float32Array(N), Gl = new Float32Array(N);
+  const Exa = new Float32Array(N), ExM = new Float32Array(N), Mt = new Float32Array(N);   // spalled (unmasked) / where that shows / how matte
   const Fz = new Uint8Array(N);                                   // 1 where the rim or thick soil can throw a shadow
   const img = new ImageData(RW, RH), d = img.data;
   for (let j = 0; j < RH; j++) {
@@ -278,9 +318,21 @@ function buildCoin(env) {
 
       // spalled crust: here and there whole plates have flaked off along the crackle, baring the dark red-brown metal a step lower.
       // Along the crackle the break is straight and hard; where the patch ends inside a plate it is ragged.
-      let ex = 0;
-      const exz = B(cEx) - 0.27 + 0.07 * mid + 0.012 * g1;
-      if (exz > 0 && id1 > 0.4) ex = sstep(0, 0.035, exz) * sstep(0.012, 0.04, e1 + 0.006 * g1) * (1 - 0.9 * rimIn) * (1 - soil);
+      let ex = 0, exz = -1, exw = 0.1, exd = 1;
+      for (let q = 0; q < SP.length; q++) {
+        const s = SP[q], sdx = x - s.x, sdy = y - s.y;
+        if (sdx > s.rr || sdx < -s.rr || sdy > s.rr || sdy < -s.rr) continue;
+        const al = sdx * s.c + sdy * s.s, ac = sdy * s.c - sdx * s.s;
+        const z = 1 - Math.sqrt(al * al * s.ia + ac * ac) / s.r + s.hug * (1 - sstep(0, 0.15, e1));
+        if (z > exz) { exz = z; exw = s.ew; exd = s.dp; }
+      }
+      if (exz > -0.6) {                                             // ragged inside a plate, stepped where it crosses from one plate to the next
+        exz += 0.22 * mid + 0.24 * lump + 0.34 * (id1 - 0.5) + 0.02 * g1 + 1.2 * exw * (peb - 0.5);
+        if (exz > 0) {
+          const er = sstep(0, exw, exz), em = (1 - 0.9 * rimIn) * (1 - soil);
+          Exa[k] = er; ExM[k] = em; ex = er * em;
+        }
+      }
       const pit = id2 > 0.972 && lump + 0.6 * mid < 0.05 ? peb : 0, crys = id2 < 0.045 ? peb : 0;
 
       const det = (1 - 0.8 * soil) * (1 - 0.85 * facet) * (1 - 0.4 * wear) * (1 - 0.72 * ex);
@@ -288,12 +340,12 @@ function buildCoin(env) {
       const hs = hRim + ((1.2 * lump + 1.15 * terr * (1 - 0.6 * ex) * (1 - 0.5 * rimIn)) * (1 - 0.5 * rimIn) + 1.0 * mid * (1 - 0.35 * rimIn)) * (0.45 + 0.55 * sh)
         + det * cs * (1.5 * dome1 - 2.4 * crack)
         + det * (pa * (1.5 * peb - 0.45 * groove2) + 3.1 * botz * knob * (1 - 0.65 * rimIn) - 1.6 * pit + 0.7 * crys)
-        - 3.2 * ex
+        - EXD * exd * ex
         + soilH + soil * (0.3 * peb * (1 - thick) + 0.7 * clod + 0.35 * sand + 0.8 * sn - 0.5 * crack - 1.3 * mc) + 1.1 * crumb
         - facet * (1.6 + 1.1 * mid) - 0.4 * wear;
       Hs[k] = hs;
       Hh[k] = hs + (0.3 * g1 + 0.13 * g2) * (1 - 0.4 * soil) * (1 + 1.6 * facet) * (1 + 0.7 * powder + 1.3 * ex);
-      Hr[k] = hRim + soilH - 3.2 * ex;
+      Hr[k] = hRim + soilH - EXD * exd * ex;
       if (ex > 0.02) Fz[k] = 1;
       if (soilNear && halo > 0.012) Fz[k] = 1;
 
@@ -301,7 +353,7 @@ function buildCoin(env) {
       const bloom = sstep(0.05, 0.6, cor + 0.45 * mid) * (1 - 0.6 * rimIn);                      // powdery, paler malachite lying in patches
       let t = 0.45 + 0.17 * lump + 0.1 * mid + 0.1 * pw + 0.09 * (peb - 0.45) * pa + 0.08 * (dome1 - 0.6) * cs + 0.035 * g1 + 0.2 * crys
         + 0.07 * (id1 - 0.5) * (1 - 0.6 * rimIn) + 0.09 * (id2 - 0.5) * (1 - powder) + 0.1 * bloom
-        + 0.2 * powder + 0.045 * lay * (1 - 0.5 * powder) + botz * (0.22 * knob - 0.2 + 0.1 * (knobId - 0.5));
+        + 0.2 * powder + 0.045 * lay * (1 - 0.5 * powder) + botz * (0.15 * knob - 0.16 + 0.1 * (knobId - 0.5));
       t = t < 0.2 ? 0.2 : t > 1 ? 1 : t;
       let li = ((t * 255) | 0) * 3;
       let cr = GREEN[li], cg = GREEN[li + 1], cb = GREEN[li + 2];
@@ -324,8 +376,6 @@ function buildCoin(env) {
         let er = 92 + 18 * mid + 9 * g1 + 14 * lump + 10 * sn, eg = 56 + 10 * mid + 5 * g1 + 7 * lump + 4 * sn, eb = 37 + 6 * mid;
         er += (54 - er) * rem; eg += (104 - eg) * rem; eb += (78 - eb) * rem;
         cr += (er - cr) * ex; cg += (eg - cg) * ex; cb += (eb - cb) * ex;
-        const lk = 1.6 * ex * (1 - ex);                                  // the broken lip of the crust: pale, powdery
-        cr += (160 - cr) * lk; cg += (210 - cg) * lk; cb += (168 - cb) * lk;
       }
       if (soil > 0) {
         let ts = 0.36 + 0.26 * thick + 0.2 * sn + 0.14 * mid + 0.1 * (clod - 0.4) + 0.1 * (clodId - 0.5) + 0.05 * g1 - 0.3 * crack - 0.4 * mc
@@ -340,15 +390,16 @@ function buildCoin(env) {
       // the very edge: a thin deeper line where the crust is thinnest, heavier in some stretches than in others
       if (eTint > 0) { const ek = eTint * (1 - sstep(0.4, 3.6, ins)); cr += (26 - cr) * ek; cg += (64 - cg) * ek; cb += (38 - cb) * ek; }
       // the crown of the rim's shoulder: rubbed a shade paler, so the light draws a bright line along the edge
-      if (crown > 0.02) { const hk = 0.36 * crown * rimIn * (1 - facet) * (1 - 0.5 * wear) * (0.75 + 0.5 * peb); cr += (132 - cr) * hk; cg += (206 - cg) * hk; cb += (150 - cb) * hk; }
+      if (crown > 0.02) { const hk = 0.25 * crown * rimIn * (1 - facet) * (1 - 0.5 * wear) * (0.75 + 0.5 * peb); cr += (124 - cr) * hk; cg += (192 - cg) * hk; cb += (142 - cb) * hk; }
 
       const o = k * 4;
       d[o] = cr; d[o + 1] = cg; d[o + 2] = cb; d[o + 3] = cov * 255;
       Ao[k] = 1 - 0.1 * foot - 0.1 * dk - 0.08 * ex;
-      Gs[k] = (peb * (id2 > 0.55 ? 1 : 0.16) * (1 - 0.8 * powder) + 0.9 * botz * knob * knob) * (1 - 0.9 * soil) * (1 - 0.5 * rimIn) * (1 - facet) * (1 - 0.8 * ex)
+      Gs[k] = (peb * (id2 > 0.55 ? 1 : 0.16) * (1 - 0.8 * powder) * (1 - 0.6 * botz) + 0.34 * botz * knob * knob) * (1 - 0.9 * soil) * (1 - 0.84 * rimIn) * (1 - facet) * (1 - 0.8 * ex)
         + 0.5 * crys + (sandId > 0.9 ? 0.5 * sand * soil : 0);
-      Gl[k] = ((0.2 + 0.8 * sstep(0.3, 0.62, id1 + 0.3 * lump)) * (0.55 + 0.45 * zone) * (1 - 0.85 * powder) * (1 - 0.6 * ex) + 0.3 * botz)
-        * (1 - 0.92 * soil) * (1 - 0.8 * facet);                    // some plates are waxy, some chalky; the knobs are glassy
+      Gl[k] = ((0.2 + 0.8 * sstep(0.3, 0.62, id1 + 0.3 * lump)) * (0.55 + 0.45 * zone) * (1 - 0.85 * powder) * (1 - 0.6 * ex) * (1 - 0.6 * botz) + 0.05 * botz)
+        * (1 - 0.92 * soil) * (1 - 0.8 * facet) * (1 - 0.66 * rimIn);   // some plates have a dull sheen, some are chalky; the rim top and the knobs are dry and matte
+      Mt[k] = (1 - 0.66 * rimIn) * (1 - 0.55 * botz);
     }
   }
   // the outline as an image (white, alpha = coverage): the shadow on the paper is made from it
@@ -402,10 +453,22 @@ function buildCoin(env) {
       let veil = 0, sp = 0;
       if (sk > 0) {
         veil = Math.pow(sk, 13) - 0.22; veil = veil > 0 ? veil * 0.27 * Gl[k] * hot : 0;                  // broad, greyish sheen on the flanks that face the light
-        sp = Math.pow(sk, 28) * (0.07 + 0.27 * gs) * hot + veil;
+        sp = Math.pow(sk, 28) * (0.07 + 0.27 * gs) * hot * Mt[k] + veil;
         if (shd > 0) { veil *= 1 - shd; sp *= 1 - shd; }
       }
       d[o] = d[o] * sh * (1 - 0.35 * veil) + 204 * sp; d[o + 1] = d[o + 1] * sh * (1 - 0.35 * veil) + 236 * sp; d[o + 2] = d[o + 2] * sh * (1 - 0.35 * veil) + 200 * sp;
+      // the broken edge of the crust has thickness: the face turned to the light is a pale, powdery lip, the face turned away is in shade
+      const egx = Exa[k + 1] - Exa[k - 1], egy = Exa[k + RW] - Exa[k - RW];
+      if (egx !== 0 || egy !== 0) {
+        const ld = -(egx * LX + egy * LY) * 0.5 * ExM[k];
+        if (ld > 0) {
+          const lpk = (ld > 0.36 ? 1 : ld / 0.36) * (1 - 0.6 * shd) * 0.8;
+          d[o] += (198 - d[o]) * lpk; d[o + 1] += (232 - d[o + 1]) * lpk; d[o + 2] += (200 - d[o + 2]) * lpk;
+        } else {
+          const dkk = 1 - 0.42 * (ld < -0.36 ? 1 : -ld / 0.36);
+          d[o] *= dkk; d[o + 1] *= dkk; d[o + 2] *= dkk;
+        }
+      }
       if (gs > 0.3) {
         const sa = mx * HA[0] + my * HA[1] + mz * HA[2], sb = mx * HB[0] + my * HB[1] + mz * HB[2];
         const ga = sa > 0.9 ? Math.pow(sa, 90) * gs * 300 * hot : 0, gb = sb > 0.9 ? Math.pow(sb, 90) * gs * 300 * hot : 0;
