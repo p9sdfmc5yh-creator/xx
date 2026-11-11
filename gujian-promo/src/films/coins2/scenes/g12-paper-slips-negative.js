@@ -1,0 +1,202 @@
+// g12 — 彩笺·留白: old coloured letter-papers (朱红 / 藤黄 / 石绿 / 月白 / 粉 / 靛蓝) layered over the whole page; the pile is cut
+// through in the shape of the coin, showing the dark-brown mount underneath (negative glyph, the reference's stamps-around-a-5).
+// Some slips carry a 连钱纹 border, some red ruled columns, some an all-over 连钱 diaper or gold flecks. No writing anywhere.
+import * as L from '../../../lib/core.js';
+import * as K from '../../../lib/plate.js';
+const { S } = K;
+const TAU = Math.PI * 2;
+let layer = null;
+
+const PAL = [
+  { c: '#a32d20', ink: '#e6c477', dark: true },   // 朱红
+  { c: '#dba22a', ink: '#9a3a22' },               // 藤黄
+  { c: '#6c9c80', ink: '#27503f' },               // 石绿
+  { c: '#dde6e1', ink: '#b8452f' },               // 月白
+  { c: '#e3aca1', ink: '#9c3d2d' },               // 粉
+  { c: '#2e4767', ink: '#cdd5d0', dark: true },   // 靛蓝
+  { c: '#ebe0c6', ink: '#b8452f' },               // 素笺
+];
+
+// a chain of interlocking circles (连钱) from a to b, each with a tiny square "hole"
+function chain(g, ax, ay, bx, by, rad) {
+  const len = Math.hypot(bx - ax, by - ay), n = Math.max(1, Math.round(len / (rad * 1.414)));
+  for (let i = 0; i <= n; i++) {
+    const x = L.lerp(ax, bx, i / n), y = L.lerp(ay, by, i / n);
+    g.beginPath(); g.arc(x, y, rad, 0, TAU); g.stroke();
+    const q = rad * 0.26; g.strokeRect(x - q, y - q, q * 2, q * 2);
+  }
+}
+
+// a woodblock-printed bamboo sprig, tone on tone (花笺)
+function sprig(g, r, hw, hh, ink) {
+  g.save(); g.translate(r.range(-hw * 0.3, hw * 0.3), hh * 0.8); g.rotate(r.range(-0.22, 0.22));
+  g.strokeStyle = L.rgba(ink, 0.36); g.fillStyle = L.rgba(ink, 0.3); g.lineCap = 'round';
+  const segs = 5, l = (hh * 1.35) / segs; let y = 0;
+  for (let i = 0; i < segs; i++) {
+    const xa = Math.sin(i * 1.3) * 2.5, xb = Math.sin((i + 1) * 1.3) * 2.5;
+    g.lineWidth = 3.4 - i * 0.45; g.beginPath(); g.moveTo(xa, y - 2); g.lineTo(xb, y - l + 2); g.stroke();
+    for (let k = 0, nl = r.int(2, 3); k < nl; k++) {
+      const a = -Math.PI / 2 + (k % 2 ? 1 : -1) * r.range(0.55, 1.3), ll = r.range(34, 64), wd = r.range(5, 8.5);
+      g.save(); g.translate(xb, y - l); g.rotate(a); g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(ll * 0.42, -wd, ll, 0); g.quadraticCurveTo(ll * 0.42, wd, 0, 0); g.fill(); g.restore();
+    }
+    y -= l;
+  }
+  g.restore();
+}
+
+function makeSlip(w, h, pal, kind, seed, tex) {
+  const r = L.rng(seed);
+  return K.sprite(Math.ceil(w + 8), Math.ceil(h + 8), (g) => {
+    const hw = w / 2, hh = h / 2;
+    const pts = [];
+    const edge = (x0, y0, x1, y1) => {
+      const len = Math.hypot(x1 - x0, y1 - y0); if (len < 1) return;
+      const n = Math.max(2, Math.round(len / 24)), nx = -(y1 - y0) / len, ny = (x1 - x0) / len;
+      for (let i = 0; i < n; i++) { const t = i / n, j = i === 0 ? 0 : r.range(-0.55, 0.55); pts.push([L.lerp(x0, x1, t) + nx * j, L.lerp(y0, y1, t) + ny * j]); }
+    };
+    const dog = r.chance(0.28) ? r.range(10, 24) : 0;
+    edge(-hw, -hh, hw - dog, -hh); edge(hw - dog, -hh, hw, -hh + dog); edge(hw, -hh + dog, hw, hh); edge(hw, hh, -hw, hh); edge(-hw, hh, -hw, -hh);
+    g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath();
+    const col = L.shade(pal.c, r.range(-0.07, 0.07));
+    g.fillStyle = col; g.fill();
+    g.save(); g.clip();
+    // large: uneven dye, a soft lift of light from the top-left
+    g.fillStyle = L.linear(g, -hw, -hh, hw, hh, [[0, 'rgba(255,250,235,0.13)'], [0.5, 'rgba(255,250,235,0)'], [1, 'rgba(30,15,5,0.14)']]);
+    g.fillRect(-hw - 4, -hh - 4, w + 8, h + 8);
+    for (let i = 0; i < 5; i++) {
+      const x = r.range(-hw, hw), y = r.range(-hh, hh), rr = r.range(60, 150);
+      g.fillStyle = L.radial(g, x, y, 0, rr, [[0, L.rgba(r.chance(0.5) ? '#fff6e0' : '#3a2412', r.range(0.05, 0.11))], [1, 'rgba(0,0,0,0)']]);
+      g.fillRect(x - rr, y - rr, rr * 2, rr * 2);
+    }
+    // medium: printed decoration
+    const ink = pal.ink; g.lineJoin = 'round';
+    if (kind === 'border') {
+      const m = 11, rad = r.range(9.5, 12.5), band = rad * 2 + 7;
+      g.strokeStyle = L.rgba(ink, 0.86); g.lineWidth = 2.2; g.strokeRect(-hw + m, -hh + m, w - 2 * m, h - 2 * m);
+      g.lineWidth = 1.3; g.strokeRect(-hw + m + band, -hh + m + band, w - 2 * (m + band), h - 2 * (m + band));
+      const o = m + band / 2; g.strokeStyle = L.rgba(ink, 0.8); g.lineWidth = 1.35;
+      g.save(); g.beginPath(); g.rect(-hw + m, -hh + m, w - 2 * m, h - 2 * m); g.rect(-hw + m + band, -hh + m + band, w - 2 * (m + band), h - 2 * (m + band)); g.clip('evenodd');
+      chain(g, -hw + o, -hh + o, hw - o, -hh + o, rad); chain(g, -hw + o, hh - o, hw - o, hh - o, rad);
+      chain(g, -hw + o, -hh + o, -hw + o, hh - o, rad); chain(g, hw - o, -hh + o, hw - o, hh - o, rad);
+      g.restore();
+    } else if (kind === 'ruled') {
+      const m = 15; g.strokeStyle = L.rgba(ink, 0.82); g.lineWidth = 2.6; g.strokeRect(-hw + m, -hh + m, w - 2 * m, h - 2 * m);
+      g.lineWidth = 1.2; g.strokeRect(-hw + m + 5, -hh + m + 5, w - 2 * m - 10, h - 2 * m - 10);
+      const n = Math.max(4, Math.round((w - 2 * m) / 30));
+      for (let i = 1; i < n; i++) {
+        const x = -hw + m + 5 + ((w - 2 * m - 10) * i) / n;
+        g.globalAlpha = r.range(0.7, 1); g.lineWidth = r.range(1.1, 1.6);
+        g.beginPath(); g.moveTo(x + r.range(-0.4, 0.4), -hh + m + 5); g.lineTo(x + r.range(-0.4, 0.4), hh - m - 5); g.stroke();
+      }
+      g.globalAlpha = 1;
+    } else if (kind === 'diaper') {
+      const d = r.range(30, 38), rad = d / 1.414;
+      g.strokeStyle = L.rgba(pal.dark ? L.shade(col, 0.3) : L.shade(col, -0.3), 0.5); g.lineWidth = 1.4;
+      for (let y = -hh - d; y <= hh + d; y += d) for (let x = -hw - d; x <= hw + d; x += d) {
+        g.beginPath(); g.arc(x, y, rad, 0, TAU); g.stroke();
+        const q = rad * 0.2; g.strokeRect(x - q, y - q, q * 2, q * 2);
+      }
+    } else {
+      sprig(g, r, hw, hh, pal.dark ? L.shade(col, 0.45) : L.shade(col, -0.45));
+      // 洒金笺: flecks of gold leaf, each a small torn quad
+      for (let i = 0, n = Math.round((w * h) / 900); i < n; i++) {
+        const x = r.range(-hw, hw), y = r.range(-hh, hh), s = r.range(1.6, 4.6) * (r.chance(0.12) ? 1.8 : 1), a = r() * TAU;
+        g.fillStyle = L.rgba(r.pick(['#e2c26a', '#f2dc98', '#c9a44a']), r.range(0.6, 0.95));
+        g.beginPath();
+        for (let k = 0; k < 4; k++) { const t = a + (k / 4) * TAU + r.range(-0.3, 0.3), rr = s * r.range(0.6, 1.1); k ? g.lineTo(x + Math.cos(t) * rr, y + Math.sin(t) * rr) : g.moveTo(x + Math.cos(t) * rr, y + Math.sin(t) * rr); }
+        g.closePath(); g.fill();
+      }
+    }
+    // paper body: fibres and stains multiplied in, so the print sits in the sheet
+    g.globalCompositeOperation = 'multiply'; g.globalAlpha = pal.dark ? 0.75 : 0.95;
+    const ox = r.int(0, S - Math.ceil(w) - 10), oy = r.int(0, S - Math.ceil(h) - 10);
+    g.drawImage(tex, ox, oy, w + 8, h + 8, -hw - 4, -hh - 4, w + 8, h + 8);
+    g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+    if (pal.dark) { g.globalCompositeOperation = 'screen'; g.globalAlpha = 0.05; g.drawImage(tex, ox, oy, w + 8, h + 8, -hw - 4, -hh - 4, w + 8, h + 8); g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; }
+    // micro: this sheet's own long fibres, pale and dark
+    g.lineCap = 'round';
+    for (let i = 0, n = Math.round((w * h) / 2400); i < n; i++) {
+      const x = r.range(-hw, hw), y = r.range(-hh, hh), len = r.range(8, 28), a = r() * TAU, b = a + r.range(-0.7, 0.7);
+      g.strokeStyle = r.chance(0.55) ? L.rgba('#fff8e6', r.range(0.12, 0.26)) : L.rgba('#3a2412', r.range(0.08, 0.18)); g.lineWidth = r.range(0.7, 1.15);
+      g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(b) * len * 0.5, y + Math.sin(b) * len * 0.5, x + Math.cos(a) * len, y + Math.sin(a) * len); g.stroke();
+    }
+    // an old water stain with its tide line
+    if (r.chance(0.45)) {
+      const cx = r.range(-hw, hw), cy = r.range(-hh, hh), R0 = r.range(45, 120), p1 = r() * TAU, p2 = r() * TAU;
+      g.beginPath();
+      for (let k = 0; k <= 48; k++) { const a = (k / 48) * TAU, rr = R0 * (1 + 0.2 * Math.sin(3 * a + p1) + 0.09 * Math.sin(7 * a + p2)); k ? g.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr * 0.8) : g.moveTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr * 0.8); }
+      g.closePath(); g.fillStyle = 'rgba(120,80,40,0.07)'; g.fill(); g.strokeStyle = 'rgba(105,66,30,0.2)'; g.lineWidth = 1.5; g.stroke();
+    }
+    // a fold crease or two
+    for (let i = 0, n = r.int(0, 2); i < n; i++) {
+      const horiz = r.chance(0.6), p = r.range(-0.3, 0.3);
+      const x0 = horiz ? -hw : w * p, y0 = horiz ? h * p : -hh, x1 = horiz ? hw : w * p + r.range(-3, 3), y1 = horiz ? h * p + r.range(-3, 3) : hh;
+      g.strokeStyle = 'rgba(40,22,10,0.22)'; g.lineWidth = 1.3; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+      g.strokeStyle = 'rgba(255,248,230,0.3)'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(x0 - (horiz ? 0 : 1.4), y0 - (horiz ? 1.4 : 0)); g.lineTo(x1 - (horiz ? 0 : 1.4), y1 - (horiz ? 1.4 : 0)); g.stroke();
+    }
+    // foxing
+    for (let i = 0, n = r.int(3, 9); i < n; i++) {
+      const x = r.range(-hw, hw), y = r.range(-hh, hh), rr = r.range(1.5, 4.5);
+      g.fillStyle = L.radial(g, x, y, 0, rr, [[0, L.rgba('#6a4322', r.range(0.2, 0.42))], [1, 'rgba(106,67,34,0)']]); g.fillRect(x - rr, y - rr, rr * 2, rr * 2);
+    }
+    // browned edges, then a thin lit rim along the top / left and a dark one along the bottom / right (the sheet's thickness)
+    g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath();
+    g.strokeStyle = 'rgba(70,40,15,0.07)'; g.lineWidth = 16; g.stroke(); g.lineWidth = 7; g.stroke();
+    g.save(); g.translate(1.1, 1.3); g.strokeStyle = 'rgba(255,250,236,0.5)'; g.lineWidth = 1.6; g.stroke(); g.restore();
+    g.save(); g.translate(-1.1, -1.3); g.strokeStyle = 'rgba(40,20,8,0.34)'; g.lineWidth = 1.6; g.stroke(); g.restore();
+    g.restore();
+  });
+}
+
+function build() {
+  const c = L.makeCanvas(S, S), g = c.getContext('2d');
+  const G = K.GLYPH;
+  // the mount: dark brown laid paper
+  g.drawImage(K.paper({ base: '#3a2a1e', tone: '#150c06', seed: 'g12mount', fiber: 0.7, stain: 0.6, foxing: 0.1, edge: 0.3 }), 0, 0);
+  const rm = L.rng('g12laid');
+  for (let y = 2; y < S; y += 4.5) { g.strokeStyle = `rgba(255,225,190,${rm.range(0.02, 0.05).toFixed(3)})`; g.lineWidth = 1; g.beginPath(); g.moveTo(0, y + rm.range(-0.3, 0.3)); g.lineTo(S, y + rm.range(-0.3, 0.3)); g.stroke(); }
+  for (let x = 40; x < S; x += 96) { g.strokeStyle = 'rgba(20,10,4,0.16)'; g.lineWidth = 1.6; g.beginPath(); g.moveTo(x, 0); g.lineTo(x + 1.5, S); g.stroke(); }
+
+  // the pile of slips
+  const tex = K.paper({ base: '#f3efe6', tone: '#7d6a4c', seed: 'g12tex', fiber: 0.95, stain: 0.45, foxing: 0.35, edge: 0 });
+  const top = L.makeCanvas(S, S), t = top.getContext('2d');
+  t.fillStyle = '#e6dac0'; t.fillRect(0, 0, S, S);
+  const r = L.rng('g12slips');
+  const KINDS = ['border', 'ruled', 'diaper', 'fleck', 'border', 'ruled'];
+  let last = -1, n = 0;
+  const pick = () => { let i; do { i = r.int(0, PAL.length - 1); } while (i === last); last = i; return PAL[i]; };
+  const SH = { dx: 3, dy: 5, blur: 7, color: 'rgba(38,20,8,0.45)' };
+  // bottom course: big sheets on a loose grid, so no gap is left anywhere
+  for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) {
+    const w = r.range(250, 320), h = r.range(340, 430), rot = r.range(-0.16, 0.16) + (r.chance(0.3) ? Math.PI / 2 : 0);
+    K.stamp(t, makeSlip(w, h, pick(), r.pick(KINDS), 'g12a' + n++, tex), 135 + i * 270 + r.range(-40, 40), 135 + j * 270 + r.range(-40, 40), { rot, shadow: SH });
+  }
+  // upper courses: narrower slips thrown over them, kept apart so each shows
+  const pts = [];
+  for (let k = 0; k < 4000 && pts.length < 30; k++) {
+    const x = r.range(-20, S + 20), y = r.range(-20, S + 20);
+    if (pts.every((p) => Math.hypot(p[0] - x, p[1] - y) > 165)) pts.push([x, y]);
+  }
+  for (const [x, y] of pts) {
+    const w = r.range(150, 215), h = r.range(250, 380), rot = r.range(-0.5, 0.5) + (r.chance(0.35) ? Math.PI / 2 : 0);
+    K.stamp(t, makeSlip(w, h, pick(), r.pick(KINDS), 'g12b' + n++, tex), x, y, { rot, shadow: SH });
+  }
+  // cut the coin through the whole pile
+  t.save(); t.globalCompositeOperation = 'destination-out'; K.fillGlyph(t, '#000', { corner: 3 }); t.restore();
+
+  // pile onto the mount: a deep shadow under the upper-left lip, a tight contact shadow, then the lit cut edge on the lower-right wall
+  g.save(); g.shadowColor = 'rgba(8,4,0,0.62)'; g.shadowBlur = 16; g.shadowOffsetX = 7; g.shadowOffsetY = 10; g.drawImage(top, 0, 0); g.restore();
+  g.save(); g.shadowColor = 'rgba(8,4,0,0.55)'; g.shadowBlur = 4; g.shadowOffsetX = 2; g.shadowOffsetY = 3; g.drawImage(top, 0, 0); g.restore();
+  g.save(); K.clipGlyph(g, { corner: 3 });
+  g.translate(-1.5, -1.8); g.lineJoin = 'round';
+  g.strokeStyle = 'rgba(246,234,208,0.85)'; g.lineWidth = 2.4; K.strokeGlyph(g, { corner: 3 });
+  g.translate(-1.6, -1.9); g.strokeStyle = 'rgba(150,110,70,0.55)'; g.lineWidth = 1.2; K.strokeGlyph(g, { corner: 3 });
+  g.restore();
+  return c;
+}
+
+export default {
+  name: '彩笺·留白',
+  init() { layer = build(); },
+  draw(ctx) { ctx.drawImage(layer, 0, 0); },   // a 3-frame flash: perfectly still
+};
