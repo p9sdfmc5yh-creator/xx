@@ -894,8 +894,9 @@ def _over_tile(rgb, tile, x0, y0, linear):
 def _text_blocks(text):
     """Split a full-frame straight-alpha text layer into blocks (one per line / group of glyphs):
     list of (tile RGBA, x0, y0).  Glyph bodies (alpha above a quarter of the layer's peak) closer
-    than ~3 % of the width horizontally and ~0.6 % vertically form one block; soft halos / shadows
-    go to the nearest block.  So a title and a caption get their own depth."""
+    than ~8 % of the width horizontally and ~0.6 % vertically form one block (= one line of
+    text, however widely tracked); soft halos / shadows go to the nearest block.  So a title
+    and a caption get their own depth, the characters of one line always share theirs."""
     H, W = text.shape[:2]
     al = text[..., 3]
     peak = float(al.max())
@@ -907,7 +908,7 @@ def _text_blocks(text):
     ap[:H, :W] = al
     small = ap.reshape(Hq, q, Wq, q).max(axis=(1, 3))         # 1/8-scale max alpha
     core = (small > 0.25 * peak).astype(np.uint8)
-    kx, ky = int(0.03 * W / q) | 1, int(0.006 * W / q) | 1
+    kx, ky = int(0.08 * W / q) | 1, int(0.006 * W / q) | 1
     n, lab = cv2.connectedComponents(cv2.dilate(core, np.ones((ky, kx), np.uint8)))
     if n > 2:                                                 # every pixel -> its nearest block
         _, near = cv2.distanceTransformWithLabels((lab == 0).astype(np.uint8), cv2.DIST_L2, 3,

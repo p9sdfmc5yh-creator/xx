@@ -153,7 +153,7 @@ def wax_material():
     cap, rim, dep, wet = m.attr('cap'), m.attr('rim'), m.attr('dep'), m.attr('wet')
     n1 = m.noise(scale=170, detail=3, roughness=0.6, vector=P)
     n2 = m.noise(scale=1500, detail=3, roughness=0.6, vector=P)
-    rimc = m.mix((0.52, 0.30, 0.050), (0.66, 0.44, 0.105), m.map_range(n1, 0.3, 0.7))
+    rimc = m.mix((0.57, 0.345, 0.062), (0.70, 0.485, 0.130), m.map_range(n1, 0.3, 0.7))
     col = m.mix(rimc, (0.44, 0.205, 0.024), m.map_range(dep, 0.04, 0.55, 0.0, 0.9, smooth=True))
     col = m.hsv(col, 0.5, 1.0, m.map_range(m.attr('crnd'), 0, 1, 0.88, 1.08))
     capc = m.mix((0.62, 0.50, 0.27), (0.74, 0.65, 0.43), m.map_range(n1, 0.3, 0.7))
@@ -300,7 +300,7 @@ def main():
     T = np.array(info['target'], float)
     el = math.radians(35.0)
     panel = C._area_light('sheen', T + 2.6 * sc_w * np.array([0.10, math.cos(el), math.sin(el)]), T, 2.4 * sc_w,
-                          60.0 * sc_w ** 2, (1.0, 0.93, 0.80), shape='RECTANGLE')
+                          24.0 * sc_w ** 2, (1.0, 0.84, 0.58), shape='RECTANGLE')
 
     C.render(args)
     if not args.region:
