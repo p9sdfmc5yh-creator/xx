@@ -156,11 +156,11 @@ def leaf_material(tex_path=None, dried=False):
     else:
         col = m.mix((0.014, 0.068, 0.040), (0.034, 0.112, 0.040), m.map_range(n_big, 0.28, 0.72, smooth=True))   # blue-green .. mid green
         col = m.hsv(col, 0.5, 1.0, m.map_range(n_mid, 0.25, 0.75, 0.84, 1.14))
-        vcol, acol, bcol = (0.185, 0.30, 0.095), (0.050, 0.135, 0.052), (0.046, 0.128, 0.047)
+        vcol, acol, bcol = (0.150, 0.262, 0.082), (0.050, 0.135, 0.052), (0.046, 0.128, 0.047)
     col = m.mix(col, bcol, m.math('MULTIPLY', broad, 0.55))
     col = m.mix(col, acol, m.math('ADD', m.math('MULTIPLY', are, 0.40), m.math('MULTIPLY', are2, 0.12)))
     vmask = m.map_range(vein, 0.18, 0.75, 0.0, 1.0, smooth=True)
-    col = m.mix(col, vcol, m.math('MULTIPLY', vmask, 0.88))
+    col = m.mix(col, m.hsv(vcol, 0.5, 1.0, m.map_range(n_mid, 0.25, 0.75, 0.80, 1.15)), m.math('MULTIPLY', vmask, 0.84))
     col = m.mix(col, (0.30, 0.34, 0.060) if not dried else (0.16, 0.10, 0.03), m.math('MULTIPLY', rimk, 0.62))     # thin yellow-green margin
     speck = m.map_range(m.noise(scale=950, detail=2, vector=lp), 0.74, 0.80, 0.0, 0.5)             # dust / tiny blemishes
     col = m.mix(col, (0.20, 0.21, 0.13), speck)
@@ -237,18 +237,19 @@ def add_droplets(pos, nrm, h, X, Y, sol, rng, caustics):
     xmin, xmax, ymin, ymax = sol['patch']
     water = water_material(shadow_transparent=not caustics)
     px, py = pos[:, 0], pos[:, 1]
-    zone = (np.abs(px) < 0.27 * (xmax - xmin)) & (py > ymin + 0.30 * (Y_RIM0 - ymin)) & (py < Y_RIM0 - 0.050)
+    zone = (np.abs(px) < 0.27 * (xmax - xmin)) & (py > ymin + 0.10 * (Y_RIM0 - ymin)) & (py < Y_RIM0 - 0.018)
     idx = np.flatnonzero(zone)
-    idx = idx[rng.choice(len(idx), size=min(60000, len(idx)), replace=False)]
-    order = idx[np.argsort(h[idx])]
-    radii = [0.0064, 0.0046, 0.0036, 0.0052, 0.0027, 0.0031, 0.0021, 0.0040, 0.0018, 0.0024]
-    chosen = []
-    for i in order[:len(order) // 3]:
-        if len(chosen) == len(radii):
-            break
-        a = radii[len(chosen)]
-        if all(np.hypot(px[i] - px[j], py[i] - py[j]) > 3.2 * (a + radii[k]) + 0.012 for k, j in enumerate(chosen)):
-            chosen.append(int(i))
+    idx = idx[rng.choice(len(idx), size=min(90000, len(idx)), replace=False)]
+    # composition (leaf-plane x, y, bead radius); every bead then rolls into the nearest hollow
+    targets = [(-0.020, -0.062, 0.0062), (0.034, -0.047, 0.0046), (-0.050, -0.028, 0.0034), (0.013, -0.021, 0.0026),
+               (0.060, -0.079, 0.0038), (-0.056, -0.086, 0.0044), (0.041, -0.010, 0.0020), (-0.027, -0.006, 0.0017),
+               (0.004, -0.045, 0.0015)]
+    radii, chosen = [], []
+    for tx, ty, a in targets:
+        near = idx[np.hypot(px[idx] - tx, py[idx] - ty) < 0.008]
+        if len(near):
+            chosen.append(int(near[np.argmin(h[near])]))
+            radii.append(a)
     objs = []
     for k, i in enumerate(chosen):
         v, f, c = _bead(radii[k], 300 + k)
@@ -259,13 +260,13 @@ def add_droplets(pos, nrm, h, X, Y, sol, rng, caustics):
     # tiny droplets: spheres, a loose sprinkle + satellites near the big beads
     v, f, _ = _bead(1.0, 7, nu=24, nv=32)
     v[:, 2] -= v[:, 2].min()
-    tiny = C.mesh_from_arrays('tiny_bead', v, f, material=water)
-    ti = list(idx[rng.choice(len(idx), size=46, replace=False)])
+    tiny = C.mesh_from_arrays('tiny_bead', v, f, material=water_material(True))
+    ti = list(idx[rng.choice(len(idx), size=14, replace=False)])
     for i in chosen:
-        near = idx[np.hypot(px[idx] - px[i], py[idx] - py[i]) < 0.022]
-        ti += list(near[rng.choice(len(near), size=min(4, len(near)), replace=False)])
+        near = idx[np.hypot(px[idx] - px[i], py[idx] - py[i]) < 0.020]
+        ti += list(near[rng.choice(len(near), size=min(3, len(near)), replace=False)])
     ti = np.array([i for i in ti if all(np.hypot(px[i] - px[j], py[i] - py[j]) > radii[k] * 1.25 + 0.0012 for k, j in enumerate(chosen))])
-    rad = np.clip(rng.lognormal(math.log(0.00050), 0.5, len(ti)), 0.00018, 0.0014)
+    rad = np.clip(rng.lognormal(math.log(0.00075), 0.45, len(ti)), 0.00035, 0.0015)
     qn = np.tile(np.array([[1.0, 0, 0, 0]]), (len(ti), 1))
     C.instance_on_points('tiny_beads', [tiny], loc=pos[ti] - nrm[ti] * (0.10 * rad)[:, None], quat=qn, scale=rad, var=np.zeros(len(ti), int))
     print('[droplets] %d beads, %d tiny' % (len(objs), len(ti)))
@@ -363,10 +364,10 @@ def main():
     und = 0.0024 * C.fbm3(P3 * 7.0 + 1.3, 2, seed=args.seed + 1) + 0.0005 * C.fbm3(P3 * 26.0, 2, seed=args.seed + 2)
     edge = C.smoothstep(0.80, 1.0, t)
     arc = phi * R_LEAF
-    ruf = (0.0021 * np.sin(arc * (2 * math.pi / 0.082) + 0.6 + 1.3 * np.sin(arc * (2 * math.pi / 0.23)))
+    ruf = (0.0026 * np.sin(arc * (2 * math.pi / 0.082) + 0.6 + 1.3 * np.sin(arc * (2 * math.pi / 0.23)))
            + 0.0005 * np.sin(arc * (2 * math.pi / 0.033) + 1.9)) * edge ** 2 - 0.0010 * edge ** 2
     broad = np.exp(-(d / (6.0 * hw + 0.0016)) ** 2)
-    h = und + ruf + 0.00040 * (broad - 0.45) + 0.00007 * np.exp(-(d / hw) ** 2)
+    h = und + ruf + 0.00040 * (broad - 0.45) * (1.0 - 0.75 * edge) + 0.00007 * np.exp(-(d / hw) ** 2)
     pos = nrm * (R + h)[:, None]
     rim_d = (1.0 - t) * (R_LEAF - fan.r_min)
     attrs = dict(lp=P3, rimk=(1.0 - C.smoothstep(0.0003, 0.0045, rim_d)).astype(np.float32))
@@ -377,7 +378,7 @@ def main():
 
     cam, info = C.planet_camera(R + 0.0008, lens_mm=85, apex=APEX, edge=EDGE)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    L = C.studio_lights(info, tint=(0.86, 1.0, 0.93), key=0.80, fill=0.55, rim=1.0, world=0.0, key_size=0.9, top=0.25)
+    L = C.studio_lights(info, tint=(0.86, 1.0, 0.93), key=0.85, fill=0.40, rim=1.0, world=0.0, key_size=0.9, top=0.15)
     # Sky for the water only: a bead is a lens - against a black world it turns into a black marble.
     # Glossy / transmission rays see a soft bright overcast dome, diffuse shading sees a dim one.
     wd = bpy.data.worlds.new('pond_sky')

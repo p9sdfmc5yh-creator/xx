@@ -22,7 +22,7 @@ from _botanicals import C, rot, merge_parts, hair_tubes, settle, finish         
 SHOT = 'k13_luohanguo'
 SEED = 2
 R_FRUIT = 0.0285
-N_HAIR = 36000
+N_HAIR = 13000
 SKY_TINT = (1.0, 0.92, 0.70)      # golden-yellow sky of the shot
 _p = np.array([-0.10, -math.sin(math.radians(37)), math.cos(math.radians(37))])
 POLE = _p / np.linalg.norm(_p)    # stem pole: 37 deg from the top towards the camera = just below the frame
@@ -48,10 +48,10 @@ def shell_relief(d, R, pole, seed, n_lines=9, fine=True):
     k = np.abs(dl).argmin(-1)
     dist = R * np.sin(th) * np.abs(np.take_along_axis(dl, k[..., None], -1)[..., 0])
     fadeL = 0.55 + 0.45 * np.clip(0.5 + 1.2 * C.perlin3(p / 0.008 + 11.0, seed + 2), 0, 1)
-    line = sk[k] * fadeL * (0.75 * np.exp(-(dist / 0.00026) ** 2) + 0.25 * np.exp(-(dist / 0.0009) ** 2))
+    line = sk[k] * fadeL * (0.60 * np.exp(-(dist / 0.00040) ** 2) + 0.40 * np.exp(-(dist / 0.0013) ** 2))
     scar = C.smoothstep(0.085, 0.060, th)
     h = 0.00030 * C.fbm3(p / 0.009, 3, seed=seed + 3) - 0.00035 * C.smoothstep(0.15, 0.55, C.perlin3(p / 0.013 + 5.0, seed + 4))
-    h = h - 0.000045 * line + 0.00012 * scar * (0.5 + C.perlin3(p / 0.0006, seed + 5))
+    h = h - 0.000070 * line + 0.00012 * scar * (0.5 + C.perlin3(p / 0.0006, seed + 5))
     pit = np.zeros_like(th)
     if fine:
         q = p.reshape(-1, 3)
@@ -86,7 +86,7 @@ def shell_material():
     col = m.mix(col, (0.048, 0.023, 0.010), m.map_range(med, 0.56, 0.78, 0.0, 0.70, smooth=True))
     col = m.mix(col, (0.270, 0.165, 0.052), m.map_range(med, 0.44, 0.22, 0.0, 0.45, smooth=True))
     col = m.mix(col, (0.66, 0.62, 0.58), m.map_range(fine, 0.40, 0.72), blend='MULTIPLY')
-    col = m.mix(col, (0.048, 0.023, 0.011), m.math('MULTIPLY', line, 0.60))
+    col = m.mix(col, (0.040, 0.019, 0.009), m.math('MULTIPLY', line, 0.88))
     col = m.mix(col, (0.028, 0.014, 0.008), m.math('MULTIPLY', pit, 0.75))
     sp = m.map_range(m.voronoi(scale=2500, feature='F1', vector=P), 0.05, 0.11, 1.0, 0.0, smooth=True)
     col = m.mix(col, (0.36, 0.25, 0.10), m.math('MULTIPLY', sp, 0.45))
@@ -97,7 +97,7 @@ def shell_material():
     nrm = m.bump(m.noise(scale=9500, detail=3, roughness=0.6, vector=P), strength=0.5, distance=0.000012)
     nrm = m.bump(fine, strength=0.35, distance=0.00002, normal=nrm)
     nrm = m.bump(sp, strength=0.4, distance=0.000012, normal=nrm)
-    m.set(base_color=col, roughness=rough, ior=1.5, specular=0.28, sheen=0.55, sheen_roughness=0.45, normal=nrm)
+    m.set(base_color=col, roughness=rough, ior=1.5, specular=0.22, sheen=0.14, sheen_roughness=0.45, normal=nrm)
     try:
         m.set(**{'Sheen Tint': (1.0, 0.86, 0.58, 1.0)})
     except Exception:
@@ -110,8 +110,8 @@ def fuzz_material():
     m = C.Mat('lhg_fuzz')
     tv = m.attr('tv')
     r = m.attr('hr')
-    col = m.mix((0.50, 0.36, 0.15), (0.74, 0.60, 0.33), tv)
-    col = m.mix(col, (0.30, 0.19, 0.07), m.map_range(r, 0.75, 1.0, 0.0, 0.7))
+    col = m.mix((0.30, 0.19, 0.07), (0.56, 0.41, 0.17), tv)
+    col = m.mix(col, (0.16, 0.09, 0.035), m.map_range(r, 0.6, 1.0, 0.0, 0.8))
     m.set(base_color=col, roughness=0.5, specular=0.3)
     tr = m.node('ShaderNodeBsdfTranslucent', {'Color': m.mix(col, (1.0, 0.82, 0.45), 1.0, blend='MULTIPLY')})
     mix = m.node('ShaderNodeMixShader', {0: 0.4, 1: m.bsdf.outputs[0], 2: tr.outputs[0]})
@@ -192,16 +192,16 @@ def main():
     tang = np.cross(nn, rng.normal(size=(N_HAIR, 3)))
     tang /= np.linalg.norm(tang, axis=1, keepdims=True)
     dirs = nn * rng.uniform(0.25, 1.1, N_HAIR)[:, None] + tang
-    ln = rng.uniform(0.00010, 0.00034, N_HAIR)
+    ln = rng.uniform(0.00007, 0.00024, N_HAIR)
     ln = np.where(rng.random(N_HAIR) < 0.05, ln * 1.6, ln)
-    hv, hf, tv = hair_tubes(rng, verts[idx] - nn * 0.000008, dirs, ln, rng.uniform(0.0000042, 0.0000066, N_HAIR),
+    hv, hf, tv = hair_tubes(rng, verts[idx] - nn * 0.000008, dirs, ln, rng.uniform(0.0000032, 0.0000052, N_HAIR),
                             bend=0.45, nr=5, nseg=3)
     C.mesh_from_arrays('fuzz', hv, hf, material=fuzz_material(),
                        attrs=dict(tv=tv, hr=np.repeat(rng.random(N_HAIR), 15)))
 
     cam, info = C.planet_camera(R_FRUIT + float(np.percentile(h, 99)) * 0.7, apex=0.535, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=2.5)
-    C.studio_lights(info, tint=SKY_TINT, key=0.9, fill=0.7, rim=1.2, world=1.0, key_size=1.0)
+    C.studio_lights(info, tint=SKY_TINT, key=0.85, fill=0.60, rim=1.0, world=0.7, key_size=1.0)
     finish(args, SHOT)
 
 

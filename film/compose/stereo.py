@@ -685,7 +685,7 @@ def _warp_map_right(D, cut):
         holes = dict(idx=hidx, row0=row0[rid], c0=np.rint(ub[rid]).astype(np.int64),
                      cm=np.rint(um).astype(np.int64), lo=lo[rid].astype(np.int64),
                      hi=hi[rid].astype(np.int64), t=t, xo=xo[rid].astype(np.int64),
-                     beta=beta[rid], tau=tau)
+                     sg=np.where(useR, 1, -1).astype(np.int64)[rid], beta=beta[rid], tau=tau)
     return u.reshape(H, W), holes
 
 
@@ -703,6 +703,7 @@ def _warp_map(D, eye, cut):
         holes['cm'] = (W - 1) - holes['cm']
         holes['lo'], holes['hi'] = (W - 1) - holes['hi'], (W - 1) - holes['lo']
         holes['xo'] = (W - 1) - holes['xo']
+        holes['sg'] = -holes['sg']
         o = np.argsort(holes['idx'], kind='stable')
         holes = {k: v[o] for k, v in holes.items()}
     return np.ascontiguousarray(u), holes
@@ -741,8 +742,18 @@ def _hole_base_correction(out, src, holes, radius, min_t=1.5):
         row0 = holes['row0'][br]
         beta = holes['beta'][br][:, None]
         tau = holes['tau'][br][:, None]
-        edge = s2[row0 + np.clip(holes['c0'][br], 0, W - 1)]
-        other = s2[row0 + holes['xo'][br]]
+        lo = holes['lo'][br]
+        hi = np.maximum(holes['hi'][br], lo)
+        c0 = np.clip(holes['c0'][br], lo, hi)
+        xo, sg = holes['xo'][br], holes['sg'][br]
+        n = max(1, radius) + 1                                # short one-sided means: no streaks
+        edge = np.zeros((idx.size, C), np.float32)
+        other = np.zeros((idx.size, C), np.float32)
+        for o in range(n):
+            edge += s2[row0 + np.clip(c0 + sg * o, lo, hi)]
+            other += s2[row0 + np.clip(xo - sg * o, 0, W - 1)]
+        edge *= np.float32(1.0 / n)
+        other *= np.float32(1.0 / n)
         o2[idx] = o2[idx] * (1.0 - beta) + (edge + tau * (other - edge)) * beta
 
 
