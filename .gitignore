@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+film/assets/fonts/
+film/tmp/
+*.blend1
