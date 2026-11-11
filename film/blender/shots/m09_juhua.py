@@ -26,7 +26,7 @@ import common as C                                                              
 
 SHOT = 'm09_juhua'
 R_DOME = 0.42             # bare dome radius -> a 25 mm head is ~170 px (1920 frame) at the horizon
-SEED = 0                  # default heap seed (chosen by a framing scan)
+SEED = 3                  # default heap seed (chosen by a framing scan)
 N_UP, N_FLIP = 7, 2       # head mesh variants built face-up / built upside-down (involucre showing)
 SKY_TINT = (0.80, 0.87, 1.0)   # navy night sky of the shot -> cool fill / rim
 
