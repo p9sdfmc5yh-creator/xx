@@ -106,10 +106,10 @@ def make_jujube(seed, L=None, Dm=None, nu=440, nv=300, window=None, cell=None, s
     warp = 1.5 * np.stack([C.perlin3(qa / 6.0 + 7.1, sd + 1), C.perlin3(qa / 6.0 + 3.7, sd + 2),
                            C.perlin3(qa / 6.0 + 9.4, sd + 3)], -1)
     qw = qa + warp
-    how = 0.30 + 0.70 * C.smoothstep(-0.28, 0.22, C.perlin3(q / 10.0 + 21.0, sd + 4))     # where it shrivelled most
+    how = 0.52 + 0.48 * C.smoothstep(-0.28, 0.22, C.perlin3(q / 10.0 + 21.0, sd + 4))     # where it shrivelled most
     F1 = np.abs(C.perlin3(qw / 3.7, sd + 10)) ** 0.55                 # broad taut pillows, sharp V creases
     F2 = np.abs(C.perlin3(qw / 1.55 + 5.0, sd + 11)) ** 0.62          # secondary folds
-    F2b = np.abs(C.perlin3(qw / 0.80 + 31.0, sd + 18)) ** 0.70        # tertiary wrinkles (everywhere, like aged skin)
+    F2b = np.abs(C.perlin3(qw / 0.80 + 31.0, sd + 18)) ** 0.60        # tertiary wrinkles (everywhere, like aged skin)
     rg = (1.0 - np.abs(C.perlin3(qw / 5.2 + 9.0, sd + 12))) ** 10     # thin pinched ridges of excess skin
     rmask = C.smoothstep(-0.05, 0.30, C.perlin3(q / 8.0 + 3.0, sd + 13))
     lump = C.fbm3(q / 13.0 + 7.0, 2, seed=sd + 14)
@@ -117,18 +117,18 @@ def make_jujube(seed, L=None, Dm=None, nu=440, nv=300, window=None, cell=None, s
     ridge = rg * rmask
     h = (0.9 * lump - 1.1 * dent
          + shrivel * (0.95 * how * (F1 - 0.45) + 0.42 * how * (F2 - 0.42)
-                      + 0.12 * (0.35 + 0.65 * how) * (F2b - 0.45) + 0.14 * ridge))
+                      + 0.17 * (0.35 + 0.65 * how) * (F2b - 0.45) + 0.12 * ridge))
     cav = how * ((1.0 - C.smoothstep(0.0, 0.46, F1)) * 0.95 + (1.0 - C.smoothstep(0.0, 0.36, F2)) * 0.50)
     cav = cav + (0.35 + 0.65 * how) * (1.0 - C.smoothstep(0.0, 0.30, F2b)) * 0.22
     cav = np.clip(cav, 0.0, 1.0)
     # fine crinkles: live on the flanks / in the creases, the pillow tops stay taut and glossy
     qf = q * np.array([0.42, 1.0, 1.0]) + 2.2 * warp
     F3 = np.abs(C.perlin3(qf / 0.72 + 13.0, sd + 16)) ** 0.7
-    fmask = np.clip(0.18 + 1.0 * cav, 0.0, 1.0) * how
-    h = h + shrivel * 0.085 * fmask * (F3 - 0.5)
+    fmask = np.clip(0.42 + 0.8 * cav, 0.0, 1.0) * how
+    h = h + shrivel * 0.10 * fmask * (F3 - 0.5)
     if cell is not None and cell < 0.00007:                           # only the dense hero mesh can carry these
         F4 = C.perlin3(qf / 0.27 + 17.0, sd + 17)
-        h = h + 0.014 * F4 * (0.35 + 0.65 * fmask)
+        h = h + 0.020 * F4 * (0.35 + 0.65 * fmask)
     env = 0.30 + 0.70 * C.smoothstep(0.0, 0.55, R0 / b)               # calmer at the two poles
     h = h * env
     P = P0 + N0 * (h * MM)[..., None]
@@ -178,10 +178,10 @@ def jujube_material(sss_method='BURLEY', name='jujube_skin'):
     P = m.per_instance_coords()
     n_big = m.noise(scale=95, detail=3, roughness=0.55, vector=P)           # ~1 cm ripeness / sun patches
     n_mid = m.noise(scale=520, detail=4, roughness=0.6, vector=P)           # ~2 mm mottle
-    crest = m.mix((0.105, 0.0048, 0.0060), (0.215, 0.0115, 0.0085), m.map_range(n_mid, 0.30, 0.72))
+    crest = m.mix((0.080, 0.0034, 0.0055), (0.165, 0.0072, 0.0075), m.map_range(n_mid, 0.30, 0.72))
     crest = m.mix(crest, (0.042, 0.0034, 0.0050), m.map_range(n_big, 0.53, 0.72, 0.0, 0.80, smooth=True))
-    crest = m.mix(crest, (0.270, 0.0260, 0.0100), m.map_range(n_big, 0.42, 0.24, 0.0, 0.45, smooth=True))
-    col = m.mix(crest, (0.018, 0.0018, 0.0030), m.map_range(cav, 0.10, 0.90, 0.0, 0.92, smooth=True))
+    crest = m.mix(crest, (0.230, 0.0170, 0.0090), m.map_range(n_big, 0.42, 0.24, 0.0, 0.45, smooth=True))
+    col = m.mix(crest, (0.012, 0.0012, 0.0024), m.map_range(cav, 0.10, 0.90, 0.0, 0.94, smooth=True))
     col = m.mix(col, (0.300, 0.0280, 0.0110), m.math('MULTIPLY', ridge, 0.35))
     col = m.jitter(col, hue=0.010, saturation=0.08, value=0.20)
     col = m.mix(col, (0.050, 0.0080, 0.0060), m.math('MULTIPLY', m.attr('dark', 'INSTANCER'), 0.7))
@@ -192,7 +192,7 @@ def jujube_material(sss_method='BURLEY', name='jujube_skin'):
     dot = m.map_range(vd, m.math('MULTIPLY', rad, 0.45), rad, 1.0, 0.0)
     dot = m.math('MULTIPLY', dot, m.math('GREATER_THAN', vc.outputs[0], 0.56))
     dot = m.math('MULTIPLY', dot, m.map_range(cav, 0.2, 0.7, 1.0, 0.15))
-    col = m.mix(col, (0.330, 0.150, 0.065), m.math('MULTIPLY', dot, 0.72))
+    col = m.mix(col, (0.420, 0.220, 0.100), m.math('MULTIPLY', dot, 0.85))
     # dust: tiny pale specks gathering in the creases
     dn = m.noise(scale=15000, detail=2, roughness=0.5, vector=P)
     dz = m.noise(scale=240, detail=2, roughness=0.5, vector=P)
@@ -209,7 +209,7 @@ def jujube_material(sss_method='BURLEY', name='jujube_skin'):
     # roughness: satin base broken by noise, rubbed dull patches, matte creases / lenticels / scars
     rn = m.noise(scale=900, detail=4, roughness=0.65, vector=P)
     scuff = m.map_range(m.noise(scale=230, detail=3, roughness=0.6, vector=P), 0.54, 0.74, smooth=True)
-    rough = m.math('ADD', m.map_range(rn, 0.28, 0.72, 0.22, 0.40), m.math('MULTIPLY', scuff, 0.13))
+    rough = m.math('ADD', m.map_range(rn, 0.28, 0.72, 0.30, 0.50), m.math('MULTIPLY', scuff, 0.13))
     crease = m.map_range(cav, 0.25, 0.90)
     rough = m.mixf(rough, 0.60, crease)
     rough = m.mixf(rough, 0.62, dot)
@@ -219,18 +219,20 @@ def jujube_material(sss_method='BURLEY', name='jujube_skin'):
     coat = m.math('MULTIPLY', m.map_range(crease, 0.0, 1.0, 0.70, 0.10),
                   m.math('MULTIPLY', m.map_range(dot, 0, 1, 1.0, 0.1), m.map_range(scuff, 0, 1, 1.0, 0.45)))
     coat = m.math('MULTIPLY', coat, m.map_range(m.math('MAXIMUM', scar, m.attr('halo')), 0, 1, 1.0, 0.2))
-    coat_rough = m.map_range(rn, 0.25, 0.75, 0.045, 0.14)
+    coat_rough = m.map_range(rn, 0.25, 0.75, 0.025, 0.095)
 
     # micro relief (below the mesh resolution): stretched crinkle, orange-peel dimples, raised lenticels
     Ps = m.mapping(P, scale=(0.30, 1.0, 1.0))
     crinkle = m.noise(scale=2400, detail=3, roughness=0.65, vector=Ps)
     nrm = m.bump(crinkle, strength=m.map_range(cav, 0.0, 0.8, 0.22, 0.85), distance=0.00006)
     peel = m.noise(scale=7500, detail=2, roughness=0.55, vector=P)
-    nrm = m.bump(peel, strength=0.40, distance=0.000014, normal=nrm)
+    nrm = m.bump(peel, strength=0.55, distance=0.000016, normal=nrm)
+    grain = m.noise(scale=21000, detail=2, roughness=0.6, vector=P)
     nrm = m.bump(m.math('ADD', dot, dust), strength=0.6, distance=0.000016, normal=nrm)
     cnrm = m.bump(crinkle, strength=m.map_range(cav, 0.0, 0.8, 0.10, 0.45), distance=0.00006)
-    cnrm = m.bump(peel, strength=0.25, distance=0.000014, normal=cnrm)
-    m.set(base_color=col, roughness=rough, ior=1.46, specular=0.50,
+    cnrm = m.bump(peel, strength=0.50, distance=0.000016, normal=cnrm)
+    cnrm = m.bump(grain, strength=0.35, distance=0.000006, normal=cnrm)
+    m.set(base_color=col, roughness=rough, ior=1.46, specular=0.36,
           sss=0.45, sss_radius=(1.0, 0.11, 0.06), sss_scale=0.0012, sss_anisotropy=0.0,
           coat=coat, coat_roughness=coat_rough, coat_ior=1.5, coat_normal=cnrm, normal=nrm)
     return m
@@ -437,7 +439,7 @@ def main():
     g = C.dome_base(0.6, C.simple_material('ground', (0.030, 0.008, 0.006), 0.9), center=(0, 0, -0.625))
 
     # 4. light: big soft key 3/4 back-left, cream-tinted fill from the camera side, low rim back-right
-    C.studio_lights(info, tint=(1.0, 0.955, 0.88), key=0.95, fill=0.7, rim=1.1, world=0.65, key_size=0.9)
+    C.studio_lights(info, tint=(1.0, 0.955, 0.88), key=1.05, fill=0.55, rim=1.2, world=0.5, key_size=0.5)
 
     # 5. render, framing check, judging composite
     C.render(args)

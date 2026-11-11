@@ -166,6 +166,44 @@ def stem_material():
     return m
 
 
+# ----------------------------------------------------------------------------- loose items (version B flat-lay)
+def make_items(seed=0, n=N_VARIANTS):
+    """Loose dried goji berries for the top-down flat-lay (film/blender/flatlay.py).
+
+    Template objects at real-world scale (metres), each lying on its flat side the way a dropped
+    berry comes to rest (long axis X, small random roll), lowest point of the skin on z = 0, origin
+    at the footprint centre.  The last two variants keep a short stem that lies on the ground.
+    Same mesh / material builders as the hero heap (seed 0 = the hero's nine berries).
+    -> dict(objects, footprint_r [m], half_height [m], name) + optional keys understood by
+    flatlay.py: weights (variant probabilities), inst_attrs (per-instance shader attributes)."""
+    skin, stem = goji_material(), stem_material()
+    rng = np.random.default_rng(7000 + seed)
+    objs, foot, hh = [], [], []
+    for i in range(n):
+        parts, attrs, half = make_berry(i + 50 * seed, with_stem=(i >= n - 2))
+        roll = math.radians(rng.normal(0, 7.0))                     # resting pose: flat side down, a little rocked
+        c, s = math.cos(roll), math.sin(roll)
+        Rx = np.array([[1, 0, 0], [0, c, -s], [0, s, c]])
+        parts = [(np.asarray(v, float) @ Rx.T, f, slot) for v, f, slot in parts]
+        sv = parts[0][0]
+        z0 = sv[:, 2].min()
+        cxy = 0.5 * (sv[:, :2].max(0) + sv[:, :2].min(0))
+        out = []
+        for v, f, slot in parts:
+            v = v - np.array([cxy[0], cxy[1], z0])
+            if slot == 1:                                           # the dry stem droops onto the ground, never through it
+                v[:, 2] = np.maximum(v[:, 2], 0.00030)
+            out.append((v, f, slot))
+        v, f, fm = C.merge_meshes(out)
+        objs.append(C.mesh_from_arrays('gouqi_item_%d' % i, v, f, attrs=attrs, materials=[skin, stem], face_mat=fm))
+        sk = out[0][0]
+        foot.append(float(np.percentile(np.hypot(sk[:, 0], sk[:, 1]), 99.5)))
+        hh.append(float(0.5 * sk[:, 2].max()))
+    return dict(objects=objs, footprint_r=foot, half_height=hh, name='枸杞子',
+                weights=[1.0] * (n - 2) + [0.22, 0.22],
+                inst_attrs={'dark': lambda r, k: (r.random(k) < 0.10) * r.uniform(0.5, 1.0, k)})
+
+
 # ----------------------------------------------------------------------------- build + render
 def main():
     args = C.parse_args()

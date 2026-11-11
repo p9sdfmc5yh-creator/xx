@@ -226,7 +226,7 @@ def slice_item(name, outline, thickness, fields, material, seed=0, nr=110, nth=3
     th = np.linspace(-np.pi, np.pi, nth, endpoint=False)
     ro = outline.r(th)
     fr = np.linspace(0.0, 1.0, nr) ** 0.9
-    fr[0] = 0.003
+    fr[0] = 0.0006
     RO, FR = np.broadcast_arrays(ro[None, :], fr[:, None])
     TH = np.broadcast_to(th[None, :], RO.shape)
     rho = RO * FR
@@ -252,8 +252,7 @@ def slice_item(name, outline, thickness, fields, material, seed=0, nr=110, nth=3
         a_wall = np.repeat(a_top[-1][None], wall_rows, 0)
         attrs[kname] = np.concatenate([a_top, a_wall, a_bot], 0).ravel()
     din_top = d.reshape(nr, nth) * 1000.0
-    din_wall = -np.broadcast_to(t[:, :, 0], (wall_rows, nth)) * thickness * 1000.0
-    din_wall = -np.minimum(-din_wall, (1 - np.broadcast_to(t[:, :, 0], (wall_rows, nth))) * thickness * 1000.0 + 0.05) - 0.05
+    din_wall = -(0.05 + np.broadcast_to(t[:, :, 0], (wall_rows, nth)) * thickness * 1000.0)
     attrs['din'] = np.concatenate([din_top, din_wall, din_top[::-1]], 0).ravel()
     attrs['rn'] = np.concatenate([FR, np.ones((wall_rows, nth)), FR[::-1]], 0).ravel()
     V = V.reshape(-1, 3)
