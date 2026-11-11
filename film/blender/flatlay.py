@@ -1207,12 +1207,12 @@ def make_ground_maps(kind, frame, margin, texel, seed, P):
         drk = np.zeros((h, w), np.uint8)
         A = Wm * Hm
         # (count per m2, length m, width m, intensity, curl)
-        for dens, ln, wd, val, curl in ((2.4e5, (0.0015, 0.005), (0.00003, 0.00007), 0.50, 0.55),
-                                        (4.5e4, (0.004, 0.013), (0.00006, 0.00013), 0.75, 0.38),
-                                        (2.6e3, (0.012, 0.045), (0.00012, 0.00030), 1.00, 0.26)):
+        for dens, ln, wd, val, curl in ((2.6e5, (0.0015, 0.005), (0.00003, 0.00007), 0.45, 0.32),      # felt
+                                        (7.0e4, (0.005, 0.018), (0.00004, 0.00010), 0.70, 0.13),      # fibres
+                                        (7.0e3, (0.020, 0.070), (0.00007, 0.00016), 1.00, 0.07)):     # long kozo strands
             if wd[1] / texel < 0.18:
                 continue
-            _draw_fibres(fib, int(min(dens * A * amt, 9e5)), texel, ln, wd, val, curl, rng)
+            _draw_fibres(fib, int(min(dens * A * amt, 1.2e6)), texel, ln, wd, val, curl, rng, seg=9)
         _draw_fibres(drk, int(min(900 * A * amt, 2e5)), texel, (0.0008, 0.004), (0.00008, 0.00022), 1.0, 0.5, rng)
         nfl = int(min(500 * A * amt, 1e5))                           # bark flecks
         fx, fy = rng.uniform(0, w, nfl), rng.uniform(0, h, nfl)
@@ -1359,7 +1359,7 @@ def build_ground(frame, G_, exposure, seed, tex_px, margin, tag):
         rough = m.map_range(cR, 0, 1, float(G_.get('roughness', 0.66)), float(G_.get('roughness', 0.66)) - 0.20)
         cock = m.noise(scale=1.0 / 0.085, detail=2.0, roughness=0.45, vector=pos)
         nrm = m.bump(cock, strength=1.0, distance=float(G_.get('cockle_m', 0.0022)))
-        nrm = m.bump(cR, strength=0.9, distance=0.00007, normal=nrm)
+        nrm = m.bump(cR, strength=0.8, distance=0.000028, normal=nrm)
         nrm = m.bump(cB, strength=0.5, distance=0.00006, normal=nrm)
         nrm = m.micro_bump(scale=5200, strength=0.55, distance=0.000035, vector=pos, normal=nrm)
         m.set(base_color=base, roughness=rough, specular=float(G_.get('specular', 0.22)), sheen=float(G_.get('sheen', 0.10)),
@@ -1430,7 +1430,17 @@ def window_light(frame, P=None):
     key = C._area_light('key', tuple(d * dist), (0, 0, 0), size, 1.0, P.get('key_color', (1.0, 0.965, 0.915)),
                         shape='RECTANGLE')
     key.data.size_y = size * 0.72
-    key.data.energy = 25.3 * k * dist * dist                         # W; calibrated: key 1.62 + fill 0.30 + ambient 0.08 = LIGHT_E
+    key.data.energy = 25.3 * 0.875 * k * dist * dist                 # W; calibrated: key 1.42 + kicker 0.20 + fill 0.30
+    #                                                                 + ambient 0.08 = LIGHT_E on a white card
+    kk = float(P.get('kicker', 1.0))
+    if kk > 0:
+        # small hard source next to the window: crisp glints on waxy / glossy crests and a defined core in
+        # the contact shadows; only ~10 % of the light, so the paper shows no hotspot
+        az2, el2 = az + math.radians(float(P.get('kicker_daz', -14.0))), math.radians(float(P.get('kicker_el', 52.0)))
+        d2 = np.array([math.cos(az2) * math.cos(el2), math.sin(az2) * math.cos(el2), math.sin(el2)])
+        kl = C._area_light('kicker', tuple(d2 * dist), (0, 0, 0), float(P.get('kicker_size', 0.42)) * s, 1.0,
+                           P.get('key_color', (1.0, 0.965, 0.915)), shape='DISK')
+        kl.data.energy = 25.3 * 0.125 * kk * dist * dist * (math.sin(el) / math.sin(el2))
     f = float(P.get('fill', 1.0))
     if f > 0:
         df = np.array([math.cos(az + math.pi) * math.cos(math.radians(62)), math.sin(az + math.pi) * math.cos(math.radians(62)),

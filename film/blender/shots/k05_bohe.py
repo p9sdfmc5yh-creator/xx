@@ -123,7 +123,7 @@ def make_leaf(seed, nu=760, nv=440, flipped=False, hairs=True):
     # --- petiole
     n = 9
     tt = np.linspace(0, 1, n)[:, None]
-    ln = rng.uniform(0.003, 0.007)
+    ln = rng.uniform(0.0015, 0.0035)
     zb = float(Z[nv // 2, 0])
     path = np.array([-0.5 * L + 0.0006, 0.0, zb - 0.0003]) + tt * ln * np.array([-1.0, rng.normal(0, 0.2), rng.normal(-0.1, 0.15)])
     pr = np.linspace(0.00042, 0.00046, n)
@@ -198,7 +198,7 @@ def leaf_material():
     rough = m.mixf(rough, 0.62, back)
     # micro relief: finest vein reticulation + cell grain + gland bumps
     ret = m.voronoi(scale=2.3, feature='DISTANCE_TO_EDGE', vector=uv)
-    nrm = m.bump(m.map_range(ret, 0.0, 0.22), strength=0.75, distance=0.000028)
+    nrm = m.bump(m.map_range(ret, 0.0, 0.22), strength=0.5, distance=0.000028)
     nrm = m.bump(m.noise(scale=11.0, detail=3, roughness=0.6, vector=uv), strength=0.5, distance=0.000012, normal=nrm)
     nrm = m.bump(gdot, strength=0.6, distance=0.000015, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.45, specular=0.30, normal=nrm)
@@ -259,20 +259,20 @@ def main():
     weights = [1.0] * N_UP + [0.35] * N_FLIP
 
     sol = C.planet_solve(R_DOME)
-    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=3.6, coverage=0.80, weights=weights, seed=args.seed,
+    heap = C.pack_heap(R_DOME, sol['patch'], shapes, layers=2.9, coverage=0.80, weights=weights, seed=args.seed,
                        scale_range=(0.84, 1.12), tilt_deg=4.5, roll_deg=6, candidates=8, sink=0.10, rough=0.002,
                        max_slope_deg=13)        # leaves stay near-tangent: a shingled dome, no see-through pile
     n = len(heap)
     C.instance_on_points('heap', variants, heap, attrs={'tone': np.clip(rng.beta(1.8, 2.2, n), 0, 1)})
-    # backing dome just under the lowest visible leaf tops: plugs the see-through gaps of a loose pile
-    # (reads as deeper leaves in shadow), raised from the bare dome to the 8th percentile of the heap top
+    # backing: a dark leaf-green surface draped ~3 mm under the local valley floors of the pile.  A loose
+    # pile of big flat leaves is full of air; without it the sky shows through the gaps near the limb.
+    from scipy.ndimage import minimum_filter, gaussian_filter
+    res = float(heap.gx[1] - heap.gx[0])
+    low = gaussian_filter(minimum_filter(heap.height, size=max(3, int(0.008 / res))), 0.005 / res) - 0.003
     gxx, gyy = np.meshgrid(heap.gx, heap.gy)
-    rr = np.sqrt(gxx ** 2 + gyy ** 2 + heap.height ** 2)
-    x0, x1, y0, y1 = heap.extent
-    ins = (gxx > x0) & (gxx < x1) & (gyy > y0) & (gyy < y1)
-    lift = max(float(np.percentile(rr[ins], 8)) - R_DOME - 0.0012, 0.0)
-    print('[base] lifted %.1f mm' % (lift * 1000))
-    C.dome_base(R_DOME + lift, base_material())
+    bv = np.stack([gxx, gyy, low], -1).reshape(-1, 3)
+    C.mesh_from_arrays('backing', bv, C.grid_faces(len(heap.gy), len(heap.gx), wrap_v=False), material=base_material())
+    C.dome_base(R_DOME - 0.0005, base_material())
 
     cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.56, edge=0.685, top_margin=0.03)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)

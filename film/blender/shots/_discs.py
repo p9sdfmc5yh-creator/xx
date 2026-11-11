@@ -331,7 +331,7 @@ def flakes(name, outline, info, material, n=20, th_range=(-0.8, 0.8), width=(0.0
         w, L = rng.uniform(*width), rng.uniform(*length)
         a0, kt = rng.uniform(*lift), rng.uniform(*curl)
         skew, cup = rng.normal(0, 0.25), rng.uniform(-0.25, 0.5)
-        rag = 1.0 + 0.3 * C.perlin3(P3(s * 4.0, np.zeros(ns) + i * 1.7), seed + i)
+        rag = 1.0 + 0.45 * C.perlin3(P3(s * 5.0, np.zeros(ns) + i * 1.7), seed + i) + 0.2 * C.perlin3(P3(s * 13.0, np.zeros(ns) + i * 2.9), seed + i + 7)
         for attempt in range(4):
             ang = a0 + kt * s
             dr = np.concatenate([[0], np.cumsum(np.cos(ang[:-1]))]) * L / (ns - 1)

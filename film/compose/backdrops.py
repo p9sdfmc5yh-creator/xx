@@ -456,6 +456,7 @@ def yinyang_bg(frame_idx, scale=2, dither=1.0):
 
 STAR_SIGMA = 0.5          # core sigma, 1080p pixels  (1 output pixel at 4K)
 STAR_HALO = (0.12, 1.4)   # fraction of the flux in a soft halo, halo sigma (1080p px)
+STAR_FLUX_REF = 250.0     # flux (levels * px^2) above which a star gets larger instead of brighter
 
 
 @lru_cache(maxsize=2)
@@ -494,22 +495,25 @@ def sky_motion(shot_id, frame_idx):
 
 
 def _splat_stars(img, x, y, flux, scale):
-    """Add pixel-integrated Gaussian points (flux conserving, anti-aliased) in place."""
+    """Add pixel-integrated Gaussian points (flux conserving, anti-aliased) in place.
+    Stars brighter than STAR_FLUX_REF grow (sigma ~ sqrt(flux)) instead of clipping, like the
+    larger stars of the original."""
     hh, ww = img.shape[:2]
-    s1 = STAR_SIGMA * scale
     hf, hs = STAR_HALO
-    s2 = hs * scale
-    rad = int(math.ceil(3.2 * s2))
-    k1, k2 = 1.0 / (math.sqrt(2.0) * s1), 1.0 / (math.sqrt(2.0) * s2)
-    offs = np.arange(-rad, rad + 2, dtype=np.float64) - 0.5
     for xi, yi, fl in zip(x, y, flux):
+        grow = max(1.0, math.sqrt(float(fl.mean()) / STAR_FLUX_REF))
+        s1 = STAR_SIGMA * scale * grow
+        s2 = hs * scale * grow
+        rad = int(math.ceil(3.2 * s2))
         px = (xi + 0.5) * scale - 0.5
         py = (yi + 0.5) * scale - 0.5
         if px < -rad or py < -rad or px > ww + rad or py > hh + rad:
             continue
         jx, jy = int(round(px)), int(round(py))
+        offs = np.arange(-rad, rad + 2, dtype=np.float64) - 0.5
         ex = offs + (jx - px)
         ey = offs + (jy - py)
+        k1, k2 = 1.0 / (math.sqrt(2.0) * s1), 1.0 / (math.sqrt(2.0) * s2)
         wx1 = np.diff(erf(ex * k1)) * 0.5
         wy1 = np.diff(erf(ey * k1)) * 0.5
         wx2 = np.diff(erf(ex * k2)) * 0.5

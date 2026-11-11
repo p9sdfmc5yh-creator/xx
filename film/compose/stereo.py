@@ -92,7 +92,7 @@ import numpy as np
 import cv2
 
 __all__ = ['disparity_from_depth', 'synth_view', 'synth_pair', 'stereo_pair_A', 'stereo_pair_B',
-           'prepare_A', 'compose_A', 'prepare_B', 'compose_B', 'pack_sbs', 'pack_anaglyph', 'floating_window', 'safe_text_disparity', 'shift_x',
+           'prepare_A', 'compose_A', 'prepare_B', 'compose_B', 'zoom_prep', 'pack_sbs', 'pack_anaglyph', 'floating_window', 'safe_text_disparity', 'shift_x',
            'srgb_to_linear', 'linear_to_srgb', 'to_float', 'disparity_preview', 'DEFAULTS']
 
 # ----------------------------------------------------------------------------------------------
@@ -360,7 +360,7 @@ def _dilate_near(d, radius, thr):
 
 
 def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
-                         sky_px=None, far_px=None, near_px=None, fg_share=None,
+                         k=None, sky_px=None, far_px=None, near_px=None, fg_share=None,
                          pct=None, knee=None, defocus=True, despeckle=None, soft_step=None,
                          soft_radius=None, dilate=None, cut=None, sky_max=None, near_max=None,
                          return_info=False):
@@ -388,6 +388,10 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
 
     conv      depth (m) of the screen plane.  None = derived from the numbers above.  If given,
               the scale k is kept and the parallaxes follow (clamped to sky_max / near_max).
+    k         px * m.  Give k AND conv to FREEZE the mapping d = k * (1/conv - 1/z) (both are
+              in the info of an earlier call): nothing is then derived from this image's own
+              depth range, which is what an animated sequence needs (no "breathing").  k scales
+              with the picture width and with any 2D zoom applied to the picture.
     max_px, sky_px, far_px, near_px   parallaxes in pixels of THIS image (defaults scale with
               the width; near_px is negative for "in front").
     pct, knee robust range: depth percentiles (0.2, 99.8) and the soft-clip of what lies beyond.
@@ -443,8 +447,17 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
         share_phys = span / max(inv_near, 1e-9)                # what one rig would give
         share = Dd['A_fg_share'] if fg_share is None else float(fg_share)
         share = float(np.clip(max(share, share_phys), 0.02, 0.92))
-        k = share * budget / span                               # px * m
-        if conv is not None:                                    # screen plane given
+        frozen = k is not None and conv is not None
+        if frozen:                                              # mapping given explicitly
+            k = float(k)
+            near = k * (1.0 / float(conv) - inv_near)
+            sky = _px(sky_px, Dd['A_sky'], W)
+            sky = max(sky, near + k * span * 1.05)
+        else:
+            k = share * budget / span                           # px * m
+        if frozen:
+            pass
+        elif conv is not None:                                  # screen plane given
             near = k * (1.0 / float(conv) - inv_near)
             sky = near + budget
         elif near_px is not None and sky_px is None:
@@ -459,7 +472,7 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
             s = min(s, sky_max / sky)
         if -near > near_max:
             s = min(s, near_max / -near)
-        if s < 1.0:
+        if s < 1.0 and not frozen:
             k, near, sky = k * s, near * s, sky * s
         far = near + k * span                                   # farthest foreground percentile
         far = min(far, sky - 0.02 * (sky - near))
@@ -467,7 +480,10 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
         budget = _px(max_px, Dd['B_max'], W)
         if far_px is not None and near_px is not None:
             budget = float(far_px) - float(near_px)
-        k = budget / span
+        frozen = k is not None and conv is not None
+        k = float(k) if frozen else budget / span
+        if frozen:
+            budget = k * span
         if conv is not None:                                    # screen plane given
             far = k * (1.0 / float(conv) - inv_far)
         elif near_px is not None and far_px is None:
@@ -480,7 +496,7 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
             s = min(s, sky_max / far)
         if -near > near_max:
             s = min(s, near_max / -near)
-        if s < 1.0:
+        if s < 1.0 and not frozen:
             k, near, far = k * s, near * s, far * s
         sky = far
 
@@ -488,10 +504,10 @@ def disparity_from_depth(depth, alpha=None, conv=None, max_px=None, mode='A', *,
     # soft-clip the outliers beyond the percentile range
     kn = max(float(knee) * (far - near), 1e-6)
     kn_far = min(kn, 0.5 * max(sky - far, 0.0)) if mode == 'A' else kn
-    lo_m = d < near
+    lo_m = (d < near) & (not frozen)                           # a frozen mapping is used as is
     if lo_m.any():
         d[lo_m] = near - kn * np.tanh((near - d[lo_m]) / kn)
-    hi_m = d > far
+    hi_m = (d > far) & (not frozen)
     if hi_m.any():
         d[hi_m] = far + kn_far * np.tanh((d[hi_m] - far) / max(kn_far, 1e-6)) if kn_far > 0 else far
 
@@ -1042,6 +1058,41 @@ def compose_B(prep, text_rgba=None, *, text_px=None, text_safe=True, text_snap=T
     out = {k: v for k, v in prep.items() if k not in ('left', 'right')}
     out.update(text_px=float(text_px), window=win)
     return L, R, out
+
+
+def zoom_prep(prep, zoom, center=None, interp='lanczos'):
+    """Apply the film's 2D push-in to a prepared pair: both views (and the disparity / alpha that
+    compose_* use for the text depth and the floating window) are scaled by `zoom` about `center`
+    (default: frame centre) with the SAME transform, so there is no vertical parallax and every
+    parallax simply grows by `zoom`.  The sky of version A is not touched (it is composed later).
+    Returns a new dict; `prep` is not modified."""
+    if abs(zoom - 1.0) < 1e-9:
+        return prep
+    H, W = prep['left'].shape[:2]
+    cx, cy = ((W - 1) / 2.0, (H - 1) / 2.0) if center is None else center
+    M = np.float32([[zoom, 0, cx * (1 - zoom)], [0, zoom, cy * (1 - zoom)]])
+    fl = _INTERP[interp]
+
+    def wz(a, flags, scale=1.0):
+        r = cv2.warpAffine(a, M, (W, H), flags=flags, borderMode=cv2.BORDER_REFLECT_101)
+        return r * np.float32(scale) if scale != 1.0 else r
+
+    out = dict(prep)
+    for key in ('left', 'right'):
+        v = wz(prep[key], fl)
+        if v.shape[2] == 4:
+            np.clip(v[..., 3], 0.0, 1.0, out=v[..., 3])
+            np.maximum(v[..., :3], 0.0, out=v[..., :3])
+        else:
+            np.clip(v, 0.0, 1.0, out=v)
+        out[key] = v
+    out['disparity'] = wz(prep['disparity'], cv2.INTER_LINEAR, zoom)
+    if prep.get('alpha') is not None:
+        out['alpha'] = wz(np.ascontiguousarray(prep['alpha']), cv2.INTER_LINEAR)
+    for key in ('near_px', 'far_px', 'min_px', 'max_px', 'k'):
+        if key in out:
+            out[key] = float(out[key]) * zoom
+    return out
 
 
 def stereo_pair_B(rgb, depth, text_rgba=None, *, disparity=None, info=None, conv=None, max_px=None,
