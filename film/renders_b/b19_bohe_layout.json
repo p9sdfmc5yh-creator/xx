@@ -1,0 +1,40 @@
+{
+ "shot": "b19_bohe",
+ "layout": "glyph",
+ "frame_width_m": 2.33126567689629,
+ "frame_height_m": 1.311336943254163,
+ "items": [
+  "k05_bohe"
+ ],
+ "seed": 44,
+ "empty": false,
+ "text": "食",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.27999999999999997,
+ "engine": "packed",
+ "px_per_m": 883.1506761596999,
+ "stroke_width_m": 0.07020319598191482,
+ "stroke_items_wide": 2.7999999999999994,
+ "block_m": [
+  0.9805801245215845,
+  0.9703893380080807
+ ],
+ "char_boxes": [
+  [
+   0.2994,
+   0.10295,
+   0.69963,
+   0.81618
+  ]
+ ],
+ "align": 0.7167903007582913,
+ "n_items": 414,
+ "layers_max": 2,
+ "heap_top_mm": 12.620430946350098,
+ "display_gain": 1.1246,
+ "render_seconds": 77.1,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

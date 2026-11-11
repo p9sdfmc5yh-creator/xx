@@ -1,0 +1,32 @@
+{
+ "shot": "b12_shanzha",
+ "layout": "wreath",
+ "frame_width_m": 0.3756424984989195,
+ "frame_height_m": 0.21129890540564222,
+ "items": [
+  "m08_shanzha"
+ ],
+ "seed": 27,
+ "empty": false,
+ "window": [
+  0.5,
+  0.42,
+  0.46,
+  0.3
+ ],
+ "extent": [
+  -0.21035979915939493,
+  0.21035979915939493,
+  -0.12818800261275629,
+  0.12818800261275629
+ ],
+ "n_items": 427,
+ "layers_max": 4,
+ "heap_top_mm": 20.585092544555664,
+ "display_gain": 1.134,
+ "render_seconds": 249.3,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

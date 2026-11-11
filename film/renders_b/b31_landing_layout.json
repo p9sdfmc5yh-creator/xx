@@ -1,0 +1,58 @@
+{
+ "shot": "b31_landing",
+ "layout": "landing",
+ "frame_width_m": 1.1903722167875412,
+ "frame_height_m": 0.669584371942992,
+ "items": [
+  "m02_gouqi"
+ ],
+ "seed": 77,
+ "empty": false,
+ "text": "药食同源",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.18,
+ "engine": "packed",
+ "px_per_m": 4011.3503429089574,
+ "stroke_width_m": 0.019444823645953555,
+ "stroke_items_wide": 3.4,
+ "block_m": [
+  0.9522977734300331,
+  0.21364376749464356
+ ],
+ "char_boxes": [
+  [
+   0.1023,
+   0.24754,
+   0.26921,
+   0.55469
+  ],
+  [
+   0.30859,
+   0.24419,
+   0.48366,
+   0.55544
+  ],
+  [
+   0.52304,
+   0.26355,
+   0.68031,
+   0.55916
+  ],
+  [
+   0.72262,
+   0.25089,
+   0.89791,
+   0.55916
+  ]
+ ],
+ "align": 0.92,
+ "n_items": 1361,
+ "layers_max": 2,
+ "heap_top_mm": 10.761951446533203,
+ "display_gain": 1.1388,
+ "render_seconds": 85.6,
+ "resolution": [
+  1920,
+  1080
+ ]
+}

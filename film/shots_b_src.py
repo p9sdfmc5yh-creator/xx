@@ -215,11 +215,11 @@ for i, (bid, src, label, ch, col, n, isc, kind) in enumerate(GLYPHS):
 SCENES.append(dict(
     id='b31_landing', start=736, end=1248, layout='landing', text='药食同源', label='outro cards (dark ink, lower third)',
     source=['m02_gouqi'],
-    ground=paper(WHITE, grid=dict(type='square', pitch_m=0.0281, line_m=0.00065, colour=GRID_INK, opacity=0.30, major=0),
+    ground=paper(WHITE, grid=dict(type='square', pitch_m=0.0396, line_m=0.0009, colour=GRID_INK, opacity=0.40, major=0),
                  fibres=1.0, cloud=0.035),
     frame_width_m=0.90, lock_width=True, seed=77, text_mode='dark', exposure=EXPO,
-    params=dict(centre=[0.50, 0.40], width=0.80, font=FONT, thin=0.18, tracking=0.10, strays=0.004, stroke_items=3.4,
-                edge_tol=0.12, engine='packed', passes=PASSES['seed']),
+    params=dict(centre=[0.50, 0.40], width=0.80, font=FONT, thin=0.11, tracking=0.10, strays=0.004, stroke_items=3.9,
+                edge_tol=0.12, engine='packed', passes=PASSES['flat']),
     reveal=dict(per_char_frames=8, order='药食同源', empty_variant='--empty  ->  renders_b/b31_empty.png'),
     note='the four characters poured from dried goji berries (vermilion on warm white paper with a faint ruled grid, '
          'like a red seal); block centre (0.50 W, 0.40 H), width 0.80 W; lower third clear; rendered twice '

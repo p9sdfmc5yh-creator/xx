@@ -1601,14 +1601,14 @@
     "cloud": 0.035,
     "grid": {
      "type": "square",
-     "pitch_m": 0.0281,
-     "line_m": 0.00065,
+     "pitch_m": 0.0396,
+     "line_m": 0.0009,
      "colour": [
       150,
       120,
       96
      ],
-     "opacity": 0.3,
+     "opacity": 0.4,
      "major": 0
     }
    },
@@ -1624,10 +1624,10 @@
     ],
     "width": 0.8,
     "font": "NotoSansCJKsc-Bold.otf",
-    "thin": 0.18,
+    "thin": 0.11,
     "tracking": 0.1,
     "strays": 0.004,
-    "stroke_items": 3.4,
+    "stroke_items": 3.9,
     "edge_tol": 0.12,
     "engine": "packed",
     "passes": [
@@ -1636,9 +1636,9 @@
      },
      {
       "mode": "rsa",
-      "inset": 0.9,
+      "inset": 0.8,
       "k": 0.92,
-      "fill": 0.55
+      "fill": 0.3
      }
     ]
    },
