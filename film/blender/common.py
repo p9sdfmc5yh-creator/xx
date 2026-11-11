@@ -60,7 +60,7 @@ SKY_LIMIT = 0.47
 QUALITY = {
     'draft':   dict(res=(960, 540),   spp=16,  thr=0.10, min_spp=8),
     'preview': dict(res=(1280, 720),  spp=40,  thr=0.05, min_spp=16),
-    'final':   dict(res=(FINAL_W, FINAL_H), spp=160, thr=0.012, min_spp=48),
+    'final':   dict(res=(FINAL_W, FINAL_H), spp=128, thr=0.015, min_spp=48),
 }
 
 
@@ -422,17 +422,58 @@ def _make_camera(name, pos, fwd, up, lens_mm, clip=(0.01, 100.0)):
     return cam
 
 
-def planet_camera(R, lens_mm=85.0, apex=0.53, edge=0.68, limb_past_pole_deg=5.0, center=(0.0, 0.0, 0.0)):
+def fit_planet_radius(heap, lens_mm=85.0, apex=0.53, edge=0.68, limb_past_pole_deg=5.0, top_margin=0.015,
+                      aspect=FILM_W / FILM_H):
+    """Find the sphere radius R_fit for planet_solve such that the HIGHEST bump of the heap's real
+    surface (its heightfield), seen within the central 60 % of the frame width, projects to
+    y = (apex - top_margin) * H.  The mean horizon then sits around `apex` and the sky above
+    stays empty.  Pure maths (bisection over planet_solve + point projection)."""
+    C0 = np.array(heap.center, float)
+    st = max(1, int(min(heap.height.shape) / 400))
+    X, Y = np.meshgrid(heap.gx[::st] - C0[0], heap.gy[::st] - C0[1])
+    Z = heap.height[::st, ::st] - C0[2]
+    xmin, xmax, ymin, ymax = heap.extent
+    keep = (X > xmin) & (X < xmax) & (Y > ymin) & (Y < ymax)
+    P = np.stack([X[keep], Y[keep], Z[keep]], 1) + C0
+    hw = SENSOR_MM / 2.0 / lens_mm
+    hh = hw / aspect
+    target = apex - top_margin
+
+    def top_y(Rf):
+        sol = planet_solve(Rf, lens_mm, apex, edge, limb_past_pole_deg, heap.center, aspect)
+        v = P - sol['cam_pos']
+        z = v @ sol['cam_fwd']
+        x = v[:, 0] / z / hw                       # -1..1 across the frame
+        y = 0.5 - (v @ sol['cam_up']) / z / hh / 2  # fraction from the top
+        m = (np.abs(x) < 0.6) & (z > 0)
+        return float(y[m].min())
+
+    lo, hi = heap.R_base * 0.98, heap.R_base + 4.0 * (heap.R_top - heap.R_base) + 0.02 * heap.R_base
+    for _ in range(40):
+        mid = 0.5 * (lo + hi)
+        if top_y(mid) < target:        # heap pokes too high -> pretend the planet is bigger
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
+def planet_camera(R=None, lens_mm=85.0, apex=0.53, edge=0.68, limb_past_pole_deg=5.0, center=(0.0, 0.0, 0.0),
+                  heap=None, top_margin=0.015):
     """Create + activate a camera so that a sphere (dome / mound) of radius R centred on `center`
-    projects to the planet-horizon arc (see planet_solve for the parameters and the info dict).
-    For heaps pass `heap.R_top` so the bumpy top of the heap, not its base, lands on the arc.
-    Returns (camera_object, info).  Verified by rendering a plain sphere: apex/edge within
-    +-0.003 H of the request."""
-    info = planet_solve(R, lens_mm, apex, edge, limb_past_pole_deg, center)
+    projects to the planet-horizon arc (see planet_solve for parameters and the info dict).
+
+    For heaps pass `heap=<Heap from pack_heap>` instead of R: the radius is then fitted to the
+    real bumpy surface (fit_planet_radius) so the highest item in the central 60 % of the width
+    lands at (apex - top_margin) * H - inside the contract regardless of heap thickness.
+    Returns (camera_object, info).  Verified by rendering a plain sphere: apex 0.528 / edges 0.674
+    for the requested 0.53 / 0.68."""
     sc = bpy.context.scene
     aspect = sc.render.resolution_x / sc.render.resolution_y
-    if abs(aspect - FILM_W / FILM_H) > 1e-3:
-        info = planet_solve(R, lens_mm, apex, edge, limb_past_pole_deg, center, aspect)
+    if heap is not None:
+        center = heap.center
+        R = fit_planet_radius(heap, lens_mm, apex, edge, limb_past_pole_deg, top_margin, aspect)
+    info = planet_solve(R, lens_mm, apex, edge, limb_past_pole_deg, center, aspect)
     cam = _make_camera('cam', info['cam_pos'], info['cam_fwd'], info['cam_up'], lens_mm,
                        clip=(info['near_dist'] * 0.2, info['D'] * 6))
     return cam, info
@@ -530,32 +571,31 @@ def set_dof(cam, focus_dist, fstop):
 
 
 def blur_px(cam_or_lens, focus_dist, dist, fstop, width_px=FINAL_W):
-    """Diameter in pixels of the defocus blur disc of a point at `dist` (thin lens)."""
+    """Diameter in pixels of the defocus blur disc of a point at `dist` metres when focused at
+    `focus_dist` (Cycles' model: lens disc of diameter f/N, rays converge on the focus plane)."""
     f = (cam_or_lens.data.lens if hasattr(cam_or_lens, 'data') else cam_or_lens) / 1000.0
-    c = f * f / (fstop * (focus_dist - f)) * abs(dist - focus_dist) / dist      # metres on sensor
-    return c / (SENSOR_MM / 1000.0) * width_px
+    return (f / fstop) * abs(1.0 / focus_dist - 1.0 / dist) * (width_px * f / (SENSOR_MM / 1000.0))
 
 
-def auto_dof(cam, info, near_blur_px=10.0, far_blur_px=5.0, focus_frac=None, width_px=FINAL_W):
-    """Photographic but detail-preserving DOF.  Focus sits between horizon and foreground
-    (`focus_frac` of the way from the limb to the nearest visible point, default chosen so that
-    both blur limits are met with the widest aperture) and the f-stop is solved so the blur disc
-    diameter is <= near_blur_px at the bottom frame edge and <= far_blur_px at the horizon
-    (pixels at 2112 px width).  A real macro lens could never be this deep - that is fine, we keep
-    the look of a lens (soft nearest foreground, slightly soft far limb) with crisp detail.
-    Returns (focus_dist, fstop)."""
-    far, near = info['limb_dist'], info['near_dist']
+def auto_dof(cam, info, near_blur_px=7.0, far_blur_px=3.0, focus_frac=None, width_px=FINAL_W):
+    """Photographic but detail-preserving DOF.  The f-stop is solved so that the defocus blur disc
+    diameter is <= near_blur_px at the bottom frame edge (nearest foreground) and <= far_blur_px
+    at the horizon (pixels at 2112 px width; scale-free, so drafts look the same).  Focus sits
+    where both limits are met with the widest aperture, or at `focus_frac` of the way from the
+    horizon (0) to the nearest visible point (1) when given.
+    A real macro lens could never be this deep - fine: we keep the LOOK of a lens (soft nearest
+    foreground, slightly soft far limb) while the main body of the subject stays crisp.
+    near 6-10 px / far 2.5-4 px keep fine detail everywhere (12/5 already looks soft in the
+    mid-ground).  Returns (focus_dist, fstop)."""
+    far, near = float(info['limb_dist']), float(info['near_dist'])
     f = cam.data.lens / 1000.0
     if focus_frac is None:
-        # blur ~ |1/s - 1/sf|: balance near and far limits in reciprocal distance
         inv = (near_blur_px * (1 / far) + far_blur_px * (1 / near)) / (near_blur_px + far_blur_px)
         sf = 1.0 / inv
     else:
         sf = far - focus_frac * (far - near)
-    k = f * f / (sf - f) / (SENSOR_MM / 1000.0) * width_px
-    n_near = k * abs(near - sf) / near / near_blur_px
-    n_far = k * abs(far - sf) / far / far_blur_px
-    fstop = max(n_near, n_far, 1.4)
+    k = f * (width_px * f / (SENSOR_MM / 1000.0))
+    fstop = max(k * abs(1 / sf - 1 / near) / near_blur_px, k * abs(1 / sf - 1 / far) / far_blur_px, 1.0)
     set_dof(cam, sf, fstop)
     return sf, fstop
 
@@ -652,12 +692,12 @@ def studio_lights(info=None, target=None, scale=None, tint=(1.0, 1.0, 1.0), key=
 
     L = {}
     if key > 0:
-        L['key'] = _area_light('key', pos(key_az, key_el, 2.6), T, key_size * s, 420.0 * key * k2, key_color)
+        L['key'] = _area_light('key', pos(key_az, key_el, 2.6), T, key_size * s, 320.0 * key * k2, key_color)
     if fill > 0:
-        L['fill'] = _area_light('fill', pos(165.0, 28.0, 3.0), T, 3.2 * s, 110.0 * fill * k2,
+        L['fill'] = _area_light('fill', pos(165.0, 28.0, 3.0), T, 3.2 * s, 70.0 * fill * k2,
                                 tuple(np.array(fill_color) * tint))
     if rim > 0:
-        L['rim'] = _area_light('rim', pos(rim_az, 16.0, 2.8), T, 0.6 * s, 160.0 * rim * k2,
+        L['rim'] = _area_light('rim', pos(rim_az, 16.0, 2.8), T, 0.6 * s, 130.0 * rim * k2,
                                tuple(np.array((1.0, 0.95, 0.88)) * (0.5 + 0.5 * tint)))
     if top > 0:
         L['top'] = _area_light('top', pos(0.0, 86.0, 2.4), T, 2.0 * s, 200.0 * top * k2, key_color)
@@ -902,7 +942,7 @@ def dome_base(R, material=None, center=(0.0, 0.0, 0.0), cap_deg=75.0, segments=1
     ph = np.linspace(0, 2 * math.pi, nv, endpoint=False)[None, :]
     v = np.stack([R * np.sin(th) * np.cos(ph), R * np.sin(th) * np.sin(ph), R * np.cos(th) * np.ones_like(ph)], -1)
     v = v.reshape(-1, 3) + np.array(center)
-    ob = mesh_from_arrays(name, v, grid_faces(nu, nv, wrap_v=True), smooth=True, material=material)
+    ob = mesh_from_arrays(name, v, grid_faces(nu, nv, wrap_v=True)[:, ::-1], smooth=True, material=material)
     return ob
 
 
@@ -1117,6 +1157,65 @@ def superellipsoid(a, b, c, nu=96, nv=96, e_long=1.0, e_round=1.0, taper=0.0):
     v = np.stack([X, Y, Z], -1).reshape(-1, 3)
     s = np.repeat(np.linspace(0, 1, nu)[:, None], nv, 1).ravel()
     return v, grid_faces(nu, nv, wrap_v=True), s, np.repeat(ph[None, :], nu, 0).ravel()
+
+
+def tube(points, radii, nv=12):
+    """Tube along a polyline (stems, rootlets, fibres).  points (n,3), radii scalar or (n,).
+    Returns (verts, faces) with parallel-transported rings; ends are open (taper radius to ~0)."""
+    P = np.asarray(points, float)
+    n = len(P)
+    r = np.broadcast_to(np.asarray(radii, float), (n,))
+    T = np.gradient(P, axis=0)
+    T /= np.linalg.norm(T, axis=1, keepdims=True) + 1e-20
+    ref = np.array([0.0, 0.0, 1.0]) if abs(T[0, 2]) < 0.9 else np.array([1.0, 0.0, 0.0])
+    N = np.cross(T[0], ref)
+    N /= np.linalg.norm(N)
+    ph = np.linspace(0, 2 * math.pi, nv, endpoint=False)
+    rings = []
+    for i in range(n):
+        N = N - T[i] * (N @ T[i])
+        N /= np.linalg.norm(N) + 1e-20
+        B = np.cross(T[i], N)
+        rings.append(P[i] + r[i] * (np.cos(ph)[:, None] * N + np.sin(ph)[:, None] * B))
+    return np.concatenate(rings, 0), grid_faces(n, nv, wrap_v=True)
+
+
+def merge_meshes(parts):
+    """Concatenate [(verts, faces, material_slot), ...] -> (verts, [face arrays], face_mat) for
+    mesh_from_arrays(..., materials=[...], face_mat=face_mat).  Faces of equal arity are grouped."""
+    vs, fs, fm, off = [], [], [], 0
+    for v, f, slot in parts:
+        f = np.asarray(f)
+        vs.append(np.asarray(v, float))
+        fs.append(f + off)
+        fm.append(np.full(len(f), slot, np.int32))
+        off += len(v)
+    return np.concatenate(vs, 0), fs, np.concatenate(fm)
+
+
+def patch_grid(extent, R=None, n_max=1200, center=(0.0, 0.0, 0.0)):
+    """Dense regular vertex grid over the rectangle `extent` = (xmin, xmax, ymin, ymax) (e.g.
+    planet_solve / disc_solve ['patch']) - the canvas for 'surface' and 'disc' shots, where only
+    the visible part of ONE big object needs geometry and it needs a lot of it.
+      R = None : flat grid in the plane z = center.z (cut faces)
+      R = float: grid draped over the top of the sphere of radius R (curved skins, leaves, peel)
+    n_max = vertex count along the longer side (1200 -> ~1.2 M verts; cell ~ 1.5 px at final res).
+    Returns (verts (ny*nx,3), faces (M,4), normals (ny*nx,3), shape (ny, nx)).  Displace with
+    verts += normals * height(verts) using the numpy noise functions, then mesh_from_arrays()."""
+    xmin, xmax, ymin, ymax = [float(v) for v in extent]
+    cell = max(xmax - xmin, ymax - ymin) / float(n_max - 1)
+    nx, ny = int(round((xmax - xmin) / cell)) + 1, int(round((ymax - ymin) / cell)) + 1
+    X, Y = np.meshgrid(np.linspace(xmin, xmax, nx), np.linspace(ymin, ymax, ny))
+    if R is None:
+        Z = np.zeros_like(X)
+        nrm = np.zeros((ny * nx, 3))
+        nrm[:, 2] = 1.0
+    else:
+        Z = np.sqrt(np.maximum(R * R - X * X - Y * Y, 1e-12))
+        nrm = np.stack([X, Y, Z], -1).reshape(-1, 3) / R
+    v = np.stack([X, Y, Z], -1).reshape(-1, 3) + np.array(center, float)
+    f = grid_faces(ny, nx, wrap_v=False)                      # counter-clockwise seen from +Z
+    return v, f, nrm, (ny, nx)
 
 
 def add_subdivision(ob, levels=1, simple=False):
