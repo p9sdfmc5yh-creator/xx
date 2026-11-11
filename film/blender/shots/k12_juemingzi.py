@@ -92,7 +92,7 @@ def cassia_material():
     col = m.mix(col, (0.250, 0.180, 0.060), m.math('MULTIPLY', A('ridge'), 0.22))
     ln = m.map_range(A('line'), 0.30, 0.80, smooth=True)
     col = m.mix(col, m.mix((0.330, 0.240, 0.090), (0.230, 0.150, 0.050), spk), m.math('MULTIPLY', ln, 0.85))
-        col = m.jitter(col, hue=0.012, saturation=0.10, value=0.16)
+    col = m.jitter(col, hue=0.012, saturation=0.10, value=0.16)
     # hard glossy testa, gloss broken up at two scales; lines dull
     rn = m.noise(scale=1100, detail=3, roughness=0.6, vector=P)
     rough = m.mixf(m.map_range(A('rvar'), 0, 1, 0.12, 0.28), m.map_range(rn, 0.3, 0.7, 0.10, 0.32), 0.5)

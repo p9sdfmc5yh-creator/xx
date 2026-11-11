@@ -665,8 +665,10 @@ def _warp_map_right(D, cut):
         um = ub[rid] + sgn * refl
         u[hidx] = um
         # A THIN near object (a stem, a petal edge) hides a strip no wider than itself, and the
-        # surface behind it reappears on its other side: note that side's pixel `xo`, so the fill
-        # can run from the colour at the hole edge to the colour beyond the object.
+        # surface behind it reappears on its other side: note that side's pixel `xo`; the hidden
+        # strip is then BRIDGED (colour run from the hole edge to the far side of the object)
+        # instead of mirrored.  beta = 1 for objects up to 4x as wide as the hole (measured along
+        # the row, so a slanted stem counts with its horizontal extent), 0 from 8x.
         jn = np.where(useR, jl, jr).astype(np.int64)          # near neighbour's source pixel
         hasN = np.where(useR, hasL, hasR)
         posn = np.searchsorted(cflat, row0 + jn, side='left')
@@ -678,12 +680,12 @@ def _warp_map_right(D, cut):
         okb &= Dflat[row0 + xo] > Dflat[row0 + jn] + np.float32(cut)    # the other side is behind it
         span = np.abs(jb - xo).astype(f32)
         hlen = (fe - fs + 1).astype(f32)
-        beta = np.where(okb, np.clip((3.0 * hlen - span) / (1.5 * hlen), 0.0, 1.0), 0.0).astype(f32)
-        tau = (beta[rid] * np.clip(t / np.maximum(span[rid], 1.0), 0.0, 1.0)).astype(f32)
+        beta = np.where(okb, np.clip((8.0 * hlen - span) / (4.0 * hlen), 0.0, 1.0), 0.0).astype(f32)
+        tau = np.clip(t / np.maximum(span[rid], 1.0), 0.0, 1.0).astype(f32)
         holes = dict(idx=hidx, row0=row0[rid], c0=np.rint(ub[rid]).astype(np.int64),
                      cm=np.rint(um).astype(np.int64), lo=lo[rid].astype(np.int64),
                      hi=hi[rid].astype(np.int64), t=t, xo=xo[rid].astype(np.int64),
-                     so=np.where(useR, -1, 1).astype(np.int64)[rid], tau=tau)
+                     beta=beta[rid], tau=tau)
     return u.reshape(H, W), holes
 
 
@@ -701,52 +703,47 @@ def _warp_map(D, eye, cut):
         holes['cm'] = (W - 1) - holes['cm']
         holes['lo'], holes['hi'] = (W - 1) - holes['hi'], (W - 1) - holes['lo']
         holes['xo'] = (W - 1) - holes['xo']
-        holes['so'] = -holes['so']
         o = np.argsort(holes['idx'], kind='stable')
         holes = {k: v[o] for k, v in holes.items()}
     return np.ascontiguousarray(u), holes
 
 
 def _hole_base_correction(out, src, holes, radius, min_t=1.5):
-    """Photometric part of the disocclusion fill (in place).  The mirrored texture keeps its
-    detail, but its low frequencies are replaced by those at the hole edge (a contact shadow is
-    extended, not mirrored into a bright rim); behind a THIN near object they run on to the
-    colour found on the object's other side (the hidden strip is bridged)."""
-    if holes is None or radius < 1:
-        return
-    sel = (holes['t'] >= min_t) | (holes['tau'] > 0)
-    if not sel.any():
+    """Photometric part of the disocclusion fill (in place).
+    * The mirrored texture keeps its detail, but its low frequencies are replaced by those at the
+      hole edge: a contact shadow is extended, not mirrored into a bright rim.
+    * Behind a THIN near object the fill is instead a bridge from the pixel at the hole edge to
+      the pixel on the other side of the object (what was hidden is continuous with both)."""
+    if holes is None:
         return
     H, W = src.shape[:2]
     C = 1 if src.ndim == 2 else src.shape[2]
     s2 = src.reshape(H * W, C)
     o2 = out.reshape(H * W, C)
-    idx = holes['idx'][sel]
-    row0 = holes['row0'][sel]
-    lo = holes['lo'][sel]
-    hi = np.maximum(holes['hi'][sel], lo)
-    c0 = np.clip(holes['c0'][sel], lo, hi)
-    cm = np.clip(holes['cm'][sel], lo, hi)
-    tau = holes['tau'][sel]
-    br = tau > 0
-    edge = np.zeros((idx.size, C), np.float32)
-    acc = np.zeros((idx.size, C), np.float32)
-    for o in range(-radius, radius + 1):
-        e = s2[row0 + np.clip(c0 + o, lo, hi)]
-        edge += e
-        acc += e
-        acc -= s2[row0 + np.clip(cm + o, lo, hi)]
-    inv = np.float32(1.0 / (2 * radius + 1))
-    acc *= inv
+    if radius >= 1:
+        sel = holes['t'] >= min_t
+        if sel.any():
+            idx = holes['idx'][sel]
+            row0 = holes['row0'][sel]
+            lo = holes['lo'][sel]
+            hi = np.maximum(holes['hi'][sel], lo)
+            c0 = np.clip(holes['c0'][sel], lo, hi)
+            cm = np.clip(holes['cm'][sel], lo, hi)
+            acc = np.zeros((idx.size, C), np.float32)
+            for o in range(-radius, radius + 1):
+                acc += s2[row0 + np.clip(c0 + o, lo, hi)]
+                acc -= s2[row0 + np.clip(cm + o, lo, hi)]
+            acc *= np.float32(1.0 / (2 * radius + 1))
+            o2[idx] += acc
+    br = holes['beta'] > 0
     if br.any():
-        edge = edge[br] * inv
-        xo, so, r0 = holes['xo'][sel][br], holes['so'][sel][br], row0[br]
-        other = np.zeros((xo.size, C), np.float32)
-        for o in range(0, radius + 1):
-            other += s2[r0 + np.clip(xo + so * o, 0, W - 1)]
-        other *= np.float32(1.0 / (radius + 1))
-        acc[br] += tau[br][:, None] * (other - edge)
-    o2[idx] += acc
+        idx = holes['idx'][br]
+        row0 = holes['row0'][br]
+        beta = holes['beta'][br][:, None]
+        tau = holes['tau'][br][:, None]
+        edge = s2[row0 + np.clip(holes['c0'][br], 0, W - 1)]
+        other = s2[row0 + holes['xo'][br]]
+        o2[idx] = o2[idx] * (1.0 - beta) + (edge + tau * (other - edge)) * beta
 
 
 _INTERP = {'lanczos': cv2.INTER_LANCZOS4, 'cubic': cv2.INTER_CUBIC, 'linear': cv2.INTER_LINEAR,

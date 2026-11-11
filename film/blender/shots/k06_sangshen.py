@@ -33,7 +33,7 @@ def make_mulberry(seed, stalk=False, nu=250, nv=216):
     L = rng.uniform(0.0160, 0.0260)
     Wd = float(np.clip(L * rng.uniform(0.42, 0.56), 0.0080, 0.0118))
     dsp = rng.uniform(0.0018, 0.0023)                                 # drupelet spacing
-    Hd = 0.42 * dsp                                                   # bulge height
+    Hd = 0.50 * dsp                                                   # bulge height
     a, b = 0.5 * L - 0.8 * Hd, 0.5 * Wd - 0.8 * Hd
     s = np.linspace(0.0, 1.0, nu)[:, None]
     ph = np.linspace(0.0, 2 * math.pi, nv, endpoint=False)[None, :]
@@ -70,18 +70,21 @@ def make_mulberry(seed, stalk=False, nu=250, nv=216):
         seeds.append(p); rmin.append(dm)
     seeds = np.asarray(seeds)
     nd = len(seeds)
-    dist, idx = cKDTree(seeds).query(flatP, k=2)
-    d1, d2 = dist[:, 0], dist[:, 1]
-    ee = (d2 - d1) / (d2 + d1 + 1e-12)                                # 0 on a cell border, 1 at the centre
-    bead = (1.0 - (1.0 - ee) ** 2.2) ** 0.60                          # steep sides, round top, deep creases
+    dist, idx = cKDTree(seeds).query(flatP, k=3)
+    d1 = dist[:, 0]
+    rb = 0.66 * np.asarray(rmin)                                      # bead radius: neighbours squeeze each other
     hm = rng.uniform(0.78, 1.18, nd)                                  # some drupelets plumper than others
     hm[rng.random(nd) < 0.06] *= 0.55                                 # a few aborted / shrunken ones
-    h = Hd * hm[idx[:, 0]] * bead
+    cap = np.sqrt(np.clip(1.0 - (dist / rb[idx]) ** 2, 0.0, 1.0))     # spherical caps of the 3 nearest drupelets
+    hk = Hd * hm[idx] * cap
+    own = idx[np.arange(len(idx)), hk.argmax(1)]                      # the bead a vertex belongs to (union of caps)
+    h = hk.max(1)
+    rel = h / Hd
     h = h - 0.00006 * np.exp(-(d1 / 0.00016) ** 2)                    # tiny pit where the style sat
     verts = flatP + N0.reshape(-1, 3) * h[:, None]
     faces = C.grid_faces(nu, nv, wrap_v=True)
     did = rng.random(nd)
-    attrs = dict(did=did[idx[:, 0]], cav=1.0 - C.smoothstep(0.0, 0.34, ee), style=np.exp(-(d1 / 0.00019) ** 2),
+    attrs = dict(did=did[own], cav=1.0 - C.smoothstep(0.0, 0.55, rel), style=np.exp(-(d1 / 0.00019) ** 2),
                  slen=(s + 0 * ph).ravel())
     parts = [(verts, faces, 0)]
     if stalk:                                                         # short fruit stalk, green to brown
@@ -115,7 +118,7 @@ def mulberry_material(sss_method='BURLEY'):
     r = m.math('SUBTRACT', m.math('SUBTRACT', 1.0, unripe),
                m.math('MULTIPLY', m.math('SUBTRACT', did, 0.45), spread))
     r = m.math('ADD', r, m.map_range(m.noise(scale=160, detail=2, roughness=0.5, vector=P), 0.3, 0.7, -0.10, 0.10))
-    col = m.ramp(r, [(0.00, (0.420, 0.022, 0.024)), (0.30, (0.240, 0.007, 0.018)), (0.55, (0.085, 0.004, 0.020)),
+    col = m.ramp(r, [(0.00, (0.300, 0.012, 0.022)), (0.30, (0.180, 0.006, 0.018)), (0.55, (0.075, 0.004, 0.020)),
                      (0.80, (0.020, 0.0035, 0.015)), (1.00, (0.0075, 0.0030, 0.0085))])
     col = m.jitter(col, hue=0.008, saturation=0.06, value=0.15)
     col = m.mix(col, m.hsv(col, 0.5, 1.0, 0.35), m.map_range(cav, 0.30, 1.0, 0.0, 0.85, smooth=True))   # creases
@@ -131,7 +134,7 @@ def mulberry_material(sss_method='BURLEY'):
     nrm = m.bump(skin, strength=0.12, distance=0.00003)
     nrm = m.bump(stm, strength=0.4, distance=0.00002, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.42, specular=0.55,
-          sss=m.map_range(r, 0.0, 0.8, 0.85, 0.35), sss_radius=(1.0, 0.12, 0.14), sss_scale=0.0014,
+          sss=m.map_range(r, 0.0, 0.8, 0.60, 0.30), sss_radius=(1.0, 0.12, 0.14), sss_scale=0.0014,
           coat=coat, coat_roughness=0.035, normal=nrm)
     return m
 
@@ -186,7 +189,7 @@ def main():
 
     sol = C.planet_solve(R_DOME + 0.035)                              # camera is fitted to the heap top
     x0, x1, y0, y1 = sol['patch']
-    patch = (x0 * 1.16, x1 * 1.16, y0 * 1.12, y1 * 1.12)
+    patch = (x0 * 1.32, x1 * 1.32, y0 * 1.16, y1 * 1.16)
     heap = C.pack_heap(R_DOME, patch, shapes, layers=3.0, coverage=0.74, weights=weights, seed=args.seed,
                        scale_range=(0.86, 1.10), tilt_deg=14, roll_deg=180, candidates=14, sink=0.12, rough=0.002)
     n = len(heap.loc)
@@ -196,7 +199,7 @@ def main():
     C.instance_on_points('heap', variants, heap, attrs={'unripe': unripe})
     C.dome_base(R_DOME - 0.002, C.simple_material('base', (0.006, 0.002, 0.006), 0.9))
 
-    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.53, edge=0.68)
+    cam, info = C.planet_camera(heap=heap, lens_mm=85, apex=0.54, edge=0.68)
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
     C.studio_lights(info, tint=(1.0, 0.93, 0.97), key=1.0, fill=0.85, rim=1.3, world=1.2, key_size=0.6)
     F.finish(args, SHOT)

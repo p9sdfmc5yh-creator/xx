@@ -8,7 +8,7 @@
 One generic builder for every scene of film/shots_b.json (see README_B.md):
 
   * the ingredient module (film/blender/shots/<id>.py) is imported by file path and asked for
-    make_items(seed) -> dict(objects, footprint_r, half_height, name [, weights, inst_attrs, flip_prob]);
+    make_items(seed) -> dict(objects, footprint_r, half_height, name [, weights, inst_attrs]);
   * a LAYOUT ('wreath' | 'glyph' | 'landing' | 'taiji' | 'dishes' | 'bespoke') turns the frame into item
     positions, a drop-and-settle pass (`settle`) stacks them on a height field using point-cloud
     proxies sampled from the real meshes (no interpenetration, items tilt onto their neighbours);
@@ -184,7 +184,6 @@ class ItemSet(object):
         w = np.asarray(d.get('weights', np.ones(K)), float)
         self.weights = w / w.sum()
         self.inst_attrs = d.get('inst_attrs', {}) or {}
-        self.flip_prob = float(d.get('flip_prob', 0.0))
         self.footprint_r = np.asarray(d.get('footprint_r', np.zeros(K)), float) * scale
         self.half_height = np.asarray(d.get('half_height', np.zeros(K)), float) * scale
         rng = np.random.default_rng(4242 + seed)
@@ -351,7 +350,8 @@ def settle(place, sets, extent, rng, base=None, candidates=1, jitter=0.6, allowe
     Returns dict(loc (N,3) template origin, rot (N,3,3), scale (N,), layer (N,), zc (N,), hf)."""
     N = len(place)
     cmin = min(float(s.c.min()) for s in sets)
-    res = float(res or max(cmin / 2.2, (extent[1] - extent[0]) / 6000.0))
+    lat = min(math.sqrt(s.L * s.Wd / 340.0) for s in sets)          # >= ~7 proxy points per cell even for paper-thin items
+    res = float(res or max(cmin / 2.2, lat, (extent[1] - extent[0]) / 6000.0))
     hf = HeightField(extent, res, base)
     prox = [s.proxies(res) for s in sets]
     loc = np.zeros((N, 3))
@@ -363,7 +363,7 @@ def settle(place, sets, extent, rng, base=None, candidates=1, jitter=0.6, allowe
     maxt = math.radians(max_tilt_deg)
     dirs = np.array([[1, 0], [-1, 0], [0, 1], [0, -1], [.7071, .7071], [-.7071, .7071], [.7071, -.7071], [-.7071, -.7071]])
     half = 0.5 * res
-    offs = ((-half * 0.5, -half * 0.5), (half * 0.5, half * 0.5), (-half * 0.5, half * 0.5), (half * 0.5, -half * 0.5))
+    offs = ((-half, -half), (half, half), (-half, half), (half, -half))
     t0 = time.time()
     n_tilt = 0
     for i in order:
@@ -1535,6 +1535,13 @@ def draw_plan(frame, place, sets, res, path, px=1920, ground=(60, 60, 60), boxes
 
 
 # ============================================================================= main
+def _unlink_templates(S):
+    """Take the template objects of an unused ingredient out of the scene (they would render at the origin)."""
+    for ob in S.objects:
+        for c in list(ob.users_collection):
+            c.objects.unlink(ob)
+
+
 def parse_cli(argv=None):
     if argv is None:
         argv = sys.argv[1:]
@@ -1597,23 +1604,25 @@ def main(argv=None):
         src = [over[i % len(over)] for i in range(max(len(src), len(over)))]
     sets = []
     width = float(shot['frame_width_m'])
-    if not cli.empty:
+    if cli.empty and (cli.width or shot.get('lock_width') or not shot.get('item_mm')):
+        src = []                                                     # the frame width does not depend on the items
+    if src:                                                          # (--empty still measures them: same frame as the full plate)
         cache = {}
         for i, sid in enumerate(src):
             if sid in cache:
                 sets.append(cache[sid])
                 continue
-            if shot.get('optional_sources') and not standin and not os.path.exists(os.path.join(SHOT_DIR, sid + '.py')):
-                print('[items] %s not written yet - skipped (optional source)' % sid)
+            if (shot.get('optional_sources') or cli.empty) and not standin and not os.path.exists(os.path.join(SHOT_DIR, sid + '.py')):
+                print('[items] %s not written yet - skipped' % sid)
                 continue
             S = ItemSet(sid, seed=0)
             cache[sid] = S
             sets.append(S)
-        if not sets:
+        if not sets and not cli.empty:
             raise SystemExit('no ingredient module available for %s' % shot['id'])
         # the table's width was chosen for an assumed item size; follow the real one when it differs
         assumed = shot.get('item_mm')
-        if assumed and cli.width is None and not shot.get('lock_width'):
+        if sets and assumed and cli.width is None and not shot.get('lock_width'):
             assumed = assumed if isinstance(assumed, (list, tuple)) else [assumed]
             ratios = [sets[i].L * 1e3 / float(assumed[i % len(assumed)]) for i in range(len(sets))]
             k = float(np.median(ratios)) if layout != 'glyph' and layout != 'landing' else ratios[0]
@@ -1663,6 +1672,7 @@ def main(argv=None):
                 continue
             sel = np.array([sets[j] is S for j in place.iset], bool) if len(place) else np.zeros(0, bool)
             if not sel.any():
+                _unlink_templates(S)
                 continue
             n = int(sel.sum())
             attrs = {'inst_rand': rng.random(n)}
@@ -1674,9 +1684,12 @@ def main(argv=None):
         if extra.get('dishes'):
             build_dishes(extra['dishes'])
 
+    if cli.empty:
+        for S in sets:                                               # measured for the frame width only
+            _unlink_templates(S)
+
     # ---- ground, camera, light
-    Lmax = max([s.L for s in sets], default=0.0)
-    margin = max(0.06 * frame.W, 1.6 * Lmax)
+    margin = 0.10 * frame.W                                          # fixed: --empty must give the identical paper
     tex_px = int(np.clip(1.25 * args.q['res'][0], 2400, 5200))
     tmp_files = build_ground(frame, shot.get('ground', {}), exposure, args.seed, tex_px, margin, shot['id'])
     topdown_camera(frame)

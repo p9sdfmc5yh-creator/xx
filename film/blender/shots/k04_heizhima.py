@@ -33,7 +33,7 @@ def sesame_arrays(seed, nu=150, nv=112):
     Sg, PH = np.meshgrid(s, ph, indexing='ij')
     L = rng.uniform(0.0027, 0.0034)
     Wd = L * rng.uniform(0.56, 0.66)
-    Th = rng.uniform(0.00088, 0.00115)
+    Th = rng.uniform(0.00080, 0.00106)
     off = rng.uniform(0, 50, 3)
     k = rng.uniform(1.30, 1.55)                                   # fattest part towards the round end
     e = 0.50 + rng.uniform(0.30, 0.42) * (1.0 - Sg)               # round at s = 1, pointed at s = 0
@@ -42,7 +42,7 @@ def sesame_arrays(seed, nu=150, nv=112):
     tp = f ** 0.40                                                # thickness falls off only near the ends
     cph, sph = np.cos(PH), np.sin(PH)
     sgn = np.sign(sph)
-    lens = sgn * np.abs(sph) ** 0.62                              # plump, blunt-edged lens
+    lens = sgn * np.abs(sph) ** 0.70                              # plump, blunt-edged lens
     X = (Sg - 0.5) * L
     cyl = np.stack([Sg * 2.0, cph, sph], -1)
     lump = 1.0 + 0.045 * C.fbm3(cyl * 1.3 + off, 2, seed=seed)
@@ -53,7 +53,7 @@ def sesame_arrays(seed, nu=150, nv=112):
     dent = np.exp(-(((Sg - sc) / 0.24) ** 2 + (cph / 0.62) ** 2))
     damt = side * d_top + (1 - side) * max(d_bot, 0.0)
     Y = 0.5 * Wd * f * cph * lump
-    Z = 0.5 * Th * tp * lens * lump * (1.0 + 0.09 * ridge - damt * dent)
+    Z = 0.5 * Th * tp * lens * lump * (1.0 + 0.04 * ridge - damt * dent)
     # warp: seeds are never flat - slight curl along and across, a little twist
     xn, yn = X / (0.5 * L), Y / (0.5 * Wd)
     Z = Z + rng.normal(0, 0.05) * Th * xn ** 2 + rng.normal(0, 0.08) * Th * yn ** 2 + rng.normal(0, 0.07) * Th * xn * yn
@@ -62,7 +62,7 @@ def sesame_arrays(seed, nu=150, nv=112):
     verts, hs = S.finish(verts, 0.97)
     mott = S.norm01(C.fbm3(cyl * 1.6 + off + 31.0, 3, seed=seed + 21))
     rvar = S.norm01(C.fbm3(cyl * 3.5 + off + 77.0, 3, seed=seed + 24))
-    attrs = S.fl(dict(hil=np.exp(-(Sg / 0.040) ** 2), tipz=np.exp(-(Sg / 0.14) ** 2), ridge=ridge,
+    attrs = S.fl(dict(hil=np.exp(-(Sg / 0.030) ** 2), tipz=np.exp(-(Sg / 0.14) ** 2), ridge=ridge,
                       edge=np.abs(cph) ** 8 * np.clip(f * 2, 0, 1), dent=dent * damt / 0.22, mott=mott, rvar=rvar))
     return verts, C.grid_faces(nu, nv, wrap_v=True), attrs, hs
 
@@ -87,8 +87,8 @@ def sesame_material():
     dust = m.math('MULTIPLY', m.map_range(dn, 0.50, 0.75), m.map_range(t2, 0, 1, 0.0, 0.8))
     col = m.mix(col, (0.070, 0.066, 0.060), m.math('MULTIPLY', m.math('MULTIPLY', dust, peb), 0.35))
     col = m.mix(col, (0.070, 0.045, 0.028), m.math('MULTIPLY', m.math('MAXIMUM', A('edge'), A('ridge')), 0.22))
-    col = m.mix(col, (0.085, 0.045, 0.022), m.math('MULTIPLY', A('tipz'), 0.55))
-    col = m.mix(col, (0.420, 0.270, 0.130), m.map_range(A('hil'), 0.25, 0.80, smooth=True))
+    col = m.mix(col, (0.060, 0.034, 0.018), m.math('MULTIPLY', A('tipz'), 0.35))
+    col = m.mix(col, (0.260, 0.160, 0.075), m.map_range(A('hil'), 0.35, 0.85, smooth=True))
     col = m.jitter(col, hue=0.01, saturation=0.10, value=0.18)
     rough = m.map_range(A('rvar'), 0, 1, 0.42, 0.62)
     rough = m.math('ADD', rough, m.map_range(t3, 0, 1, -0.06, 0.08))

@@ -54,7 +54,7 @@ def relief(x, y, rho, phi, a, seed):
     rw = np.abs(C.perlin3(np.stack([arc / 0.0015, rho / 0.011, z0 + seed * 0.71], -1), seed + 14)) ** 0.7
     rw_env = 0.25 + 0.75 * C.smoothstep(0.35, 0.85, u)
     lump = C.fbm3(q2 / 0.03 + 9.0, 3, seed=seed + 15)
-    h = (0.00150 * (fur1 - 0.62) * env * knob + 0.00034 * (fur2 - 0.6) * knob + 0.000018 * n3
+    h = (0.00195 * (fur1 - 0.62) * env * knob + 0.00048 * (fur2 - 0.6) * knob + 0.000018 * n3
          + 0.000045 * (rw - 0.5) * rw_env + 0.0010 * lump)
     furrow = np.clip(np.clip(1 - (fur1 - 0.19) / 0.40, 0, 1) * 0.8 + np.clip(1 - (fur2 - 0.19) / 0.35, 0, 1) * 0.4, 0, 1)
     zone = 0.5 + 0.5 * ring(0.0085, 40.0, 16)
@@ -115,7 +115,8 @@ def cap_material():
     cloud = m.noise(scale=150, detail=5, roughness=0.65, vector=P)
     pw2 = m.math('MULTIPLY', m.math('POWER', pw, 1.6), m.math('MULTIPLY', m.map_range(cloud, 0.25, 0.75, 0.35, 1.0),
                                                            m.map_range(speck, 0.2, 0.8, 0.55, 1.0)), clamp=True)
-    col = m.mix(col, (0.080, 0.043, 0.024), m.math('MULTIPLY', pw2, 0.80))
+    pw2 = m.math('MULTIPLY', pw2, 0.75)
+    col = m.mix(col, (0.062, 0.032, 0.018), m.math('MULTIPLY', pw2, 0.85))
     matte = m.map_range(uu, 0.895, 0.965, smooth=True)                                          # growing edge is not lacquered
     rn = m.noise(scale=420, detail=4, roughness=0.6, vector=P)
     scr = m.noise(scale=1.0, detail=2, roughness=0.5, vector=m.mapping(P, scale=(60.0, 2600.0, 60.0), rotation=(0, 0, 0.5)))
@@ -124,12 +125,12 @@ def cap_material():
     rough = m.mixf(rough, 0.88, pw2)
     coat = m.math('MULTIPLY', m.math('SUBTRACT', 1.0, pw2), m.math('SUBTRACT', 1.0, m.math('MULTIPLY', matte, 0.9)), clamp=True)
     coat = m.math('MULTIPLY', coat, m.map_range(dent, 0.3, 0.9, 1.0, 0.45))
-    crough = m.math('ADD', m.map_range(rn, 0.3, 0.7, 0.14, 0.27), m.map_range(scr, 0.62, 0.80, 0.0, 0.14))
+    crough = m.math('ADD', m.map_range(rn, 0.3, 0.7, 0.055, 0.15), m.map_range(scr, 0.62, 0.80, 0.0, 0.12))
     crough = m.mixf(crough, 0.6, pw2)
     nrm = m.bump(m.noise(scale=1700, detail=3, roughness=0.6, vector=P), strength=0.45, distance=0.00006)
     nrm = m.bump(m.noise(scale=7000, detail=2, roughness=0.6, vector=P), strength=m.mixf(0.15, 0.7, pw2),
                  distance=0.00003, normal=nrm)
-    m.set(base_color=col, roughness=rough, ior=1.5, specular=0.30, coat=coat, coat_roughness=crough, normal=nrm)
+    m.set(base_color=col, roughness=rough, ior=1.5, specular=0.20, coat=coat, coat_roughness=crough, normal=nrm)
     return m
 
 
@@ -220,7 +221,7 @@ def main():
 
     cam, info = C.disc_camera(r_sil, elevation_deg=ELEV, apex=0.54, center=(0, 0, zc))
     C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
-    C.studio_lights(info, tint=SKY_TINT, key=0.85, fill=0.75, rim=0.9, world=0.45, key_az=-52, key_el=44, key_size=1.2)
+    C.studio_lights(info, tint=SKY_TINT, key=1.0, fill=0.65, rim=0.9, world=0.35, key_az=-52, key_el=44, key_size=1.2)
     finish(args, SHOT)
 
 

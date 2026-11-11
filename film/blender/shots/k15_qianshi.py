@@ -24,6 +24,19 @@ KINDS = ['whole'] * 4 + ['half'] * 6 + ['frag'] * 3
 
 
 # ----------------------------------------------------------------------------- 1. geometry
+def _fracture(verts, n, h, a, seed):
+    """Break along a NON-planar, floury surface: gently conchoidal (mm-scale warp) + crumbly relief,
+    slightly dished in the middle; returns (verts, frac mask)."""
+    n = S.unit(n)
+    t = verts - np.outer(verts @ n, n)
+    rr = np.linalg.norm(t, axis=1) / a
+    hh = (h + 0.10 * a * C.perlin3(verts * (0.9 / a) + 3.0 + seed, seed + 8)
+          + 0.035 * a * C.fbm3(verts * (3.2 / a) + 7.0, 3, seed=seed + 9)
+          + 5.0e-5 * C.fbm3(verts * 5200.0, 2, seed=seed + 10) - 0.05 * a * (1.0 - rr ** 2))
+    over = verts @ n - hh
+    return verts - n * np.maximum(over, 0.0)[:, None], C.smoothstep(0.0, 4e-5, over)
+
+
 def qian_arrays(seed, kind='whole', nu=190, nv=260):
     """One euryale seed / half / fragment.  Halves are returned with the fracture face on +Z."""
     rng = np.random.default_rng(6600 + seed)
@@ -46,14 +59,14 @@ def qian_arrays(seed, kind='whole', nu=190, nv=260):
     frac = np.zeros(len(verts))
     if kind != 'whole':
         n = S.unit(rng.normal(size=3))
-        verts, frac = S.clip_plane(verts, n, rng.uniform(-0.18, 0.12) * a, rough=1.3e-4, freq=800.0, seed=seed)
+        verts, frac = _fracture(verts, n, rng.uniform(-0.18, 0.12) * a, a, seed)
         e1 = S.unit(np.cross(n, [0.3, 0.5, 0.8]))
         e2 = np.cross(n, e1)
         verts = verts @ np.stack([e1, e2, n], 0).T                   # fracture normal -> +Z
         if kind == 'frag':
             t = rng.uniform(0, 2 * PI)
             n2 = S.unit([math.cos(t), math.sin(t), rng.normal(0, 0.25)])
-            verts, f2 = S.clip_plane(verts, n2, rng.uniform(-0.10, 0.30) * a, rough=1.3e-4, freq=800.0, seed=seed + 50)
+            verts, f2 = _fracture(verts, n2, rng.uniform(-0.10, 0.30) * a, a, seed + 50)
             frac = np.maximum(frac, f2)
     verts, hs = S.finish(verts, 0.97)
     mott, rvar = S.slow_fields(d, off, seed)
@@ -78,16 +91,16 @@ def qian_material():
     ve = m.voronoi(scale=950, feature='DISTANCE_TO_EDGE', vector=Pw)
     vein = m.map_range(ve, 0.0, 0.075, 1.0, 0.0, smooth=True)
     cc = m.mix(cc, (0.034, 0.010, 0.012), m.math('MULTIPLY', vein, 0.50))
-    dn = m.noise(scale=3200, detail=3, roughness=0.65, vector=P)
-    dust = m.math('MULTIPLY', m.map_range(dn, 0.50, 0.74), m.map_range(t2, 0, 1, 0.15, 0.95))
-    cc = m.mix(cc, (0.470, 0.360, 0.300), m.math('MULTIPLY', dust, 0.42))
+    dn = m.noise(scale=1100, detail=4, roughness=0.60, vector=P)
+    dust = m.math('MULTIPLY', m.map_range(dn, 0.46, 0.80), m.map_range(t2, 0, 1, 0.10, 0.90))
+    cc = m.mix(cc, (0.360, 0.220, 0.170), m.math('MULTIPLY', dust, 0.40))
     # yellowish-white end with tan staining, brown hilum dimple
     wn = m.noise(scale=1500, detail=3, roughness=0.6, vector=P)
     wc = m.mix((0.600, 0.490, 0.290), (0.700, 0.630, 0.450), wn)
     wc = m.mix(wc, (0.300, 0.180, 0.080), m.math('MULTIPLY', A('hil'), 0.8))
     # floury chalk-white fracture
     fn = m.noise(scale=2600, detail=4, roughness=0.7, vector=P)
-    fc = m.mix((0.700, 0.680, 0.620), (0.790, 0.780, 0.750), fn)
+    fc = m.mix((0.640, 0.610, 0.530), (0.780, 0.770, 0.730), fn)
     fc = m.hsv(fc, 0.5, m.map_range(t3, 0, 1, 0.7, 1.5), m.map_range(A('mott'), 0, 1, 0.94, 1.03))
     col = m.mix(m.mix(wc, cc, coat), fc, frac)
     col = m.jitter(col, hue=0.008, saturation=0.08, value=0.10)
@@ -143,8 +156,8 @@ def debris(heap, sol, rng):
 
 def main():
     S.run_pile(SHOT, make_variants, R_DOME,
-               heap_kw=dict(layers=3.3, coverage=0.72, scale_range=(0.86, 1.10), tilt_deg=26, roll_deg=40, flip=True,
-                            candidates=7, sink=0.08, rough=0.0022),
+               heap_kw=dict(layers=3.3, coverage=0.74, scale_range=(0.86, 1.10), tilt_deg=17, roll_deg=20, flip=True,
+                            candidates=10, sink=0.10, rough=0.0012),
                base_color=(0.060, 0.035, 0.028), base_drop=0.0012, debris=debris,
                light_kw=dict(tint=(0.96, 0.98, 1.0), key=0.72, fill=0.55, rim=0.9, world=0.8, key_size=1.0))
 
