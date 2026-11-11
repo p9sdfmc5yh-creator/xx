@@ -28,7 +28,9 @@ N_SMOOTH, N_WRINKLED = 8, 2
 def bean_arrays(seed, wrinkled=False, nu=180, nv=220):
     """One rice bean (long axis X, hilum on +Z).  Returns (verts, faces, attrs, half_sizes)."""
     rng = np.random.default_rng(6300 + seed)
-    d, T, PH = S.sphere_dirs(nu, nv)
+    ex, p_r = rng.uniform(0.74, 0.84), rng.uniform(0.56, 0.66)
+    d, T, PH = S.sphere_dirs(nu, nv, t=S.profile_t(nu, lambda t: -1.8 * np.sign(np.cos(t)) * np.abs(np.cos(t)) ** ex,
+                                                   lambda t: np.sin(t) ** p_r))
     dx = d[..., 0]
     sT = np.sin(T)
     L = rng.uniform(0.0056, 0.0080)
@@ -38,8 +40,7 @@ def bean_arrays(seed, wrinkled=False, nu=180, nv=220):
     off = rng.uniform(0, 50, 3)
     r = S.lumps(d, off, seed, amp=0.022, freq=1.2, fine=0.005) + S.flats(d, rng, 2, (0.010, 0.028), x_bias=0.3)
     # oblong capsule: cylindrical mid-part, rounded (slightly unequal) ends
-    ex = rng.uniform(0.74, 0.84)
-    prof = sT ** (rng.uniform(0.56, 0.66) + 0.06 * dx)
+    prof = sT ** (p_r + 0.06 * dx)
     Xn = np.sign(dx) * np.abs(dx) ** ex
     cph, sph = np.cos(PH), np.sin(PH)
     wr = np.zeros_like(T)

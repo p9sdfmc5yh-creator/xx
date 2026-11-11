@@ -19,13 +19,26 @@ PI = math.pi
 
 
 # ----------------------------------------------------------------------------- numpy geometry helpers
-def sphere_dirs(nu, nv, pole_dense=0.0):
+def profile_t(nu, fx, fr, t0=1e-9, n=4000):
+    """Ring angles T (0..pi) spaced uniformly in ARC LENGTH along the profile curve (fx(T), fr(T)).
+    Needed for boxy / capsule profiles (r = sin(T)^p, p < 1): with uniform T the first ring would
+    sit far from the axis and leave a visible hole / fan at each pole."""
+    t = np.linspace(0.0, PI, n)
+    t[0], t[-1] = t0, PI - t0
+    x, r = fx(t), fr(t)
+    s = np.concatenate([[0.0], np.cumsum(np.hypot(np.diff(x), np.diff(r)))])
+    return np.interp(np.linspace(0.0, s[-1], nu), s, t)
+
+
+def sphere_dirs(nu, nv, pole_dense=0.0, t=None):
     """Unit directions on a lat-long grid with poles on the X axis (T = 0 at -X, T = pi at +X).
     pole_dense in [0, 0.8) concentrates rings near both poles (hilum pits, nipples).
     Returns (d (nu, nv, 3), T (nu, nv), PH (nu, nv))."""
     u = np.linspace(0.0, 1.0, nu)
-    t = PI * (u - pole_dense * np.sin(2 * PI * u) / (2 * PI))
-    t[0], t[-1] = 2e-3, PI - 2e-3
+    if t is None:
+        t = PI * (u - pole_dense * np.sin(2 * PI * u) / (2 * PI))
+        t[0], t[-1] = 2e-3, PI - 2e-3
+    t = np.asarray(t, float)
     ph = np.linspace(0, 2 * PI, nv, endpoint=False)
     T, PH = np.meshgrid(t, ph, indexing='ij')
     d = np.stack([-np.cos(T), np.sin(T) * np.cos(PH), np.sin(T) * np.sin(PH)], -1)

@@ -27,8 +27,8 @@ N_VARIANTS = 10
 def sesame_arrays(seed, nu=150, nv=112):
     """One sesame seed (long axis X, pointed hilum end at -X, flat faces +-Z)."""
     rng = np.random.default_rng(6400 + seed)
-    s = np.linspace(0.0, 1.0, nu)
-    s[0], s[-1] = 1.5e-3, 1 - 1.5e-3
+    s = 1.0 - (1.0 - np.linspace(0.0, 1.0, nu)) ** 1.8           # rings crowd towards the round end (closed cap)
+    s[0], s[-1] = 1e-6, 1 - 1e-9
     ph = np.linspace(0, 2 * PI, nv, endpoint=False)
     Sg, PH = np.meshgrid(s, ph, indexing='ij')
     L = rng.uniform(0.0027, 0.0034)
@@ -39,7 +39,7 @@ def sesame_arrays(seed, nu=150, nv=112):
     e = 0.50 + rng.uniform(0.30, 0.42) * (1.0 - Sg)               # round at s = 1, pointed at s = 0
     f = np.sin(PI * Sg ** k) ** e
     f = f / f.max()
-    tp = f ** 0.40                                                # thickness falls off only near the ends
+    tp = f ** 0.62                                                # thickness falls off only near the ends
     cph, sph = np.cos(PH), np.sin(PH)
     sgn = np.sign(sph)
     lens = sgn * np.abs(sph) ** 0.70                              # plump, blunt-edged lens

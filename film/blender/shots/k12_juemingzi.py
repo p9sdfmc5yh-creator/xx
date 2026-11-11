@@ -27,7 +27,9 @@ N_VARIANTS = 10
 def cassia_arrays(seed, nu=170, nv=168):
     """One cassia seed (long axis X, ridges on +-Z, pale lines on the +-Y faces)."""
     rng = np.random.default_rng(6500 + seed)
-    d, T, PH = S.sphere_dirs(nu, nv)
+    p_r, p_x = rng.uniform(0.26, 0.36), rng.uniform(0.55, 0.68)
+    d, T, PH = S.sphere_dirs(nu, nv, t=S.profile_t(nu, lambda t: -1.8 * np.sign(np.cos(t)) * np.abs(np.cos(t)) ** p_x,
+                                                   lambda t: np.sin(t) ** p_r))
     dx = d[..., 0]
     sT = np.sin(T)
     L = rng.uniform(0.0036, 0.0056)
@@ -36,8 +38,8 @@ def cassia_arrays(seed, nu=170, nv=168):
     a, b, c = L / 2, Wd / 2, Th / 2
     off = rng.uniform(0, 50, 3)
     r = S.lumps(d, off, seed, amp=0.022, freq=1.3, fine=0.006) + S.flats(d, rng, 2, (0.010, 0.03), x_bias=0.3)
-    prof = sT ** rng.uniform(0.26, 0.36)                              # boxy rod with rounded end edges
-    Xn = np.sign(dx) * np.abs(dx) ** rng.uniform(0.55, 0.68)
+    prof = sT ** p_r                              # boxy rod with rounded end edges
+    Xn = np.sign(dx) * np.abs(dx) ** p_x
     n_se = rng.uniform(1.45, 1.80)                                    # rhombic-round cross-section
     cph, sph = np.cos(PH), np.sin(PH)
     cy = np.sign(cph) * np.abs(cph) ** (2.0 / n_se)
@@ -53,7 +55,7 @@ def cassia_arrays(seed, nu=170, nv=168):
     l1 = np.exp(-(np.angle(np.exp(1j * (PH - sl * Xn))) / w_l) ** 2)
     l2 = np.exp(-(np.angle(np.exp(1j * (PH - PI + sl * Xn))) / w_l) ** 2)
     line = (l1 + l2) * C.smoothstep(0.86, 0.60, np.abs(Xn))
-    r = r - 0.022 * line
+    r = r - 0.030 * line
     X = a * Xn
     Y = b * prof * cy * r
     Z = c * prof * cz * r
@@ -80,9 +82,9 @@ def cassia_material():
     t1, t2, t3 = S.inst_rand3(m)
     A = m.attr
     # item-to-item: yellowish green-brown ... olive brown ... coffee ... near black-brown
-    body = m.ramp(t1, [(0.00, (0.215, 0.160, 0.046)), (0.18, (0.140, 0.094, 0.028)), (0.55, (0.090, 0.053, 0.018)),
-                       (0.86, (0.052, 0.029, 0.012)), (1.00, (0.030, 0.016, 0.008))])
-    col = m.hsv(body, m.map_range(t2, 0, 1, 0.488, 0.512), m.map_range(A('mott'), 0, 1, 1.06, 0.94),
+    body = m.ramp(t1, [(0.00, (0.230, 0.150, 0.045)), (0.15, (0.150, 0.100, 0.030)), (0.45, (0.105, 0.064, 0.020)),
+                       (0.75, (0.075, 0.038, 0.014)), (0.92, (0.046, 0.023, 0.010)), (1.00, (0.028, 0.014, 0.007))])
+    col = m.hsv(body, m.map_range(t2, 0, 1, 0.480, 0.512), m.map_range(A('mott'), 0, 1, 1.06, 0.94),
                 m.map_range(A('mott'), 0, 1, 0.72, 1.22))
     spk = m.noise(scale=7500, detail=2, roughness=0.6, vector=P)
     col = m.hsv(col, 0.5, 1.0, m.map_range(spk, 0.28, 0.72, 0.84, 1.10))
@@ -91,19 +93,19 @@ def cassia_material():
     # ridge a little paler (worn), pale yellow-brown sunken lines, darker truncated ends
     col = m.mix(col, (0.250, 0.180, 0.060), m.math('MULTIPLY', A('ridge'), 0.22))
     ln = m.map_range(A('line'), 0.30, 0.80, smooth=True)
-    col = m.mix(col, m.mix((0.330, 0.240, 0.090), (0.230, 0.150, 0.050), spk), m.math('MULTIPLY', ln, 0.85))
+    col = m.mix(col, m.mix((0.330, 0.240, 0.090), (0.230, 0.150, 0.050), spk), m.math('MULTIPLY', ln, 0.92))
     col = m.jitter(col, hue=0.012, saturation=0.10, value=0.16)
     # hard glossy testa, gloss broken up at two scales; lines dull
     rn = m.noise(scale=1100, detail=3, roughness=0.6, vector=P)
-    rough = m.mixf(m.map_range(A('rvar'), 0, 1, 0.12, 0.28), m.map_range(rn, 0.3, 0.7, 0.10, 0.32), 0.5)
+    rough = m.mixf(m.map_range(A('rvar'), 0, 1, 0.17, 0.34), m.map_range(rn, 0.3, 0.7, 0.14, 0.40), 0.5)
     rough = m.math('ADD', rough, m.map_range(t3, 0, 1, -0.03, 0.12))
     rough = m.mixf(rough, 0.55, ln)
     peel = m.noise(scale=2400, detail=2, roughness=0.5, vector=P)
-    nrm = m.bump(peel, strength=0.30, distance=0.000016)
+    nrm = m.bump(peel, strength=0.45, distance=0.000026)
     nrm = m.micro_bump(scale=11000, strength=0.3, distance=0.000007, vector=P, normal=nrm)
     m.set(base_color=col, roughness=rough, ior=1.52, specular=0.50,
           sss=0.10, sss_radius=(1.0, 0.5, 0.2), sss_scale=0.0003,
-          coat=m.mixf(0.45, 0.0, ln), coat_roughness=0.09, normal=nrm)
+          coat=m.mixf(0.30, 0.0, ln), coat_roughness=0.13, normal=nrm)
     return m
 
 

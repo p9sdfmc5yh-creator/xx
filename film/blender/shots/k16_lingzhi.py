@@ -54,8 +54,8 @@ def relief(x, y, rho, phi, a, seed):
     rw = np.abs(C.perlin3(np.stack([arc / 0.0015, rho / 0.011, z0 + seed * 0.71], -1), seed + 14)) ** 0.7
     rw_env = 0.25 + 0.75 * C.smoothstep(0.35, 0.85, u)
     lump = C.fbm3(q2 / 0.03 + 9.0, 3, seed=seed + 15)
-    h = (0.00195 * (fur1 - 0.62) * env * knob + 0.00048 * (fur2 - 0.6) * knob + 0.000018 * n3
-         + 0.000045 * (rw - 0.5) * rw_env + 0.0010 * lump)
+    h = (0.00195 * (fur1 - 0.62) * env * knob + 0.00048 * (fur2 - 0.6) * knob + 0.000034 * n3
+         + 0.000080 * (rw - 0.5) * rw_env + 0.0010 * lump)
     furrow = np.clip(np.clip(1 - (fur1 - 0.19) / 0.40, 0, 1) * 0.8 + np.clip(1 - (fur2 - 0.19) / 0.35, 0, 1) * 0.4, 0, 1)
     zone = 0.5 + 0.5 * ring(0.0085, 40.0, 16)
     return h, furrow, rw, zone
@@ -108,6 +108,16 @@ def cap_material():
     col = m.mix(col, (0.52, 0.42, 0.40), m.map_range(zone, 0.30, 0.72, smooth=True), blend='MULTIPLY')      # zone to zone
     col = m.mix(col, (0.45, 0.38, 0.36), m.math('MULTIPLY', fur, 0.85), blend='MULTIPLY')      # furrows darker
     col = m.mix(col, (0.90, 0.87, 0.86), m.map_range(rw, 0.55, 0.15), blend='MULTIPLY')        # radial streaks
+    # hairline growth lines (1-D noise along the radius, ~0.3 mm), fine mottling, pale dust specks
+    umm = m.node('ShaderNodeCombineXYZ', {0: m.math('MULTIPLY', u, 74.0)}).outputs[0]
+    lines = m.noise(scale=3.4, detail=3, roughness=0.7, vector=umm)
+    col = m.mix(col, (0.78, 0.72, 0.70), m.map_range(lines, 0.42, 0.72), blend='MULTIPLY')
+    fmot = m.noise(scale=1100, detail=4, roughness=0.65, vector=P)
+    col = m.mix(col, (0.80, 0.76, 0.74), m.map_range(fmot, 0.40, 0.72), blend='MULTIPLY')
+    dust = m.map_range(m.voronoi(scale=1500, feature='F1', vector=P), 0.05, 0.11, 1.0, 0.0, smooth=True)
+    dsel = m.map_range(m.noise(scale=45, detail=3, vector=P), 0.45, 0.70)
+    dust = m.math('MULTIPLY', dust, dsel)
+    pores = m.voronoi(scale=8500, feature='F1', vector=P)
     mot = m.noise(scale=260, detail=4, roughness=0.6, vector=P)
     col = m.mix(col, (0.75, 0.70, 0.66), m.map_range(mot, 0.45, 0.75), blend='MULTIPLY')
     # spore powder: matte cocoa dust in patches and furrows, speckled edges
@@ -117,7 +127,9 @@ def cap_material():
                                                            m.map_range(speck, 0.2, 0.8, 0.55, 1.0)), clamp=True)
     pw2 = m.math('MULTIPLY', pw2, 0.75)
     col = m.mix(col, (0.062, 0.032, 0.018), m.math('MULTIPLY', pw2, 0.85))
+    col = m.mix(col, (0.46, 0.38, 0.28), m.math('MULTIPLY', dust, 0.55))
     matte = m.map_range(uu, 0.895, 0.965, smooth=True)                                          # growing edge is not lacquered
+    col = m.mix(col, m.mix(col, (0.62, 0.52, 0.42), 1.0, blend='MULTIPLY'), m.math('MULTIPLY', matte, m.map_range(pores, 0.0, 0.35, 0.8, 0.0)))
     rn = m.noise(scale=420, detail=4, roughness=0.6, vector=P)
     scr = m.noise(scale=1.0, detail=2, roughness=0.5, vector=m.mapping(P, scale=(60.0, 2600.0, 60.0), rotation=(0, 0, 0.5)))
     rough = m.map_range(rn, 0.3, 0.7, 0.34, 0.52)
@@ -125,12 +137,16 @@ def cap_material():
     rough = m.mixf(rough, 0.88, pw2)
     coat = m.math('MULTIPLY', m.math('SUBTRACT', 1.0, pw2), m.math('SUBTRACT', 1.0, m.math('MULTIPLY', matte, 0.9)), clamp=True)
     coat = m.math('MULTIPLY', coat, m.map_range(dent, 0.3, 0.9, 1.0, 0.45))
+    coat = m.math('MULTIPLY', coat, m.math('SUBTRACT', 1.0, m.math('MULTIPLY', dust, 0.8)))
     crough = m.math('ADD', m.map_range(rn, 0.3, 0.7, 0.055, 0.15), m.map_range(scr, 0.62, 0.80, 0.0, 0.12))
     crough = m.mixf(crough, 0.6, pw2)
     nrm = m.bump(m.noise(scale=1700, detail=3, roughness=0.6, vector=P), strength=0.45, distance=0.00006)
+    nrm = m.bump(lines, strength=0.55, distance=0.000035, normal=nrm)
+    nrm = m.bump(m.noise(scale=4300, detail=3, roughness=0.65, vector=P), strength=0.4, distance=0.00003, normal=nrm)
+    nrm = m.bump(pores, strength=m.mixf(0.0, 0.7, matte), distance=0.00003, normal=nrm)
     nrm = m.bump(m.noise(scale=7000, detail=2, roughness=0.6, vector=P), strength=m.mixf(0.15, 0.7, pw2),
                  distance=0.00003, normal=nrm)
-    m.set(base_color=col, roughness=rough, ior=1.5, specular=0.20, coat=coat, coat_roughness=crough, normal=nrm)
+    m.set(base_color=col, roughness=rough, ior=1.5, specular=0.20, sheen=m.math('MULTIPLY', matte, 0.35), sheen_roughness=0.45, coat=coat, coat_roughness=crough, normal=nrm)
     return m
 
 
@@ -220,7 +236,7 @@ def main():
     print('[cap] %d x %d verts, cell %.3f mm' % (nx, ny, 1000 * (ext[1] - ext[0]) / (nx - 1)))
 
     cam, info = C.disc_camera(r_sil, elevation_deg=ELEV, apex=0.54, center=(0, 0, zc))
-    C.auto_dof(cam, info, near_blur_px=7, far_blur_px=3)
+    C.auto_dof(cam, info, near_blur_px=6, far_blur_px=1.8)
     C.studio_lights(info, tint=SKY_TINT, key=1.0, fill=0.65, rim=0.9, world=0.35, key_az=-52, key_el=44, key_size=1.2)
     finish(args, SHOT)
 

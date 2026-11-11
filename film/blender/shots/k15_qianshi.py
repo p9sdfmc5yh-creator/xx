@@ -49,7 +49,7 @@ def qian_arrays(seed, kind='whole', nu=190, nv=260):
     Tb = rng.uniform(1.00, 1.30)
     en = 0.20 * C.fbm3(d * 2.6 + off + 11.0, 3, seed=seed + 5) + 0.05 * C.fbm3(d * 9.0 + off, 2, seed=seed + 6)
     coat = C.smoothstep(Tb - 0.025, Tb + 0.025, T + en)
-    chip = C.smoothstep(0.80, 0.86, S.norm01(C.fbm3(d * 5.0 + off + 40.0, 3, seed=seed + 7)))
+    chip = C.smoothstep(0.955, 0.985, S.norm01(C.fbm3(d * 5.0 + off + 40.0, 3, seed=seed + 7)))
     coat = coat * (1.0 - chip)
     r = r + 0.016 * coat
     # white end: slightly flattened, small dimple (hilum) at the pole
@@ -100,7 +100,7 @@ def qian_material():
     wc = m.mix(wc, (0.300, 0.180, 0.080), m.math('MULTIPLY', A('hil'), 0.8))
     # floury chalk-white fracture
     fn = m.noise(scale=2600, detail=4, roughness=0.7, vector=P)
-    fc = m.mix((0.640, 0.610, 0.530), (0.780, 0.770, 0.730), fn)
+    fc = m.mix((0.640, 0.590, 0.470), (0.790, 0.770, 0.700), fn)
     fc = m.hsv(fc, 0.5, m.map_range(t3, 0, 1, 0.7, 1.5), m.map_range(A('mott'), 0, 1, 0.94, 1.03))
     col = m.mix(m.mix(wc, cc, coat), fc, frac)
     col = m.jitter(col, hue=0.008, saturation=0.08, value=0.10)
@@ -159,7 +159,7 @@ def main():
                heap_kw=dict(layers=3.3, coverage=0.74, scale_range=(0.86, 1.10), tilt_deg=17, roll_deg=20, flip=True,
                             candidates=10, sink=0.10, rough=0.0012),
                base_color=(0.060, 0.035, 0.028), base_drop=0.0012, debris=debris,
-               light_kw=dict(tint=(0.96, 0.98, 1.0), key=0.72, fill=0.55, rim=0.9, world=0.8, key_size=1.0))
+               light_kw=dict(tint=(1.0, 0.97, 0.92), key=0.72, fill=0.55, rim=0.9, world=0.8, key_size=1.0))
 
 
 if __name__ == '__main__':
