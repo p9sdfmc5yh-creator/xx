@@ -1,0 +1,40 @@
+{
+ "shot": "b29_qianshi",
+ "layout": "glyph",
+ "frame_width_m": 0.8056049439806772,
+ "frame_height_m": 0.4531527809891309,
+ "items": [
+  "k15_qianshi"
+ ],
+ "seed": 54,
+ "empty": false,
+ "text": "源",
+ "font": "NotoSansCJKsc-Bold.otf",
+ "thin": 0.24,
+ "engine": "packed",
+ "px_per_m": 2501.990126396197,
+ "stroke_width_m": 0.029576455645965206,
+ "stroke_items_wide": 5.0,
+ "block_m": [
+  0.34332669459302856,
+  0.3353330579319569
+ ],
+ "char_boxes": [
+  [
+   0.29535,
+   0.10235,
+   0.70614,
+   0.82912
+  ]
+ ],
+ "align": 0.0,
+ "n_items": 1771,
+ "layers_max": 4,
+ "heap_top_mm": 17.432462692260742,
+ "display_gain": 1.0,
+ "render_seconds": 89.4,
+ "resolution": [
+  1920,
+  1080
+ ]
+}
